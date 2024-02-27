@@ -35,8 +35,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.18.83"],\
             ["@types/react", "npm:18.2.58"],\
             ["@types/react-dom", "npm:18.2.19"],\
-            ["autoprefixer", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:10.4.17"],\
-            ["postcss", "npm:8.4.35"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:18.2.0"],\
             ["react-query", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:3.39.3"],\
@@ -6103,10 +6101,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:10.4.17", {\
-          "packageLocation": "./.yarn/__virtual__/autoprefixer-virtual-08b71dc36e/0/cache/autoprefixer-npm-10.4.17-8379be1d95-1b4cf40975.zip/node_modules/autoprefixer/",\
+        ["virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:10.4.17", {\
+          "packageLocation": "./.yarn/__virtual__/autoprefixer-virtual-a84706582d/0/cache/autoprefixer-npm-10.4.17-8379be1d95-1b4cf40975.zip/node_modules/autoprefixer/",\
           "packageDependencies": [\
-            ["autoprefixer", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:10.4.17"],\
+            ["autoprefixer", "virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:10.4.17"],\
             ["@types/postcss", null],\
             ["browserslist", "npm:4.23.0"],\
             ["caniuse-lite", "npm:1.0.30001589"],\
@@ -14716,7 +14714,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@csstools/postcss-trigonometric-functions", "virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:1.0.2"],\
             ["@csstools/postcss-unset-value", "virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:1.0.2"],\
             ["@types/postcss", null],\
-            ["autoprefixer", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:10.4.17"],\
+            ["autoprefixer", "virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:10.4.17"],\
             ["browserslist", "npm:4.23.0"],\
             ["css-blank-pseudo", "virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:3.0.3"],\
             ["css-has-pseudo", "virtual:8c682c95148a0836b6a061faa2667f386bbb9e0598de143425d5ea0d772c349c9f377c03f597206c7506da8939b22029785689f2ce1fdac376767c2ad9461498#npm:3.0.4"],\
@@ -17730,8 +17728,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.18.83"],\
             ["@types/react", "npm:18.2.58"],\
             ["@types/react-dom", "npm:18.2.19"],\
-            ["autoprefixer", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:10.4.17"],\
-            ["postcss", "npm:8.4.35"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:18.2.0"],\
             ["react-query", "virtual:6e957406b80a2338a80435663142dca714b453e13c0796da39237f097a1ada2c634dd78301a992a63730714fbf214127525cb89ec56b9824d4b5efa2a691fc35#npm:3.39.3"],\
