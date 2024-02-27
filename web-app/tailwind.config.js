@@ -4,21 +4,21 @@ module.exports = {
     './src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
-    colors: {
-      'primary': '#094B72',
-      'primary_25': '#094B7240',
-      'primary_light': '#BAE0E2',
-      'violet': '#5D50C6',
-      'orange': '#FF5722',
-      'danger': '#DA1004',
-      'success': '#07A461',
-      'ink': '#22313F',
-      'black': '#0C0C20',
-      'disable': '#3B3F48D9',
-      'surface': '#CCCCCC',
-      'white': '#F6FAF9',
-    },
     extend: {
+      colors: {
+        'primary': '#094B72',
+        'primary_25': '#094B7240',
+        'primary_light': '#BAE0E2',
+        'violet': '#5D50C6',
+        'orange': '#FF5722',
+        'danger': '#DA1004',
+        'success': '#07A461',
+        'ink': '#22313F',
+        'black': '#0C0C20',
+        'disable': '#3B3F48D9',
+        'surface': '#CCCCCC',
+        'white': '#F6FAF9',
+      },
       spacing: {
         xs: '4px',
         sm: '8px',
@@ -48,28 +48,28 @@ module.exports = {
           lineHeight: '2rem',
           fontWeight: '700',
         }],
-        cXl: ['1.125rem', {
+        cXl: ['1.25rem', {
+          lineHeight: '1.185rem',
+          fontWeight: '400',
+        }],
+        cLg: ['1.125rem', {
           lineHeight: '1.75rem',
           fontWeight: '400',
         }],
-        cLg: ['1rem', {
+        cBase: ['1rem', {
           lineHeight: '1.5rem',
           fontWeight: '400',
         }],
-        cBase: ['0.875rem', {
+        cSm: ['0.875rem', {
           lineHeight: '1.125rem',
           fontWeight: '400',
         }],
-        cSm: ['0.75rem', {
-          lineHeight: '1rem',
-          fontWeight: '400',
-        }],
-        // Other font sizes...
       },
-      dropShadow: {
-        max: '0px 4px 8px 0px #00000026',
-        mid: '0px 4px 8px 0px #0000001A',
-        min: '0px 2px 4px 0px #0000001A',
+      boxShadow: {
+        form: '0px 0px 35px 0px #0000001A',
+        // max: '0px 4px 8px 0px #00000026',
+        // mid: '0px 4px 8px 0px #0000001A',
+        // min: '0px 2px 4px 0px #0000001A',
       },
     }
   },

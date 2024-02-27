@@ -1,0 +1,11 @@
+{
+  "Welcome back": "Welcome back",
+  "Can not change to language. Please choose another": "Can not change to {{language}}. Please choose another",
+  "Sign in to your account": "Sign in to your account",
+  "Email address": "Email address",
+  "Password": "Password",
+  "Forgot your password": "Forgot your password",
+  "Log in": "Log in",
+  "Incorrect username or password": "Incorrect username or password",
+  "Please try again": "Please try again"
+}

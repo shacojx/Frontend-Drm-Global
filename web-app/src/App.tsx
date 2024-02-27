@@ -1,13 +1,15 @@
 import React from 'react';
-import logo from './logo.svg';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { RouterProvider } from "react-router-dom";
 import './App.css';
+import { router } from "./router";
+
+export const queryClient = new QueryClient()
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Customer Web</h1>
-    </div>
-  );
+  return <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+  </QueryClientProvider>
 }
 
 export default App;
