@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { EyesClosedIcon } from "./icons/EyesClosedIcon";
-import { EyesOpenIcon } from "./icons/EyesOpenIcon";
+import { IconEyesClosed, IconEyesOpen } from "./icons";
 
 type Props = {}
 
@@ -22,8 +21,8 @@ export function FormFieldPassword(props: Props) {
     <div className="relative">
       <input className="w-full h-[40px] border py-1 px-2 rounded-lg" type={isDisplayPass ? 'text' : 'password'}/>
       {isDisplayPass
-        ? <EyesClosedIcon onClick={handleClickClosedIcon} className="h-[18px] absolute top-[11px] right-[11px] text-gray-400" />
-        : <EyesOpenIcon onClick={handleClickOpenIcon} className="h-[18px] absolute top-[11px] right-[11px] text-gray-400" />
+        ? <IconEyesClosed onClick={handleClickClosedIcon} className="h-[18px] absolute top-[11px] right-[11px] text-gray-400" />
+        : <IconEyesOpen onClick={handleClickOpenIcon} className="h-[18px] absolute top-[11px] right-[11px] text-gray-400" />
       }
     </div>
   </div>

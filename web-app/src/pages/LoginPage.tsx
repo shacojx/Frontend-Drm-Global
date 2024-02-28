@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { IMAGE_LINKS } from "../assets/imageLinks";
 import { useTranslation } from 'react-i18next';
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
-import { SpinnerIcon } from "../components/icons/SpinnerIcon";
+import { IconSpinner } from "../components/icons";
 
 type LoginStatus = 'typing' | 'requesting' | 'success' | 'error'
 export function LoginPage() {
@@ -21,7 +20,7 @@ export function LoginPage() {
   }
 
   return <div className="w-full max-w-[400px]">
-    <img className="mb-8" src={IMAGE_LINKS.logoFull} alt="logo_full"/>
+
     <div className="flex flex-col gap-y-8 py-12 px-8 shadow-form rounded-3xl">
       <div className="flex flex-col gap-1">
         <p className="text-cXl text-gray-400">{translation.t('Welcome back')}! 👋</p>
@@ -37,7 +36,7 @@ export function LoginPage() {
         onClick={handleClickLogin}
       >
         <span>{translation.t('Log in')}</span>
-        {status === 'requesting' && <SpinnerIcon />}
+        {status === 'requesting' && <IconSpinner />}
       </button>
       {status === 'error' &&
         <div className="text-center text-danger">
