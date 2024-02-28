@@ -1,5 +1,5 @@
 import i18n from "i18next";
-import { Language, SUPPORTED_LANGUAGE } from "../i18n";
+import { Language, SUPPORTED_LANGUAGE } from "../_i18n";
 
 export function I18nLanguage() {
   function handleClickLanguage(language: Language) {
