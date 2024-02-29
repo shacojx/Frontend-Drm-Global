@@ -1,26 +1,140 @@
-import { API_DOMAIN } from "../_loadEnv";
+import { API_DOMAIN, EXPIRATION_TIME_FOR_ACCESS_TOKEN, EXPIRATION_TIME_FOR_REFRESH_TOKEN } from "../_loadEnv";
 
-type ApiMethod = 'GET' | 'POST'
-export async function callApi<T>(method: ApiMethod, path: string, params: any): Promise<T> {
-  try {
-    const apiUrl = new URL(path, API_DOMAIN)
-    const response = await fetch(
-      apiUrl,
-      {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
-      }
-    )
-    if (!response.ok) {
-      throw new Error('API return error')
-    }
-    return await response.json()
-  } catch (e) {
-    console.error(e)
-    throw new Error('API return error')
+type ApiMethod = 'GET' | 'POST' | 'PUT'
+export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any>, isPrivateApi: boolean = false): Promise<T> {
+  const apiUrl = new URL(path, API_DOMAIN)
+  if (method === 'GET') {
+    addParamsToSearchParams(apiUrl.searchParams, paramsOrBody)
+  }
+  const body = method === "GET" ? undefined : JSON.stringify(paramsOrBody)
+  const contentType = method === "GET" ? undefined : {
+    'Content-Type': 'application/json',
   }
 
+  let authorization = undefined
+  if (isPrivateApi) {
+    const accessTokenInfo = await getAccessTokenInfo()
+    if (accessTokenInfo) {
+      authorization = {
+        'Authorization': getAuthorizationString(accessTokenInfo)
+      }
+    } else {
+      // Refresh token was expired
+      alert('Please login again!')
+      throw new Error('User is no longer logged in')
+    }
+  }
+
+  const response = await fetch(
+    apiUrl,
+    {
+      method,
+      headers: {
+        ...authorization,
+        ...contentType,
+      },
+      body: body,
+    }
+  )
+  if (!response.ok) {
+    throw new Error('API return error')
+  }
+  return await response.json()
+}
+
+async function getAccessTokenInfo() {
+  const accessTokenInfo = getToken('accessToken')
+  if (accessTokenInfo) {
+    return accessTokenInfo
+  }
+  const refreshTokenInfo = getToken('refreshToken')
+  if (refreshTokenInfo) {
+    return await refreshToken(refreshTokenInfo.token)
+  }
+  return null
+}
+
+function getAuthorizationString(accessTokenInfo: TokenInfo) {
+  if (accessTokenInfo.type === 'Bearer') {
+    return `Bearer ${accessTokenInfo.token}`
+  }
+  return accessTokenInfo.token
+}
+
+type ResultOfRefreshToken = {
+  accessToken: string,
+  type: string,
+  refreshToken: string,
+}
+async function refreshToken(refreshToken: string) {
+  const path = 'api/auth/refreshtoken'
+  const refreshApiUrl = new URL(path, API_DOMAIN)
+  const response = await fetch(refreshApiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ refreshToken })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to refresh token');
+  }
+
+  const result = await response.json() as ResultOfRefreshToken;
+  saveToken(result.accessToken, result.type, result.refreshToken)
+  return generateTokenInfo(result.accessToken, result.type, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
+}
+
+type TokenName = 'accessToken' | 'refreshToken'
+
+type TokenInfo = {
+  token: string,
+  expiredAt: number,
+  type: string
+}
+
+function generateTokenInfo(token: string, type: string, expiredTime: number) {
+  const DELAY_TIME = 10_000
+  return {
+    token: token,
+    type: type,
+    expiredAt: new Date().valueOf() + expiredTime - DELAY_TIME
+  }
+}
+
+function saveToken(accessToken: string, accessTokenType: string, refreshToken: string) {
+  const accessTokenInfo = generateTokenInfo(accessToken, accessTokenType, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
+  const refreshTokenInfo = generateTokenInfo(refreshToken, '', EXPIRATION_TIME_FOR_REFRESH_TOKEN)
+  sessionStorage.setItem("accessToken", JSON.stringify(accessTokenInfo))
+  localStorage.setItem("refreshToken", JSON.stringify(refreshTokenInfo)) // should save refresh token to cookie
+}
+
+function getToken(tokenName: TokenName) {
+  const accessTokenInfo = tokenName === "accessToken"
+    ? sessionStorage.getItem('accessToken')
+    : localStorage.getItem('refreshToken')
+  if (!accessTokenInfo) {
+    return null
+  }
+  const tokenInfo = JSON.parse(accessTokenInfo) as TokenInfo
+  const now = new Date().valueOf()
+  if (tokenInfo.expiredAt > now) {
+    return null
+  }
+  return tokenInfo
+}
+
+function addParamsToSearchParams(urlSearchParams: URLSearchParams, params: Record<string, any>) {
+  Object.keys(params).forEach(key => {
+    if (params[key]) {
+      if (params[key] && typeof params[key] !== "object") {
+        urlSearchParams.append(key, params[key])
+      } else {
+        for (const keyOfParamsKey in params[key]) {
+          urlSearchParams.append(`${key}[${keyOfParamsKey}]`, params[key][keyOfParamsKey])
+        }
+      }
+    }
+  })
 }

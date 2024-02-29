@@ -65,7 +65,7 @@ export function LoginPage() {
       <span>{translation.t('Log in')}</span>
       {status === 'requesting' && <IconSpinner/>}
     </button>
-    {status === 'error' && !!email && !!password &&
+    {status === 'error' &&
       <div className="text-center text-danger">
         <p>{translation.t('Incorrect username or password')}.</p>
         <p>{translation.t('Please try again')}</p>

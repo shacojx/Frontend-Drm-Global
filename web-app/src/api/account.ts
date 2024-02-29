@@ -15,8 +15,8 @@ export type RawResultLogin = {
   username: string,
 }
 export type TransformedResultLogin = RawResultLogin
-export async function callApiLogin(param: ApiLoginParam) {
+export async function callApiLogin(body: ApiLoginParam) {
   const path = 'api/auth/signin'
-  const rawResult = await callApi<RawResultLogin>('POST', path, param)
+  const rawResult = await callApi<RawResultLogin>('POST', path, body)
   return transformLoginResult(rawResult)
 }
