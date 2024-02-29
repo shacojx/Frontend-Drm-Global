@@ -20,3 +20,26 @@ export async function callApiLogin(body: ApiLoginParam) {
   const rawResult = await callApi<RawResultLogin>('POST', path, body)
   return transformLoginResult(rawResult)
 }
+
+export type ApiSendRecoveryCode = {
+  email: string
+}
+export type RawResultSendRecoveryCode = {
+}
+export async function callApiSendRecoveryCode(body: ApiSendRecoveryCode) {
+  const path = 'api/user/forgotpass'
+  const rawResult = await callApi<RawResultSendRecoveryCode>('POST', path, body)
+  return !!rawResult
+}
+
+export type ApiCheckRecoveryCode = {
+  "email": string,
+  "otp": string,
+}
+export type RawResultCheckRecoveryCode = {
+}
+export async function callApiCheckRecoveryCode(body: ApiCheckRecoveryCode) {
+  const path = 'api/user/submitotp'
+  const rawResult = await callApi<RawResultCheckRecoveryCode>('POST', path, body)
+  return !!rawResult
+}

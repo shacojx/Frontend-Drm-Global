@@ -7,5 +7,13 @@
   "Forgot your password": "Forgot your password",
   "Log in": "Log in",
   "Incorrect username or password": "Incorrect username or password",
-  "Please try again": "Please try again"
+  "Please try again": "Please try again",
+  "Reset your password": "Reset your password",
+  "Enter the email address associated with your account": "Enter the email address associated with your account",
+  "Recovery Code": "Recovery Code",
+  "New here": "New here",
+  "Send recover code - 60s": "Send recover code - 60s",
+  "Change Password": "Change Password",
+  "Incorrect email": "Incorrect email",
+  "Incorrect recovery code or email": "Incorrect recovery code or email"
 }

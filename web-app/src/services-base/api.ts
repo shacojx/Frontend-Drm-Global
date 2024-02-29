@@ -1,6 +1,11 @@
 import { API_DOMAIN, EXPIRATION_TIME_FOR_ACCESS_TOKEN, EXPIRATION_TIME_FOR_REFRESH_TOKEN } from "../_loadEnv";
 
 type ApiMethod = 'GET' | 'POST' | 'PUT'
+type ResponseOk<T = unknown> = {
+  "status": string,
+  "message": string,
+  "data": T
+}
 export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any>, isPrivateApi: boolean = false): Promise<T> {
   const apiUrl = new URL(path, API_DOMAIN)
   if (method === 'GET') {
@@ -37,9 +42,13 @@ export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: 
     }
   )
   if (!response.ok) {
-    throw new Error('API return error')
+    throw new Error('Can not request to our server')
   }
-  return await response.json()
+  const responseObject = await response.json() as ResponseOk<T>
+  if (responseObject.status !== '200') {
+    throw new Error(responseObject.message)
+  }
+  return responseObject.data
 }
 
 async function getAccessTokenInfo() {
