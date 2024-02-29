@@ -1,9 +1,11 @@
 export function validateApiEmail(email: string) {
-  // TODO: implement
-  return !!email
+  if (!email) return false
+  const regValidateEmail = /\S+@\S+\.\S+/;
+  return regValidateEmail.test(email);
 }
 
 export function validateApiPassword(pass: string) {
-  // TODO: implement
-  return !!pass
+  if (!pass) return false
+  const regValidatePassword = /^[a-z0-9]{8,}$/;
+  return regValidatePassword.test(pass)
 }
