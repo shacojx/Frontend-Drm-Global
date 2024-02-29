@@ -55,9 +55,9 @@ export function LoginPage() {
     </div>
     <FormFieldEmail value={email} onChange={handleChangeEmail} />
     <FormFieldPassword value={password} onChange={handleChangePassword} />
-    <button className="flex justify-end">
-      <p className="text-primary">{translation.t('Forgot your password')}?</p>
-    </button>
+    <div className="flex justify-end">
+      <button className="text-primary">{translation.t('Forgot your password')}?</button>
+    </div>
     <button
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
       onClick={handleClickLogin}
