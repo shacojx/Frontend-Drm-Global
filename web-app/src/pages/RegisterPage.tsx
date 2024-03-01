@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { DialogContainer } from "../components/DialogContainer";
 import { FormFieldTextArea } from "../components/FormFieldArea";
 import { FormFieldEmail } from "../components/FormFieldEmail";
+import { FormFieldPassword } from "../components/FormFieldPassword";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { FormFieldSelect } from "../components/FormFieldSelect";
 import { FormFieldText } from "../components/FormFieldText";
@@ -15,7 +17,7 @@ type Props = {}
 export function RegisterPage(props: Props) {
   const translation = useTranslation()
   const [nation, setNation] = useState<NationValue>()
-  const [stepIndex, setStepIndex] = useState<number>(1)
+  const [stepIndex, setStepIndex] = useState<number>(4)
   // step 2
   const [email, setEmail] = useState<string>()
   const [phone, setPhone] = useState<RNPhoneValue>()
@@ -26,12 +28,16 @@ export function RegisterPage(props: Props) {
   const [industry, setIndustry] = useState<Industry>()
   const [website, setWebsite] = useState<string>()
   const [companyDescription, setCompanyDescription] = useState<string>()
+  // step 4
+  const [password,setPassword] = useState<string>('')
+  const [rePassword,setRePassword] = useState<string>('')
 
   const SelectNationStepIndex = 1
   const AccountInformationStepIndex = 2
   const CompanyInformationStepIndex = 3
+  const CreateAccountStepIndex = 4
   const FirstStep = SelectNationStepIndex
-  const LastStep = CompanyInformationStepIndex
+  const LastStep = CreateAccountStepIndex
 
   function handleChangeNation(nation: NationValue) {
     setNation(nation)
@@ -74,7 +80,7 @@ export function RegisterPage(props: Props) {
         setCompanyType={setCompanyType}
       />
     }
-    {stepIndex === CompanyInformationStepIndex &&
+    {stepIndex >= CompanyInformationStepIndex &&
       <CompanyInformationStep
         onClickNextStep={handleClickNextStep}
         onClickPreviousStep={handleClickBackStep}
@@ -88,6 +94,16 @@ export function RegisterPage(props: Props) {
         setWebsite={setWebsite}
         companyDescription={companyDescription}
         setCompanyDescription={setCompanyDescription}
+      />
+    }
+    {stepIndex === CreateAccountStepIndex &&
+      <CreateAccountStep
+        onClickNextStep={handleClickNextStep}
+        onClickPreviousStep={handleClickBackStep}
+        password={password}
+        setPassword={setPassword}
+        rePassword={rePassword}
+        setRePassword={setRePassword}
       />
     }
   </PageLayoutOneForm>
@@ -189,4 +205,43 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       </button>
     </div>
   </div>
+}
+
+type CreateAccountStepProps = {
+  onClickNextStep: () => void,
+  onClickPreviousStep: () => void,
+  password: string | undefined,
+  setPassword: (value: string) => void,
+  rePassword: string | undefined,
+  setRePassword: (value: string) => void,
+}
+function CreateAccountStep(props: CreateAccountStepProps) {
+  const translation = useTranslation()
+
+  return <DialogContainer isCloseOnClickOverlay={false}>
+    <div className="w-full justify-center items-center py-8 px-4 flex flex-col">
+      <div className="w-full max-w-[400px] mx-4 flex flex-col gap-y-8">
+        <div className="flex flex-col gap-y-2">
+          <p className="text-h4 text-center">{translation.t('Create account')} ?</p>
+          <p className="text-cBase">{translation.t('To start your journey, enter your password in the box below')}!</p>
+        </div>
+        <FormFieldPassword label="New password" value={props.password} onChange={props.setPassword}/>
+        <FormFieldPassword label="Re-enter password" value={props.rePassword} onChange={props.setRePassword}/>
+        <button
+          onClick={props.onClickNextStep}
+          className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+        >
+          <IconAddCircle />
+          {translation.t('Create account')}
+        </button>
+        <div className="flex w-full justify-center">
+          <button onClick={props.onClickPreviousStep}
+                  className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
+            <IconArrowLeft />
+            <span>{translation.t('Previous step')}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </DialogContainer>
 }

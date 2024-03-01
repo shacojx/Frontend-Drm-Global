@@ -8,6 +8,7 @@ type Props = {
   onChange: (value: string) => void
 } & Partial<{
   value: string,
+  label: string,
 }>
 
 export function FormFieldPassword(props: Props) {
@@ -33,7 +34,7 @@ export function FormFieldPassword(props: Props) {
   const isError = !isFocus && isChanged && (!props.value || !validateApiPassword(props.value))
   const statusClassName = isError ? 'border-danger bg-red-50' : ''
   return <div className="flex flex-col gap-2">
-    <p className="text-cBase font-bold">{translation.t('Password')}</p>
+    <p className="text-cBase font-bold">{translation.t(props.label || 'Password')}</p>
     <div className="relative">
       <input
         type={isDisplayPass ? 'text' : 'password'}
@@ -41,7 +42,6 @@ export function FormFieldPassword(props: Props) {
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        placeholder="Example@hotmail.com"
         className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
       />
       {isDisplayPass
