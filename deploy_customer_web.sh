@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ./web-app
 
 # Pull the latest changes from the git repository
 git pull
