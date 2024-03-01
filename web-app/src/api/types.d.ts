@@ -1,2 +1,2 @@
 type NationValue = 'USA'
-type CompanyTypeValue = 'LLC'
+type CompanyTypeValue = 'LLC' | 'PLC'

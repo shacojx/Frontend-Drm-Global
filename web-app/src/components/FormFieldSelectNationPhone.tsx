@@ -1,20 +1,10 @@
 import React from "react";
 import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+import { NATION_PHONE_INFOS } from "../constants/SelectionOptions";
 import { NationPhone } from "../services-business/api/generate-api-param/generatePhone";
 import { classNames } from "../services-ui/tailwindcss";
 import { IconCheck, IconAltArrowDown } from "./icons";
-
-
-type NationPhoneInfo = {
-  value: NationPhone,
-  label: string,
-  flag: JSX.Element,
-}
-
-export const NationPhoneInfos: NationPhoneInfo[] = [
-  {value: '+84',label: '+84' , flag: <div>VN</div>}
-]
 
 type Props = {
   onChange: (value: NationPhone) => void
@@ -32,7 +22,7 @@ export function FormFieldSelectNationPhone(props: Props) {
   }
 
   function findInfo(value: NationPhone | undefined) {
-    return NationPhoneInfos.find(info => info.value === value)
+    return NATION_PHONE_INFOS.find(info => info.value === value)
   }
 
   return <div>
@@ -44,7 +34,7 @@ export function FormFieldSelectNationPhone(props: Props) {
               <span className="flex items-center">
                 {findInfo(nationValue)?.flag}
                 <span className={"ml-3 block truncate " + (!nationValue ? 'text-gray-400' : 'text-cBase font-bold')}>
-                  {findInfo(nationValue)?.label || NationPhoneInfos[0].label}
+                  {findInfo(nationValue)?.label || NATION_PHONE_INFOS[0].label}
                 </span>
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
@@ -60,7 +50,7 @@ export function FormFieldSelectNationPhone(props: Props) {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {NationPhoneInfos.map((info) => (
+                {NATION_PHONE_INFOS.map((info) => (
                   <Listbox.Option
                     key={info.value}
                     className={({ active }) =>

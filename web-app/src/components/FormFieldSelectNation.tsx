@@ -1,12 +1,9 @@
 import React from "react";
 import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+import { NATION_INFOS } from "../constants/SelectionOptions";
 import { classNames } from "../services-ui/tailwindcss";
 import { IconCheck, IconAltArrowDown } from "./icons";
-
-const NationInfos: {value: NationValue, label: string}[] = [
-  {value: 'USA', label: 'United States'},
-]
 
 type Props = {
   onChange: (value: NationValue) => void
@@ -24,7 +21,7 @@ export function FormFieldSelectNation(props: Props) {
   }
 
   function findLabel(value: NationValue | undefined) {
-    return NationInfos.find(info => info.value === value)?.label
+    return NATION_INFOS.find(info => info.value === value)?.label
   }
 
   return <div>
@@ -49,7 +46,7 @@ export function FormFieldSelectNation(props: Props) {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {NationInfos.map((nationInfo) => (
+                {NATION_INFOS.map((nationInfo) => (
                   <Listbox.Option
                     key={nationInfo.value}
                     className={({ active }) =>

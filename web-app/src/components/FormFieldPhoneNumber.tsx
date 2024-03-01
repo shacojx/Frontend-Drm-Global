@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { NATION_PHONE_INFOS } from "../constants/SelectionOptions";
 import { useFormFieldBaseHandler } from "../hooks-ui/useFormFieldBaseHandler";
 import {
   extractPhone,
@@ -7,7 +8,7 @@ import {
   NationPhone,
   RNPhoneValue
 } from "../services-business/api/generate-api-param/generatePhone";
-import { FormFieldSelectNationPhone, NationPhoneInfos } from "./FormFieldSelectNationPhone";
+import { FormFieldSelectNationPhone } from "./FormFieldSelectNationPhone";
 
 type Props = {
   onChange: (value: RNPhoneValue) => void
@@ -28,7 +29,7 @@ export function FormFieldPhoneNumber(props: Props) {
   } = useFormFieldBaseHandler(handleChangePhoneInput)
 
   function handleChangePhoneInput(localPhone: string) {
-    const nationPhone = props.value ? extractPhone(props.value).nationPhone : NationPhoneInfos[0].value
+    const nationPhone = props.value ? extractPhone(props.value).nationPhone : NATION_PHONE_INFOS[0].value
     const phone = generatePhone(nationPhone, localPhone)
     props.onChange(phone)
   }
@@ -38,7 +39,7 @@ export function FormFieldPhoneNumber(props: Props) {
     const phone = generatePhone(newNationPhone, localPhone)
     props.onChange(phone)
   }
-  const nationPhone = props.value ? extractPhone(props.value).nationPhone : NationPhoneInfos[0].value
+  const nationPhone = props.value ? extractPhone(props.value).nationPhone : NATION_PHONE_INFOS[0].value
   const isError = !isFocus && isChanged && !props.value
   const statusClassName = isError ? 'border-danger bg-red-50' : ''
   return <div className="flex flex-col gap-2">
