@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FormFieldTextArea } from "../components/FormFieldArea";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { FormFieldSelect } from "../components/FormFieldSelect";
-import { IconArrowLeft } from "../components/icons";
-import { COMPANY_TYPE_INFOS, NATION_INFOS } from "../constants/SelectionOptions";
+import { FormFieldText } from "../components/FormFieldText";
+import { IconAddCircle, IconArrowLeft } from "../components/icons";
+import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "../constants/SelectionOptions";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
 import { RNPhoneValue } from "../services-business/api/generate-api-param/generatePhone";
 
@@ -13,20 +15,37 @@ type Props = {}
 export function RegisterPage(props: Props) {
   const translation = useTranslation()
   const [nation, setNation] = useState<NationValue>()
-  const [stepIndex, setStepIndex] = useState<number>(2) // TODO set init to 1
+  const [stepIndex, setStepIndex] = useState<number>(1)
+  // step 2
+  const [email, setEmail] = useState<string>()
+  const [phone, setPhone] = useState<RNPhoneValue>()
+  const [companyType, setCompanyType] = useState<CompanyTypeValue>()
+  // step 3
+  const [companyName, setCompanyName] = useState<string>()
+  const [entityEnding, setEntityEnding] = useState<EntityEnding>()
+  const [industry, setIndustry] = useState<Industry>()
+  const [website, setWebsite] = useState<string>()
+  const [companyDescription, setCompanyDescription] = useState<string>()
 
   const SelectNationStepIndex = 1
   const AccountInformationStepIndex = 2
+  const CompanyInformationStepIndex = 3
+  const FirstStep = SelectNationStepIndex
+  const LastStep = CompanyInformationStepIndex
 
   function handleChangeNation(nation: NationValue) {
     setNation(nation)
   }
 
   function handleClickNextStep() {
-    setStepIndex(index => index + 1)
+    if (stepIndex < LastStep) {
+      setStepIndex(index => index + 1)
+    }
   }
   function handleClickBackStep() {
-    setStepIndex(index => index - 1)
+    if (stepIndex > FirstStep) {
+      setStepIndex(index => index - 1)
+    }
   }
 
   return <PageLayoutOneForm>
@@ -47,35 +66,60 @@ export function RegisterPage(props: Props) {
       <AccountInformationStep
         onClickNextStep={handleClickNextStep}
         onClickPreviousStep={handleClickBackStep}
+        email={email}
+        phone={phone}
+        companyType={companyType}
+        setEmail={setEmail}
+        setPhone={setPhone}
+        setCompanyType={setCompanyType}
+      />
+    }
+    {stepIndex === CompanyInformationStepIndex &&
+      <CompanyInformationStep
+        onClickNextStep={handleClickNextStep}
+        onClickPreviousStep={handleClickBackStep}
+        companyName={companyName}
+        setCompanyName={setCompanyName}
+        entityEnding={entityEnding}
+        setEntityEnding={setEntityEnding}
+        industry={industry}
+        setIndustry={setIndustry}
+        website={website}
+        setWebsite={setWebsite}
+        companyDescription={companyDescription}
+        setCompanyDescription={setCompanyDescription}
       />
     }
   </PageLayoutOneForm>
 }
 
 type AccountInformationStepProps = {
-  onClickNextStep: () => void
-  onClickPreviousStep: () => void
+  onClickNextStep: () => void,
+  onClickPreviousStep: () => void,
+  email: string | undefined,
+  setEmail: (value: string) => void,
+  phone: RNPhoneValue | undefined,
+  setPhone: (value: RNPhoneValue) => void,
+  companyType: CompanyTypeValue | undefined,
+  setCompanyType: (value: CompanyTypeValue) => void,
 }
 function AccountInformationStep(props: AccountInformationStepProps) {
   const translation = useTranslation()
-  const [email, setEmail] = useState<string>()
-  const [phone, setPhone] = useState<RNPhoneValue>()
-  const [companyType, setCompanyType] = useState<CompanyTypeValue>()
 
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
       <p className="text-cLg font-bold">{translation.t('Account information')}</p>
       <div className="w-1/2 border-2 border-primary"></div>
     </div>
-    <FormFieldEmail isRequired value={email} onChange={setEmail} />
-    <FormFieldPhoneNumber value={phone} onChange={setPhone} />
+    <FormFieldEmail isRequired value={props.email} onChange={props.setEmail} />
+    <FormFieldPhoneNumber value={props.phone} onChange={props.setPhone} />
     <FormFieldSelect
       isRequired
       label={'Company Type'}
       placeholder={'LLC'}
-      value={companyType}
+      value={props.companyType}
       optionInfos={COMPANY_TYPE_INFOS}
-      onChange={setCompanyType}
+      onChange={props.setCompanyType}
     />
     <button
       onClick={props.onClickNextStep}
@@ -92,6 +136,57 @@ function AccountInformationStep(props: AccountInformationStepProps) {
   </div>
 }
 
-function CompanyInformationStep() {
+type CompanyInformationStepProps = {
+  onClickNextStep: () => void,
+  onClickPreviousStep: () => void,
+  companyName: string | undefined,
+  setCompanyName: (value: string) => void,
+  entityEnding: EntityEnding | undefined,
+  setEntityEnding: (value: EntityEnding) => void,
+  industry: Industry | undefined,
+  setIndustry: (value: Industry) => void,
+  website: string | undefined,
+  setWebsite: (value: string) => void,
+  companyDescription: string | undefined,
+  setCompanyDescription: (value: string) => void,
+}
+function CompanyInformationStep(props: CompanyInformationStepProps) {
+  const translation = useTranslation()
 
+  return <div className="flex flex-col gap-y-8">
+    <div className="flex flex-col w-fit gap-y-2">
+      <p className="text-cLg font-bold">{translation.t('Company information')}</p>
+      <div className="w-1/2 border-2 border-primary"></div>
+    </div>
+    <FormFieldText label="Company name" onChange={props.setCompanyName} placeholder="Input company name"/>
+    <FormFieldSelect
+      label={'Entity Ending'}
+      placeholder={'Choose ending'}
+      value={props.entityEnding}
+      optionInfos={ENTITY_ENDING_INFOS}
+      onChange={props.setEntityEnding}
+    />
+    <FormFieldSelect
+      label={'Industry'}
+      placeholder={'Choose industry'}
+      value={props.industry}
+      optionInfos={INDUSTRY_INFOS}
+      onChange={props.setIndustry}
+    />
+    <FormFieldText label="Website" onChange={props.setWebsite} placeholder="Company.com"/>
+    <FormFieldTextArea label="Company description" onChange={props.setWebsite} placeholder="Describe your company"/>
+    <button
+      onClick={props.onClickNextStep}
+      className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+    >
+      <IconAddCircle />
+      {translation.t('Create account')}
+    </button>
+    <div className="flex w-full justify-center">
+      <button onClick={props.onClickPreviousStep} className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
+        <IconArrowLeft/>
+        <span>{translation.t('Previous step')}</span>
+      </button>
+    </div>
+  </div>
 }

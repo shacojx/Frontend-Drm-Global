@@ -5,6 +5,7 @@ import { ReactComponent as IconEyesOpen } from '../assets/svgs/EyesOpen.svg';
 import { ReactComponent as SvgSpinner } from '../assets/svgs/Spinner.svg';
 import { ReactComponent as IconAltArrowDown } from '../assets/svgs/AltArrowDown.svg';
 import { ReactComponent as IconArrowLeft } from '../assets/svgs/ArrowLeft.svg';
+import { ReactComponent as IconAddCircle } from '../assets/svgs/AddCircle.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -17,5 +18,6 @@ export {
   IconEyesOpen,
   IconSpinner,
   IconAltArrowDown,
-  IconArrowLeft
+  IconArrowLeft,
+  IconAddCircle
 }
