@@ -7,6 +7,7 @@ type Props = {
   onChange: (value: string) => void
 } & Partial<{
   value: string,
+  isRequired: boolean,
 }>
 
 export function FormFieldEmail(props: Props) {
@@ -23,7 +24,10 @@ export function FormFieldEmail(props: Props) {
   const isError = !isFocus && isChanged && (!props.value || !validateApiEmail(props.value))
   const statusClassName = isError ? 'border-danger bg-red-50' : ''
   return <div className="flex flex-col gap-2">
-    <p className="text-cBase font-bold">{translation.t('Email address')}</p>
+    <p className="flex text-cBase font-bold gap-1">
+      <span>{translation.t('Email address')}</span>
+      {props.isRequired && <span className="text-danger">*</span>}
+    </p>
     <input
       type="email"
       value={props.value}

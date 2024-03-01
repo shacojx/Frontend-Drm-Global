@@ -10,10 +10,17 @@ export function HomePage(props: Props) {
     navigate('/login')
   }
 
+  function handleClickRegister() {
+    navigate('/register')
+  }
+
   return <div className="w-screen h-screen p-4 bg-cover flex flex-col">
-    <div className="flex flex-col items-center justify-center grow">
+    <div className="flex flex-col items-center justify-center grow gap-4">
       <button onClick={handleClickLogin}>
         Login
+      </button>
+      <button onClick={handleClickRegister}>
+        Register
       </button>
     </div>
     <FooterDefault/>

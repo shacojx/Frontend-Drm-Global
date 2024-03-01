@@ -66,7 +66,8 @@ export function LoginPage() {
     <FormFieldEmail value={email} onChange={handleChangeEmail}/>
     <FormFieldPassword value={password} onChange={handleChangePassword}/>
     <div className="flex justify-end">
-      <button onClick={handleClickForgotPassword} className="text-primary">{translation.t('Forgot your password')}?
+      <button onClick={handleClickForgotPassword} className="text-primary">
+        {translation.t('Forgot your password')}?
       </button>
     </div>
     <div className="flex flex-col gap-1 justify-center">
@@ -77,7 +78,8 @@ export function LoginPage() {
         <span>{translation.t('Log in')}</span>
         {status === 'requesting' && <IconSpinner/>}
       </button>
-      <button onClick={handleClickCreateNewAccount} className="text-gray-400 text-sm">{translation.t('New here')}?
+      <button onClick={handleClickCreateNewAccount} className="text-gray-400 text-sm">
+        {translation.t('New here')}?
       </button>
     </div>
     {status === 'error' &&

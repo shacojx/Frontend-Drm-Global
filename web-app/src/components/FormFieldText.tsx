@@ -26,7 +26,7 @@ export function FormFieldText(props: Props) {
   return <div className="flex flex-col gap-2">
     {!!props.label && <p className="text-cBase font-bold">{translation.t(props.label)}</p>}
     <input
-      type="email"
+      type="text"
       value={props.value}
       onChange={handleChange}
       onFocus={handleFocus}
