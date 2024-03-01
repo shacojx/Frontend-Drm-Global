@@ -19,7 +19,14 @@
   "Launch your new LLC in": "Launch your new LLC in",
   "Choose nation": "Choose nation",
   "Continue": "Continue",
+  "Next": "Next",
   "Previous step": "Previous step",
   "Account information": "Account information",
-  "Phone number": "Phone number"
+  "Phone number": "Phone number",
+  "USA": "USA",
+  "United States": "United States",
+  "LLC": "LLC",
+  "LLC (Limited Liability Company)": "LLC (Limited Liability Company)",
+  "PLC": "PLC",
+  "PLC (Private Limited Company)": "PLC (Private Limited Company)"
 }

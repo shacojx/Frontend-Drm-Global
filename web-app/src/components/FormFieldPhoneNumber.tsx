@@ -8,7 +8,7 @@ import {
   NationPhone,
   RNPhoneValue
 } from "../services-business/api/generate-api-param/generatePhone";
-import { FormFieldSelectNationPhone } from "./FormFieldSelectNationPhone";
+import { FormFieldSelect } from "./FormFieldSelect";
 
 type Props = {
   onChange: (value: RNPhoneValue) => void
@@ -29,7 +29,6 @@ export function FormFieldPhoneNumber(props: Props) {
   } = useFormFieldBaseHandler(handleChangePhoneInput)
 
   function handleChangePhoneInput(localPhone: string) {
-    const nationPhone = props.value ? extractPhone(props.value).nationPhone : NATION_PHONE_INFOS[0].value
     const phone = generatePhone(nationPhone, localPhone)
     props.onChange(phone)
   }
@@ -48,7 +47,12 @@ export function FormFieldPhoneNumber(props: Props) {
       <span className="text-danger">*</span>
     </p>
     <div className="flex gap-4">
-      <FormFieldSelectNationPhone value={nationPhone} onChange={handleChangeNationPhone} />
+      <FormFieldSelect
+        isRequired
+        value={nationPhone}
+        optionInfos={NATION_PHONE_INFOS}
+        onChange={handleChangeNationPhone}
+      />
       <input
         type="tel"
         onChange={handleChange}

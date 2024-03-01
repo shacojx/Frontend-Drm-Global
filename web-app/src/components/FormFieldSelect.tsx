@@ -1,44 +1,51 @@
 import React from "react";
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
-import { NATION_PHONE_INFOS } from "../constants/SelectionOptions";
-import { NationPhone } from "../services-business/api/generate-api-param/generatePhone";
+import { useTranslation } from "react-i18next";
 import { classNames } from "../services-ui/tailwindcss";
+import { OptionInfo } from "../types/common";
 import { IconCheck, IconAltArrowDown } from "./icons";
 
-type Props = {
-  onChange: (value: NationPhone) => void
+type Props<T extends React.Key> = {
+  onChange: (value: T) => void,
+  optionInfos: OptionInfo<T>[],
 } & Partial<{
-  value: NationPhone,
+  label: string,
+  value: T,
   placeholder: string,
+  isRequired: boolean,
 }>
 
-export function FormFieldSelectNationPhone(props: Props) {
-  const [nationValue, setNationValue] = useState<NationPhone | undefined>(props.value)
-
-  function onChangeOption(option: NationPhone) {
-    setNationValue(option)
+export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
+  const translation = useTranslation()
+  function onChangeOption(option: T) {
     props.onChange(option)
   }
 
-  function findInfo(value: NationPhone | undefined) {
-    return NATION_PHONE_INFOS.find(info => info.value === value)
+  function findOptionInfo(value: T | undefined) {
+    return props.optionInfos.find(info => info.value === value)
   }
 
   return <div>
     <Listbox onChange={onChangeOption}>
       {({ open }) => (
         <>
+          {!!props.label && <Listbox.Label className="flex text-cBase font-bold gap-1 mb-2">
+            <span>{translation.t(props.label)}</span>
+            {props.isRequired && <span className="text-danger">*</span>}
+          </Listbox.Label>}
           <div className="relative">
-            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+            <Listbox.Button
+              className="relative w-full min-h-10 cursor-default rounded-md py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            >
               <span className="flex items-center">
-                {findInfo(nationValue)?.flag}
-                <span className={"ml-3 block truncate " + (!nationValue ? 'text-gray-400' : 'text-cBase font-bold')}>
-                  {findInfo(nationValue)?.label || NATION_PHONE_INFOS[0].label}
+                {findOptionInfo(props.value)?.iconElement}
+                <span className={"ml-3 block truncate " + (!props.value ? 'text-gray-400' : 'text-cBase font-bold')}>
+                  {translation.t(findOptionInfo(props.value)?.label || props.placeholder || '')}
                 </span>
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                <IconAltArrowDown className="text-gray-400"/>
+                <IconAltArrowDown className="text-gray-400" />
               </span>
             </Listbox.Button>
 
@@ -50,24 +57,25 @@ export function FormFieldSelectNationPhone(props: Props) {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {NATION_PHONE_INFOS.map((info) => (
+                {props.optionInfos.map((option) => (
                   <Listbox.Option
-                    key={info.value}
+                    key={option.value}
                     className={({ active }) =>
                       classNames(
                         active ? 'bg-indigo-600 text-white' : 'text-gray-900',
                         'relative cursor-default select-none py-2 pl-3 pr-9'
                       )
                     }
-                    value={info.value}
+                    value={option.value}
                   >
                     {({ selected, active }) => (
                       <>
                         <div className="flex items-center">
+                          {findOptionInfo(props.value)?.iconElement}
                           <span
                             className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
                           >
-                            {info.label}
+                            {translation.t(option.label)}
                           </span>
                         </div>
 
