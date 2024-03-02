@@ -14,6 +14,8 @@ type Props<T extends React.Key> = {
   value: T,
   placeholder: string,
   isRequired: boolean,
+  isError: boolean,
+  errorMessage: string,
 }>
 
 export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
@@ -36,7 +38,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
           </Listbox.Label>}
           <div className="relative">
             <Listbox.Button
-              className="relative w-full min-h-10 cursor-default rounded-md py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              className={(!!props.isError ? 'border border-danger bg-red-100 ' : '') + "relative w-full min-h-10 cursor-default rounded-md py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"}
             >
               <span className="flex items-center">
                 {findOptionInfo(props.value)?.iconElement}
@@ -96,6 +98,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
               </Listbox.Options>
             </Transition>
           </div>
+          {!!props.errorMessage && <p>{translation.t(props.errorMessage)}</p>}
         </>
       )}
     </Listbox>

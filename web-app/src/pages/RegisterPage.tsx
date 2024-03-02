@@ -16,8 +16,9 @@ type Props = {}
 
 export function RegisterPage(props: Props) {
   const translation = useTranslation()
+  const [stepIndex, setStepIndex] = useState<number>(1)
   const [nation, setNation] = useState<NationValue>()
-  const [stepIndex, setStepIndex] = useState<number>(4)
+  const [isNationError, setIsNationError] = useState<boolean>()
   // step 2
   const [email, setEmail] = useState<string>()
   const [phone, setPhone] = useState<RNPhoneValue>()
@@ -41,9 +42,13 @@ export function RegisterPage(props: Props) {
 
   function handleChangeNation(nation: NationValue) {
     setNation(nation)
+    setIsNationError(false)
   }
 
   function handleClickNextStep() {
+    if (!validateAllFieldAtCurrentStep(stepIndex)) {
+      return
+    }
     if (stepIndex < LastStep) {
       setStepIndex(index => index + 1)
     }
@@ -51,6 +56,22 @@ export function RegisterPage(props: Props) {
   function handleClickBackStep() {
     if (stepIndex > FirstStep) {
       setStepIndex(index => index - 1)
+    }
+  }
+  function validateAllFieldAtCurrentStep(stepIndex: number) {
+    switch (stepIndex) {
+      case SelectNationStepIndex:
+        if (!nation) {
+          setIsNationError(true)
+          return false
+        }
+        return true
+      case AccountInformationStepIndex:
+        return true
+      case CompanyInformationStepIndex:
+        return true
+      case CreateAccountStepIndex:
+        return true
     }
   }
 
@@ -61,6 +82,7 @@ export function RegisterPage(props: Props) {
       value={nation}
       optionInfos={NATION_INFOS}
       onChange={handleChangeNation}
+      isError={isNationError}
     />
     {stepIndex === SelectNationStepIndex && <button
       onClick={handleClickNextStep}
