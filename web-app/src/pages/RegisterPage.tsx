@@ -9,6 +9,7 @@ import { FormFieldSelect } from "../components/FormFieldSelect";
 import { FormFieldText } from "../components/FormFieldText";
 import { IconAddCircle, IconArrowLeft } from "../components/icons";
 import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "../constants/SelectionOptions";
+import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
 import { RNPhoneValue } from "../services-business/api/generate-api-param/generatePhone";
 
@@ -46,32 +47,13 @@ export function RegisterPage(props: Props) {
   }
 
   function handleClickNextStep() {
-    if (!validateAllFieldAtCurrentStep(stepIndex)) {
-      return
-    }
     if (stepIndex < LastStep) {
-      setStepIndex(index => index + 1)
+      setStepIndex(stepIndex + 1)
     }
   }
   function handleClickBackStep() {
     if (stepIndex > FirstStep) {
-      setStepIndex(index => index - 1)
-    }
-  }
-  function validateAllFieldAtCurrentStep(stepIndex: number) {
-    switch (stepIndex) {
-      case SelectNationStepIndex:
-        if (!nation) {
-          setIsNationError(true)
-          return false
-        }
-        return true
-      case AccountInformationStepIndex:
-        return true
-      case CompanyInformationStepIndex:
-        return true
-      case CreateAccountStepIndex:
-        return true
+      setStepIndex(stepIndex - 1)
     }
   }
 
@@ -143,13 +125,20 @@ type AccountInformationStepProps = {
 }
 function AccountInformationStep(props: AccountInformationStepProps) {
   const translation = useTranslation()
+  const {validateCaller, validateAll} = useValidateCaller()
+
+  function handleClickNext() {
+    if (validateAll()) {
+      props.onClickNextStep()
+    }
+  }
 
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
       <p className="text-cLg font-bold">{translation.t('Account information')}</p>
       <div className="w-1/2 border-2 border-primary"></div>
     </div>
-    <FormFieldEmail isRequired value={props.email} onChange={props.setEmail} />
+    <FormFieldEmail id="accountEmail" isRequired value={props.email} onChange={props.setEmail} validateCaller={validateCaller} />
     <FormFieldPhoneNumber value={props.phone} onChange={props.setPhone} />
     <FormFieldSelect
       isRequired
@@ -160,7 +149,7 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       onChange={props.setCompanyType}
     />
     <button
-      onClick={props.onClickNextStep}
+      onClick={handleClickNext}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
     >
       {translation.t('Next')}

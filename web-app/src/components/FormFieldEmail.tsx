@@ -1,28 +1,34 @@
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useFormFieldBaseHandler } from "../hooks-ui/useFormFieldBaseHandler";
 import { validateApiEmail } from "../services-business/api/validateApiParam";
+import { FormFieldProps } from "../types/common";
 
-type Props = {
-  onChange: (value: string) => void
-} & Partial<{
-  value: string,
-  isRequired: boolean,
-}>
+type Props = FormFieldProps<string>
 
 export function FormFieldEmail(props: Props) {
+  const [shouldShowError, setShouldShowError] = useState<boolean>(false)
+
   const translation = useTranslation()
 
-  const {
-    isChanged,
-    isFocus,
-    handleChange,
-    handleFocus,
-    handleBlur
-  } = useFormFieldBaseHandler(props.onChange)
+  useEffect(() => {
+    function validateHook() {
+      const isValid = (!props.isRequired && !props.value)
+        || (!!props.value && validateApiEmail(props.value))
+      setShouldShowError(!isValid)
+      return isValid
+    }
 
-  const isError = !isFocus && isChanged && (!props.value || !validateApiEmail(props.value))
-  const statusClassName = isError ? 'border-danger bg-red-50' : ''
+    props.validateCaller[props.id] = validateHook
+  }, [props.isRequired, props.value]);
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const email = event.target.value
+    props.onChange(email)
+    setShouldShowError(!validateApiEmail(email))
+  }
+
+
+  const statusClassName = shouldShowError ? 'border-danger bg-red-50' : ''
   return <div className="flex flex-col gap-2">
     <p className="flex text-cBase font-bold gap-1">
       <span>{translation.t('Email address')}</span>
@@ -30,10 +36,9 @@ export function FormFieldEmail(props: Props) {
     </p>
     <input
       type="email"
-      value={props.value}
+      value={props.value || ''}
       onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
+      onFocus={setShouldShowError.bind(undefined, false)}
       placeholder="Example@hotmail.com"
       className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
     />

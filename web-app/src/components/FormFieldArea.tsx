@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { useFormFieldBaseHandler } from "../hooks-ui/useFormFieldBaseHandler";
 
 type Props = {
   onChange: (value: string) => void

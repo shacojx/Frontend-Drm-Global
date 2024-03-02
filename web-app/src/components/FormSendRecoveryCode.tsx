@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { callApiSendRecoveryCode } from "../api/account";
-import { validateApiEmail } from "../services-business/api/validateApiParam";
+import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { FormStatus } from "../types/common";
 import { FormFieldEmail } from "./FormFieldEmail";
 import { IconCheck, IconSpinner } from "./icons";
@@ -15,14 +15,14 @@ export function FormSendRecoveryCode(props: Props) {
   const [email,setEmail] = useState<string>('')
   const [emailFormStatus,setEmailFormStatus] = useState<FormStatus>('typing')
   const [canSendRecoveryCode, setCanSendRecoveryCode] = useState<boolean>(true)
+  const {validateCaller, validateAll} = useValidateCaller()
 
   function handleChangeEmail(email: string) {
     setEmail(email)
     setEmailFormStatus('typing')
   }
   async function handleClickSendRecoveryCode() {
-    const isValidEmail = !!email && validateApiEmail(email)
-    if (!isValidEmail) {
+    if (validateAll()) {
       setEmailFormStatus("error")
       return
     }
@@ -43,7 +43,7 @@ export function FormSendRecoveryCode(props: Props) {
 
   return <>
     <div className="relative">
-      <FormFieldEmail value={email} onChange={handleChangeEmail}/>
+      <FormFieldEmail id="email" isRequired value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
       {emailFormStatus === "success" && <IconCheck className="h-[18px] absolute top-[42px] right-[11px] text-success" />}
     </div>
     <div className="w-full flex flex-col gap-y-1">

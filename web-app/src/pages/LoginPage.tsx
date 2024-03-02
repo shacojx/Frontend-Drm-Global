@@ -5,8 +5,9 @@ import { ApiLoginParam, callApiLogin } from "../api/account";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
 import { IconSpinner } from "../components/icons";
+import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
-import { validateApiEmail, validateApiPassword } from "../services-business/api/validateApiParam";
+import { validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
 
@@ -17,7 +18,7 @@ export function LoginPage() {
   const [status,setStatus] = useState<FormStatus>('typing')
   const [email,setEmail] = useState<string>('')
   const [password,setPassword] = useState<string>('')
-
+  const {validateCaller, validateAll} = useValidateCaller()
   function handleChangeEmail(email: string) {
     setEmail(email)
     setStatus('typing')
@@ -31,7 +32,7 @@ export function LoginPage() {
     navigate(RoutePaths.resetPassword)
   }
   async function handleClickLogin() {
-    const isValidEmail = !!email && validateApiEmail(email)
+    const isValidEmail = validateAll()
     const isValidPassword = !!password && validateApiPassword(password)
     if (!isValidEmail || !isValidPassword) {
       setStatus("error")
@@ -63,7 +64,7 @@ export function LoginPage() {
       <p className="text-cXl text-gray-400">{translation.t('Welcome back')}! 👋</p>
       <p className="text-h4">{translation.t('Sign in to your account')}</p>
     </div>
-    <FormFieldEmail value={email} onChange={handleChangeEmail}/>
+    <FormFieldEmail id="email" isRequired value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
     <FormFieldPassword value={password} onChange={handleChangePassword}/>
     <div className="flex justify-end">
       <button onClick={handleClickForgotPassword} className="text-primary">
