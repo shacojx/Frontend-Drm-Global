@@ -2,32 +2,28 @@ import React from "react";
 import { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { useTranslation } from "react-i18next";
+import { useValidate } from "../hooks-ui/useValidateCaller";
 import { classNames } from "../services-ui/tailwindcss";
-import { OptionInfo } from "../types/common";
+import { FormFieldProps, OptionInfo } from "../types/common";
 import { IconCheck, IconAltArrowDown } from "./icons";
 
-type Props<T extends React.Key> = {
-  onChange: (value: T) => void,
+type Props<T extends React.Key> = FormFieldProps<T> & {
   optionInfos: OptionInfo<T>[],
-} & Partial<{
-  label: string,
-  value: T,
-  placeholder: string,
-  isRequired: boolean,
-  isError: boolean,
-  errorMessage: string,
-}>
+}
 
 export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
   const translation = useTranslation()
+  const [shouldShowError, setShouldShowError] = useValidate(props.id, props.isRequired, props.value, props.validateCaller)
   function onChangeOption(option: T) {
     props.onChange(option)
+    setShouldShowError(!option)
   }
 
   function findOptionInfo(value: T | undefined) {
     return props.optionInfos.find(info => info.value === value)
   }
 
+  const statusClassName = shouldShowError ? 'border border-danger bg-red-50' : 'bg-white'
   return <div>
     <Listbox onChange={onChangeOption}>
       {({ open }) => (
@@ -38,7 +34,8 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
           </Listbox.Label>}
           <div className="relative">
             <Listbox.Button
-              className={(!!props.isError ? 'border border-danger bg-red-100 ' : '') + "relative w-full min-h-10 cursor-default rounded-md py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"}
+              onFocus={setShouldShowError.bind(undefined, false)}
+              className={"relative w-full min-h-10 cursor-default rounded-md py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 " + statusClassName}
             >
               <span className="flex items-center">
                 {findOptionInfo(props.value)?.iconElement}

@@ -18,6 +18,7 @@ type Props = {}
 export function RegisterPage(props: Props) {
   const translation = useTranslation()
   const [stepIndex, setStepIndex] = useState<number>(1)
+  const {validateCaller: validateNationStepCaller, validateAll: validateNationStepAll} = useValidateCaller()
   const [nation, setNation] = useState<NationValue>()
   const [isNationError, setIsNationError] = useState<boolean>()
   // step 2
@@ -41,11 +42,6 @@ export function RegisterPage(props: Props) {
   const FirstStep = SelectNationStepIndex
   const LastStep = CreateAccountStepIndex
 
-  function handleChangeNation(nation: NationValue) {
-    setNation(nation)
-    setIsNationError(false)
-  }
-
   function handleClickNextStep() {
     if (stepIndex < LastStep) {
       setStepIndex(stepIndex + 1)
@@ -56,18 +52,30 @@ export function RegisterPage(props: Props) {
       setStepIndex(stepIndex - 1)
     }
   }
+  function handleChangeNation(nation: NationValue) {
+    setNation(nation)
+    setIsNationError(false)
+  }
+
+  function handleClickNextAtNation() {
+    if (validateNationStepAll()) {
+      handleClickNextStep()
+    }
+  }
 
   return <PageLayoutOneForm>
     <p className="text-h4 text-center">{translation.t('Launch your new LLC in')}</p>
     <FormFieldSelect
+      id={"nationSelect"}
+      isRequired
       placeholder={translation.t('Choose nation')}
       value={nation}
       optionInfos={NATION_INFOS}
       onChange={handleChangeNation}
-      isError={isNationError}
+      validateCaller={validateNationStepCaller}
     />
     {stepIndex === SelectNationStepIndex && <button
-      onClick={handleClickNextStep}
+      onClick={handleClickNextAtNation}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
     >
       {translation.t('Continue')}
@@ -139,14 +147,22 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       <div className="w-1/2 border-2 border-primary"></div>
     </div>
     <FormFieldEmail id="accountEmail" isRequired value={props.email} onChange={props.setEmail} validateCaller={validateCaller} />
-    <FormFieldPhoneNumber value={props.phone} onChange={props.setPhone} />
+    <FormFieldPhoneNumber
+      id={"phoneNumber"}
+      isRequired
+      value={props.phone}
+      onChange={props.setPhone}
+      validateCaller={validateCaller}
+    />
     <FormFieldSelect
+      id={"companySelect"}
       isRequired
       label={'Company Type'}
       placeholder={'LLC'}
       value={props.companyType}
       optionInfos={COMPANY_TYPE_INFOS}
       onChange={props.setCompanyType}
+      validateCaller={validateCaller}
     />
     <button
       onClick={handleClickNext}
@@ -179,31 +195,58 @@ type CompanyInformationStepProps = {
 }
 function CompanyInformationStep(props: CompanyInformationStepProps) {
   const translation = useTranslation()
-
+  const {validateCaller, validateAll} = useValidateCaller()
+  function handleClickNext() {
+    if (validateAll()) {
+      props.onClickNextStep()
+    }
+  }
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
       <p className="text-cLg font-bold">{translation.t('Company information')}</p>
       <div className="w-1/2 border-2 border-primary"></div>
     </div>
-    <FormFieldText label="Company name" onChange={props.setCompanyName} placeholder="Input company name"/>
+    <FormFieldText
+      id={"companyName"}
+      label="Company name"
+      onChange={props.setCompanyName}
+      placeholder="Input company name"
+      validateCaller={validateCaller}
+    />
     <FormFieldSelect
+      id={"entityEndingSelect"}
       label={'Entity Ending'}
       placeholder={'Choose ending'}
       value={props.entityEnding}
       optionInfos={ENTITY_ENDING_INFOS}
       onChange={props.setEntityEnding}
+      validateCaller={validateCaller}
     />
     <FormFieldSelect
+      id={"industrySelect"}
       label={'Industry'}
       placeholder={'Choose industry'}
       value={props.industry}
       optionInfos={INDUSTRY_INFOS}
       onChange={props.setIndustry}
+      validateCaller={validateCaller}
     />
-    <FormFieldText label="Website" onChange={props.setWebsite} placeholder="Company.com"/>
-    <FormFieldTextArea label="Company description" onChange={props.setWebsite} placeholder="Describe your company"/>
+    <FormFieldText
+      id={"website"}
+      label="Website"
+      onChange={props.setWebsite}
+      placeholder="Company.com"
+      validateCaller={validateCaller}
+    />
+    <FormFieldTextArea
+      id={"companyDescription"}
+      label="Company description"
+      onChange={props.setWebsite}
+      placeholder="Describe your company"
+      validateCaller={validateCaller}
+    />
     <button
-      onClick={props.onClickNextStep}
+      onClick={handleClickNext}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
     >
       <IconAddCircle />
@@ -228,6 +271,13 @@ type CreateAccountStepProps = {
 }
 function CreateAccountStep(props: CreateAccountStepProps) {
   const translation = useTranslation()
+  const {validateCaller, validateAll} = useValidateCaller()
+
+  function handleClickNext() {
+    if (validateAll()){
+      props.onClickNextStep()
+    }
+  }
 
   return <DialogContainer isCloseOnClickOverlay={false}>
     <div className="w-full justify-center items-center py-8 px-4 flex flex-col">
@@ -236,10 +286,10 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           <p className="text-h4 text-center">{translation.t('Create account')} ?</p>
           <p className="text-cBase">{translation.t('To start your journey, enter your password in the box below')}!</p>
         </div>
-        <FormFieldPassword label="New password" value={props.password} onChange={props.setPassword}/>
-        <FormFieldPassword label="Re-enter password" value={props.rePassword} onChange={props.setRePassword}/>
+        <FormFieldPassword id={"password"} isRequired value={props.password} onChange={props.setPassword} validateCaller={validateCaller} />
+        <FormFieldPassword id={"rePassword"} isRequired value={props.rePassword} onChange={props.setRePassword} validateCaller={validateCaller} />
         <button
-          onClick={props.onClickNextStep}
+          onClick={handleClickNext}
           className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
         >
           <IconAddCircle />

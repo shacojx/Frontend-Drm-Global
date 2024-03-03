@@ -39,7 +39,13 @@ export function FormValidateRecoveryCode(props: Props) {
   }
 
   return <>
-    <FormFieldText label="Recovery Code" value={recoveryCode} onChange={handleChangeRecoveryCode}/>
+    <FormFieldText
+      id={"recoveryCode"}
+      label="Recovery Code"
+      value={recoveryCode}
+      onChange={handleChangeRecoveryCode}
+      validateCaller={{}}
+    />
     <div className="w-full flex flex-col gap-y-1">
       <button
         className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"

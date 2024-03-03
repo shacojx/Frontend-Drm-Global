@@ -6,6 +6,7 @@ type OptionInfo<T extends React.Key > = {
   label: string,
   iconElement?: JSX.Element,
 }
+export type ValidateFunction<T> = (isRequired: FormFieldProps<T>['isRequired'], value: FormFieldProps<T>['value']) => boolean
 type ValidateHock = () => boolean
 type ValidateCaller = Record<string, ValidateHock>
 type FormFieldProps<T> = {
@@ -13,6 +14,9 @@ type FormFieldProps<T> = {
   validateCaller: ValidateCaller
   onChange: (value: T) => void,
 } & Partial<{
-  value: T,
+  label: string,
   isRequired: boolean,
+  placeholder: string,
+  value: T,
+  errorMessage: string,
 }>
