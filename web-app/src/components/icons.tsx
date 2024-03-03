@@ -9,6 +9,10 @@ import { ReactComponent as IconAddCircle } from '../assets/svgs/AddCircle.svg';
 import { ReactComponent as IconXCircle } from '../assets/svgs/XCircle.svg';
 import { ReactComponent as IconSuccess } from '../assets/svgs/SuccessIcon.svg';
 import { ReactComponent as IconCheckCircle } from '../assets/svgs/CheckCircleIcon.svg';
+import { ReactComponent as IconCollapse } from '../assets/svgs/CollapseIcon.svg';
+import { ReactComponent as IconAccountCircle } from '../assets/svgs/AccountCircleIcon.svg';
+import { ReactComponent as IconMyService } from '../assets/svgs/MyServiceIcon.svg';
+import { ReactComponent as IconService } from '../assets/svgs/ServiceIcon.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -26,4 +30,8 @@ export {
   IconXCircle,
   IconSuccess,
   IconCheckCircle,
+  IconCollapse,
+  IconAccountCircle,
+  IconMyService,
+  IconService,
 }

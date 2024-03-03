@@ -100,5 +100,9 @@
   "Try again": "Try again",
   "Password Changed": "Password Changed",
   "Your password has been changed successfully": "Your password has been changed successfully",
-  "Could not change password": "Could not change password"
+  "Could not change password": "Could not change password",
+  "OVERVIEW": "OVERVIEW",
+  "Services": "Services",
+  "My Services": "My Services",
+  "My Account": "My Account"
 }
