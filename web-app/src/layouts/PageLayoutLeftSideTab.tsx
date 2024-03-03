@@ -40,7 +40,7 @@ export function PageLayoutLeftSideTab(props: Props) {
         </div>
       </div>
       <div className={"w-full p-4"}>
-        <FooterVertical/>
+        {isFullTabSide && <FooterVertical/>}
       </div>
     </div>
     {props.children}
