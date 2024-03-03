@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { callApiSendRecoveryCode } from "../api/account";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
@@ -14,8 +14,17 @@ export function FormSendRecoveryCode(props: Props) {
   const translation = useTranslation()
   const [email,setEmail] = useState<string>('')
   const [emailFormStatus,setEmailFormStatus] = useState<FormStatus>('typing')
-  const [canSendRecoveryCode, setCanSendRecoveryCode] = useState<boolean>(true)
   const {validateCaller, validateAll} = useValidateCaller()
+  const MaxCountDown = 60
+  const [disableCountDown, setDisableCountDown] = useState<number>(0)
+
+  useEffect(() => {
+    if (disableCountDown > 0) {
+      setTimeout(() => {
+        setDisableCountDown(i => i >= 1 ? i - 1 : 0)
+      }, 1000)
+    }
+  }, [disableCountDown]);
 
   function handleChangeEmail(email: string) {
     setEmail(email)
@@ -31,14 +40,11 @@ export function FormSendRecoveryCode(props: Props) {
       await callApiSendRecoveryCode({email})
       props.onSendRecoveryCode(email)
       setEmailFormStatus('success')
+      setDisableCountDown(MaxCountDown)
     } catch (e) {
       setEmailFormStatus("failure")
       console.error(e)
     }
-    setCanSendRecoveryCode(false)
-    setTimeout(() => {
-      setCanSendRecoveryCode(true)
-    }, 60_000)
   }
 
   return <>
@@ -48,11 +54,11 @@ export function FormSendRecoveryCode(props: Props) {
     </div>
     <div className="w-full flex flex-col gap-y-1">
       <button
-        disabled={!canSendRecoveryCode}
-        className={"h-[52px] flex justify-center items-center gap-2 text-white font-semibold rounded-lg " + (canSendRecoveryCode ? "bg-primary" : "bg-primary_25")}
+        disabled={disableCountDown < 0}
+        className={"h-[52px] flex justify-center items-center gap-2 text-white font-semibold rounded-lg " + (disableCountDown <= 0 ? "bg-primary" : "bg-primary_25")}
         onClick={handleClickSendRecoveryCode}
       >
-        <span>{translation.t('Send recover code - 60s')}</span>
+        <span>{translation.t('Send recover code')}{disableCountDown ? ` - ${disableCountDown}s` : ''}</span>
         {emailFormStatus === 'requesting' && <IconSpinner/>}
       </button>
       {emailFormStatus === 'failure' &&

@@ -1,5 +1,4 @@
-import { ApiRegisterAccountParam } from "../../../api/account";
-import { CompanyTypeValue, EntityEnding, Industry, NationValue } from "../../../api/types";
+import { ApiRegisterAccountParam, CompanyTypeValue, EntityEnding, Industry, NationValue } from "../../../api/types";
 import { generateApiPhone, RNPhoneValue } from "./generatePhone";
 
 export function generateRegisterParam(

@@ -376,9 +376,24 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           <p className="text-h4 text-center">{translation.t('Create account')} ?</p>
           <p className="text-cBase">{translation.t('To start your journey, enter your password in the box below')}!</p>
         </div>
-        <FormFieldPassword id={"password"} isRequired value={props.password} onChange={props.setPassword} validateCaller={validateCaller} />
+        <FormFieldPassword
+          id={"password"}
+          label={"New password"}
+          isRequired
+          value={props.password}
+          onChange={props.setPassword}
+          validateCaller={validateCaller}
+        />
         <div className={"space-y-2"}>
-          <FormFieldPassword id={"rePassword"} isRequired value={props.rePassword} onChange={handleChangeRePassword} validateCaller={validateCaller} />
+          <FormFieldPassword
+            id={"rePassword"}
+            label={"Re-enter password"}
+            isRequired
+            value={props.rePassword}
+            onChange={handleChangeRePassword}
+            onEnter={handleClickNext}
+            validateCaller={validateCaller}
+          />
           {!isPasswordMatch && <p className={"text-danger"}>{translation.t("The entered passwords do not match")}!</p>}
         </div>
         <button

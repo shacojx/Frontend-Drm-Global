@@ -1,9 +1,12 @@
 import { callApi } from "../services-base/api";
 import { transformLoginResult } from "../services-business/api/transform-result/account";
 import {
+  ApiCheckRecoveryCode,
   ApiLoginParam,
-  ApiSendRecoveryCode, CompanyTypeValue, EntityEnding, Industry, LocalPhone, NationPhone, NationValue,
-  RawResultLogin,
+  ApiRegisterAccountParam, ApiResetPasswordParam,
+  ApiSendRecoveryCode,
+  RawResultCheckRecoveryCode,
+  RawResultLogin, RawResultRegisterAccount, RawResultResetPassword,
   RawResultSendRecoveryCode,
   TransformedResultLogin
 } from "./types";
@@ -18,37 +21,23 @@ export async function callApiLogin(body: ApiLoginParam): Promise<TransformedResu
 export async function callApiSendRecoveryCode(body: ApiSendRecoveryCode) {
   const path = 'api/user/forgotpass'
   const rawResult = await callApi<RawResultSendRecoveryCode>('POST', path, body)
-  return !!rawResult
+  return rawResult
 }
 
-export type ApiCheckRecoveryCode = {
-  "email": string,
-  "otp": string,
-}
-export type RawResultCheckRecoveryCode = {
-}
 export async function callApiCheckRecoveryCode(body: ApiCheckRecoveryCode) {
   const path = 'api/user/submitotp'
   const rawResult = await callApi<RawResultCheckRecoveryCode>('POST', path, body)
-  return !!rawResult
-}
-
-export type ApiRegisterAccountParam = {
-  "llcInNation": NationValue,
-  "email": string,
-  "phone": string,
-  "companyType": CompanyTypeValue,
-  "password": string,
-  "rePassword": string,
-  "companyName": string,
-  "entityEnding": EntityEnding,
-  "industry": Industry,
-  "website": string,
-  "companyDescription": string,
+  return rawResult
 }
 
 export async function callApiCreateAccount(body: ApiRegisterAccountParam) {
   const path = 'api/auth/signup'
-  const rawResult = await callApi<ApiRegisterAccountParam>('POST', path, body)
-  return rawResult as Omit<ApiRegisterAccountParam, 'password' | 'rePassword'>
+  const rawResult = await callApi<RawResultRegisterAccount>('POST', path, body)
+  return rawResult
+}
+
+export async function callApiResetPassword(body: ApiResetPasswordParam) {
+  const path = 'api/user/resetpass'
+  const rawResult = await callApi<RawResultResetPassword>('PUT', path, body)
+  return rawResult
 }

@@ -12,7 +12,7 @@
   "Enter the email address associated with your account": "Enter the email address associated with your account",
   "Recovery Code": "Recovery Code",
   "New here": "New here",
-  "Send recover code - 60s": "Send recover code - 60s",
+  "Send recover code": "Send recover code",
   "Change Password": "Change Password",
   "Incorrect email": "Incorrect email",
   "Incorrect recovery code or email": "Incorrect recovery code or email",
@@ -97,5 +97,8 @@
   "Failure!": "Failure!",
   "Could not create account": "Could not create account",
   "Back to Log in": "Back to Log in",
-  "Try again": "Try again"
+  "Try again": "Try again",
+  "Password Changed": "Password Changed",
+  "Your password has been changed successfully": "Your password has been changed successfully",
+  "Could not change password": "Could not change password"
 }

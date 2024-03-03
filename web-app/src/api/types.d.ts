@@ -7,12 +7,12 @@ export type Industry = string
 export type NationPhone = '+84'
 export type LocalPhone = string
 
-type ApiLoginParam = {
+export type ApiLoginParam = {
   username: string,
   password: string,
 }
-type UserRole = 'ROLE_USER'
-type RawResultLogin = {
+export type UserRole = 'ROLE_USER'
+export type RawResultLogin = {
   id: number,
   email: string,
   token: string,
@@ -21,11 +21,38 @@ type RawResultLogin = {
   username: string,
   roles: UserRole[],
 }
-type TransformedResultLogin = RawResultLogin
+export type TransformedResultLogin = RawResultLogin
 
 
 export type ApiSendRecoveryCode = {
   email: string
 }
-export type RawResultSendRecoveryCode = {
+export type RawResultSendRecoveryCode = {}
+
+export type ApiCheckRecoveryCode = {
+  "email": string,
+  "otp": string,
 }
+export type RawResultCheckRecoveryCode = string
+
+export type ApiRegisterAccountParam = {
+  "llcInNation": NationValue,
+  "email": string,
+  "phone": string,
+  "companyType": CompanyTypeValue,
+  "password": string,
+  "rePassword": string,
+  "companyName": string,
+  "entityEnding": EntityEnding,
+  "industry": Industry,
+  "website": string,
+  "companyDescription": string,
+}
+export type RawResultRegisterAccount = Omit<ApiRegisterAccountParam, 'password' | 'rePassword'>
+
+export type ApiResetPasswordParam = {
+  newPass: string,
+  reNewPass: string,
+  signature: string,
+}
+export type RawResultResetPassword = ""
