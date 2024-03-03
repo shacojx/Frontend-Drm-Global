@@ -37,16 +37,15 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
     const localPhone = event.target.value
     const phone = generatePhone(nationPhone, localPhone)
     props.onChange(phone)
-    setShouldShowError(validateRNPhone(props.isRequired, phone))
   }
 
   function handleChangeNationPhone(newNationPhone: NationPhone) {
     const localPhone = props.value ? extractPhone(props.value).localPhone : ''
     const phone = generatePhone(newNationPhone, localPhone)
     props.onChange(phone)
-    setShouldShowError(validateRNPhone(props.isRequired, phone))
   }
 
+  const isLocalPhoneValid = !props.isRequired || (!!props.value && !!extractPhone(props.value).localPhone)
   const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
   return <div className="flex flex-col gap-2">
     <p className="flex text-cBase font-bold gap-1">
@@ -67,6 +66,7 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
         value={localPhone}
         onChange={handleChangePhoneInput}
         onFocus={setShouldShowError.bind(undefined, false)}
+        onBlur={setShouldShowError.bind(undefined, !isLocalPhoneValid)}
         placeholder={props.placeholder}
         className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
       />

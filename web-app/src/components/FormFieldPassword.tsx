@@ -29,7 +29,6 @@ export function FormFieldPassword(props: FormFieldProps<string>) {
   function handleChangePassword(event: ChangeEvent<HTMLInputElement>) {
     const pass = event.target.value
     props.onChange(pass)
-    setShouldShowError(validatePassword(props.isRequired, pass))
   }
 
   function handleClickOpenIcon() {
@@ -49,6 +48,7 @@ export function FormFieldPassword(props: FormFieldProps<string>) {
         value={props.value}
         onChange={handleChangePassword}
         onFocus={setShouldShowError.bind(undefined, false)}
+        onBlur={setShouldShowError.bind(undefined, !validatePassword(props.isRequired, props.value))}
         className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
       />
       {isDisplayPass

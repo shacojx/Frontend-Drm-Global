@@ -1,27 +1,32 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { validateApiEmail } from "../services-business/api/validateApiParam";
-import { FormFieldProps } from "../types/common";
+import { useValidate } from "../hooks-ui/useValidateCaller";
+import { validateApiEmail, validateApiPassword } from "../services-business/api/validateApiParam";
+import { FormFieldProps, ValidateFunction } from "../types/common";
+
+const validateEmail: ValidateFunction<string> = function (isRequired, pass) {
+  if (!isRequired) {
+    return true
+  }
+  if (!pass) {
+    return false
+  }
+  return validateApiEmail(pass)
+}
 
 export function FormFieldEmail(props: FormFieldProps<string>) {
-  const [shouldShowError, setShouldShowError] = useState<boolean>(false)
-
   const translation = useTranslation()
-
-  useEffect(() => {
-    function validateHook() {
-      const isValid = (!props.isRequired && !props.value)
-        || (!!props.value && validateApiEmail(props.value))
-      setShouldShowError(!isValid)
-      return isValid
-    }
-    props.validateCaller[props.id] = validateHook
-  }, [props.isRequired, props.value]);
+  const [shouldShowError, setShouldShowError] = useValidate(
+    props.id,
+    props.isRequired,
+    props.value,
+    props.validateCaller,
+    validateEmail
+  )
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const email = event.target.value
     props.onChange(email)
-    setShouldShowError(!validateApiEmail(email))
   }
 
   const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
@@ -35,6 +40,7 @@ export function FormFieldEmail(props: FormFieldProps<string>) {
       value={props.value || ''}
       onChange={handleChange}
       onFocus={setShouldShowError.bind(undefined, false)}
+      onBlur={setShouldShowError.bind(undefined, !validateEmail(props.isRequired, props.value))}
       placeholder="Example@hotmail.com"
       className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
     />

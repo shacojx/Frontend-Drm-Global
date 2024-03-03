@@ -209,6 +209,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
     <FormFieldText
       id={"companyName"}
       label="Company name"
+      value={props.companyName}
       onChange={props.setCompanyName}
       placeholder="Input company name"
       validateCaller={validateCaller}
@@ -234,6 +235,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
     <FormFieldText
       id={"website"}
       label="Website"
+      value={props.website}
       onChange={props.setWebsite}
       placeholder="Company.com"
       validateCaller={validateCaller}
@@ -241,6 +243,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
     <FormFieldTextArea
       id={"companyDescription"}
       label="Company description"
+      value={props.companyDescription}
       onChange={props.setWebsite}
       placeholder="Describe your company"
       validateCaller={validateCaller}
