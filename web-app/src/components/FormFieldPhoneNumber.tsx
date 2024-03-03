@@ -1,11 +1,11 @@
 import React, { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { NationPhone } from "../api/types";
 import { NATION_PHONE_INFOS } from "../constants/SelectionOptions";
 import { useValidate } from "../hooks-ui/useValidateCaller";
 import {
   extractPhone,
   generatePhone,
-  NationPhone,
   RNPhoneValue
 } from "../services-business/api/generate-api-param/generatePhone";
 import { FormFieldProps } from "../types/common";

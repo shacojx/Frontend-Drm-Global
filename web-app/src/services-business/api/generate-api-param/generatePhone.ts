@@ -1,9 +1,10 @@
-export type NationPhone = '+84'
-export type LocalPhone = string
+import { LocalPhone, NationPhone } from "../../../api/types";
+
 type SplitCharacter = '_'
 export type RNPhoneValue = `${NationPhone}${SplitCharacter}${LocalPhone}`
 
-export function generateApiPhone(nationPhone: NationPhone, localPhone: LocalPhone) {
+export function generateApiPhone(rnPhone: RNPhoneValue) {
+  const {nationPhone, localPhone} = extractPhone(rnPhone)
   return `${nationPhone}${localPhone}`
 }
 

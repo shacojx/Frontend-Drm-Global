@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { callApiCreateAccount } from "../api/account";
+import { CompanyTypeValue, EntityEnding, Industry, NationValue } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import {
   DialogFailureFullscreen,

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
-import { ApiLoginParam, callApiLogin } from "../api/account";
+import { callApiLogin } from "../api/account";
+import { ApiLoginParam } from "../api/types";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
 import { IconSpinner } from "../components/icons";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
 import { validateApiPassword } from "../services-business/api/validateApiParam";
@@ -19,6 +21,7 @@ export function LoginPage() {
   const [email,setEmail] = useState<string>('')
   const [password,setPassword] = useState<string>('')
   const {validateCaller, validateAll} = useValidateCaller()
+  const {saveAuthUser} = useContext(AuthContext)
   function handleChangeEmail(email: string) {
     setEmail(email)
     setStatus('typing')
@@ -46,9 +49,7 @@ export function LoginPage() {
     try {
       const result = await callApiLogin(param)
       setStatus('success')
-      // TODO: save user info
-      console.log(result)
-
+      saveAuthUser(result)
       navigate(RoutePaths.home)
     } catch (e) {
       setStatus("failure")

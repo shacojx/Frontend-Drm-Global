@@ -1,4 +1,4 @@
-import { NationPhone } from "../services-business/api/generate-api-param/generatePhone";
+import { CompanyTypeValue, EntityEnding, Industry, NationPhone, NationValue } from "../api/types";
 import { OptionInfo } from "../types/common";
 
 export const NATION_INFOS: OptionInfo<NationValue>[] = [

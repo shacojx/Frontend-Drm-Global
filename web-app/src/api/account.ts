@@ -1,31 +1,20 @@
 import { callApi } from "../services-base/api";
 import { transformLoginResult } from "../services-business/api/transform-result/account";
+import {
+  ApiLoginParam,
+  ApiSendRecoveryCode, CompanyTypeValue, EntityEnding, Industry, LocalPhone, NationPhone, NationValue,
+  RawResultLogin,
+  RawResultSendRecoveryCode,
+  TransformedResultLogin
+} from "./types";
 
-export type ApiLoginParam = {
-  username: string,
-  password: string,
-}
-export type RawResultLogin = {
-  id: number,
-  email: string,
-  refreshToken: string,
-  roles: string[],
-  token: string,
-  type: string,
-  username: string,
-}
-export type TransformedResultLogin = RawResultLogin
-export async function callApiLogin(body: ApiLoginParam) {
+
+export async function callApiLogin(body: ApiLoginParam): Promise<TransformedResultLogin> {
   const path = 'api/auth/signin'
   const rawResult = await callApi<RawResultLogin>('POST', path, body)
   return transformLoginResult(rawResult)
 }
 
-export type ApiSendRecoveryCode = {
-  email: string
-}
-export type RawResultSendRecoveryCode = {
-}
 export async function callApiSendRecoveryCode(body: ApiSendRecoveryCode) {
   const path = 'api/user/forgotpass'
   const rawResult = await callApi<RawResultSendRecoveryCode>('POST', path, body)
@@ -45,15 +34,15 @@ export async function callApiCheckRecoveryCode(body: ApiCheckRecoveryCode) {
 }
 
 export type ApiRegisterAccountParam = {
+  "llcInNation": NationValue,
   "email": string,
+  "phone": string,
+  "companyType": CompanyTypeValue,
   "password": string,
   "rePassword": string,
-  "llcInNation": string,
-  "phone": string,
-  "companyType": string,
   "companyName": string,
-  "entityEnding": string,
-  "industry": string,
+  "entityEnding": EntityEnding,
+  "industry": Industry,
   "website": string,
   "companyDescription": string,
 }

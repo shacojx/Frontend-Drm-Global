@@ -1,4 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
+import { PropsWithChildren, useContext } from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContextProvider";
 import { HomePage } from "./HomePage";
 import { LoginPage } from "./LoginPage";
 import { RegisterPage } from "./RegisterPage";
@@ -11,10 +13,20 @@ export const RoutePaths = {
   register: '/register',
 }
 
+function RequiredLoggedIn(props: PropsWithChildren) {
+  const {user} = useContext(AuthContext)
+  if (!user) {
+    return <Navigate to="/login" />
+  } else {
+    return <>{props.children}</>
+  }
+}
+
+
 export const router = createBrowserRouter([
   {
     path: RoutePaths.home,
-    element: <HomePage />,
+    element: <RequiredLoggedIn><HomePage /></RequiredLoggedIn>,
   },
   {
     path: RoutePaths.login,
@@ -28,4 +40,8 @@ export const router = createBrowserRouter([
     path: RoutePaths.register,
     element: <RegisterPage />
   },
+  {
+    path: '*',
+    element: <RequiredLoggedIn><HomePage /></RequiredLoggedIn>
+  }
 ])
