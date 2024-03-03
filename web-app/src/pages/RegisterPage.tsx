@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { callApiCreateAccount } from "../api/account";
 import { DialogContainer } from "../components/DialogContainer";
+import {
+  DialogFailureFullscreen,
+  DialogRequestingFullscreen,
+  DialogSuccessFullscreen
+} from "../components/DialogFormStatusFullscreen";
 import { FormFieldTextArea } from "../components/FormFieldArea";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
@@ -12,11 +19,13 @@ import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS }
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
 import { RNPhoneValue } from "../services-business/api/generate-api-param/generatePhone";
+import { generateRegisterParam } from "../services-business/api/generate-api-param/generateRegisterParam";
+import { FormStatus } from "../types/common";
+import { RoutePaths } from "./router";
 
-type Props = {}
-
-export function RegisterPage(props: Props) {
+export function RegisterPage() {
   const translation = useTranslation()
+  const navigate = useNavigate()
   const [stepIndex, setStepIndex] = useState<number>(1)
   const {validateCaller: validateNationStepCaller, validateAll: validateNationStepAll} = useValidateCaller()
   const [nation, setNation] = useState<NationValue>()
@@ -32,8 +41,11 @@ export function RegisterPage(props: Props) {
   const [website, setWebsite] = useState<string>()
   const [companyDescription, setCompanyDescription] = useState<string>()
   // step 4
-  const [password,setPassword] = useState<string>('')
-  const [rePassword,setRePassword] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [rePassword, setRePassword] = useState<string>('')
+
+  const [status, setStatus] = useState<FormStatus>('typing')
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
 
   const SelectNationStepIndex = 1
   const AccountInformationStepIndex = 2
@@ -61,6 +73,42 @@ export function RegisterPage(props: Props) {
     if (validateNationStepAll()) {
       handleClickNextStep()
     }
+  }
+
+  async function handleClickCreateAccount() {
+    if (!nation || !email || !phone || !companyType || !password || !rePassword) {
+      return
+    }
+    setStatus('requesting')
+    const createAccountParam = generateRegisterParam(
+      nation,
+      email,
+      phone,
+      companyType,
+      password,
+      rePassword,
+      companyName,
+      entityEnding,
+      industry,
+      website,
+      companyDescription,
+    )
+    try {
+      const result = await callApiCreateAccount(createAccountParam)
+      setStatus('success')
+      // TODO: save user info
+      console.log(result)
+
+      // TODO: redirect to other page
+    } catch (e: unknown) {
+      setStatus("failure")
+      setErrorMessage(e?.toString())
+      console.error(e)
+    }
+  }
+
+  function handleClickBackToLogin() {
+    navigate(RoutePaths.login)
   }
 
   return <PageLayoutOneForm>
@@ -110,12 +158,44 @@ export function RegisterPage(props: Props) {
     }
     {stepIndex === CreateAccountStepIndex &&
       <CreateAccountStep
-        onClickNextStep={handleClickNextStep}
+        onClickCreateAccount={handleClickCreateAccount}
         onClickPreviousStep={handleClickBackStep}
         password={password}
         setPassword={setPassword}
         rePassword={rePassword}
         setRePassword={setRePassword}
+      />
+    }
+    {status === 'requesting' &&
+      <DialogRequestingFullscreen />
+    }
+    {status === 'success' &&
+      <DialogSuccessFullscreen
+        title={"Account successfully created"}
+        subTitle={"Start your journey with us!"}
+        actionElement={
+          <button
+            onClick={handleClickBackToLogin}
+            className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+          >
+            <IconArrowLeft className={"text-white"}/>
+            <span>{translation.t('Back to Log in')}</span>
+          </button>
+        }
+      />
+    }
+    {status === 'failure' &&
+      <DialogFailureFullscreen
+        title="Failure!"
+        subTitle={errorMessage || "Could not create account"}
+        actionElement={
+          <button
+            onClick={handleClickCreateAccount}
+            className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+          >
+            <span>{translation.t('Try again')}</span>
+          </button>
+        }
       />
     }
   </PageLayoutOneForm>
@@ -265,7 +345,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
 }
 
 type CreateAccountStepProps = {
-  onClickNextStep: () => void,
+  onClickCreateAccount: () => void,
   onClickPreviousStep: () => void,
   password: string | undefined,
   setPassword: (value: string) => void,
@@ -275,11 +355,21 @@ type CreateAccountStepProps = {
 function CreateAccountStep(props: CreateAccountStepProps) {
   const translation = useTranslation()
   const {validateCaller, validateAll} = useValidateCaller()
+  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true)
 
   function handleClickNext() {
-    if (validateAll()){
-      props.onClickNextStep()
+    if (props.password !== props.rePassword) {
+      setIsPasswordMatch(false)
+      return
     }
+    if (validateAll()){
+      props.onClickCreateAccount()
+    }
+  }
+
+  function handleChangeRePassword(rePass: string) {
+    props.setRePassword(rePass)
+    setIsPasswordMatch(true)
   }
 
   return <DialogContainer isCloseOnClickOverlay={false}>
@@ -290,7 +380,10 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           <p className="text-cBase">{translation.t('To start your journey, enter your password in the box below')}!</p>
         </div>
         <FormFieldPassword id={"password"} isRequired value={props.password} onChange={props.setPassword} validateCaller={validateCaller} />
-        <FormFieldPassword id={"rePassword"} isRequired value={props.rePassword} onChange={props.setRePassword} validateCaller={validateCaller} />
+        <div className={"space-y-2"}>
+          <FormFieldPassword id={"rePassword"} isRequired value={props.rePassword} onChange={handleChangeRePassword} validateCaller={validateCaller} />
+          {!isPasswordMatch && <p className={"text-danger"}>{translation.t("The entered passwords do not match")}!</p>}
+        </div>
         <button
           onClick={handleClickNext}
           className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"

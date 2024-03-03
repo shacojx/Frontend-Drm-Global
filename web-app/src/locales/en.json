@@ -90,5 +90,12 @@
   "Create account": "Create account",
   "To start your journey, enter your password in the box below": "To start your journey, enter your password in the box below",
   "New password": "New password",
-  "Re-enter password": "Re-enter password"
+  "Re-enter password": "Re-enter password",
+  "The entered passwords do not match": "The entered passwords do not match",
+  "Account successfully created": "Account successfully created",
+  "Start your journey with us!": "Start your journey with us!",
+  "Failure!": "Failure!",
+  "Could not create account": "Could not create account",
+  "Back to Log in": "Back to Log in",
+  "Try again": "Try again"
 }

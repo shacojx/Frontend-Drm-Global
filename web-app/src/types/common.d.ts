@@ -1,6 +1,6 @@
 import React from "react";
 
-export type FormStatus = 'typing' | 'requesting' | 'success' | 'error'
+export type FormStatus = 'typing' | 'requesting' | 'success' | 'failure'
 type OptionInfo<T extends React.Key > = {
   value: T,
   label: string,

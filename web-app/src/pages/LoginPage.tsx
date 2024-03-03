@@ -35,7 +35,7 @@ export function LoginPage() {
     const isValidEmail = validateAll()
     const isValidPassword = !!password && validateApiPassword(password)
     if (!isValidEmail || !isValidPassword) {
-      setStatus("error")
+      setStatus("failure")
       return
     }
     setStatus("requesting")
@@ -44,14 +44,14 @@ export function LoginPage() {
       password: password
     }
     try {
-      setStatus('success')
       const result = await callApiLogin(param)
+      setStatus('success')
       // TODO: save user info
       console.log(result)
 
       // TODO: redirect to other page
     } catch (e) {
-      setStatus("error")
+      setStatus("failure")
       console.error(e)
     }
   }
@@ -83,7 +83,7 @@ export function LoginPage() {
         {translation.t('New here')}?
       </button>
     </div>
-    {status === 'error' &&
+    {status === 'failure' &&
       <div className="text-center text-danger">
         <p>{translation.t('Incorrect username or password')}.</p>
         <p>{translation.t('Please try again')}</p>

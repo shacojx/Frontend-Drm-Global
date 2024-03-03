@@ -21,7 +21,7 @@ export function FormValidateRecoveryCode(props: Props) {
   }
   async function handleClickChangePassword() {
     if (!recoveryCode) {
-      setRecoveryFormStatus("error")
+      setRecoveryFormStatus("failure")
       return
     }
     setRecoveryFormStatus("requesting")
@@ -33,7 +33,7 @@ export function FormValidateRecoveryCode(props: Props) {
       await callApiCheckRecoveryCode(param)
       setRecoveryFormStatus('success')
     } catch (e) {
-      setRecoveryFormStatus("error")
+      setRecoveryFormStatus("failure")
       console.error(e)
     }
   }
@@ -54,7 +54,7 @@ export function FormValidateRecoveryCode(props: Props) {
         <span>{translation.t('Change Password')}</span>
         {recoveryFormStatus === 'requesting' && <IconSpinner/>}
       </button>
-      {recoveryFormStatus === 'error' &&
+      {recoveryFormStatus === 'failure' &&
         <div className="text-center text-danger">
           <p>{translation.t('Incorrect recovery code or email')}.</p>
         </div>

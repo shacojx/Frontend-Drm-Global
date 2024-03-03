@@ -43,3 +43,23 @@ export async function callApiCheckRecoveryCode(body: ApiCheckRecoveryCode) {
   const rawResult = await callApi<RawResultCheckRecoveryCode>('POST', path, body)
   return !!rawResult
 }
+
+export type ApiRegisterAccountParam = {
+  "email": string,
+  "password": string,
+  "rePassword": string,
+  "llcInNation": string,
+  "phone": string,
+  "companyType": string,
+  "companyName": string,
+  "entityEnding": string,
+  "industry": string,
+  "website": string,
+  "companyDescription": string,
+}
+
+export async function callApiCreateAccount(body: ApiRegisterAccountParam) {
+  const path = 'api/auth/signup'
+  const rawResult = await callApi<ApiRegisterAccountParam>('POST', path, body)
+  return rawResult as Omit<ApiRegisterAccountParam, 'password' | 'rePassword'>
+}

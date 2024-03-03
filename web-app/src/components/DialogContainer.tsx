@@ -2,7 +2,11 @@
 import { Fragment, PropsWithChildren, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
-type Props = PropsWithChildren<Partial<{ isCloseOnClickOverlay: boolean }>>
+type Props = PropsWithChildren<Partial<{
+  isCloseOnClickOverlay: boolean,
+  isTransparent: boolean,
+  isAutoSize: boolean,
+}>>
 export function DialogContainer(props: Props) {
   const [open, setOpen] = useState(true)
 
@@ -35,7 +39,11 @@ export function DialogContainer(props: Props) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className={
+                (props.isTransparent ? "" : "shadow-xl bg-white ")
+                + (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ")
+                + "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
+              }>
                 {props.children}
               </Dialog.Panel>
             </Transition.Child>

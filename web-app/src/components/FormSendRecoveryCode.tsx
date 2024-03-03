@@ -23,7 +23,7 @@ export function FormSendRecoveryCode(props: Props) {
   }
   async function handleClickSendRecoveryCode() {
     if (validateAll()) {
-      setEmailFormStatus("error")
+      setEmailFormStatus("failure")
       return
     }
     setEmailFormStatus("requesting")
@@ -32,7 +32,7 @@ export function FormSendRecoveryCode(props: Props) {
       props.onSendRecoveryCode(email)
       setEmailFormStatus('success')
     } catch (e) {
-      setEmailFormStatus("error")
+      setEmailFormStatus("failure")
       console.error(e)
     }
     setCanSendRecoveryCode(false)
@@ -55,7 +55,7 @@ export function FormSendRecoveryCode(props: Props) {
         <span>{translation.t('Send recover code - 60s')}</span>
         {emailFormStatus === 'requesting' && <IconSpinner/>}
       </button>
-      {emailFormStatus === 'error' &&
+      {emailFormStatus === 'failure' &&
         <div className="text-center text-danger">
           <p>{translation.t('Incorrect email')}.</p>
         </div>
