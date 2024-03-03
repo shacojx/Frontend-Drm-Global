@@ -22,7 +22,7 @@ export function FormSendRecoveryCode(props: Props) {
     setEmailFormStatus('typing')
   }
   async function handleClickSendRecoveryCode() {
-    if (validateAll()) {
+    if (!validateAll()) {
       setEmailFormStatus("failure")
       return
     }

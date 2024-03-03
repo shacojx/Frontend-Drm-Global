@@ -49,7 +49,7 @@ export function LoginPage() {
       // TODO: save user info
       console.log(result)
 
-      // TODO: redirect to other page
+      navigate(RoutePaths.home)
     } catch (e) {
       setStatus("failure")
       console.error(e)
@@ -65,7 +65,14 @@ export function LoginPage() {
       <p className="text-h4">{translation.t('Sign in to your account')}</p>
     </div>
     <FormFieldEmail id="email" isRequired value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
-    <FormFieldPassword id={"password"} isRequired value={password} onChange={handleChangePassword} validateCaller={validateCaller} />
+    <FormFieldPassword
+      id={"password"}
+      isRequired
+      value={password}
+      onChange={handleChangePassword}
+      onEnter={handleClickLogin}
+      validateCaller={validateCaller}
+    />
     <div className="flex justify-end">
       <button onClick={handleClickForgotPassword} className="text-primary">
         {translation.t('Forgot your password')}?

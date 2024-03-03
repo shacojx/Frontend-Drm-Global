@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, EventHandler, KeyboardEventHandler, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useValidate } from "../hooks-ui/useValidateCaller";
 import { validateApiPassword } from "../services-business/api/validateApiParam";
@@ -15,7 +15,11 @@ const validatePassword: ValidateFunction<string> = function (isRequired, pass) {
   return validateApiPassword(pass)
 }
 
-export function FormFieldPassword(props: FormFieldProps<string>) {
+type Props = FormFieldProps<string> & Partial<{
+  onEnter: () => void
+}>
+
+export function FormFieldPassword(props: Props) {
   const translation = useTranslation()
   const [isDisplayPass, setIsDisplayPass] = useState<boolean>(false)
   const [shouldShowError, setShouldShowError] = useValidate<string>(
@@ -39,6 +43,13 @@ export function FormFieldPassword(props: FormFieldProps<string>) {
     setIsDisplayPass(false)
   }
 
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = function (event) {
+    if (event.key === 'Enter') {
+      props.onEnter?.()
+    }
+  }
+
+
   const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
   return <div className="flex flex-col gap-2">
     <p className="text-cBase font-bold">{translation.t(props.label || 'Password')}</p>
@@ -49,6 +60,7 @@ export function FormFieldPassword(props: FormFieldProps<string>) {
         onChange={handleChangePassword}
         onFocus={setShouldShowError.bind(undefined, false)}
         onBlur={setShouldShowError.bind(undefined, !validatePassword(props.isRequired, props.value))}
+        onKeyDown={props.onEnter && handleKeyDown}
         className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
       />
       {isDisplayPass
