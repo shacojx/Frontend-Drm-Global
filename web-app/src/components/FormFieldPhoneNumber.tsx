@@ -19,7 +19,8 @@ function validateRNPhone(isRequired: boolean | undefined, phone: RNPhoneValue | 
     return false
   }
   const {nationPhone, localPhone} = extractPhone(phone)
-  return !!nationPhone && !!localPhone
+  const regValidateLocalPhone = /^[0-9]$/;
+  return !!nationPhone && !!localPhone && regValidateLocalPhone.test(localPhone)
 }
 
 export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
