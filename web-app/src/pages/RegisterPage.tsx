@@ -97,10 +97,6 @@ export function RegisterPage() {
     try {
       const result = await callApiCreateAccount(createAccountParam)
       setStatus('success')
-      // TODO: save user info
-      console.log(result)
-
-      // TODO: redirect to other page
     } catch (e: unknown) {
       setStatus("failure")
       setErrorMessage(e?.toString())
