@@ -35,6 +35,8 @@ export function RegisterPage() {
   const [email, setEmail] = useState<string>()
   const [phone, setPhone] = useState<RNPhoneValue>()
   const [companyType, setCompanyType] = useState<CompanyTypeValue>()
+  const [firstName, setFirstName] = useState<string>()
+  const [lastName, setLastName] = useState<string>()
   // step 3
   const [companyName, setCompanyName] = useState<string>()
   const [entityEnding, setEntityEnding] = useState<EntityEnding>()
@@ -77,7 +79,7 @@ export function RegisterPage() {
   }
 
   async function handleClickCreateAccount() {
-    if (!nation || !email || !phone || !companyType || !password || !rePassword) {
+    if (!nation || !email || !phone || !companyType || !password || !rePassword || !firstName || !lastName) {
       return
     }
     setStatus('requesting')
@@ -86,6 +88,8 @@ export function RegisterPage() {
       email,
       phone,
       companyType,
+      firstName,
+      lastName,
       password,
       rePassword,
       companyName,
@@ -132,9 +136,13 @@ export function RegisterPage() {
         email={email}
         phone={phone}
         companyType={companyType}
+        firstName={firstName}
+        lastName={lastName}
         setEmail={setEmail}
         setPhone={setPhone}
         setCompanyType={setCompanyType}
+        setFirstName={setFirstName}
+        setLastName={setLastName}
       />
     }
     {stepIndex >= CompanyInformationStepIndex &&
@@ -203,6 +211,10 @@ type AccountInformationStepProps = {
   onClickPreviousStep: () => void,
   email: string | undefined,
   setEmail: (value: string) => void,
+  firstName: string | undefined,
+  setFirstName: (value: string) => void,
+  lastName: string | undefined,
+  setLastName: (value: string) => void,
   phone: RNPhoneValue | undefined,
   setPhone: (value: RNPhoneValue) => void,
   companyType: CompanyTypeValue | undefined,
@@ -226,6 +238,7 @@ function AccountInformationStep(props: AccountInformationStepProps) {
     <FormFieldEmail id="accountEmail" isRequired value={props.email} onChange={props.setEmail} validateCaller={validateCaller} />
     <FormFieldPhoneNumber
       id={"phoneNumber"}
+      placeholder={"Input number"}
       isRequired
       value={props.phone}
       onChange={props.setPhone}
@@ -241,6 +254,26 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       onChange={props.setCompanyType}
       validateCaller={validateCaller}
     />
+    <div className={"w-full flex gap-4"}>
+      <FormFieldText
+        id={"FirstName"}
+        isRequired
+        label="First Name"
+        value={props.firstName}
+        onChange={props.setFirstName}
+        placeholder="Enter first name"
+        validateCaller={validateCaller}
+      />
+      <FormFieldText
+        id={"LastName"}
+        isRequired
+        label="Last Name"
+        value={props.lastName}
+        onChange={props.setLastName}
+        placeholder="Enter last name"
+        validateCaller={validateCaller}
+      />
+    </div>
     <button
       onClick={handleClickNext}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
@@ -278,6 +311,8 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       props.onClickNextStep()
     }
   }
+
+  const hasAnyValue = !!(props.companyName || props.entityEnding || props.industry || props.website || props.companyDescription)
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
       <p className="text-cLg font-bold">{translation.t('Company information')}</p>
@@ -321,7 +356,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       id={"companyDescription"}
       label="Company description"
       value={props.companyDescription}
-      onChange={props.setWebsite}
+      onChange={props.setCompanyDescription}
       placeholder="Describe your company"
       validateCaller={validateCaller}
     />
@@ -329,8 +364,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       onClick={handleClickNext}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
     >
-      <IconAddCircle />
-      {translation.t('Create account')}
+      {!hasAnyValue ? `${translation.t('Skip')} & ` : ''}{translation.t('Create account')}
     </button>
     <div className="flex w-full justify-center">
       <button onClick={props.onClickPreviousStep} className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">

@@ -40,6 +40,8 @@ export type ApiRegisterAccountParam = {
   "email": string,
   "phone": string,
   "companyType": CompanyTypeValue,
+  firstName: string,
+  lastName: string,
   "password": string,
   "rePassword": string,
   "companyName": string,
