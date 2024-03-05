@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { IconAccountCircle, IconMyService, IconService } from "../components/icons";
+import { useRef, useState } from "react";
+import { IconAccountCircle, IconMyService, IconService, IconThreeLines } from "../components/icons";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
 
 type Props = {}
@@ -21,15 +21,17 @@ const TabOptions: TabOption[] = [
 
 export function HomePage(props: Props) {
   const [tabSelected, setTabSelected] = useState<TabOption["label"]>(TabOptions[2].label)
+  const openCallerRef = useRef<()=>void>(()=>{})
 
   function handleChangeTab(tabLabel: TabOption["label"]) {
     setTabSelected(tabLabel)
   }
 
   return <div className="w-screen h-screen bg-cover flex flex-col">
-    <PageLayoutLeftSideTab tabOptions={TabOptions} onClickTabOption={handleChangeTab} tabSelected={tabSelected}>
+    <PageLayoutLeftSideTab tabOptions={TabOptions} onClickTabOption={handleChangeTab} tabSelected={tabSelected} openCallerRef={openCallerRef}>
       <div className={"w-full h-full flex flex-col"}>
-        <div className={"w-full h-20 bg-white flex justify-end items-center px-6"}>
+        <div className={"w-full h-20 bg-white flex justify-between sm:justify-end items-center px-6"}>
+          <IconThreeLines className={"block sm:hidden w-5 h-5 cursor-pointer"} onClick={openCallerRef.current} />
           <IconAccountCircle className={"w-10 h-10"}/>
         </div>
         <div className={"p-3 w-full h-full"}>
