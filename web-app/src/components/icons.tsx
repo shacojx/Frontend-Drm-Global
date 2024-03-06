@@ -17,6 +17,7 @@ import { ReactComponent as IconX } from '../assets/svgs/X.svg';
 import { ReactComponent as IconThreeLines } from '../assets/svgs/ThreeLines.svg';
 import { ReactComponent as IconUser } from '../assets/svgs/UserIcon.svg';
 import { ReactComponent as IconLogout } from '../assets/svgs/LogoutIcon.svg';
+import { ReactComponent as IconSelectCard } from '../assets/svgs/SelectCardIcon.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -42,4 +43,5 @@ export {
   IconThreeLines,
   IconUser,
   IconLogout,
+  IconSelectCard,
 }

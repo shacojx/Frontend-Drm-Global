@@ -27,7 +27,7 @@ export function PageLayoutLeftSideTab(props: Props) {
 
   return <div className={"w-full h-full bg-surface flex flex-row"}>
     {isOpenOnSmallScreen && <div className={"sm:none bg-black absolute z-50 top-0 left-0 w-screen h-screen opacity-40"}></div>}
-    <div className={"absolute top-0 left-0 z-50 sm:flex sm:relative sm:w-full max-w-[260px] h-screen bg-white flex-col justify-between " + (isOpenOnSmallScreen ? "w-full flex" : "w-0 hidden")}>
+    <div className={"absolute top-0 left-0 z-50 sm:flex sm:relative sm:w-full max-w-[260px] min-h-screen h-full bg-white flex-col justify-between " + (isOpenOnSmallScreen ? "w-full flex" : "w-0 hidden")}>
       <div className={"grow"}>
         <div
           className={"flex flex-row items-center mx-4 mt-6 justify-between sm:justify-start"}>

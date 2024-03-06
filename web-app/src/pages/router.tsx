@@ -18,24 +18,28 @@ export const RoutePaths = {
 function RequiredLoggedIn(props: PropsWithChildren) {
   const navigate = useNavigate()
   const [isRequesting, setIsRequesting] = useState<boolean>(true)
-  const {saveAuthUser} = useContext(AuthContext)
+  const {user , saveAuthUser} = useContext(AuthContext)
   useEffect(() => {
-    fetchUserProfile()
-      .then(user => {
-        if (!user) {
+    if (user) {
+      return setIsRequesting(false)
+    } else {
+      fetchUserProfile()
+        .then(user => {
+          if (!user) {
+            navigate(RoutePaths.login)
+          } else {
+            saveAuthUser(user)
+            setIsRequesting(false)
+          }
+        })
+        .catch(() => {
           navigate(RoutePaths.login)
-        } else {
-          saveAuthUser(user)
+        })
+        .finally(() => {
           setIsRequesting(false)
-        }
-      })
-      .catch(() => {
-        navigate(RoutePaths.login)
-      })
-      .finally(() => {
-        setIsRequesting(false)
-      })
-  }, []);
+        })
+    }
+  }, [user]);
 
   if (isRequesting) {
     return <DialogRequestingFullscreen  />
