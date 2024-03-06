@@ -19,7 +19,7 @@ function validateRNPhone(isRequired: boolean | undefined, phone: RNPhoneValue | 
     return false
   }
   const {nationPhone, localPhone} = extractPhone(phone)
-  const regValidateLocalPhone = /^[0-9]/;
+  const regValidateLocalPhone = /^\d+$/;
   return !!nationPhone && !!localPhone && regValidateLocalPhone.test(localPhone)
 }
 
@@ -46,7 +46,6 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
     props.onChange(phone)
   }
 
-  const isLocalPhoneValid = !props.isRequired || (!!props.value && !!extractPhone(props.value).localPhone)
   const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
   return <div className="flex flex-col gap-2">
     <p className="flex text-cBase font-bold gap-1">
@@ -67,7 +66,7 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
         value={localPhone}
         onChange={handleChangePhoneInput}
         onFocus={setShouldShowError.bind(undefined, false)}
-        onBlur={setShouldShowError.bind(undefined, !isLocalPhoneValid)}
+        onBlur={setShouldShowError.bind(undefined, !validateRNPhone(props.isRequired, props.value))}
         placeholder={props.placeholder}
         className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
       />
