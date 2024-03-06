@@ -12,7 +12,6 @@ export function PageLayoutOneForm(props: PropsWithChildren<{}>) {
   }
   return <div
     className="w-screen h-screen p-4 bg-cover flex flex-col"
-    style={{backgroundImage: `url(${background})`}}
   >
     <div className="flex flex-col items-center justify-center grow my-4">
       <div className="w-full max-w-[400px]">
