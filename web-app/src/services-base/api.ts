@@ -51,7 +51,7 @@ export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: 
   return responseObject.data
 }
 
-async function getAccessTokenInfo() {
+export async function getAccessTokenInfo() {
   const accessTokenInfo = getToken('accessToken')
   if (accessTokenInfo) {
     return accessTokenInfo
@@ -72,7 +72,7 @@ function getAuthorizationString(accessTokenInfo: TokenInfo) {
 
 type ResultOfRefreshToken = {
   accessToken: string,
-  type: string,
+  tokenType: string,
   refreshToken: string,
 }
 async function refreshToken(refreshToken: string) {
@@ -90,9 +90,9 @@ async function refreshToken(refreshToken: string) {
     throw new Error('Failed to refresh token');
   }
 
-  const result = await response.json() as ResultOfRefreshToken;
-  saveToken(result.accessToken, result.type, result.refreshToken)
-  return generateTokenInfo(result.accessToken, result.type, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
+  const result = (await response.json()).data as ResultOfRefreshToken;
+  saveToken(result.accessToken, result.tokenType, result.refreshToken)
+  return generateTokenInfo(result.accessToken, result.tokenType, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
 }
 
 type TokenName = 'accessToken' | 'refreshToken'
@@ -112,23 +112,23 @@ function generateTokenInfo(token: string, type: string, expiredTime: number) {
   }
 }
 
-function saveToken(accessToken: string, accessTokenType: string, refreshToken: string) {
+export function saveToken(accessToken: string, accessTokenType: string, refreshToken: string) {
   const accessTokenInfo = generateTokenInfo(accessToken, accessTokenType, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
   const refreshTokenInfo = generateTokenInfo(refreshToken, '', EXPIRATION_TIME_FOR_REFRESH_TOKEN)
   sessionStorage.setItem("accessToken", JSON.stringify(accessTokenInfo))
   localStorage.setItem("refreshToken", JSON.stringify(refreshTokenInfo)) // should save refresh token to cookie
 }
 
-function getToken(tokenName: TokenName) {
-  const accessTokenInfo = tokenName === "accessToken"
+export function getToken(tokenName: TokenName) {
+  const tokenInfoString = tokenName === "accessToken"
     ? sessionStorage.getItem('accessToken')
     : localStorage.getItem('refreshToken')
-  if (!accessTokenInfo) {
+  if (!tokenInfoString) {
     return null
   }
-  const tokenInfo = JSON.parse(accessTokenInfo) as TokenInfo
+  const tokenInfo = JSON.parse(tokenInfoString) as TokenInfo
   const now = new Date().valueOf()
-  if (tokenInfo.expiredAt > now) {
+  if (+tokenInfo.expiredAt < now) {
     return null
   }
   return tokenInfo

@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
-import { callApiLogin } from "../api/account";
+import { callApiGetUserProfile, callApiLogin } from "../api/account";
 import { ApiLoginParam } from "../api/types";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
@@ -9,6 +9,7 @@ import { IconSpinner } from "../components/icons";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
+import { saveAuthInfo } from "../services-business/api/authentication";
 import { validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
@@ -48,8 +49,10 @@ export function LoginPage() {
     }
     try {
       const result = await callApiLogin(param)
+      saveAuthInfo(result)
       setStatus('success')
-      saveAuthUser(result)
+      const user = await callApiGetUserProfile()
+      saveAuthUser(user)
       navigate(RoutePaths.home)
     } catch (e) {
       setStatus("failure")

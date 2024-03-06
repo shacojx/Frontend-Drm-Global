@@ -58,7 +58,7 @@ export function HomePage() {
           {isShowAccountPopup && <div ref={ref} className={"absolute top-3 right-8 flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3"}>
             <p className={"text-gray-700 text-cLg"}>{user?.email}</p>
             <IconAccountCircle className={"w-14 h-14 mb-3"}/>
-            <p className={"font-bold text-cLg"}>{translation.t("Hello")} {user?.username},</p>
+            <p className={"font-bold text-cLg"}>{translation.t("Hello")} {user?.lastName},</p>
             <div onClick={handleClickAccountOnPopUp} className={"flex flex-row gap-2 w-[290px] bg-white px-6 py-4 mt-3 rounded-xl cursor-pointer"}>
               <IconUser />
               <span className={"font-bold"}>{translation.t("Account")}</span>

@@ -58,3 +58,12 @@ export type ApiResetPasswordParam = {
   signature: string,
 }
 export type RawResultResetPassword = ""
+
+export type RawResultGetUserProfile = {
+  "llcInNation": NationValue,
+  "email": string,
+  "phone": string,
+  "companyType": CompanyTypeValue,
+  firstName: string,
+  lastName: string,
+}

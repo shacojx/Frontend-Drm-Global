@@ -6,6 +6,7 @@ import {
   ApiRegisterAccountParam, ApiResetPasswordParam,
   ApiSendRecoveryCode,
   RawResultCheckRecoveryCode,
+  RawResultGetUserProfile,
   RawResultLogin, RawResultRegisterAccount, RawResultResetPassword,
   RawResultSendRecoveryCode,
   TransformedResultLogin
@@ -39,5 +40,11 @@ export async function callApiCreateAccount(body: ApiRegisterAccountParam) {
 export async function callApiResetPassword(body: ApiResetPasswordParam) {
   const path = 'api/user/resetpass'
   const rawResult = await callApi<RawResultResetPassword>('PUT', path, body)
+  return rawResult
+}
+
+export async function callApiGetUserProfile() {
+  const path = 'api/user/profile'
+  const rawResult = await callApi<RawResultGetUserProfile>('GET', path, {}, true)
   return rawResult
 }

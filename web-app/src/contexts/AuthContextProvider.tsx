@@ -1,7 +1,7 @@
 import React, { createContext, PropsWithChildren, useState } from 'react';
-import { TransformedResultLogin } from "../api/types";
+import { RawResultGetUserProfile } from "../api/types";
 
-type AuthUser = TransformedResultLogin
+type AuthUser = RawResultGetUserProfile
 
 type AuthContextValue = {
   user: AuthUser | null,
@@ -18,8 +18,8 @@ export const AuthContext = createContext<AuthContextValue>({
 export function AuthContextProvider(props: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  function saveAuthUser(userData: AuthUser) {
-    setUser(userData);
+  function saveAuthUser(authUserData: AuthUser) {
+    setUser(authUserData);
   }
 
   function removeAuthUser() {
