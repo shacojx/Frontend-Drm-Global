@@ -99,7 +99,7 @@ export function RegisterPage() {
       companyDescription,
     )
     try {
-      const result = await callApiCreateAccount(createAccountParam)
+      await callApiCreateAccount(createAccountParam)
       setStatus('success')
     } catch (e: unknown) {
       setStatus("failure")

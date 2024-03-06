@@ -30,5 +30,5 @@ export function AuthContextProvider(props: PropsWithChildren) {
     <AuthContext.Provider value={{ user, saveAuthUser, removeAuthUser }}>
       {props.children}
     </AuthContext.Provider>
-  );
-};
+  )
+}

@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 import { useNavigate } from "react-router-dom";
-import background from "../assets/images/background.png";
 import logo_full from "../assets/images/logo_full.png";
 import { FooterDefault } from "../components/base/footers";
 import { RoutePaths } from "../pages/router";

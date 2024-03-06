@@ -13,8 +13,6 @@ import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
 
-type Props = {}
-
 type HomeTab = 'services' | 'myServices' | 'myAccount'
 const TabOptionGroup: Record<HomeTab, TabOption> = {
   services: {
