@@ -4,18 +4,19 @@ import logo_full from "../assets/images/logo_full.png";
 import { FooterVertical } from "../components/base/footers";
 import { IconX } from "../components/icons";
 
-export type TabOption = {
+export type TabOption<TabId> = {
   iconElement: JSX.Element,
+  id: TabId,
   label: string
 }
 
-type Props = PropsWithChildren<{
-  tabSelected: TabOption["label"],
-  tabOptions: TabOption[],
-  onClickTabOption: (tabLabel: TabOption["label"]) => void,
+type Props<T> = PropsWithChildren<{
+  tabIdSelected: TabOption<T>["id"],
+  tabOptions: TabOption<T>[],
+  onClickTabOption: (tabLabel: TabOption<T>["id"]) => void,
   openCallerRef:  MutableRefObject<() => void>
 }>
-export function PageLayoutLeftSideTab(props: Props) {
+export function PageLayoutLeftSideTab<T extends string>(props: Props<T>) {
   const translation = useTranslation()
   const [isOpenOnSmallScreen, setIsOpenOnSmallScreen] = useState<boolean>(false)
 
@@ -39,8 +40,9 @@ export function PageLayoutLeftSideTab(props: Props) {
         <div className={"mt-10"}>
           <p className={"ml-4 h-10 uppercase font-bold"}>{translation.t('OVERVIEW')}</p>
           {props.tabOptions.map(tabOption => <TabOption
-            key={tabOption.label}
-            isOpen={tabOption.label === props.tabSelected}
+            key={tabOption.id}
+            id={tabOption.id}
+            isOpen={tabOption.id === props.tabIdSelected}
             iconElement={tabOption.iconElement}
             label={tabOption.label}
             onClick={props.onClickTabOption}
@@ -56,16 +58,16 @@ export function PageLayoutLeftSideTab(props: Props) {
   </div>
 }
 
-type TabOptionProps = TabOption & {
+type TabOptionProps<T> = TabOption<T> & {
   isOpen: boolean,
-  onClick: (tabLabel: TabOption["label"]) => void,
+  onClick: (tabLabel: TabOption<T>["id"]) => void,
 }
 
-function TabOption(props: TabOptionProps) {
+function TabOption<T>(props: TabOptionProps<T>) {
   const translation = useTranslation()
   return <div className={"h-[50px] px-4 py-2"}>
     <div
-      onClick={props.onClick.bind(undefined, props.label)}
+      onClick={props.onClick.bind(undefined, props.id)}
       className={"w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " + (props.isOpen ? "bg-gray-300" : "")}
     >
       <div className={"hidden sm:block"}>

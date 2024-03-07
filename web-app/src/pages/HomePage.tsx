@@ -6,7 +6,7 @@ import { callCreateOrder } from "../api/payment";
 import { ApiCreateOrderParam, Currency } from "../api/types";
 import {
   IconAccountCircle,
-  IconLogout,
+  IconLogout, IconMyCompany,
   IconMyService,
   IconSelectCard,
   IconService,
@@ -21,19 +21,23 @@ import { removeAuthInfo } from "../services-business/api/authentication";
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 import { RoutePaths } from "./router";
 
-type HomeTab = 'services' | 'myServices' | 'myAccount'
-const TabOptionGroup: Record<HomeTab, TabOption> = {
+type HomeTab = 'services' | 'myServices' | 'myCompany'
+type HomeContent = HomeTab | 'myAccount'
+const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
   services: {
     iconElement: <IconService/>,
+    id: "services",
     label: 'Services',
   },
   myServices: {
+    id: "myServices",
     iconElement: <IconMyService/>,
     label: 'My Services',
   },
-  myAccount: {
-    iconElement: <IconAccountCircle/>,
-    label: 'My Account',
+  myCompany: {
+    id: "myCompany",
+    iconElement: <IconMyCompany />,
+    label: 'My Company',
   },
 }
 
@@ -41,17 +45,17 @@ export function HomePage() {
   const translation = useTranslation()
   const navigate = useNavigate()
   const {user, removeAuthUser} = useContext(AuthContext)
-  const [tabSelected, setTabSelected] = useState<TabOption["label"]>(TabOptionGroup.services.label)
+  const [homeContent, setHomeContent] = useState<HomeContent>(TabOptionGroup.services.id)
   const openCallerRef = useRef<()=>void>(()=>{})
   const [isShowAccountPopup, setIsShowAccountPopup] = useState<boolean>(false)
   const ref = useClickOutside(() => setIsShowAccountPopup(false));
 
-  function handleChangeTab(tabLabel: TabOption["label"]) {
-    setTabSelected(tabLabel)
+  function handleChangeTab(tabLabel: HomeContent) {
+    setHomeContent(tabLabel)
   }
 
   function handleClickAccountOnPopUp() {
-    handleChangeTab(TabOptionGroup.myAccount.label)
+    handleChangeTab('myAccount')
     setIsShowAccountPopup(false)
   }
 
@@ -63,7 +67,7 @@ export function HomePage() {
   }
 
   return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
-    <PageLayoutLeftSideTab tabOptions={Object.values(TabOptionGroup)} onClickTabOption={handleChangeTab} tabSelected={tabSelected} openCallerRef={openCallerRef}>
+    <PageLayoutLeftSideTab tabOptions={Object.values(TabOptionGroup)} onClickTabOption={handleChangeTab} tabIdSelected={homeContent} openCallerRef={openCallerRef}>
       <div className={"w-full h-full flex flex-col"}>
         <div className={"w-full h-20 shrink-0 bg-white flex justify-between sm:justify-end items-center px-6"}>
           <IconThreeLines className={"block sm:hidden w-5 h-5 cursor-pointer"} onClick={openCallerRef.current} />
@@ -83,9 +87,10 @@ export function HomePage() {
               <span className={"font-bold"}>{translation.t("Log out")}</span>
             </div>
           </div>}
-          {tabSelected === TabOptionGroup.services.label && <ServicesContent />}
-          {tabSelected === TabOptionGroup.myServices.label && <MyServicesContent />}
-          {tabSelected === TabOptionGroup.myAccount.label && <MyAccountContent />}
+          {homeContent === TabOptionGroup.services.id && <ServicesContent />}
+          {homeContent === TabOptionGroup.myServices.id && <MyServicesContent />}
+          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent />}
+          {homeContent === 'myAccount' && <MyAccountContent />}
         </div>
       </div>
     </PageLayoutLeftSideTab>
@@ -290,6 +295,12 @@ function ServiceCard(props: ServiceCardProps) {
 function MyServicesContent() {
   return <>
     <div>My Services Content</div>
+  </>
+}
+
+function MyCompanyContent() {
+  return <>
+    <div>My Company Content</div>
   </>
 }
 
