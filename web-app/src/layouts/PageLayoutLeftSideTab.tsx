@@ -27,13 +27,13 @@ export function PageLayoutLeftSideTab<T extends string>(props: Props<T>) {
 
 
   return <div className={"w-full h-full bg-surface flex flex-row"}>
-    {isOpenOnSmallScreen && <div className={"sm:none bg-black absolute z-50 top-0 left-0 w-screen h-screen opacity-40"}></div>}
-    <div className={"absolute top-0 left-0 z-50 sm:flex sm:relative sm:w-full max-w-[260px] min-h-screen h-full bg-white flex-col justify-between " + (isOpenOnSmallScreen ? "w-full flex" : "w-0 hidden")}>
+    {isOpenOnSmallScreen && <div className={"lg:none bg-black absolute z-50 top-0 left-0 w-screen h-screen opacity-40"}></div>}
+    <div className={"absolute top-0 left-0 z-50 lg:flex lg:relative lg:w-full max-w-[260px] min-h-screen h-full bg-white flex-col justify-between " + (isOpenOnSmallScreen ? "w-full flex" : "w-0 hidden")}>
       <div className={"grow"}>
         <div
-          className={"flex flex-row items-center mx-4 mt-6 justify-between sm:justify-start"}>
+          className={"flex flex-row items-center mx-4 mt-6 justify-between lg:justify-start"}>
           <img className="w-[150px] cursor-pointer" src={logo_full} alt="logo_full"/>
-          <div className={"block sm:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}>
+          <div className={"block lg:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}>
             <IconX onClick={setIsOpenOnSmallScreen.bind(undefined, false)} />
           </div>
         </div>
@@ -70,7 +70,7 @@ function TabOption<T>(props: TabOptionProps<T>) {
       onClick={props.onClick.bind(undefined, props.id)}
       className={"w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " + (props.isOpen ? "bg-gray-300" : "")}
     >
-      <div className={"hidden sm:block"}>
+      <div className={"hidden lg:block"}>
         {props.iconElement}
       </div>
       <span>{translation.t(props.label)}</span>

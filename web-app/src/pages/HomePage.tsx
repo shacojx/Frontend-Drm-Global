@@ -81,8 +81,8 @@ export function HomePage() {
   return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
     <PageLayoutLeftSideTab tabOptions={Object.values(TabOptionGroup)} onClickTabOption={handleChangeTab} tabIdSelected={homeContent} openCallerRef={openCallerRef}>
       <div className={"w-full h-full flex flex-col"}>
-        <div className={"w-full h-20 shrink-0 bg-white flex justify-between sm:justify-end items-center px-6"}>
-          <IconThreeLines className={"block sm:hidden w-5 h-5 cursor-pointer"} onClick={openCallerRef.current} />
+        <div className={"w-full h-20 shrink-0 bg-white flex justify-between lg:justify-end items-center px-6"}>
+          <IconThreeLines className={"block lg:hidden w-5 h-5 cursor-pointer"} onClick={openCallerRef.current} />
           <IconAccountCircle className={"w-10 h-10 cursor-pointer"} onClick={setIsShowAccountPopup.bind(undefined, value => !value)} />
         </div>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
@@ -330,14 +330,14 @@ function MyAccountContent() {
       </div>
       <p className={"font-bold text-h4 my-3"}>{translation.t("Hello")} {user?.lastName}</p>
       <p>{translation.t('Manage your information, privacy and security so DRMGlobal works for you')}.</p>
-      <div className={"flex flex-col sm:flex-row mt-8 gap-2 grow w-full"}>
-        <div className={"border rounded-lg grow w-1/3 p-6 flex flex-col"}>
+      <div className={"flex flex-col md:flex-row mt-8 gap-2 grow w-full"}>
+        <div className={"border rounded-lg grow md:w-1/3 p-6 flex flex-col"}>
           <GeneralInformationForm />
         </div>
-        <div className={"border rounded-lg grow w-1/3 p-6 flex flex-col"}>
+        <div className={"border rounded-lg grow md:w-1/3 p-6 flex flex-col"}>
           <ChangePasswordForm/>
         </div>
-        <div className={"border rounded-lg grow w-1/3 p-6 flex flex-col"}>
+        <div className={"border rounded-lg grow md:w-1/3 p-6 flex flex-col"}>
           <KYCBox/>
         </div>
       </div>
