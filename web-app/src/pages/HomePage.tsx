@@ -13,6 +13,7 @@ import {
   IconThreeLines,
   IconUser
 } from "../components/icons";
+import { NATION_INFOS } from "../constants/SelectionOptions";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
@@ -61,7 +62,7 @@ export function HomePage() {
     removeAuthUser()
   }
 
-  return <div className="w-screen h-screen bg-cover flex flex-col">
+  return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
     <PageLayoutLeftSideTab tabOptions={Object.values(TabOptionGroup)} onClickTabOption={handleChangeTab} tabSelected={tabSelected} openCallerRef={openCallerRef}>
       <div className={"w-full h-full flex flex-col"}>
         <div className={"w-full h-20 shrink-0 bg-white flex justify-between sm:justify-end items-center px-6"}>
@@ -171,15 +172,20 @@ function ServicesContent() {
 
   }
 
+  function handleClickCancelPayment() {
+    setStepIndex(SelectServiceStepIndex)
+  }
+
   const hasSelected = bunchOfServiceIdSelected.length > 0
   const selectedService = Services.filter(service => bunchOfServiceIdSelected.includes(service.id))
   let totalPrice = 0
+  const nationName = NATION_INFOS.find(nation => nation.value === user?.llcInNation)?.label
   Services.forEach(service => totalPrice += service.price)
   return <div className={"w-full grow flex flex-col"}>
     <div className={"flex p-3 grow overflow-hidden"}>
-      {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll space-y-8"}>
+      {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden space-y-8"}>
         <div className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new LLC in")} <span
-          className={"text-cLg font-bold text-primary"}>{user?.llcInNation || 'United States'}</span> <span
+          className={"text-cLg font-bold text-primary"}>{ nationName || 'United States'}</span> <span
           className={"text-h4"}>...</span></div>
         <div className={"flex flex-col gap-3"}>
           {Services.map(service =>
@@ -188,8 +194,8 @@ function ServicesContent() {
           )}
         </div>
       </div>}
-      {stepIndex === PayServiceStepIndex && <div className={"flex grow gap-3"}>
-        <div className={"w-1/2 flex flex-col bg-white grow rounded-lg overflow-hidden"}>
+      {stepIndex === PayServiceStepIndex && <div className={"flex flex-col sm:flex-row grow gap-3 overflow-y-scroll  overflow-x-hidden"}>
+        <div className={"sm:w-1/2 flex flex-col bg-white grow shrink-0 rounded-lg overflow-y-scroll overflow-x-hidden"}>
           <div className={"p-6 grow flex gap-8 flex-col"}>
             <div className={"flex flex-col gap-y-2 w-fit"}>
               <p className={"text-cXl font-bold"}>{translation.t('Order summary')}</p>
@@ -205,7 +211,7 @@ function ServicesContent() {
             <p className={"text-h4"}>{totalPrice}</p>
           </div>
         </div>
-        <div className={"w-1/2 bg-white grow rounded-lg flex"}>
+        <div className={"sm:w-1/2 bg-white grow shrink-0 rounded-lg flex"}>
           <div className={"p-6 grow flex flex-col"}>
             <div className={"flex flex-col gap-y-2 w-fit"}>
               <p className={"text-cXl font-bold"}>{translation.t('Please select a payment method')}</p>
@@ -224,7 +230,7 @@ function ServicesContent() {
         </div>
       </div>}
     </div>
-    <div className={"w-full flex justify-end py-5 pr-8 bg-white"}>
+    <div className={"w-full flex justify-end py-5 pr-8 bg-white gap-2"}>
       {stepIndex === SelectServiceStepIndex && <button
         disabled={!hasSelected}
         className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 " + (hasSelected ? "bg-primary" : "bg-gray-500")}
@@ -232,13 +238,22 @@ function ServicesContent() {
       >
         <span>{translation.t('Proceed payment')}</span>
       </button>}
-      {stepIndex === PayServiceStepIndex && <button
-        disabled={!hasSelected}
-        className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 " + (hasSelected ? "bg-primary" : "bg-gray-500")}
-        onClick={handleClickFinishPayment}
-      >
-        <span>{translation.t('Finish payment')}</span>
-      </button>}
+      {stepIndex === PayServiceStepIndex && <>
+        <button
+          disabled={!hasSelected}
+          className={"flex justify-center items-center gap-2 font-semibold rounded-lg px-6 py-4 border text-gray-600"}
+          onClick={handleClickCancelPayment}
+        >
+          <span>{translation.t('Cancel')}</span>
+        </button>
+        <button
+          disabled={!hasSelected}
+          className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary"}
+          onClick={handleClickFinishPayment}
+        >
+          <span>{translation.t('Pay now')}</span>
+        </button>
+      </>}
     </div>
   </div>
 }
@@ -251,21 +266,23 @@ type ServiceCardProps = {
 
 function ServiceCard(props: ServiceCardProps) {
   return <div
-    className={"w-full flex cursor-pointer border rounded-2xl " + (props.isSelected ? 'border-primary' : 'border-gray-300')}
+    className={"relative pl-8 sm:pl-14 w-full flex cursor-pointer border rounded-2xl " + (props.isSelected ? 'border-primary' : 'border-gray-300')}
     onClick={props.onSelect.bind(undefined, props.service.id)}
   >
-    <div className={"w-[52px] shrink-0"}>
-      {props.isSelected && <IconSelectCard className={"translate-y-[-1px]"} />}
-    </div>
+    {props.isSelected && <IconSelectCard className={"absolute -top-[1px] left-0"}/>}
     <div className={"flex flex-col grow py-6 gap-3"}>
-      <p className={"text-cLg font-bold"}>{props.service.label}</p>
-      <p className={""}>{props.service.description}</p>
-      <ul className={"flex gap-12 list-disc text-violet pl-8"}>
-        {props.service.agents.map(agent => <li><span>{agent}</span></li>)}
-      </ul>
+      <p className={"text-cLg sm:text-h4 font-bold"}>{props.service.label}</p>
+      <div>
+        <div>
+          <p className={"sm:text-lg"}>{props.service.description}</p>
+          <ul className={"flex flex-col sm:flex-row gap-2 sm:gap-12 list-disc text-violet pl-8"}>
+            {props.service.agents.map(agent => <li><span>{agent}</span></li>)}
+          </ul>
+        </div>
+      </div>
     </div>
-    <div className={"p-6 text-orange flex items-center justify-center"}>
-      <span className={"text-cXl font-bold"}>{props.service.currency}{props.service.price}</span>
+    <div className={"p-6 text-orange flex items-center justify-center shrink-0"}>
+      <span className={"text-h4 font-bold"}>{props.service.currency}{props.service.price}</span>
     </div>
   </div>
 }

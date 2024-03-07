@@ -119,5 +119,7 @@
   "Order summary": "Order summary",
   "Total in": "Total in",
   "Please select a payment method": "Please select a payment method",
-  "Confirm": "Confirm"
+  "Confirm": "Confirm",
+  "Pay now": "Pay now",
+  "Cancel": "Cancel"
 }
