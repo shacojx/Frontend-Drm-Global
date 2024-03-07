@@ -12,7 +12,6 @@ import {
   TransformedResultLogin
 } from "./types";
 
-
 export async function callApiLogin(body: ApiLoginParam): Promise<TransformedResultLogin> {
   const path = 'api/auth/signin'
   const rawResult = await callApi<RawResultLogin>('POST', path, body)

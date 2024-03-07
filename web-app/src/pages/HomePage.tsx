@@ -1,5 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { callCreateOrder } from "../api/payment";
+import { ApiCreateOrderParam, Currency } from "../api/types";
 import {
   IconAccountCircle,
   IconLogout,
@@ -12,6 +14,7 @@ import {
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
+import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 
 type HomeTab = 'services' | 'myServices' | 'myAccount'
 const TabOptionGroup: Record<HomeTab, TabOption> = {
@@ -82,7 +85,7 @@ type Service = {
   description: string,
   agents: string[],
   price: number,
-  currency: string,
+  currency: Currency,
 }
 const Services: Service[] = [
   {
@@ -91,7 +94,7 @@ const Services: Service[] = [
     description: "Service Description",
     agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
     price: 5.99,
-    currency: '$'
+    currency: 'USD'
   },
   {
     id: '2',
@@ -99,7 +102,7 @@ const Services: Service[] = [
     description: "Service Description",
     agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
     price: 6.99,
-    currency: '$'
+    currency: 'USD'
   },
   {
     id: '3',
@@ -107,7 +110,7 @@ const Services: Service[] = [
     description: "Service Description",
     agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
     price: 7.99,
-    currency: '$'
+    currency: 'USD'
   },
 ]
 
@@ -116,6 +119,7 @@ function ServicesContent() {
   const {user} = useContext(AuthContext)
   const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<string[]>([])
   const [stepIndex, setStepIndex] = useState<number>(1)
+  const [errorMessageConfirm, setErrorMessageConfirm] = useState<string | undefined>()
 
   const SelectServiceStepIndex = 1
   const PayServiceStepIndex = 2
@@ -132,11 +136,26 @@ function ServicesContent() {
     setStepIndex(PayServiceStepIndex)
   }
 
-  function handleClickFinishPayment() {
-
+  async function handleClickPaypalConfirm() {
+    if (!user) {
+      return
+    }
+    const body: ApiCreateOrderParam = {
+      transactionId: generateTransactionId(user.email),
+      currency: 'USD',
+      amount: totalPrice,
+      orderType: "PAYPAL"
+    }
+    try {
+      const rawResult = await callCreateOrder(body)
+      console.log('handleClickPaypalConfirm: ', rawResult)
+    } catch (e: unknown) {
+      setErrorMessageConfirm(e?.toString())
+      console.error(e)
+    }
   }
 
-  function handleClickPaypalConfirm() {
+  function handleClickFinishPayment() {
 
   }
 

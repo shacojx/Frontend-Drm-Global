@@ -7,6 +7,7 @@ export type Industry = string
 export type NationPhone = '+84'
 export type LocalPhone = string
 
+// ====== Account ======== //
 export type ApiLoginParam = {
   username: string,
   password: string,
@@ -66,4 +67,16 @@ export type RawResultGetUserProfile = {
   "companyType": CompanyTypeValue,
   firstName: string,
   lastName: string,
+}
+
+// ====== Payment ======== //
+
+export type Currency = 'USD'
+export type OrderType = 'PAYPAL'
+
+export type ApiCreateOrderParam = {
+  "transactionId": string,
+  "currency": Currency,
+  "amount": number,
+  "orderType": OrderType,
 }
