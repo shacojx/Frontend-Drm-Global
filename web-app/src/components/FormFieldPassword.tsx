@@ -52,10 +52,14 @@ export function FormFieldPassword(props: Props) {
 
   const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
   return <div className="flex flex-col gap-2">
-    <p className="text-cBase font-bold">{translation.t(props.label || 'Password')}</p>
+    <p className="text-cBase font-bold space-x-1">
+      <span>{translation.t(props.label || 'Password')}</span>
+      {props.isRequired && <span className="text-danger">*</span>}
+    </p>
     <div className="relative">
       <input
         type={isDisplayPass ? 'text' : 'password'}
+        placeholder={props.placeholder}
         value={props.value}
         onChange={handleChangePassword}
         onFocus={setShouldShowError.bind(undefined, false)}

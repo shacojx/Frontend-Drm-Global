@@ -1,24 +1,36 @@
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { callApiLogout } from "../api/account";
+import {
+  callApiChangeUserPassword,
+  callApiChangeUserProfile,
+  callApiLogout
+} from "../api/account";
 import { callCreateOrder } from "../api/payment";
-import { ApiCreateOrderParam, Currency } from "../api/types";
+import { ApiChangeUserPassword, ApiChangeUserProfile, ApiCreateOrderParam, Currency } from "../api/types";
+import { FormFieldEmail } from "../components/FormFieldEmail";
+import { FormFieldPassword } from "../components/FormFieldPassword";
+import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
+import { FormFieldText } from "../components/FormFieldText";
 import {
   IconAccountCircle,
   IconLogout, IconMyCompany,
   IconMyService,
   IconSelectCard,
   IconService,
+  IconSpinner,
   IconThreeLines,
   IconUser
 } from "../components/icons";
 import { NATION_INFOS } from "../constants/SelectionOptions";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
+import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
 import { removeAuthInfo } from "../services-business/api/authentication";
+import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/api/generate-api-param/generatePhone";
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
+import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
@@ -45,7 +57,7 @@ export function HomePage() {
   const translation = useTranslation()
   const navigate = useNavigate()
   const {user, removeAuthUser} = useContext(AuthContext)
-  const [homeContent, setHomeContent] = useState<HomeContent>(TabOptionGroup.services.id)
+  const [homeContent, setHomeContent] = useState<HomeContent>('myAccount')
   const openCallerRef = useRef<()=>void>(()=>{})
   const [isShowAccountPopup, setIsShowAccountPopup] = useState<boolean>(false)
   const ref = useClickOutside(() => setIsShowAccountPopup(false));
@@ -74,7 +86,7 @@ export function HomePage() {
           <IconAccountCircle className={"w-10 h-10 cursor-pointer"} onClick={setIsShowAccountPopup.bind(undefined, value => !value)} />
         </div>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
-          {isShowAccountPopup && <div ref={ref} className={"absolute top-3 right-8 flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3"}>
+          {isShowAccountPopup && <div ref={ref} className={"absolute z-10 top-3 right-8 flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3"}>
             <p className={"text-gray-700 text-cLg"}>{user?.email}</p>
             <IconAccountCircle className={"w-14 h-14 mb-3"}/>
             <p className={"font-bold text-cLg"}>{translation.t("Hello")} {user?.lastName},</p>
@@ -305,7 +317,211 @@ function MyCompanyContent() {
 }
 
 function MyAccountContent() {
+  const {user} = useContext(AuthContext)
+  const translation = useTranslation()
+
+  return <div className={"w-full grow flex flex-col p-3"}>
+    <div className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
+      <div>
+        {user?.avatar
+          ? <img src={user?.avatar} alt=""/>
+          : <IconAccountCircle className={"w-16 h-16"} />
+        }
+      </div>
+      <p className={"font-bold text-h4 my-3"}>{translation.t("Hello")} {user?.lastName}</p>
+      <p>{translation.t('Manage your information, privacy and security so DRMGlobal works for you')}.</p>
+      <div className={"flex flex-col sm:flex-row mt-8 gap-2 grow w-full"}>
+        <div className={"border rounded-lg grow w-1/3 p-6 flex flex-col"}>
+          <GeneralInformationForm />
+        </div>
+        <div className={"border rounded-lg grow w-1/3 p-6 flex flex-col"}>
+          <ChangePasswordForm/>
+        </div>
+        <div className={"border rounded-lg grow w-1/3 p-6 flex flex-col"}>
+          <KYCBox/>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+function GeneralInformationForm() {
+  const translation = useTranslation()
+  const {user} = useContext(AuthContext)
+  const {validateCaller, validateAll} = useValidateCaller()
+  const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || ''))
+  const [firstName, setFirstName] = useState<string>(user?.firstName || '')
+  const [lastName, setLastName] = useState<string>(user?.lastName || '')
+  const [status, setStatus] = useState<FormStatus>('typing')
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+
+  function handleChangePhone(phone: RNPhoneValue) {
+    setPhone(phone)
+    setStatus("typing")
+  }
+  function handleChangeFirstName(firstName: string) {
+    setFirstName(firstName)
+    setStatus("typing")
+  }
+  function handleChangeLastName(lastName: string) {
+    setLastName(lastName)
+    setStatus("typing")
+  }
+  async function handleClickSave() {
+    if (!user?.email || !phone || !firstName || !lastName || !validateAll()) {
+      return
+    }
+    setStatus('requesting')
+    const {nationPhone, localPhone} = extractPhone(phone)
+    const param: ApiChangeUserProfile = {
+      email: user?.email,
+      codePhone: nationPhone,
+      phone: generatePhone(nationPhone, localPhone),
+      firstName: firstName,
+      lastName: lastName
+    }
+    try {
+      await callApiChangeUserProfile(param)
+      setStatus('success')
+    } catch (e: unknown) {
+      setStatus("failure")
+      setErrorMessage(e?.toString())
+      console.error(e)
+    }
+  }
+
   return <>
-    <div>My Account Content</div>
+    <div className={"mb-8 space-y-1"}>
+      <p className={"font-bold"}>{translation.t('General information')}</p>
+      <div className={"h-[2px] w-[70px] bg-primary"}></div>
+    </div>
+    <div className={"space-y-6"}>
+      <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => {
+      }} isFixedValue/>
+      <FormFieldPhoneNumber
+        id={"phoneNumber"}
+        placeholder={"Input number"}
+        isRequired
+        value={phone}
+        onChange={handleChangePhone}
+        validateCaller={validateCaller}
+      />
+      <div className={"w-full flex gap-4"}>
+        <FormFieldText
+          id={"FirstName"}
+          isRequired
+          label="First Name"
+          value={firstName}
+          onChange={handleChangeFirstName}
+          placeholder="Enter first name"
+          validateCaller={validateCaller}
+        />
+        <FormFieldText
+          id={"LastName"}
+          isRequired
+          label="Last Name"
+          value={lastName}
+          onChange={handleChangeLastName}
+          placeholder="Enter last name"
+          validateCaller={validateCaller}
+        />
+      </div>
+    </div>
+    <div className={"flex justify-end"}>
+      <button
+        onClick={handleClickSave}
+        className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+      >
+        {translation.t('Save')}
+        {status === "requesting" && <IconSpinner />}
+      </button>
+    </div>
+    {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
   </>
+}
+
+function ChangePasswordForm() {
+  const translation = useTranslation()
+  const {user} = useContext(AuthContext)
+  const {validateCaller, validateAll} = useValidateCaller()
+  const [password, setPassword] = useState<string>('')
+  const [rePassword, setRePassword] = useState<string>('')
+  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true)
+  const [status, setStatus] = useState<FormStatus>('typing')
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+  function handleChangeRePassword(rePass: string) {
+    setRePassword(rePass)
+    setIsPasswordMatch(true)
+  }
+
+  async function handleClickSave() {
+    if (password !== rePassword) {
+      setIsPasswordMatch(false)
+      return
+    }
+    if (!password || !rePassword || !isPasswordMatch || !validateAll()) {
+      return
+    }
+    setStatus('requesting')
+    const param: ApiChangeUserPassword = {
+      newPass: password,
+      reNewPass: rePassword,
+    }
+    try {
+      await callApiChangeUserPassword(param)
+      setStatus('success')
+      setPassword('')
+      setRePassword('')
+      setStatus('typing')
+    } catch (e: unknown) {
+      setStatus("failure")
+      setErrorMessage(e?.toString())
+      console.error(e)
+    }
+  }
+
+  return <>
+    <div className={"mb-8 space-y-1"}>
+      <p className={"font-bold"}>{translation.t('Change password')}</p>
+      <div className={"h-[2px] w-[70px] bg-primary"}></div>
+    </div>
+    <div className={"space-y-6 grow"}>
+      <FormFieldPassword
+        id={"password"}
+        label={"New password"}
+        placeholder={"Enter new password"}
+        isRequired
+        value={password}
+        onChange={setPassword}
+        validateCaller={validateCaller}
+      />
+      <div className={"space-y-2"}>
+        <FormFieldPassword
+          id={"rePassword"}
+          label={"Re-enter password"}
+          placeholder={"Re-type new password"}
+          isRequired
+          value={rePassword}
+          onChange={handleChangeRePassword}
+          validateCaller={validateCaller}
+        />
+        {!isPasswordMatch && <p className={"text-danger"}>{translation.t("The entered passwords do not match")}!</p>}
+      </div>
+    </div>
+    <div className={"flex justify-end"}>
+      <button
+        disabled={status === 'requesting'}
+        onClick={handleClickSave}
+        className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+      >
+        {translation.t('Save')}
+        {status === "requesting" && <IconSpinner />}
+      </button>
+    </div>
+    {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
+  </>
+}
+
+function KYCBox() {
+  return <div>KYCBox</div>
 }

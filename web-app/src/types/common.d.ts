@@ -19,4 +19,5 @@ type FormFieldProps<T> = {
   placeholder: string,
   value: T,
   errorMessage: string,
+  isFixedValue: boolean
 }>

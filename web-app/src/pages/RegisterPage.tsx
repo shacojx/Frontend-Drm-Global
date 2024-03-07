@@ -235,7 +235,7 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       <p className="text-cLg font-bold">{translation.t('Account information')}</p>
       <div className="w-1/2 border-2 border-primary"></div>
     </div>
-    <FormFieldEmail id="accountEmail" isRequired value={props.email} onChange={props.setEmail} validateCaller={validateCaller} />
+    <FormFieldEmail id="accountEmail" isRequired value={props.email} onChange={props.setEmail} validateCaller={validateCaller}/>
     <FormFieldPhoneNumber
       id={"phoneNumber"}
       placeholder={"Input number"}

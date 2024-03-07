@@ -1,6 +1,8 @@
 import { callApi } from "../services-base/api";
 import { transformLoginResult } from "../services-business/api/transform-result/account";
 import {
+  ApiChangeUserPassword,
+  ApiChangeUserProfile,
   ApiCheckRecoveryCode,
   ApiLoginParam,
   ApiRegisterAccountParam, ApiResetPasswordParam,
@@ -51,5 +53,17 @@ export async function callApiResetPassword(body: ApiResetPasswordParam) {
 export async function callApiGetUserProfile() {
   const path = 'api/user/profile'
   const rawResult = await callApi<RawResultGetUserProfile>('GET', path, {}, true)
+  return rawResult
+}
+
+export async function callApiChangeUserProfile(body: ApiChangeUserProfile) {
+  const path = 'api/user/profile'
+  const rawResult = await callApi<RawResultGetUserProfile>('PUT', path, body, true)
+  return rawResult
+}
+
+export async function callApiChangeUserPassword(body: ApiChangeUserPassword) {
+  const path = 'api/user/changepass'
+  const rawResult = await callApi<RawResultGetUserProfile>('PUT', path, body, true)
   return rawResult
 }

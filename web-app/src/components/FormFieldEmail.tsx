@@ -29,13 +29,14 @@ export function FormFieldEmail(props: FormFieldProps<string>) {
     props.onChange(email)
   }
 
-  const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
+  const statusClassName = (shouldShowError ? 'border-danger bg-red-50' : 'bg-white') + (props.isFixedValue ? ' bg-gray-200' : '')
   return <div className="flex flex-col gap-2">
     <p className="flex text-cBase font-bold gap-1">
       <span>{translation.t('Email address')}</span>
       {props.isRequired && <span className="text-danger">*</span>}
     </p>
     <input
+      disabled={props.isFixedValue}
       type="email"
       value={props.value || ''}
       onChange={handleChange}

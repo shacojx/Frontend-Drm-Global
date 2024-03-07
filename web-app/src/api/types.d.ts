@@ -40,7 +40,7 @@ export type ApiRegisterAccountParam = {
   "llcInNation": NationValue,
   "email": string,
   "phone": string,
-  "codePhone": string,
+  "codePhone": NationPhone,
   "companyType": CompanyTypeValue,
   firstName: string,
   lastName: string,
@@ -64,10 +64,24 @@ export type RawResultResetPassword = ""
 export type RawResultGetUserProfile = {
   "llcInNation": NationValue,
   "email": string,
+  "avatar": string,
+  "codePhone": NationPhone,
   "phone": string,
   "companyType": CompanyTypeValue,
   firstName: string,
   lastName: string,
+}
+
+export type ApiChangeUserProfile = {
+  "email": string,
+  "codePhone": NationPhone,
+  "phone": string,
+  "firstName": string,
+  "lastName": string,
+}
+export type ApiChangeUserPassword = {
+  "newPass": string,
+  "reNewPass": string,
 }
 
 // ====== Payment ======== //
