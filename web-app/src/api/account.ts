@@ -18,6 +18,12 @@ export async function callApiLogin(body: ApiLoginParam): Promise<TransformedResu
   return transformLoginResult(rawResult)
 }
 
+export async function callApiLogout() {
+  const path = 'api/auth/signout'
+  const rawResult = await callApi('POST', path, {}, true)
+  return rawResult
+}
+
 export async function callApiSendRecoveryCode(body: ApiSendRecoveryCode) {
   const path = 'api/user/forgotpass'
   const rawResult = await callApi<RawResultSendRecoveryCode>('POST', path, body)

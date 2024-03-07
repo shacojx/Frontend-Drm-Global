@@ -119,6 +119,11 @@ export function saveToken(accessToken: string, accessTokenType: string, refreshT
   localStorage.setItem("refreshToken", JSON.stringify(refreshTokenInfo)) // should save refresh token to cookie
 }
 
+export function removeAuthToken() {
+  sessionStorage.removeItem("accessToken")
+  localStorage.removeItem("refreshToken")
+}
+
 export function getToken(tokenName: TokenName) {
   const tokenInfoString = tokenName === "accessToken"
     ? sessionStorage.getItem('accessToken')

@@ -3,11 +3,6 @@ import { LocalPhone, NationPhone } from "../../../api/types";
 type SplitCharacter = '_'
 export type RNPhoneValue = `${NationPhone}${SplitCharacter}${LocalPhone}`
 
-export function generateApiPhone(rnPhone: RNPhoneValue) {
-  const {nationPhone, localPhone} = extractPhone(rnPhone)
-  return `${nationPhone}${localPhone}`
-}
-
 export function generatePhone(nationPhone: NationPhone, localPhone: LocalPhone): RNPhoneValue {
   const splitCharacter: SplitCharacter = '_'
   return `${nationPhone}${splitCharacter}${localPhone}`

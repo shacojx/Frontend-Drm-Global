@@ -40,6 +40,7 @@ export type ApiRegisterAccountParam = {
   "llcInNation": NationValue,
   "email": string,
   "phone": string,
+  "codePhone": string,
   "companyType": CompanyTypeValue,
   firstName: string,
   lastName: string,

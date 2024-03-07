@@ -1,5 +1,5 @@
 import { ApiRegisterAccountParam, CompanyTypeValue, EntityEnding, Industry, NationValue } from "../../../api/types";
-import { generateApiPhone, RNPhoneValue } from "./generatePhone";
+import { extractPhone, RNPhoneValue } from "./generatePhone";
 
 export function generateRegisterParam(
   llcInNation: NationValue,
@@ -16,10 +16,12 @@ export function generateRegisterParam(
   website?: string,
   companyDescription?: string,
 ): ApiRegisterAccountParam {
+  const {nationPhone, localPhone} = extractPhone(phone)
   return {
     llcInNation,
     email,
-    phone: generateApiPhone(phone),
+    codePhone: nationPhone,
+    phone: localPhone,
     companyType,
     firstName,
     lastName,

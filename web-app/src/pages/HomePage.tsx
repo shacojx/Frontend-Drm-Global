@@ -1,5 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { callApiLogout } from "../api/account";
 import { callCreateOrder } from "../api/payment";
 import { ApiCreateOrderParam, Currency } from "../api/types";
 import {
@@ -14,7 +16,9 @@ import {
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
+import { removeAuthInfo } from "../services-business/api/authentication";
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
+import { RoutePaths } from "./router";
 
 type HomeTab = 'services' | 'myServices' | 'myAccount'
 const TabOptionGroup: Record<HomeTab, TabOption> = {
@@ -34,6 +38,7 @@ const TabOptionGroup: Record<HomeTab, TabOption> = {
 
 export function HomePage() {
   const translation = useTranslation()
+  const navigate = useNavigate()
   const {user, removeAuthUser} = useContext(AuthContext)
   const [tabSelected, setTabSelected] = useState<TabOption["label"]>(TabOptionGroup.services.label)
   const openCallerRef = useRef<()=>void>(()=>{})
@@ -47,6 +52,13 @@ export function HomePage() {
   function handleClickAccountOnPopUp() {
     handleChangeTab(TabOptionGroup.myAccount.label)
     setIsShowAccountPopup(false)
+  }
+
+  function handleClickLogout() {
+    navigate(RoutePaths.login)
+    callApiLogout().catch(e => console.error(e))
+    removeAuthInfo()
+    removeAuthUser()
   }
 
   return <div className="w-screen h-screen bg-cover flex flex-col">
@@ -65,7 +77,7 @@ export function HomePage() {
               <IconUser />
               <span className={"font-bold"}>{translation.t("Account")}</span>
             </div>
-            <div onClick={removeAuthUser} className={"flex flex-row gap-2 w-[290px] bg-white px-6 py-4 rounded-xl cursor-pointer"}>
+            <div onClick={handleClickLogout} className={"flex flex-row gap-2 w-[290px] bg-white px-6 py-4 rounded-xl cursor-pointer"}>
               <IconLogout/>
               <span className={"font-bold"}>{translation.t("Log out")}</span>
             </div>

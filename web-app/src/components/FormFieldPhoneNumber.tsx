@@ -8,6 +8,7 @@ import {
   generatePhone,
   RNPhoneValue
 } from "../services-business/api/generate-api-param/generatePhone";
+import { validateApiLocalPhone } from "../services-business/api/validateApiParam";
 import { FormFieldProps } from "../types/common";
 import { FormFieldSelect } from "./FormFieldSelect";
 
@@ -19,8 +20,7 @@ function validateRNPhone(isRequired: boolean | undefined, phone: RNPhoneValue | 
     return false
   }
   const {nationPhone, localPhone} = extractPhone(phone)
-  const regValidateLocalPhone = /^\d+$/;
-  return !!nationPhone && !!localPhone && regValidateLocalPhone.test(localPhone)
+  return !!nationPhone && !!localPhone && validateApiLocalPhone(localPhone)
 }
 
 export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
