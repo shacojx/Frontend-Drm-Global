@@ -46,12 +46,13 @@ export type ApiRegisterAccountParam = {
   lastName: string,
   "password": string,
   "rePassword": string,
+} & Partial<{
   "companyName": string,
   "entityEnding": EntityEnding,
   "industry": Industry,
   "website": string,
   "companyDescription": string,
-}
+}>
 export type RawResultRegisterAccount = Omit<ApiRegisterAccountParam, 'password' | 'rePassword'>
 
 export type ApiResetPasswordParam = {

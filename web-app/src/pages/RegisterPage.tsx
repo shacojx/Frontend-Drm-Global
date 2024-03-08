@@ -19,8 +19,7 @@ import { IconAddCircle, IconArrowLeft } from "../components/icons";
 import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "../constants/SelectionOptions";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
-import { RNPhoneValue } from "../services-business/api/generate-api-param/generatePhone";
-import { generateRegisterParam } from "../services-business/api/generate-api-param/generateRegisterParam";
+import { generateRegisterParam, RNPhoneValue } from "../services-business/api/generate-api-param/account";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
 

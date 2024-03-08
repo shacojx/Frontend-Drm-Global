@@ -28,7 +28,7 @@ import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
 import { removeAuthInfo } from "../services-business/api/authentication";
-import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/api/generate-api-param/generatePhone";
+import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
@@ -374,9 +374,9 @@ function GeneralInformationForm() {
     setStatus('requesting')
     const {nationPhone, localPhone} = extractPhone(phone)
     const param: ApiChangeUserProfile = {
-      email: user?.email,
+      email: user.email,
       codePhone: nationPhone,
-      phone: generatePhone(nationPhone, localPhone),
+      phone: localPhone,
       firstName: firstName,
       lastName: lastName
     }
