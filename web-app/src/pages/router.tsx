@@ -28,6 +28,7 @@ function RequiredLoggedIn(props: PropsWithChildren) {
           if (!user) {
             navigate(RoutePaths.login)
           } else {
+            user.kycStatus = user.kycStatus || "pending" // TODO: remove
             saveAuthUser(user)
             setIsRequesting(false)
           }

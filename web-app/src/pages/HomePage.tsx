@@ -14,8 +14,9 @@ import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { FormFieldText } from "../components/FormFieldText";
 import {
   IconAccountCircle,
+  IconCheck, IconDangerCircle,
   IconLogout, IconMyCompany,
-  IconMyService,
+  IconMyService, IconRefreshCircle,
   IconSelectCard,
   IconService,
   IconSpinner,
@@ -34,7 +35,7 @@ import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
-type HomeContent = HomeTab | 'myAccount'
+type HomeContent = HomeTab | 'myAccount' | 'KYCUpload'
 const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
   services: {
     iconElement: <IconService/>,
@@ -102,7 +103,8 @@ export function HomePage() {
           {homeContent === TabOptionGroup.services.id && <ServicesContent />}
           {homeContent === TabOptionGroup.myServices.id && <MyServicesContent />}
           {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent />}
-          {homeContent === 'myAccount' && <MyAccountContent />}
+          {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} />}
+          {homeContent === 'KYCUpload' && <KYCUploadContent />}
         </div>
       </div>
     </PageLayoutLeftSideTab>
@@ -316,7 +318,11 @@ function MyCompanyContent() {
   </>
 }
 
-function MyAccountContent() {
+type MyAccountContentProps = {
+  onClickVerifyKYC: () => void
+}
+
+function MyAccountContent(props: MyAccountContentProps) {
   const {user} = useContext(AuthContext)
   const translation = useTranslation()
 
@@ -338,7 +344,7 @@ function MyAccountContent() {
           <ChangePasswordForm/>
         </div>
         <div className={"border rounded-lg grow md:w-1/3 p-6 flex flex-col"}>
-          <KYCBox/>
+          <KYCBox onClickVerify={props.onClickVerifyKYC}/>
         </div>
       </div>
     </div>
@@ -442,7 +448,6 @@ function GeneralInformationForm() {
 
 function ChangePasswordForm() {
   const translation = useTranslation()
-  const {user} = useContext(AuthContext)
   const {validateCaller, validateAll} = useValidateCaller()
   const [password, setPassword] = useState<string>('')
   const [rePassword, setRePassword] = useState<string>('')
@@ -522,6 +527,52 @@ function ChangePasswordForm() {
   </>
 }
 
-function KYCBox() {
-  return <div>KYCBox</div>
+type KYCBoxProps = {
+  onClickVerify: () => void
+}
+function KYCBox(props: KYCBoxProps) {
+  const translation = useTranslation()
+  const {user} = useContext(AuthContext)
+
+  return <>
+    <div className={"flex flex-row justify-between mb-8"}>
+      <div className={"space-y-1"}>
+        <p className={"font-bold"}>{translation.t('KYC')}</p>
+        <div className={"h-[2px] w-[70px] bg-primary"}></div>
+      </div>
+      <div className={"flex flex-row gap-3 items-center"}>
+        <span>{translation.t('Status')}:</span>
+        {user?.kycStatus === 'pending' && <div className={"flex flex-row gap-1 items-center bg-[#5D50C626] p-2 rounded-lg"}>
+          <IconDangerCircle className={"shrink-0 text-black w-5 h-5"}/>
+          <span className={"font-bold"}>{translation.t('Pending')}</span>
+        </div>}
+        {user?.kycStatus === "inProgress" && <div className={"flex flex-row gap-1 items-center bg-[#FF572240] p-2 rounded-lg"}>
+          <IconRefreshCircle className={"shrink-0 text-black w-5 h-5"}/>
+          <span className={"font-bold"}>{translation.t('In-progress')}</span>
+        </div>}
+        {user?.kycStatus === "approved" && <div className={"flex flex-row gap-1 items-center bg-success p-2 rounded-lg"}>
+          <IconCheck className={"shrink-0 text-white w-5 h-5"}/>
+          <span className={"font-bold text-white"}>{translation.t('Approved')}</span>
+        </div>}
+      </div>
+    </div>
+    <div className={"space-y-6 grow"}>
+      {user?.kycStatus === "pending" && <div className={"flex flex-row gap-4 items-center p-2 bg-red-200 rounded-lg"}>
+        <IconDangerCircle className={"shrink-0 text-danger"}/>
+        <p>{translation.t('You have not verified your account. Please verify for the best experience')}.</p>
+      </div>}
+    </div>
+    {user?.kycStatus === "pending" && <div className={"flex justify-end"}>
+      <button
+        onClick={props.onClickVerify}
+        className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+      >
+        {translation.t('Verify now')}
+      </button>
+    </div>}
+  </>
+}
+
+function KYCUploadContent() {
+  return <></>
 }

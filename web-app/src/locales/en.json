@@ -128,5 +128,12 @@
   "Save": "Save",
   "Change password": "Change password",
   "Re-type new password": "Re-type new password",
-  "Enter new password": "Enter new password"
+  "Enter new password": "Enter new password",
+  "KYC": "KYC",
+  "Verify now": "Verify now",
+  "You have not verified your account. Please verify for the best experience": "You have not verified your account. Please verify for the best experience",
+  "Status": "Status",
+  "Pending": "Pending",
+  "In-progress": "In-progress",
+  "Approved": "Approved"
 }
