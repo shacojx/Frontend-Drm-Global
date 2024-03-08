@@ -142,5 +142,8 @@
   "All passport data is legible": "All passport data is legible",
   "The photo is in color and should be a valid file (PDF)": "The photo is in color and should be a valid file (PDF)",
   "Maximum allowed size is 10MB": "Maximum allowed size is 10MB",
-  "Send": "Send"
+  "Send": "Send",
+  "Be at least 8 characters long": "Be at least 8 characters long",
+  "Contain at least one letter and one number": "Contain at least one letter and one number",
+  "Not contain any uppercase letters, spaces, or special characters":  "Not contain any uppercase letters, spaces, or special characters"
 }
