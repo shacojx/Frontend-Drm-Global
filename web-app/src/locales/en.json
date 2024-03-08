@@ -135,5 +135,12 @@
   "Status": "Status",
   "Pending": "Pending",
   "In-progress": "In-progress",
-  "Approved": "Approved"
+  "Approved": "Approved",
+  "Upload your Passport": "Upload your Passport",
+  "Upload your picture holding the passport": "Upload your picture holding the passport",
+  "All corners of the passport are visible against the backdrop": "All corners of the passport are visible against the backdrop",
+  "All passport data is legible": "All passport data is legible",
+  "The photo is in color and should be a valid file (PDF)": "The photo is in color and should be a valid file (PDF)",
+  "Maximum allowed size is 10MB": "Maximum allowed size is 10MB",
+  "Send": "Send"
 }
