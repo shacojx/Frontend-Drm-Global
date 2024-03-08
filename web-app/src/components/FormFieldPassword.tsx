@@ -61,7 +61,7 @@ export function FormFieldPassword(props: Props) {
         <IconInfoCircle onClick={setShowRules.bind(undefined, true)} onBlur={setShowRules.bind(undefined, false)} />
         {showRules && <div
           ref={ref}
-          className={"absolute z-10 top-4 -left-8 w-[330px]"}
+          className={"absolute z-10 top-5 -left-8 w-[330px]"}
         >
           <svg className={"translate-x-8 shadow-form"} width="16" height="8" viewBox="0 0 16 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 8L16 8L9.41421 1.41421C8.63317 0.633164 7.36684 0.633164 6.58579 1.41421L0 8Z" fill="white"/>
