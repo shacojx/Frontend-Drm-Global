@@ -9,7 +9,9 @@ import { IconCheck, IconAltArrowDown } from "./icons";
 
 type Props<T extends React.Key> = FormFieldProps<T> & {
   optionInfos: OptionInfo<T>[],
-}
+} & Partial<{
+  minWidth: string
+}>
 
 export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
   const translation = useTranslation()
@@ -36,6 +38,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
             <Listbox.Button
               onFocus={setShouldShowError.bind(undefined, false)}
               className={"relative w-full min-h-10 cursor-default rounded-md py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 " + statusClassName}
+              style={{minWidth: props.minWidth || '0px'}}
             >
               <span className="flex items-center">
                 {findOptionInfo(props.value)?.iconElement}
@@ -70,7 +73,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
                     {({ selected, active }) => (
                       <>
                         <div className="flex items-center">
-                          {findOptionInfo(props.value)?.iconElement}
+                          {option.iconElement}
                           <span
                             className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
                           >

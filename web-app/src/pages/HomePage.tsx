@@ -100,11 +100,11 @@ export function HomePage() {
               <span className={"font-bold"}>{translation.t("Log out")}</span>
             </div>
           </div>}
-          {homeContent === TabOptionGroup.services.id && <ServicesContent />}
-          {homeContent === TabOptionGroup.myServices.id && <MyServicesContent />}
-          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent />}
-          {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} />}
-          {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} />}
+          {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
+          {homeContent === TabOptionGroup.myServices.id && <MyServicesContent key={TabOptionGroup.myServices.id} />}
+          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent key={TabOptionGroup.myCompany.id} />}
+          {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} key="KYCUpload" />}
+          {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} key="myAccount" />}
         </div>
       </div>
     </PageLayoutLeftSideTab>
@@ -202,16 +202,23 @@ function ServicesContent() {
   let totalPrice = 0
   const nationName = NATION_INFOS.find(nation => nation.value === user?.llcInNation)?.label
   Services.forEach(service => totalPrice += service.price)
+
   return <div className={"w-full grow flex flex-col"}>
     <div className={"flex p-3 grow overflow-hidden"}>
       {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden space-y-8"}>
-        <div className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new LLC in")} <span
-          className={"text-cLg font-bold text-primary"}>{ nationName || 'United States'}</span> <span
-          className={"text-h4"}>...</span></div>
+        {user?.companyType && <div
+          className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new in", {companyType: user.companyType})}
+          <span
+            className={"text-cLg font-bold text-primary"}>{nationName}</span> <span
+            className={"text-h4"}>...</span></div>}
         <div className={"flex flex-col gap-3"}>
           {Services.map(service =>
-            <ServiceCard isSelected={bunchOfServiceIdSelected.includes(service.id)} service={service}
-                         onSelect={handleSelectService}/>
+            <ServiceCard
+              key={service.id}
+              isSelected={bunchOfServiceIdSelected.includes(service.id)}
+              service={service}
+              onSelect={handleSelectService}
+            />
           )}
         </div>
       </div>}
@@ -222,7 +229,7 @@ function ServicesContent() {
               <p className={"text-cXl font-bold"}>{translation.t('Order summary')}</p>
               <div className={"h-[2px] bg-black w-1/2"}></div>
             </div>
-            {selectedService.map((service, index) => <div className={"flex justify-between"}>
+            {selectedService.map((service, index) => <div key={service.id} className={"flex justify-between"}>
               <span className={"space-x-2"}><span>{index + 1}.</span><span>{service.label}</span></span>
               <span className={"text-orange text-cLg font-bold"}>{service.currency}{service.price}</span>
             </div>)}
@@ -297,7 +304,7 @@ function ServiceCard(props: ServiceCardProps) {
         <div>
           <p className={"sm:text-lg"}>{props.service.description}</p>
           <ul className={"flex flex-col sm:flex-row gap-2 sm:gap-12 list-disc text-violet pl-8"}>
-            {props.service.agents.map(agent => <li><span>{agent}</span></li>)}
+            {props.service.agents.map((agent, index) => <li key={agent + index}><span>{agent}</span></li>)}
           </ul>
         </div>
       </div>
