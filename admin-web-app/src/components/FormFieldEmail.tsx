@@ -4,14 +4,14 @@ import { useValidate } from "../hooks-ui/useValidateCaller";
 import { validateApiEmail, validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormFieldProps, ValidateFunction } from "../types/common";
 
-const validateEmail: ValidateFunction<string> = function (isRequired, pass) {
+const validateEmail: ValidateFunction<string> = function (isRequired, email) {
   if (!isRequired) {
     return true
   }
-  if (!pass) {
+  if (!email) {
     return false
   }
-  return validateApiEmail(pass)
+  return validateApiEmail(email)
 }
 
 export function FormFieldEmail(props: FormFieldProps<string>) {

@@ -46,7 +46,7 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
   return <div className="flex flex-col gap-2">
     <p className="flex text-cBase font-bold gap-1">
       <span>{translation.t('Phone number')}</span>
-      <span className="text-danger">*</span>
+      {props.isRequired && <span className="text-danger">*</span>}
     </p>
     <div className="flex gap-4">
       <FormFieldSelect

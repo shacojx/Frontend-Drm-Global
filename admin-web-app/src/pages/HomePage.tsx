@@ -9,6 +9,7 @@ import {
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
 import { MyAccountContent } from "./MyAccountContent";
 import { ServicesContent } from "./ServicesContent";
+import { UsersContent } from "./UsersContent";
 
 export type HomeContent = 'services' | 'orderPayment' | 'KYCRequest' | 'support' | 'user' | 'configuration' | 'myAccount'
 const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
@@ -62,6 +63,7 @@ export function HomePage() {
       <div className={"w-full h-full flex flex-col"}>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
+          {homeContent === TabOptionGroup.user.id && <UsersContent key={TabOptionGroup.user.id} />}
           {homeContent === 'myAccount' && <MyAccountContent key="myAccount" />}
         </div>
       </div>
