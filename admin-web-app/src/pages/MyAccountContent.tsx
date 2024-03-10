@@ -22,10 +22,7 @@ export function MyAccountContent(props: MyAccountContentProps) {
   return <div className={"w-full grow flex flex-col p-3"}>
     <div className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
       <div>
-        {user?.avatar
-          ? <img src={user?.avatar} alt=""/>
-          : <IconAccountCircle className={"w-16 h-16"} />
-        }
+        <IconAccountCircle className={"w-16 h-16"} />
       </div>
       <p className={"font-bold text-h4 my-3"}>{translation.t("Hello")} {user?.lastName}</p>
       <p>{translation.t('Manage your information, privacy and security so DRMGlobal works for you')}.</p>

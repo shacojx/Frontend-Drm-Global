@@ -51,7 +51,7 @@ const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
 }
 
 export function HomePage() {
-  const [homeContent, setHomeContent] = useState<HomeContent>('services')
+  const [homeContent, setHomeContent] = useState<HomeContent>('user')
   const openCallerRef = useRef<()=>void>(()=>{})
 
   function handleChangeTab(tabId: HomeContent) {

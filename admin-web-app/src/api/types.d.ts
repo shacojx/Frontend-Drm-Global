@@ -67,7 +67,6 @@ export type KYCStatus = 'pending' | 'inProgress' | 'approved'
 export type RawResultGetUserProfile = {
   "llcInNation": NationValue,
   "email": string,
-  "avatar": string,
   "codePhone": NationPhone,
   "phone": string,
   "companyType": CompanyTypeValue,
