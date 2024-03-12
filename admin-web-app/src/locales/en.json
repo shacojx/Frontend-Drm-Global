@@ -144,5 +144,10 @@
   "Be at least 8 characters long": "Be at least 8 characters long",
   "Contain at least one letter and one number": "Contain at least one letter and one number",
   "Not contain any uppercase letters, spaces, or special characters":  "Not contain any uppercase letters, spaces, or special characters",
-  "Search":  "Search"
+  "Search":  "Search",
+  "Create new Admin":  "Create new Admin",
+  "User Detail":  "User Detail",
+  "Edit":  "Edit",
+  "Enable":  "Enable",
+  "Disable":  "Disable"
 }

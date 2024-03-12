@@ -50,6 +50,7 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
     </p>
     <div className="flex gap-4">
       <FormFieldSelect
+        isFixedValue={props.isFixedValue}
         id={"nationPhoneSelect"}
         isRequired
         value={nationPhone}
@@ -60,6 +61,7 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
       />
       <input
         type="tel"
+        disabled={props.isFixedValue}
         value={localPhone}
         onChange={handleChangePhoneInput}
         onFocus={setShouldShowError.bind(undefined, false)}

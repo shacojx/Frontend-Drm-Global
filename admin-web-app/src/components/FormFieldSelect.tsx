@@ -27,7 +27,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
 
   const statusClassName = shouldShowError ? 'border border-danger bg-red-50' : 'bg-white'
   return <div>
-    <Listbox onChange={onChangeOption}>
+    <Listbox onChange={onChangeOption} disabled={props.isFixedValue}>
       {({ open }) => (
         <>
           {!!props.label && <Listbox.Label className="flex text-cBase font-bold gap-1 mb-2">

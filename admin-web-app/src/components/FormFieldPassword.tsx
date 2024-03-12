@@ -78,6 +78,7 @@ export function FormFieldPassword(props: Props) {
     </div>
     <div className="relative">
       <input
+        disabled={props.isFixedValue}
         type={isDisplayPass ? 'text' : 'password'}
         placeholder={props.placeholder}
         value={props.value}

@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiSearchUserParam, ApiViewUserParam, ViewedUser } from "../api/types";
 import { callApiSearchUser, callApiLViewUser } from "../api/userManagement";
+import { DialogContainer } from "../components/DialogContainer";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
+import { UserDetailAndEdit } from "../components/UserDetailAndEdit";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { extractPhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
-import { DataGrid, GridColDef, GridPaginationModel, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridPaginationModel, GridRowEventLookup, GridValueGetterParams } from '@mui/x-data-grid';
 
 const columns: GridColDef<ViewedUser>[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -36,13 +38,6 @@ const columns: GridColDef<ViewedUser>[] = [
       `${params.row.codePhone || ''} ${params.row.phone || ''}`,
   },
   {
-    field: 'companyType',
-    headerName: 'Company Type',
-    sortable: false,
-    type: 'string',
-    width: 120,
-  },
-  {
     field: 'llcInNation',
     headerName: 'Nation',
     sortable: false,
@@ -65,6 +60,15 @@ const columns: GridColDef<ViewedUser>[] = [
     valueGetter: (params: GridValueGetterParams) =>
       `${params.row.roles[params.rowNode.depth].name || ''}`,
   },
+  {
+    field: 'enable',
+    headerName: 'Status',
+    sortable: false,
+    type: 'string',
+    width: 80,
+    valueGetter: (params: GridValueGetterParams) =>
+      params.row.enable ? 'Enable' : 'Disable',
+  },
 ];
 
 type Props = {}
@@ -80,6 +84,7 @@ export function UsersContent(props: Props) {
     page: 0,
   });
   const [userCount, setUserCount] = useState<number>()
+  const [userClicked, setUserClicked] = useState<ViewedUser>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,7 +98,7 @@ export function UsersContent(props: Props) {
       setUserCount(rawResult.totalElements)
     };
 
-    fetchData();
+    fetchData().catch(e=> console.log(e))
   }, [paginationModel]);
 
   async function handleClickSearch() {
@@ -112,17 +117,31 @@ export function UsersContent(props: Props) {
     }
   }
 
+  function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
+    setUserClicked(params.row)
+  }
+
+  function handleClickCreateNewAdmin() {
+
+  }
+
   return <div className={"w-full grow flex flex-col p-3"}>
     <div
       className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
       <p className={"text-h4 w-full text-start mb-6"}>{translation.t('User Management')}</p>
-      <div className={"w-full flex flex-row justify-start items-end gap-10 mb-4"}>
-        <FormFieldEmail id={"email"} validateCaller={validateCaller} onChange={setEmail} value={email}/>
-        <FormFieldPhoneNumber id={"phone"} validateCaller={validateCaller} onChange={setPhone} value={phone}
-                              placeholder={"Input number"}/>
-        <button onClick={handleClickSearch}
+      <div className={"w-full flex flex-row justify-between items-center gap-10 mb-4"}>
+        <div className={"w-full flex flex-row justify-start items-end gap-10 mb-4"}>
+          <FormFieldEmail id={"email"} validateCaller={validateCaller} onChange={setEmail} value={email}/>
+          <FormFieldPhoneNumber id={"phone"} validateCaller={validateCaller} onChange={setPhone} value={phone}
+                                placeholder={"Input number"}/>
+          <button onClick={handleClickSearch}
+                  className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg">
+            {translation.t('Search')}
+          </button>
+        </div>
+        <button onClick={handleClickCreateNewAdmin}
                 className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg">
-          {translation.t('Search')}
+          {translation.t('Create new Admin')}
         </button>
       </div>
       <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
@@ -134,8 +153,16 @@ export function UsersContent(props: Props) {
           rowCount={userCount || 0}
           paginationModel={paginationModel}
           onPaginationModelChange={(model) => setPaginationModel(model)}
+          onRowClick={handleRowClick}
         />
       </div>
     </div>
+    {userClicked && <DialogContainer isAutoSize handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setUserClicked(undefined)}>
+      <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
+        <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
+          <UserDetailAndEdit userInfo={userClicked} onClose={setUserClicked.bind(undefined, undefined)}/>
+        </div>
+      </div>
+    </DialogContainer>}
   </div>
 }

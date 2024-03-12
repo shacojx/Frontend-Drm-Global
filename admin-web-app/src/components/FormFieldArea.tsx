@@ -27,6 +27,7 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
       </p>
     }
     <textarea
+      disabled={props.isFixedValue}
       value={props.value || ''}
       onChange={handleChange}
       onBlur={setShouldShowError.bind(undefined, !isTextValid)}

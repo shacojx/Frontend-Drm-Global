@@ -23,6 +23,7 @@ export function FormFieldText(props: FormFieldProps<string>) {
     }
     <input
       type="text"
+      disabled={props.isFixedValue}
       value={props.value || ''}
       onChange={handleChange}
       onFocus={setShouldShowError.bind(undefined, false)}

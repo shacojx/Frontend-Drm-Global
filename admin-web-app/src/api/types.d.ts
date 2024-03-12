@@ -2,7 +2,7 @@ import { TransformedResultLogin } from "./account";
 
 export type NationValue = string
 export type CompanyTypeValue = 'LLC' | 'PLC'
-export type EntityEnding = 'LLC' | 'L.L.C' | 'LIMITED LIABILITY COMPANY' | 'PRIVATE LIMITED COMPANY'
+export type EntityEnding = 'LLC' | 'L.L.C' | 'LIMITED LIABILITY COMPANY' | 'PRIVATE LIMITED COMPANY' | ''
 export type Industry = string
 export type NationPhone = string
 export type LocalPhone = string
@@ -115,14 +115,14 @@ export type ApiViewUserParam = {
 }
 export type ViewedUser = {
   id:	number,
-  llcInNation:	string,
+  llcInNation: NationValue,
   username:	string,
   email:	string,
   codePhone:	string,
   phone:	string,
-  companyType:	string,
+  companyType:	CompanyTypeValue,
   companyName:	string,
-  entityEnding:	string,
+  entityEnding:	EntityEnding,
   industry:	string,
   website:	string,
   companyDescription:	string,
@@ -140,3 +140,19 @@ export type RawResultViewUser = {
   totalElements: number,
 }
 
+export type ApiEditUserParam = {
+  "idUser": number,
+  "llcInNation": string,
+  "email": string,
+  "codePhone": string,
+  "phone": string,
+  "companyType": CompanyTypeValue,
+  "companyName": string,
+  "entityEnding": EntityEnding,
+  "industry": string,
+  "website": string,
+  "companyDescription": string,
+  "enable": number,
+  "firstName": string,
+  "lastName": string,
+}

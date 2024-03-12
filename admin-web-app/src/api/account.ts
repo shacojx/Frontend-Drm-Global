@@ -41,12 +41,6 @@ export async function callApiCheckRecoveryCode(body: ApiCheckRecoveryCode) {
   return rawResult
 }
 
-export async function callApiCreateAccount(body: ApiRegisterAccountParam) {
-  const path = 'api/auth/signup'
-  const rawResult = await callApi<RawResultRegisterAccount>('POST', path, body)
-  return rawResult
-}
-
 export async function callApiResetPassword(body: ApiResetPasswordParam) {
   const path = 'api/user/resetpass'
   const rawResult = await callApi<RawResultResetPassword>('PUT', path, body)

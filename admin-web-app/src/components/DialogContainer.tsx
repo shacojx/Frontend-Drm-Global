@@ -6,16 +6,22 @@ type Props = PropsWithChildren<Partial<{
   isCloseOnClickOverlay: boolean,
   isTransparent: boolean,
   isAutoSize: boolean,
+  handleClickOverlay: (shouldOpen: boolean) => void
 }>>
 export function DialogContainer(props: Props) {
   const [open, setOpen] = useState(true)
 
   const cancelButtonRef = useRef(null)
-  const handleClickOverlay = props.isCloseOnClickOverlay ? setOpen : () => {}
+  const handleClickOverlay = props.isCloseOnClickOverlay || !!props.handleClickOverlay
+    ? (shouldOpen: boolean) => {
+      props.handleClickOverlay?.(shouldOpen)
+      setOpen(shouldOpen)
+    }
+    : () => {}
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={handleClickOverlay}>
+      <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={handleClickOverlay}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
