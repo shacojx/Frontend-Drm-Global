@@ -12,7 +12,7 @@ export type ApiLoginParam = {
   username: string,
   password: string,
 }
-export type UserRole = 'ROLE_USER' | 'ROLE_ADMIN'
+export type UserRole = 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_MODERATOR'
 export type RawResultLogin = {
   id: number,
   email: string,
@@ -98,3 +98,45 @@ export type ApiCreateOrderParam = {
   "amount": number,
   "orderType": OrderType,
 }
+
+// ====== User Management ======== //
+
+export type ApiSearchUserParam = {
+  "email": string,
+  "codePhone": NationPhone,
+  "phone": LocalPhone
+}
+
+export type RawResultSearchUser = ViewedUser
+
+export type ApiViewUserParam = {
+  page: number,
+  size: number
+}
+export type ViewedUser = {
+  id:	number,
+  llcInNation:	string,
+  username:	string,
+  email:	string,
+  codePhone:	string,
+  phone:	string,
+  companyType:	string,
+  companyName:	string,
+  entityEnding:	string,
+  industry:	string,
+  website:	string,
+  companyDescription:	string,
+  enable:	number,
+  firstName:	string,
+  lastName:	string,
+  roles: {
+    id: number,
+    name: UserRole
+  }
+}
+export type RawResultViewUser = {
+  content: ViewedUser[],
+  totalPages: number,
+  totalElements: number,
+}
+

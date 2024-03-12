@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { RawResultGetUserProfile } from "../api/types";
+import { ApiSearchUserParam, ApiViewUserParam, ViewedUser } from "../api/types";
+import { callApiSearchUser, callApiLViewUser } from "../api/userManagement";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
-import { RNPhoneValue } from "../services-business/api/generate-api-param/account";
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { extractPhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
+import { DataGrid, GridColDef, GridPaginationModel, GridValueGetterParams } from '@mui/x-data-grid';
 
-// TODO: remove sample data
-const columns: GridColDef<RawResultGetUserProfile & {id: number}>[] = [
+const columns: GridColDef<ViewedUser>[] = [
   { field: 'id', headerName: 'ID', width: 70 },
   {
     field: 'name',
@@ -43,6 +43,13 @@ const columns: GridColDef<RawResultGetUserProfile & {id: number}>[] = [
     width: 120,
   },
   {
+    field: 'llcInNation',
+    headerName: 'Nation',
+    sortable: false,
+    type: 'string',
+    width: 120,
+  },
+  {
     field: 'kycStatus',
     headerName: 'KYC Status',
     sortable: false,
@@ -50,33 +57,14 @@ const columns: GridColDef<RawResultGetUserProfile & {id: number}>[] = [
     width: 120,
   },
   {
-    field: 'llcInNation',
-    headerName: 'Nation',
+    field: 'roles',
+    headerName: 'Role',
     sortable: false,
     type: 'string',
-    width: 120,
+    width: 200,
+    valueGetter: (params: GridValueGetterParams) =>
+      `${params.row.roles[params.rowNode.depth].name || ''}`,
   },
-];
-
-const rows: (RawResultGetUserProfile & {id: number})[] = [
-  {id: 1, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 2, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 3, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 4, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 5, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 6, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 7, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 8, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 9, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 11, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 12, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 13, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 14, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 15, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 16, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 17, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 18, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
-  {id: 19, llcInNation:	"USA", email:	"dev@drm.com", codePhone:"+84", phone:	"12345678", companyType:	"LLC", firstName:	"Hoang", lastName:	"Nguyen Van", kycStatus: "pending",},
 ];
 
 type Props = {}
@@ -86,9 +74,42 @@ export function UsersContent(props: Props) {
   const {validateCaller, validateAll} = useValidateCaller()
   const [email,setEmail] = useState<string>('')
   const [phone, setPhone] = useState<RNPhoneValue | undefined>()
+  const [tableData, setTableData] = useState<ViewedUser[]>([]);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: 10,
+    page: 0,
+  });
+  const [userCount, setUserCount] = useState<number>()
 
-  function handleClickSearch() {
+  useEffect(() => {
+    const fetchData = async () => {
 
+      const param: ApiViewUserParam = {
+        page: paginationModel.page,
+        size: paginationModel.pageSize
+      }
+      const rawResult = await callApiLViewUser(param)
+      setTableData(rawResult.content);
+      setUserCount(rawResult.totalElements)
+    };
+
+    fetchData();
+  }, [paginationModel]);
+
+  async function handleClickSearch() {
+    const {localPhone, nationPhone} = phone
+      ? extractPhone(phone)
+      : {localPhone: '', nationPhone: ''}
+    const param: ApiSearchUserParam = {
+      phone: localPhone,
+      codePhone: nationPhone,
+      email,
+    }
+    const rawResult = await callApiSearchUser(param)
+    if (rawResult) {
+      setTableData([rawResult]);
+      setUserCount(1)
+    }
   }
 
   return <div className={"w-full grow flex flex-col p-3"}>
@@ -104,15 +125,15 @@ export function UsersContent(props: Props) {
           {translation.t('Search')}
         </button>
       </div>
-      <div className={"w-full grow"}>
+      <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
         <DataGrid
-          rows={rows}
+          paginationMode="server"
+          rows={tableData}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {page: 0, pageSize: 10},
-            },
-          }}
+          pageSizeOptions={[10]}
+          rowCount={userCount || 0}
+          paginationModel={paginationModel}
+          onPaginationModelChange={(model) => setPaginationModel(model)}
         />
       </div>
     </div>
