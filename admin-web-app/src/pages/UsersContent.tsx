@@ -9,10 +9,34 @@ import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { UserDetailAndEdit } from "../components/UserDetailAndEdit";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { extractPhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
-import { DataGrid, GridColDef, GridPaginationModel, GridRowEventLookup, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams, GridColDef, GridPaginationModel, GridRowEventLookup, GridValueGetterParams } from '@mui/x-data-grid';
 
 const columns: GridColDef<ViewedUser>[] = [
   { field: 'id', headerName: 'ID', width: 70 },
+  {
+    field: 'roles',
+    headerName: 'Role',
+    sortable: false,
+    type: 'string',
+    width: 200,
+    valueGetter: (params: GridValueGetterParams) =>
+      `${params.row.roles[params.rowNode.depth].name || ''}`,
+  },
+  {
+    field: 'enable',
+    headerName: 'Status',
+    sortable: false,
+    type: 'string',
+    width: 80,
+    valueGetter: (params: GridValueGetterParams) =>
+      params.row.enable ? 'Enable' : 'Disable',
+    cellClassName: (params: GridCellParams) => {
+      if (params.value === 'Enable') {
+        return 'text-success';
+      }
+      return 'text-danger';
+    },
+  },
   {
     field: 'name',
     headerName: 'Full Name',
@@ -52,24 +76,6 @@ const columns: GridColDef<ViewedUser>[] = [
     type: 'string',
     width: 120,
   },
-  {
-    field: 'roles',
-    headerName: 'Role',
-    sortable: false,
-    type: 'string',
-    width: 200,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.roles[params.rowNode.depth].name || ''}`,
-  },
-  {
-    field: 'enable',
-    headerName: 'Status',
-    sortable: false,
-    type: 'string',
-    width: 80,
-    valueGetter: (params: GridValueGetterParams) =>
-      params.row.enable ? 'Enable' : 'Disable',
-  },
 ];
 
 type Props = {}
@@ -81,7 +87,7 @@ export function UsersContent(props: Props) {
   const [phone, setPhone] = useState<RNPhoneValue | undefined>()
   const [tableData, setTableData] = useState<ViewedUser[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    pageSize: 10,
+    pageSize: 25,
     page: 0,
   });
   const [userCount, setUserCount] = useState<number>()
