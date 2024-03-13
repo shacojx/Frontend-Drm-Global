@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CompanyTypeValue, EntityEnding, Industry, NationValue, ViewedUser } from "../api/types";
-import { callApiEditAccount } from "../api/userManagement";
+import { ApiDeactiveParam, CompanyTypeValue, EntityEnding, Industry, NationValue, ViewedUser } from "../api/types";
+import { callApiDeactiveAccount, callApiEditAccount } from "../api/userManagement";
 import { FormFieldTextArea } from "../components/FormFieldArea";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
@@ -18,7 +18,8 @@ import { generateEditUserParam } from "../services-business/api/generate-api-par
 
 type Props = {
   userInfo: ViewedUser,
-  onClose: () => void
+  onClose: () => void,
+  onEdit: () => void,
 }
 
 export function UserDetailAndEdit(props: Props) {
@@ -71,9 +72,10 @@ export function UserDetailAndEdit(props: Props) {
         companyDescription,
       )
 
-      const result = await callApiEditAccount(body)
+      await callApiEditAccount(body)
       setIsSaving(false)
       setIsViewMode(true)
+      props.onEdit()
     } catch (e: unknown) {
       setIsSaving(false)
       setErrorMessage(e?.toString())
@@ -82,30 +84,16 @@ export function UserDetailAndEdit(props: Props) {
   }
 
   async function changeEnableUser(isEnable: boolean) {
-    if (!validateAll()) {
-      return
-    }
     setErrorMessage('')
     setIsRequestingEnableOrDisable(true)
     try {
-      const body = generateEditUserParam(
-        props.userInfo.id,
-        isEnable ? 1 : 0,
-        nation,
-        email,
-        phone,
-        companyType,
-        firstName,
-        lastName,
-        companyName,
-        entityEnding,
-        industry,
-        website,
-        companyDescription,
-      )
-
-      const result = await callApiEditAccount(body)
+      const body: ApiDeactiveParam = {
+        idUser: props.userInfo.id,
+        enable: isEnable ? 1 : 0
+      }
+      await callApiDeactiveAccount(body)
       setIsRequestingEnableOrDisable(false)
+      props.onEdit()
     } catch (e: unknown) {
       setIsRequestingEnableOrDisable(false)
       setErrorMessage(e?.toString())

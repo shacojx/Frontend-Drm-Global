@@ -149,5 +149,7 @@
   "User Detail":  "User Detail",
   "Edit":  "Edit",
   "Enable":  "Enable",
-  "Disable":  "Disable"
+  "Disable":  "Disable",
+  "Role":  "Role",
+  "Create Admin Account":  "Create Admin Account"
 }

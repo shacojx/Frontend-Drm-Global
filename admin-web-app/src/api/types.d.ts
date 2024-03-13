@@ -12,7 +12,8 @@ export type ApiLoginParam = {
   username: string,
   password: string,
 }
-export type UserRole = 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_MODERATOR'
+export type AccountRole = 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_MODERATOR'
+export type AdminRoleValue = 'admin' | 'mod'
 export type RawResultLogin = {
   id: number,
   email: string,
@@ -20,7 +21,7 @@ export type RawResultLogin = {
   refreshToken: string,
   type: string,
   username: string,
-  roles: UserRole[],
+  roles: AccountRole[],
 }
 export type TransformedResultLogin = RawResultLogin
 
@@ -54,6 +55,17 @@ export type ApiRegisterAccountParam = {
   "companyDescription": string,
 }>
 export type RawResultRegisterAccount = Omit<ApiRegisterAccountParam, 'password' | 'rePassword'>
+
+export type ApiRegisterAdminAccountParam = {
+  "email": string,
+  "codePhone": string,
+  "phone": string,
+  "role": string,
+  "password": string,
+  "firstName": string,
+  "lastName": string,
+}
+export type RawResultRegisterAdminAccount = {}
 
 export type ApiResetPasswordParam = {
   newPass: string,
@@ -131,7 +143,7 @@ export type ViewedUser = {
   lastName:	string,
   roles: {
     id: number,
-    name: UserRole
+    name: AccountRole
   }
 }
 export type RawResultViewUser = {
@@ -155,4 +167,11 @@ export type ApiEditUserParam = {
   "enable": number,
   "firstName": string,
   "lastName": string,
+}
+
+export type ApiDeactiveParam = {
+  "idUser": number,
+  "enable": number,
+  //enable = 1 là Active user
+  //enable = 0 là DeActive user
 }

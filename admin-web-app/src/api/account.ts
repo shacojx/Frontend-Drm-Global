@@ -5,11 +5,11 @@ import {
   ApiChangeUserProfile,
   ApiCheckRecoveryCode,
   ApiLoginParam,
-  ApiRegisterAccountParam, ApiResetPasswordParam,
+  ApiRegisterAccountParam, ApiRegisterAdminAccountParam, ApiResetPasswordParam,
   ApiSendRecoveryCode,
   RawResultCheckRecoveryCode,
   RawResultGetUserProfile,
-  RawResultLogin, RawResultRegisterAccount, RawResultResetPassword,
+  RawResultLogin, RawResultRegisterAccount, RawResultRegisterAdminAccount, RawResultResetPassword,
   RawResultSendRecoveryCode,
   TransformedResultLogin
 } from "./types";
@@ -21,6 +21,12 @@ export async function callApiLogin(body: ApiLoginParam): Promise<TransformedResu
     throw new Error('This Account has no permission to access admin site!')
   }
   return transformLoginResult(rawResult)
+}
+
+export async function callApiCreateAdminAccount(body: ApiRegisterAdminAccountParam) {
+  const path = 'api/admin/create-user'
+  const rawResult = await callApi<RawResultRegisterAdminAccount>('POST', path, body, true)
+  return rawResult
 }
 
 export async function callApiLogout() {

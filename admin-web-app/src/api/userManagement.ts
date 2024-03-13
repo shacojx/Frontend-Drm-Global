@@ -1,5 +1,6 @@
 import { callApi } from "../services-base/api";
 import {
+  ApiDeactiveParam,
   ApiEditUserParam,
   ApiSearchUserParam,
   ApiViewUserParam,
@@ -21,7 +22,12 @@ export async function callApiLViewUser(param: ApiViewUserParam) {
 
 export async function callApiEditAccount(body: ApiEditUserParam) {
   const path = 'api/admin/update-user'
-  const rawResult = await callApi<{}>('POST', path, body)
+  const rawResult = await callApi<unknown>('POST', path, body, true)
   return rawResult
 }
 
+export async function callApiDeactiveAccount(body: ApiDeactiveParam) {
+  const path = 'api/admin/active-user'
+  const rawResult = await callApi<unknown>('POST', path, body, true)
+  return rawResult
+}

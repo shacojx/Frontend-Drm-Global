@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ApiSearchUserParam, ApiViewUserParam, ViewedUser } from "../api/types";
 import { callApiSearchUser, callApiLViewUser } from "../api/userManagement";
 import { DialogContainer } from "../components/DialogContainer";
+import { FormCreateAdminAccount } from "../components/FormCreateAdminAccount";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { UserDetailAndEdit } from "../components/UserDetailAndEdit";
@@ -85,10 +86,10 @@ export function UsersContent(props: Props) {
   });
   const [userCount, setUserCount] = useState<number>()
   const [userClicked, setUserClicked] = useState<ViewedUser>();
+  const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
   useEffect(() => {
     const fetchData = async () => {
-
       const param: ApiViewUserParam = {
         page: paginationModel.page,
         size: paginationModel.pageSize
@@ -121,8 +122,26 @@ export function UsersContent(props: Props) {
     setUserClicked(params.row)
   }
 
-  function handleClickCreateNewAdmin() {
+  async function handleEdit() {
+    const param: ApiViewUserParam = {
+      page: paginationModel.page,
+      size: paginationModel.pageSize
+    }
+    const rawResult = await callApiLViewUser(param)
+    setTableData(rawResult.content);
+    const updatedUserClicked = rawResult.content.find(user => user.id === userClicked?.id)
+    if (updatedUserClicked) {
+      setUserClicked(updatedUserClicked)
+    }
+  }
 
+  async function handleCreated() {
+    const param: ApiViewUserParam = {
+      page: paginationModel.page,
+      size: paginationModel.pageSize
+    }
+    const rawResult = await callApiLViewUser(param)
+    setTableData(rawResult.content);
   }
 
   return <div className={"w-full grow flex flex-col p-3"}>
@@ -139,7 +158,7 @@ export function UsersContent(props: Props) {
             {translation.t('Search')}
           </button>
         </div>
-        <button onClick={handleClickCreateNewAdmin}
+        <button onClick={setShouldShowCreateUser.bind(undefined, true)}
                 className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg">
           {translation.t('Create new Admin')}
         </button>
@@ -160,7 +179,14 @@ export function UsersContent(props: Props) {
     {userClicked && <DialogContainer isAutoSize handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setUserClicked(undefined)}>
       <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
         <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
-          <UserDetailAndEdit userInfo={userClicked} onClose={setUserClicked.bind(undefined, undefined)}/>
+          <UserDetailAndEdit userInfo={userClicked} onClose={setUserClicked.bind(undefined, undefined)} onEdit={handleEdit} />
+        </div>
+      </div>
+    </DialogContainer>}
+    {shouldShowCreateUser && <DialogContainer isAutoSize handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setShouldShowCreateUser(false)}>
+      <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
+        <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
+          <FormCreateAdminAccount onCreated={handleCreated} />
         </div>
       </div>
     </DialogContainer>}
