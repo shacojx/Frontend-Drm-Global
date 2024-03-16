@@ -11,73 +11,6 @@ import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { extractPhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
 import { DataGrid, GridCellParams, GridColDef, GridPaginationModel, GridRowEventLookup, GridValueGetterParams } from '@mui/x-data-grid';
 
-const columns: GridColDef<ViewedUser>[] = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  {
-    field: 'roles',
-    headerName: 'Role',
-    sortable: false,
-    type: 'string',
-    width: 200,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.roles[params.rowNode.depth].name || ''}`,
-  },
-  {
-    field: 'enable',
-    headerName: 'Status',
-    sortable: false,
-    type: 'string',
-    width: 80,
-    valueGetter: (params: GridValueGetterParams) =>
-      params.row.enable ? 'Enable' : 'Disable',
-    cellClassName: (params: GridCellParams) => {
-      if (params.value === 'Enable') {
-        return 'text-success';
-      }
-      return 'text-danger';
-    },
-  },
-  {
-    field: 'name',
-    headerName: 'Full Name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    sortable: false,
-    type: 'string',
-    width: 200,
-  },
-  {
-    field: 'phone',
-    headerName: 'Phone',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.codePhone || ''} ${params.row.phone || ''}`,
-  },
-  {
-    field: 'llcInNation',
-    headerName: 'Nation',
-    sortable: false,
-    type: 'string',
-    width: 120,
-  },
-  {
-    field: 'kycStatus',
-    headerName: 'KYC Status',
-    sortable: false,
-    type: 'string',
-    width: 120,
-  },
-];
-
 type Props = {}
 
 export function UsersContent(props: Props) {
@@ -149,6 +82,73 @@ export function UsersContent(props: Props) {
     const rawResult = await callApiLViewUser(param)
     setTableData(rawResult.content);
   }
+// TODO: add i18n for columns
+  const columns: GridColDef<ViewedUser>[] = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    {
+      field: 'roles',
+      headerName: 'Role',
+      sortable: false,
+      type: 'string',
+      width: 200,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.roles[params.rowNode.depth].name || ''}`,
+    },
+    {
+      field: 'enable',
+      headerName: 'Status',
+      sortable: false,
+      type: 'string',
+      width: 80,
+      valueGetter: (params: GridValueGetterParams) =>
+        params.row.enable ? 'Enable' : 'Disable',
+      cellClassName: (params: GridCellParams) => {
+        if (params.value === 'Enable') {
+          return 'text-success';
+        }
+        return 'text-danger';
+      },
+    },
+    {
+      field: 'name',
+      headerName: 'Full Name',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      sortable: false,
+      type: 'string',
+      width: 200,
+    },
+    {
+      field: 'phone',
+      headerName: 'Phone',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.codePhone || ''} ${params.row.phone || ''}`,
+    },
+    {
+      field: 'llcInNation',
+      headerName: 'Nation',
+      sortable: false,
+      type: 'string',
+      width: 120,
+    },
+    {
+      field: 'kycStatus',
+      headerName: 'KYC Status',
+      sortable: false,
+      type: 'string',
+      width: 120,
+    },
+  ];
 
   return <div className={"w-full grow flex flex-col p-3"}>
     <div
@@ -174,7 +174,7 @@ export function UsersContent(props: Props) {
           paginationMode="server"
           rows={tableData}
           columns={columns}
-          pageSizeOptions={[10]}
+          pageSizeOptions={[25]}
           rowCount={userCount || 0}
           paginationModel={paginationModel}
           onPaginationModelChange={(model) => setPaginationModel(model)}

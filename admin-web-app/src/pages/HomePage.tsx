@@ -7,6 +7,7 @@ import {
   IconUser,
 } from "../components/icons";
 import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
+import { KycContent } from "./KycContent";
 import { MyAccountContent } from "./MyAccountContent";
 import { ServicesContent } from "./ServicesContent";
 import { UsersContent } from "./UsersContent";
@@ -62,6 +63,7 @@ export function HomePage() {
     <PageLayoutLeftSideTab tabOptions={Object.values(TabOptionGroup)} onClickTabOption={handleChangeTab} tabIdSelected={homeContent} >
       <div className={"w-full h-full flex flex-col"}>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
+          {homeContent === TabOptionGroup.KYCRequest.id && <KycContent key={TabOptionGroup.KYCRequest.id} />}
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.user.id && <UsersContent key={TabOptionGroup.user.id} />}
           {homeContent === 'myAccount' && <MyAccountContent key="myAccount" />}

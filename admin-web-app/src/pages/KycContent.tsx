@@ -8,32 +8,35 @@ import {
 } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ViewedUser } from "../api/types";
 
 type Props = {}
 
-export function ServicesContent(props: Props) {
+export function KycContent(props: Props) {
   const translation = useTranslation()
-  const [servicesCount, setServicesCount] = useState<number>()
-  const [tableData, setTableData] = useState<ViewedUser[]>([]);
+  const [kycCount, setKycCount] = useState<number>()
+  const sampleRow = {
+    id: 1,
+    kycStatus: 1,
+  }
+  const [tableData, setTableData] = useState([sampleRow]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
 
   // TODO: add i18n for columns
-  const columns: GridColDef<ViewedUser>[] = [
+  const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
-      field: 'status',
+      field: 'kycStatus',
       headerName: 'Status',
       sortable: false,
       type: 'string',
       width: 80,
       valueGetter: (params: GridValueGetterParams) =>
-        params.row.enable ? 'Active' : 'Inactive',
+        params.row.kycStatus ? 'Enable' : 'Disable',
       cellClassName: (params: GridCellParams) => {
-        if (params.value === 'Active') {
+        if (params.value === 'Enable') {
           return 'text-success';
         }
         return 'text-danger';
@@ -65,31 +68,33 @@ export function ServicesContent(props: Props) {
         `${params.row.codePhone || ''} ${params.row.phone || ''}`,
     },
     {
-      field: '',
-      headerName: 'No. of step',
+      field: 'requestAt',
+      headerName: 'Requested on',
       sortable: false,
       type: 'string',
       width: 120,
     },
     {
-      field: 'createdAt',
-      headerName: 'Created At',
+      field: 'photos',
+      headerName: 'Photos',
       sortable: false,
       type: 'string',
       width: 120,
     },
     {
-      field: '',
+      field: 'actions',
       headerName: 'Actions',
       sortable: false,
       type: 'string',
-      width: 120,
+      width: 200,
       renderCell: (params: GridRenderCellParams) => {
-        return <div className={"p-2 bg-primary_light rounded-lg"}>Edit</div>
+        return <div className={"flex flex-row gap-3"}>
+          <div className={"p-1 bg-red-100 text-danger"}>Reject</div>
+          <div>Approved</div>
+        </div>
       }
     },
   ];
-
 
   return <div className={"w-full grow flex flex-col p-3"}>
     <div
@@ -101,7 +106,7 @@ export function ServicesContent(props: Props) {
           rows={tableData}
           columns={columns}
           pageSizeOptions={[25]}
-          rowCount={servicesCount || 0}
+          rowCount={kycCount || 0}
           paginationModel={paginationModel}
           onPaginationModelChange={(model) => setPaginationModel(model)}
         />
