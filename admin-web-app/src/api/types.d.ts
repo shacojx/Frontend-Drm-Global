@@ -175,3 +175,45 @@ export type ApiDeactiveParam = {
   //enable = 1 là Active user
   //enable = 0 là DeActive user
 }
+
+// ====== KYC Management ======== //
+
+export type ApiGetKycParam = {
+  page: number,
+  size: number,
+}
+
+export type KycDetail = {
+  "id": number,
+  "llcInNation": string,
+  "username": string,
+  "email": string,
+  "codePhone": string,
+  "phone": string,
+  "companyType": string,
+  "companyName": string,
+  "entityEnding": string,
+  "industry": string,
+  "website": string,
+  "companyDescription": string,
+  "enable": number,
+  "firstName": string,
+  "lastName": string,
+  "avatarImage": string | null,
+  "kycStatus": string,
+  "passport": string | null,
+  "pictureHoldPassport": string | null,
+  "requestKYCAt": string,
+  "roles": [
+    {
+      "id": number,
+      "name": AccountRole
+    }
+  ]
+}
+
+export type RawResultGetKyc = {
+  content: KycDetail[],
+  totalPages: number,
+  totalElements: number,
+}

@@ -1,117 +1,108 @@
 import {
   DataGrid,
-  GridCellParams,
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
   GridValueGetterParams
 } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { callApiGetKyc } from "../api/kycManagement";
+import { ApiGetKycParam, KycDetail, RawResultGetKyc } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
 import { generateFormatDate } from "../services-ui/date";
 
 type Props = {}
-
+const sampleRow:RawResultGetKyc = {
+  "content": [
+    {
+      "id": 2,
+      "llcInNation": "United States",
+      "username": "shacojx0011@gmail.com",
+      "email": "shacojx0011@gmail.com",
+      "codePhone": "+84",
+      "phone": "383052825",
+      "companyType": "Buon lau",
+      "companyName": "",
+      "entityEnding": "",
+      "industry": "",
+      "website": "",
+      "companyDescription": "",
+      "enable": 1,
+      "firstName": "Sample",
+      "lastName": "Row",
+      "avatarImage": null,
+      "kycStatus": "In-progress",
+      "passport": null,
+      "pictureHoldPassport": null,
+      "requestKYCAt": "2024-03-17T09:03:41.000+00:00",
+      "roles": [
+        {
+          "id": 1,
+          "name": "ROLE_USER"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "llcInNation": "USA",
+      "username": "toanvv1@gmail.com",
+      "email": "toanvv1@gmail.com",
+      "codePhone": "+84",
+      "phone": "383052877",
+      "companyType": "LLC",
+      "companyName": "LuxPay",
+      "entityEnding": "demo entityEnding",
+      "industry": "Demo industry",
+      "website": "luxpay.com",
+      "companyDescription": "công ty thanh toán tiền tệ",
+      "enable": 1,
+      "firstName": "Sample",
+      "lastName": "Row",
+      "avatarImage": "picture-1-1710614359562.jpg",
+      "kycStatus": "In-progress",
+      "passport": "passport-1-1710664838998.jpg",
+      "pictureHoldPassport": "picture-1-1710664839017.jpg",
+      "requestKYCAt": "2024-03-17T08:40:39.000+00:00",
+      "roles": [
+        {
+          "id": 3,
+          "name": "ROLE_ADMIN"
+        }
+      ]
+    }
+  ],
+  "totalPages": 2,
+  "totalElements": 4,
+}
 export function KycContent(props: Props) {
   const translation = useTranslation()
-  const [kycCount, setKycCount] = useState<number>()
-  const sampleRow = {
-    "content": [
-      {
-        "id": 2,
-        "llcInNation": "United States",
-        "username": "shacojx0011@gmail.com",
-        "email": "shacojx0011@gmail.com",
-        "codePhone": "+84",
-        "phone": "383052825",
-        "companyType": "Buon lau",
-        "companyName": "",
-        "entityEnding": "",
-        "industry": "",
-        "website": "",
-        "companyDescription": "",
-        "enable": 1,
-        "firstName": "Toan",
-        "lastName": "Vu",
-        "avatarImage": null,
-        "kycStatus": "In-progress",
-        "passport": null,
-        "pictureHoldPassport": null,
-        "requestKYCAt": "2024-03-17T09:03:41.000+00:00",
-        "roles": [
-          {
-            "id": 1,
-            "name": "ROLE_USER"
-          }
-        ]
-      },
-      {
-        "id": 1,
-        "llcInNation": "USA",
-        "username": "toanvv1@gmail.com",
-        "email": "toanvv1@gmail.com",
-        "codePhone": "+84",
-        "phone": "383052877",
-        "companyType": "LLC",
-        "companyName": "LuxPay",
-        "entityEnding": "demo entityEnding",
-        "industry": "Demo industry",
-        "website": "luxpay.com",
-        "companyDescription": "công ty thanh toán tiền tệ",
-        "enable": 1,
-        "firstName": "Teo",
-        "lastName": "Vu Van",
-        "avatarImage": "picture-1-1710614359562.jpg",
-        "kycStatus": "In-progress",
-        "passport": "passport-1-1710664838998.jpg",
-        "pictureHoldPassport": "picture-1-1710664839017.jpg",
-        "requestKYCAt": "2024-03-17T08:40:39.000+00:00",
-        "roles": [
-          {
-            "id": 3,
-            "name": "ROLE_ADMIN"
-          }
-        ]
-      }
-    ],
-    "pageable": {
-      "sort": {
-        "empty": true,
-        "unsorted": true,
-        "sorted": false
-      },
-      "offset": 0,
-      "pageNumber": 0,
-      "pageSize": 2,
-      "unpaged": false,
-      "paged": true
-    },
-    "last": false,
-    "totalPages": 2,
-    "totalElements": 4,
-    "size": 2,
-    "number": 0,
-    "sort": {
-      "empty": true,
-      "unsorted": true,
-      "sorted": false
-    },
-    "first": true,
-    "numberOfElements": 2,
-    "empty": false
-  }
-  const [tableData, setTableData] = useState(sampleRow.content);
+  const [tableData, setTableData] = useState<KycDetail[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
+  const [kycCount, setKycCount] = useState<number>()
   const [shouldShowConfirmDialog, setShouldShowConfirmDialog] = useState<boolean>()
   const [shouldShowPictureDialog, setShouldShowPictureDialog] = useState<boolean>()
   const [isApproved, setIsApproved] = useState<boolean>()
   const [idSelected, setIdSelected] = useState<number>()
   const [pictureIndexInit, setPictureIndexInit] = useState<number>(0)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const param: ApiGetKycParam = {
+        page: paginationModel.page,
+        size: paginationModel.pageSize
+      }
+      const rawResult = await callApiGetKyc(param)
+      setTableData([...rawResult.content, ...sampleRow.content]);
+      setKycCount(rawResult.totalElements)
+    };
+
+    fetchData().catch(e=> console.log(e))
+  }, [paginationModel]);
 
   function handleClickReject(id: number) {
     setIsApproved(false)
@@ -133,6 +124,11 @@ export function KycContent(props: Props) {
 
   function handleConfirm() {
     // TODO: implement
+    try {
+
+    } catch (e) {
+      console.error(e)
+    }
     setIsApproved(undefined)
     setShouldShowConfirmDialog(false)
   }
