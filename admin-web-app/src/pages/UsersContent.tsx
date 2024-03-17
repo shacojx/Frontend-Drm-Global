@@ -83,7 +83,7 @@ export function UsersContent(props: Props) {
     setTableData(rawResult.content);
   }
 // TODO: add i18n for columns
-  const columns: GridColDef<ViewedUser>[] = [
+  const userColumns: GridColDef<ViewedUser>[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
       field: 'roles',
@@ -173,7 +173,7 @@ export function UsersContent(props: Props) {
         <DataGrid
           paginationMode="server"
           rows={tableData}
-          columns={columns}
+          columns={userColumns}
           pageSizeOptions={[25]}
           rowCount={userCount || 0}
           paginationModel={paginationModel}

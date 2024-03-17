@@ -151,5 +151,10 @@
   "Enable":  "Enable",
   "Disable":  "Disable",
   "Role":  "Role",
-  "Create Admin Account":  "Create Admin Account"
+  "Create Admin Account":  "Create Admin Account",
+  "Services Management":  "Services Management",
+  "KYC Management":  "KYC Management",
+  "Approve KYC Request?":  "Approve KYC Request?",
+  "Reject KYC Request?":  "Reject KYC Request?",
+  "This action cannot be undone":  "This action cannot be undone"
 }

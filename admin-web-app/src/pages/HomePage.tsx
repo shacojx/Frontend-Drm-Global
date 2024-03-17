@@ -52,7 +52,7 @@ const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
 }
 
 export function HomePage() {
-  const [homeContent, setHomeContent] = useState<HomeContent>('user')
+  const [homeContent, setHomeContent] = useState<HomeContent>('KYCRequest')
   const openCallerRef = useRef<()=>void>(()=>{})
 
   function handleChangeTab(tabId: HomeContent) {
@@ -61,8 +61,8 @@ export function HomePage() {
 
   return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
     <PageLayoutLeftSideTab tabOptions={Object.values(TabOptionGroup)} onClickTabOption={handleChangeTab} tabIdSelected={homeContent} >
-      <div className={"w-full h-full flex flex-col"}>
-        <div className={"w-full flex grow relative overflow-y-scroll"}>
+      <div className={"w-full h-full flex flex-col overflow-x-hidden"}>
+        <div className={"w-full flex grow relative overflow-y-scroll overflow-x-hidden"}>
           {homeContent === TabOptionGroup.KYCRequest.id && <KycContent key={TabOptionGroup.KYCRequest.id} />}
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.user.id && <UsersContent key={TabOptionGroup.user.id} />}

@@ -50,7 +50,8 @@ function RequiredLoggedIn(props: PropsWithChildren) {
 export const router = createBrowserRouter([
   {
     path: RoutePaths.home,
-    element: <RequiredLoggedIn><HomePage /></RequiredLoggedIn>,
+    // element: <RequiredLoggedIn><HomePage /></RequiredLoggedIn>,
+    element: <><HomePage /></>,
   },
   {
     path: RoutePaths.login,

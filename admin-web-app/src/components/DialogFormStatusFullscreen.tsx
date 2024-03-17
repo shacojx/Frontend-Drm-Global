@@ -48,3 +48,47 @@ export function DialogFailureFullscreen(props: Props) {
     </div>
   </DialogContainer>
 }
+
+type ConfirmProps = {
+  title: string,
+  content: string,
+  onCancel: () => void,
+  onConfirm: () => void,
+  onClose: () => void,
+}
+export function DialogConfirmFullScreen(props: ConfirmProps) {
+  const translation = useTranslation()
+
+  function handleClickCancel() {
+    props.onCancel()
+  }
+
+  function handleClickConfirm() {
+    props.onConfirm()
+  }
+
+  return <DialogContainer isAutoSize isCloseOnClickOverlay handleClickOverlay={props.onClose}>
+    <div className="w-full max-w-[400px] justify-center items-center py-8 px-4 flex flex-col">
+      <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
+        <div className={"space-y-2"}>
+          {props.title && <p className={"text-h4 text-center"}>{translation.t(props.title)}</p>}
+          {props.content && <p className={"text-cSm text-center"}>{translation.t(props.content)}</p>}
+        </div>
+        <div className={"flex flex-row gap-4"}>
+          <button
+            className="px-4 py-2 flex justify-center items-center gap-2 bg-gray-400 text-white font-semibold rounded-lg"
+            onClick={handleClickCancel}
+          >
+            <span>{translation.t('Cancel')}</span>
+          </button>
+          <button
+            className="px-4 py-2 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            onClick={handleClickConfirm}
+          >
+            <span>{translation.t('Confirm')}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </DialogContainer>
+}

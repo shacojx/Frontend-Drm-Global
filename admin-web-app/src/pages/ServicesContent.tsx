@@ -3,7 +3,6 @@ import {
   GridCellParams,
   GridColDef,
   GridPaginationModel,
-  GridRenderCellParams,
   GridValueGetterParams
 } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -22,14 +21,14 @@ export function ServicesContent(props: Props) {
   });
 
   // TODO: add i18n for columns
-  const columns: GridColDef<ViewedUser>[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
+  const serviceColumns: GridColDef<ViewedUser>[] = [
+    { field: 'id', headerName: 'ID', width: 120 },
     {
       field: 'status',
       headerName: 'Status',
       sortable: false,
       type: 'string',
-      width: 80,
+      width: 120,
       valueGetter: (params: GridValueGetterParams) =>
         params.row.enable ? 'Active' : 'Inactive',
       cellClassName: (params: GridCellParams) => {
@@ -40,53 +39,59 @@ export function ServicesContent(props: Props) {
       },
     },
     {
-      field: 'name',
-      headerName: 'Full Name',
-      description: 'This column has a value getter and is not sortable.',
+      field: 'kycStatus',
+      headerName: 'KYC',
       sortable: false,
+      width: 120,
+    },
+    {
+      field: 'corporationProfile',
+      headerName: 'Corporation profile',
+      sortable: false,
+      type: 'string',
+      width: 150,
+    },
+    {
+      field: 'payment',
+      headerName: 'Payment',
+      sortable: false,
+      type: 'string',
+      width: 120,
+    },
+    {
+      field: 'serviceName',
+      headerName: 'Service Name',
+      sortable: false,
+      type: 'string',
       width: 160,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+    {
+      field: 'customerName',
+      headerName: 'Customer Name',
+      sortable: false,
+      type: 'string',
+      width: 160,
+    },
+    {
+      field: 'phone',
+      headerName: 'Phone number',
+      sortable: false,
+      type: 'string',
+      width: 120,
     },
     {
       field: 'email',
       headerName: 'Email',
       sortable: false,
       type: 'string',
-      width: 200,
-    },
-    {
-      field: 'phone',
-      headerName: 'Phone',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.codePhone || ''} ${params.row.phone || ''}`,
-    },
-    {
-      field: '',
-      headerName: 'No. of step',
-      sortable: false,
-      type: 'string',
       width: 120,
     },
     {
-      field: 'createdAt',
-      headerName: 'Created At',
+      field: 'pic',
+      headerName: 'PIC',
       sortable: false,
       type: 'string',
       width: 120,
-    },
-    {
-      field: '',
-      headerName: 'Actions',
-      sortable: false,
-      type: 'string',
-      width: 120,
-      renderCell: (params: GridRenderCellParams) => {
-        return <div className={"p-2 bg-primary_light rounded-lg"}>Edit</div>
-      }
     },
   ];
 
@@ -94,12 +99,12 @@ export function ServicesContent(props: Props) {
   return <div className={"w-full grow flex flex-col p-3"}>
     <div
       className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
-      <p className={"text-h4 w-full text-start mb-6"}>{translation.t('User Management')}</p>
+      <p className={"text-h4 w-full text-start mb-6"}>{translation.t('Services Management')}</p>
       <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
         <DataGrid
           paginationMode="server"
           rows={tableData}
-          columns={columns}
+          columns={serviceColumns}
           pageSizeOptions={[25]}
           rowCount={servicesCount || 0}
           paginationModel={paginationModel}
