@@ -51,7 +51,7 @@ export const router = createBrowserRouter([
   {
     path: RoutePaths.home,
     // element: <RequiredLoggedIn><HomePage /></RequiredLoggedIn>,
-    element: <><HomePage /></>,
+    element: <RequiredLoggedIn><HomePage /></RequiredLoggedIn>,
   },
   {
     path: RoutePaths.login,

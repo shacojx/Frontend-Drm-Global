@@ -217,19 +217,19 @@ export function KycContent(props: Props) {
       headerName: 'Actions',
       sortable: false,
       type: 'string',
-      width: 300,
+      width: 200,
       renderCell: (params: GridRenderCellParams) => {
         return <div className={"flex flex-row gap-3"}>
-          <div onClick={handleClickReject.bind(undefined, params.row.id)}
+          <button onClick={handleClickReject.bind(undefined, params.row.id)}
                className={"py-2 px-3 rounded-lg cursor-pointer bg-red-100 hover:bg-red-200 text-danger"}
           >
             Reject
-          </div>
-          <div onClick={handleClickApproved.bind(undefined, params.row.id)}
+          </button>
+          <button onClick={handleClickApproved.bind(undefined, params.row.id)}
                className={"py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success"}
           >
             Approved
-          </div>
+          </button>
         </div>
       }
     },
