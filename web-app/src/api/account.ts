@@ -6,8 +6,8 @@ import {
   ApiCheckRecoveryCode,
   ApiLoginParam,
   ApiRegisterAccountParam, ApiResetPasswordParam,
-  ApiSendRecoveryCode,
-  RawResultCheckRecoveryCode,
+  ApiSendRecoveryCode, ApiVerifyPhone,
+  RawResultCheckRecoveryCode, RawResultEmpty,
   RawResultGetUserProfile,
   RawResultLogin, RawResultRegisterAccount, RawResultResetPassword,
   RawResultSendRecoveryCode,
@@ -35,6 +35,24 @@ export async function callApiSendRecoveryCode(body: ApiSendRecoveryCode) {
 export async function callApiCheckRecoveryCode(body: ApiCheckRecoveryCode) {
   const path = 'api/user/submitotp'
   const rawResult = await callApi<RawResultCheckRecoveryCode>('POST', path, body)
+  return rawResult
+}
+
+export async function callApiVerifyEmail(email: string) {
+  const path = 'api/public/checkemail'
+  const rawResult = await callApi<RawResultEmpty>('POST', path, {email})
+  return rawResult
+}
+
+export async function callApiVerifyPhone(body: ApiVerifyPhone) {
+  const path = 'api/public/checkphone'
+  const rawResult = await callApi<RawResultEmpty>('POST', path, body)
+  return rawResult
+}
+
+export async function callApiSendEmailOTP(body: ApiCheckRecoveryCode) {
+  const path = 'api/user/verifyemail'
+  const rawResult = await callApi<RawResultEmpty>('POST', path, body)
   return rawResult
 }
 

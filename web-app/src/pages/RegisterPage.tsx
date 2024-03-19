@@ -11,11 +11,12 @@ import {
 } from "../components/DialogFormStatusFullscreen";
 import { FormFieldTextArea } from "../components/FormFieldArea";
 import { FormFieldEmail } from "../components/FormFieldEmail";
+import { FormFieldOtp } from "../components/FormFieldOtp";
 import { FormFieldPassword } from "../components/FormFieldPassword";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { FormFieldSelect } from "../components/FormFieldSelect";
 import { FormFieldText } from "../components/FormFieldText";
-import { IconAddCircle, IconArrowLeft } from "../components/icons";
+import { IconAddCircle, IconArrowLeft, IconSpinner } from "../components/icons";
 import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "../constants/SelectionOptions";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
@@ -46,6 +47,9 @@ export function RegisterPage() {
   const [password, setPassword] = useState<string>('')
   const [rePassword, setRePassword] = useState<string>('')
 
+  // step 5
+  const [emailOtp, setEmailOtp] = useState<string>('')
+
   const [status, setStatus] = useState<FormStatus>('typing')
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
 
@@ -53,8 +57,9 @@ export function RegisterPage() {
   const AccountInformationStepIndex = 2
   const CompanyInformationStepIndex = 3
   const CreateAccountStepIndex = 4
+  const EnterOtpStepIndex = 5
   const FirstStep = SelectNationStepIndex
-  const LastStep = CreateAccountStepIndex
+  const LastStep = EnterOtpStepIndex
 
   function handleClickNextStep() {
     if (stepIndex < LastStep) {
@@ -91,6 +96,7 @@ export function RegisterPage() {
       lastName,
       password,
       rePassword,
+      emailOtp,
       companyName,
       entityEnding,
       industry,
@@ -162,12 +168,20 @@ export function RegisterPage() {
     }
     {stepIndex === CreateAccountStepIndex &&
       <CreateAccountStep
-        onClickCreateAccount={handleClickCreateAccount}
+        onClickCreateAccount={handleClickNextStep}
         onClickPreviousStep={handleClickBackStep}
         password={password}
         setPassword={setPassword}
         rePassword={rePassword}
         setRePassword={setRePassword}
+      />
+    }
+    {stepIndex === EnterOtpStepIndex &&
+      <EmailOtpStep
+        email={email}
+        onChangeOtp={setEmailOtp}
+        onClickVerifyAccount={handleClickCreateAccount}
+        onClickPreviousStep={handleClickBackStep}
       />
     }
     {status === 'requesting' &&
@@ -440,6 +454,54 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           <button onClick={props.onClickPreviousStep}
                   className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
             <IconArrowLeft />
+            <span>{translation.t('Previous step')}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </DialogContainer>
+}
+
+type Props = {
+  email: string | undefined,
+  onChangeOtp: (otp: string) => void,
+  onClickVerifyAccount: () => void,
+  onClickPreviousStep: () => void,
+}
+
+export function EmailOtpStep(props: Props) {
+  const translation = useTranslation()
+  const [isResend, setIsResend] = useState<boolean>(false)
+
+  function handleClickResendOtp() {
+    setIsResend(true)
+  }
+
+  return <DialogContainer  isCloseOnClickOverlay={false}>
+    <div className="w-full justify-center items-center py-8 px-4 flex flex-col">
+      <div className="w-full max-w-[400px] mx-4 flex flex-col gap-y-8">
+        <p className={"text-h3"}>{translation.t('Email Verification')}</p>
+        <div>
+          <p className={"text-center"}>{translation.t('We have sent code to you email')}:</p>
+          <p className={"text-center"}>{props.email}</p>
+        </div>
+        <FormFieldOtp otpLength={4} onInputOtp={props.onChangeOtp} />
+        <p className={"flex flex-row justify-center gap-1"}>
+          <span>{translation.t('Didn’t receive code')}?</span>
+          <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer"}>{translation.t('Resend')}</span>
+          {isResend && <IconSpinner />}
+        </p>
+        <button
+          onClick={props.onClickVerifyAccount}
+          className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+        >
+          <IconAddCircle/>
+          {translation.t('Verify account')}
+        </button>
+        <div className="flex w-full justify-center">
+          <button onClick={props.onClickPreviousStep}
+                  className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
+            <IconArrowLeft/>
             <span>{translation.t('Previous step')}</span>
           </button>
         </div>

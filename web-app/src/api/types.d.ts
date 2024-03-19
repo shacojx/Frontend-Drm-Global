@@ -7,6 +7,8 @@ export type Industry = string
 export type NationPhone = string
 export type LocalPhone = string
 
+export type RawResultEmpty = ''
+
 // ====== Account ======== //
 export type ApiLoginParam = {
   username: string,
@@ -30,6 +32,11 @@ export type ApiSendRecoveryCode = {
 }
 export type RawResultSendRecoveryCode = {}
 
+export type ApiVerifyPhone = {
+  "codePhone": NationPhone,
+  "phone": LocalPhone,
+}
+
 export type ApiCheckRecoveryCode = {
   "email": string,
   "otp": string,
@@ -46,6 +53,7 @@ export type ApiRegisterAccountParam = {
   lastName: string,
   "password": string,
   "rePassword": string,
+  "otpVerifyEmail": string,
 } & Partial<{
   "companyName": string,
   "entityEnding": EntityEnding,
