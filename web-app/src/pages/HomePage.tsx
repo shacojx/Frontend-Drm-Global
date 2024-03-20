@@ -414,8 +414,7 @@ function GeneralInformationForm() {
       <div className={"h-[2px] w-[70px] bg-primary"}></div>
     </div>
     <div className={"space-y-6 grow"}>
-      <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => {
-      }} isFixedValue/>
+      <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => {}} isFixedValue/>
       <FormFieldPhoneNumber
         id={"phoneNumber"}
         placeholder={"Input number"}
@@ -433,6 +432,7 @@ function GeneralInformationForm() {
           onChange={handleChangeFirstName}
           placeholder="Enter first name"
           validateCaller={validateCaller}
+          isFixedValue={user?.kycStatus !== 'Pending'}
         />
         <FormFieldText
           id={"LastName"}
@@ -442,6 +442,7 @@ function GeneralInformationForm() {
           onChange={handleChangeLastName}
           placeholder="Enter last name"
           validateCaller={validateCaller}
+          isFixedValue={user?.kycStatus !== 'Pending'}
         />
       </div>
     </div>
