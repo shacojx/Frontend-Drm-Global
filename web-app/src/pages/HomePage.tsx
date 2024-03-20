@@ -399,6 +399,7 @@ function GeneralInformationForm() {
       lastName: lastName
     }
     try {
+      // TODO: update API
       await callApiChangeUserProfile(param)
       setStatus('success')
     } catch (e: unknown) {
