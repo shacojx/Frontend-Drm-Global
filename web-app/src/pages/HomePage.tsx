@@ -136,7 +136,6 @@ export function HomePage() {
           </div>}
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.myServices.id && <MyServicesContent key={TabOptionGroup.myServices.id} />}
-          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent key={TabOptionGroup.myCompany.id} />}
           {homeContent === idTab.LCFormationServices && <MyService key={idTab.LCFormationServices} />}
           {homeContent === TabOptionGroup.myCompany.id && (
             <MyCompanyDetailPage key={TabOptionGroup.myCompany.id} />
