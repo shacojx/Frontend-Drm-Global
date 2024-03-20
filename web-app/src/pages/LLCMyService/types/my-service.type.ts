@@ -1,4 +1,4 @@
-export enum statusTab {
+export enum ServiceType {
     Pending = 1,
     InProgress = 2,
     Issued = 3
@@ -9,7 +9,7 @@ export type TabType = {
     icon: React.ReactNode,
     header: string,
     deatail: string,
-    status: statusTab,
+    status: ServiceType,
     color: string
 }
 

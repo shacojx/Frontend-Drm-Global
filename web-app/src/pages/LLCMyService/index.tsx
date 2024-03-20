@@ -7,16 +7,19 @@ import TitleConent from 'src/components/TitleConent'
 import { BuildingIcon, DiplomaVerifiedIcon, DocumentIcon, IconCheck, IconRefreshCircle, IconUpload, IdentityIcon, MoneyIcon, NotificationUnreadLinesIcon } from 'src/components/icons'
 import { useValidateCaller } from 'src/hooks-ui/useValidateCaller'
 import { cn } from 'src/utils/cn.util'
-import { StepType, TabType, statusStep, statusTab } from './types/my-service.type'
+import { StepType, TabType, statusStep, ServiceType } from './types/my-service.type'
 import TabService from './components/TabService'
 import StepService from './components/StepService'
-
-
+import notFoundImg from 'src/assets/images/not_found.png'
 
 export default function LLCMyService() {
     const { t } = useTranslation()
     const [cycle, setCycle] = useState<string>()
     const { validateCaller, validateAll } = useValidateCaller()
+
+    const [dataService, setDataService] = useState({
+        'status': 1
+    })
 
     const dataTab: TabType[] = [
         {
@@ -24,7 +27,7 @@ export default function LLCMyService() {
                 <DocumentIcon className='w-6 h-6' />,
             header: t("Contract"),
             deatail: t("Click here to start KYC >"),
-            status: statusTab.Pending,
+            status: ServiceType.Pending,
             color: '#094B72',
             id: 1
         },
@@ -33,7 +36,7 @@ export default function LLCMyService() {
                 <IdentityIcon className='w-6 h-6' />,
             header: t("KYC"),
             deatail: t("Click here to start KYC >"),
-            status: statusTab.InProgress,
+            status: ServiceType.InProgress,
             color: '#FF5722',
             id: 2
         },
@@ -42,7 +45,7 @@ export default function LLCMyService() {
                 <MoneyIcon className='w-6 h-6' />,
             header: t("Payment"),
             deatail: t('Click here to view payment >'),
-            status: statusTab.Issued,
+            status: ServiceType.Issued,
             color: '#FFC327',
             id: 3
         },
@@ -51,7 +54,7 @@ export default function LLCMyService() {
                 <BuildingIcon className='w-6 h-6' />,
             header: t('Corporation profile'),
             deatail: t('Click to view >'),
-            status: statusTab.InProgress,
+            status: ServiceType.InProgress,
             color: '#5D50C6',
             id: 4
         }
@@ -90,11 +93,17 @@ export default function LLCMyService() {
         setCycle(value)
     }
 
+    const arrStatusService = {
+        1: t('Pending'),
+        2: t('InProgress'),
+        3: t('Issued'),
+    }
+
     const CYCLE_INFOS = [
         { id: 1, value: '1', label: '1' },
         { id: 2, value: '2', label: '2' },
-
     ]
+
     return (
         <div className='w-full flex grow relative overflow-y-scroll'>
             <div className="w-full grow flex flex-col p-3">
@@ -120,12 +129,22 @@ export default function LLCMyService() {
                                 <div>
                                     {t('Status')}:
                                 </div>
-                                <div className='flex bg-[#5D50C6]/15 p-[6px] gap-[6px] rounded-lg'>
+                                <div className={cn('flex  p-[6px] gap-[6px] rounded-lg',
+                                    {
+                                        "bg-[#5D50C6]/15": dataService.status === ServiceType.Pending
+                                    },
+                                    {
+                                        "bg-[#FF5722]/25": dataService.status === ServiceType.InProgress
+                                    },
+                                    {
+                                        "bg-priamry text-white": dataService.status === ServiceType.Issued
+                                    }
+                                )} >
                                     <div>
                                         <IconRefreshCircle />
                                     </div>
                                     <div>
-                                        {t('In-progress')}
+                                        {arrStatusService[dataService.status as keyof typeof arrStatusService]}
                                     </div>
                                 </div>
                             </div>
@@ -136,110 +155,131 @@ export default function LLCMyService() {
                     <div className='mt-xl'>
                         <div className='grid gap-md grid-cols-12'>
                             {dataTab.map((item, index) => (
-                                <TabService item={item}/>
+                                <TabService item={item} />
                             ))}
                         </div>
                     </div>
 
                     {/* content */}
-                    <div className='flex flex-col md:flex-row gap-8 md:gap-3 mt-6'>
-                        {/* step */}
-                        <div className='flex flex-col gap-md'>
-                            {dataStep.map((item, index) => (
-                                <StepService item={item}/>
-                            ))}
+                    {dataService.status === ServiceType.Pending &&
+                        <>
+                        <div className='mt-md flex flex-col justify-center items-center h-[368px]'>
+                            <div>
+                                <img src={notFoundImg} />
+                            </div>
+                            <div className='text-lg font-bold mt-[10px]'>
+                                {t("It's empty here")}
+                            </div>
+                            <div className='mt-[10px]'>
+                                {t("We will notify when the service is ready!")}
+                            </div>
                         </div>
-                        <div className='border border-primary_25 rounded-xl py-lg px-xl flex-grow'>
-                            <div className='flex justify-between flex-grow mb-md'>
-                                <TitleConent label='State filling' />
-                                <div>
-                                    <div className='flex gap-md items-center'>
-                                        <div>
-                                            {t('Status')}:
-                                        </div>
-                                        <div className='flex bg-success p-[6px] gap-[6px] rounded-lg text-white'>
-                                            <div>
-                                                <IconCheck />
-                                            </div>
-                                            <div>
-                                                {t('Issued')}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className=''>
-                                <div className="flex items-start py-md">
-                                    <DiplomaVerifiedIcon className="mr-4 self-center" />
-                                    <div className="flex-1">
-                                        <div>
-                                            {t('State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State.')}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='mt-rootRootPadding'>
-                                <div className="flex items-start border border-primary_25 bg-primary/10 p-md rounded-lg">
-                                    <NotificationUnreadLinesIcon className="mr-4 self-center" />
-                                    <div className="flex-1">
-                                        <div>
-                                            {t("You don't have to upload any paper, we will do all the paper work of this step")}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='mt-rootRootPadding'>
-                                <div className='text-base font-bold leading-6'>
-                                    {t('Customer document')}
-                                </div>
-                                <div className='border rounded-md border-primary_25 mt-md'>
-                                    <div className='border-b  border-primary_25 flex justify-around items-center py-md'>
-                                        <div>
-                                            {t('Required document')}
-                                        </div>
-                                        <div>
-                                            {t('Uploaded document')}
-                                        </div>
-                                    </div>
-                                    <div className='flex justify-around items-center py-md'>
-                                        <div className='text-[#3B3F48]/85'>{t('None')}</div>
-                                        <div>
-                                            <Button
-                                                icon={<IconUpload />}
-                                                label={t('Upload')} />
-                                        </div>
-                                    </div>
-                                </div>
+                        </>
+                    }
 
-                            </div>
-                            <div className='mt-rootRootPadding'>
-                                <div className='text-base font-bold leading-6'>
-                                    {t('Service Result')}
+                    {(dataService.status === ServiceType.InProgress || dataService.status === ServiceType.Issued) &&
+                        <>
+                            <div className='flex flex-col md:flex-row gap-8 md:gap-3 mt-6'>
+                                {/* step */}
+                                <div className='flex flex-col gap-md'>
+                                    {dataStep.map((item, index) => (
+                                        <StepService item={item} />
+                                    ))}
                                 </div>
-                                <div className='border rounded-md border-primary_25 mt-md'>
-                                    <div className='border-b  border-primary_25 flex justify-around items-center py-md'>
+                                <div className='border border-primary_25 rounded-xl py-lg px-xl flex-grow'>
+                                    <div className='flex justify-between flex-grow mb-md'>
+                                        <TitleConent label='State filling' />
                                         <div>
-                                            {t('Required document')}
-                                        </div>
-                                        <div>
-                                            {t('Uploaded document')}
+                                            <div className='flex gap-md items-center'>
+                                                <div>
+                                                    {t('Status')}:
+                                                </div>
+                                                <div className='flex bg-success p-[6px] gap-[6px] rounded-lg text-white'>
+                                                    <div>
+                                                        <IconCheck />
+                                                    </div>
+                                                    <div>
+                                                        {t('Issued')}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className='flex justify-around items-center py-md'>
-                                        <div className='text-[#3B3F48]/85'>
-                                            1. State Filling Information
-                                        </div>
-                                        <div>
-                                            <a href='#' className='text-primary font-bold hover:underline'>
-                                                1. EEE Company_State Filling Information.pdf
-                                            </a>
+                                    <div className=''>
+                                        <div className="flex items-start py-md">
+                                            <DiplomaVerifiedIcon className="mr-4 self-center" />
+                                            <div className="flex-1">
+                                                <div>
+                                                    {t('State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State.')}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                    <div className='mt-rootRootPadding'>
+                                        <div className="flex items-start border border-primary_25 bg-primary/10 p-md rounded-lg">
+                                            <NotificationUnreadLinesIcon className="mr-4 self-center" />
+                                            <div className="flex-1">
+                                                <div>
+                                                    {t("You don't have to upload any paper, we will do all the paper work of this step")}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='mt-rootRootPadding'>
+                                        <div className='text-base font-bold leading-6'>
+                                            {t('Customer document')}
+                                        </div>
+                                        <div className='border rounded-md border-primary_25 mt-md'>
+                                            <div className='border-b  border-primary_25 flex justify-around items-center py-md'>
+                                                <div>
+                                                    {t('Required document')}
+                                                </div>
+                                                <div>
+                                                    {t('Uploaded document')}
+                                                </div>
+                                            </div>
+                                            <div className='flex justify-around items-center py-md'>
+                                                <div className='text-[#3B3F48]/85'>{t('None')}</div>
+                                                <div>
+                                                    <Button
+                                                        icon={<IconUpload />}
+                                                        label={t('Upload')} />
+                                                </div>
+                                            </div>
+                                        </div>
 
-                        </div>
-                    </div>
+                                    </div>
+                                    <div className='mt-rootRootPadding'>
+                                        <div className='text-base font-bold leading-6'>
+                                            {t('Service Result')}
+                                        </div>
+                                        <div className='border rounded-md border-primary_25 mt-md'>
+                                            <div className='border-b  border-primary_25 flex justify-around items-center py-md'>
+                                                <div>
+                                                    {t('Required document')}
+                                                </div>
+                                                <div>
+                                                    {t('Uploaded document')}
+                                                </div>
+                                            </div>
+                                            <div className='flex justify-around items-center py-md'>
+                                                <div className='text-[#3B3F48]/85'>
+                                                    1. State Filling Information
+                                                </div>
+                                                <div>
+                                                    <a href='#' className='text-primary font-bold hover:underline'>
+                                                        1. EEE Company_State Filling Information.pdf
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </>
+                    }
+
                 </div>
             </div>
         </div>
