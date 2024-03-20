@@ -4,6 +4,7 @@ import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { FormFieldNumber } from "../../components/FormFieldNumber";
 import clsx from "clsx";
+import { FormFieldMultipleUpload } from "../../components/FormFieldMultipleUpload";
 
 const EMPTY_OWNER = {
   id: "",
@@ -161,12 +162,14 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
             </div>
 
             <div className="min-w-96">
-              <FormFieldNumber
+              <FormFieldMultipleUpload
                 isFixedValue={readonly}
                 label="Document"
+                isRequired
                 validateCaller={validateCaller}
                 id="document"
                 onChange={() => {}}
+                value={[{ id: "test-id", name: "Chu nghia Mac-Lenin", url: "#", isSelected: true }]}
               />
             </div>
           </div>

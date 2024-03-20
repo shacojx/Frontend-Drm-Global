@@ -13,15 +13,13 @@ export function FormFieldText(props: FormFieldProps<string>) {
     props.validateCaller
   );
 
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const text = event.target.value;
     props.onChange(text);
-  }
+  };
 
   const isTextValid = !props.isRequired || !!props.value;
-  const statusClassName = shouldShowError
-    ? "border-danger bg-red-50"
-    : "bg-white";
+  const statusClassName = shouldShowError ? "border-danger bg-red-50" : "bg-white";
   return (
     <div className={clsx("flex flex-col gap-2", props.className)}>
       {!!props.label && (
