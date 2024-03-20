@@ -554,27 +554,27 @@ function KYCBox(props: KYCBoxProps) {
       </div>
       <div className={"flex flex-row gap-3 items-center"}>
         <span>{translation.t('Status')}:</span>
-        {user?.kycStatus === 'pending' && <div className={"flex flex-row gap-1 items-center bg-[#5D50C626] p-2 rounded-lg"}>
+        {user?.kycStatus === 'Pending' && <div className={"flex flex-row gap-1 items-center bg-[#5D50C626] p-2 rounded-lg"}>
           <IconDangerCircle className={"shrink-0 text-black w-5 h-5"}/>
           <span className={"font-bold"}>{translation.t('Pending')}</span>
         </div>}
-        {user?.kycStatus === "inProgress" && <div className={"flex flex-row gap-1 items-center bg-[#FF572240] p-2 rounded-lg"}>
+        {user?.kycStatus === "In-progress" && <div className={"flex flex-row gap-1 items-center bg-[#FF572240] p-2 rounded-lg"}>
           <IconRefreshCircle className={"shrink-0 text-black w-5 h-5"}/>
           <span className={"font-bold"}>{translation.t('In-progress')}</span>
         </div>}
-        {user?.kycStatus === "approved" && <div className={"flex flex-row gap-1 items-center bg-success p-2 rounded-lg"}>
+        {user?.kycStatus === "Approved" && <div className={"flex flex-row gap-1 items-center bg-success p-2 rounded-lg"}>
           <IconCheck className={"shrink-0 text-white w-5 h-5"}/>
           <span className={"font-bold text-white"}>{translation.t('Approved')}</span>
         </div>}
       </div>
     </div>
     <div className={"space-y-6 grow"}>
-      {user?.kycStatus === "pending" && <div className={"flex flex-row gap-4 items-center p-2 bg-red-200 rounded-lg"}>
+      {user?.kycStatus === "Pending" && <div className={"flex flex-row gap-4 items-center p-2 bg-red-200 rounded-lg"}>
         <IconDangerCircle className={"shrink-0 text-danger"}/>
         <p>{translation.t('You have not verified your account. Please verify for the best experience')}.</p>
       </div>}
     </div>
-    {user?.kycStatus === "pending" && <div className={"flex justify-end"}>
+    {user?.kycStatus === "Pending" && <div className={"flex justify-end"}>
       <button
         onClick={props.onClickVerify}
         className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
@@ -612,17 +612,17 @@ function KYCUploadContent(props: KYCUploadContentProps) {
             </div>
             <div className={"flex flex-row gap-3 items-center"}>
               <span>{translation.t('Status')}:</span>
-              {user?.kycStatus === 'pending' &&
+              {user?.kycStatus === 'Pending' &&
                 <div className={"flex flex-row gap-1 items-center bg-[#5D50C626] p-2 rounded-lg"}>
                   <IconDangerCircle className={"shrink-0 text-black w-5 h-5"}/>
                   <span className={"font-bold"}>{translation.t('Pending')}</span>
                 </div>}
-              {user?.kycStatus === "inProgress" &&
+              {user?.kycStatus === "In-progress" &&
                 <div className={"flex flex-row gap-1 items-center bg-[#FF572240] p-2 rounded-lg"}>
                   <IconRefreshCircle className={"shrink-0 text-black w-5 h-5"}/>
                   <span className={"font-bold"}>{translation.t('In-progress')}</span>
                 </div>}
-              {user?.kycStatus === "approved" &&
+              {user?.kycStatus === "Approved" &&
                 <div className={"flex flex-row gap-1 items-center bg-success p-2 rounded-lg"}>
                   <IconCheck className={"shrink-0 text-white w-5 h-5"}/>
                   <span className={"font-bold text-white"}>{translation.t('Approved')}</span>

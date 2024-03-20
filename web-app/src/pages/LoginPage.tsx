@@ -52,7 +52,7 @@ export function LoginPage() {
       saveAuthInfo(result)
       setStatus('success')
       const user = await callApiGetUserProfile()
-      user.kycStatus = user.kycStatus || "pending" // TODO: remove
+      user.kycStatus = user.kycStatus || "Pending" // TODO: remove
       saveAuthUser(user)
       navigate(RoutePaths.home)
     } catch (e) {
