@@ -25,6 +25,13 @@ import { ReactComponent as IconUploadFile } from '../assets/svgs/UploadFile.svg'
 import { ReactComponent as IconCamera } from '../assets/svgs/Camera.svg';
 import { ReactComponent as IconUpload } from '../assets/svgs/Upload.svg';
 import { ReactComponent as IconInfoCircle } from '../assets/svgs/InfoCircle.svg';
+import { ReactComponent as DocumentIcon } from '../assets/svgs/DocumentIcon.svg';
+import { ReactComponent as IdentityIcon } from '../assets/svgs/IdentityIcon.svg';
+import { ReactComponent as MoneyIcon } from '../assets/svgs/MoneyIcon.svg';
+import { ReactComponent as BuildingIcon } from '../assets/svgs/BuildingIcon.svg';
+import { ReactComponent as DiplomaVerifiedIcon } from '../assets/svgs/DiplomaVerifiedIcon.svg';
+import { ReactComponent as NotificationUnreadLinesIcon } from '../assets/svgs/NotificationUnreadLinesIcon.svg';
+import { ReactComponent as AltArrowRightIcon } from '../assets/svgs/AltArrowRightIcon.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -58,4 +65,11 @@ export {
   IconCamera,
   IconUpload,
   IconInfoCircle,
+  DocumentIcon,
+  IdentityIcon,
+  MoneyIcon,
+  BuildingIcon,
+  DiplomaVerifiedIcon,
+  NotificationUnreadLinesIcon,
+  AltArrowRightIcon
 }

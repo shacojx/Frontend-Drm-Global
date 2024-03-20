@@ -5,9 +5,11 @@ import './App.css';
 import { AuthContextProvider } from './contexts/AuthContextProvider';
 import { router } from "./pages/router";
 
-export const queryClient = new QueryClient()
-
 function App() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 0 } }
+  })
+
   return <QueryClientProvider client={queryClient}>
     <AuthContextProvider>
       <RouterProvider router={router} />

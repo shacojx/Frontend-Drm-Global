@@ -7,12 +7,16 @@ import { HomePage } from "./HomePage";
 import { LoginPage } from "./LoginPage";
 import { RegisterPage } from "./RegisterPage";
 import { ResetPasswordPage } from "./ResetPasswordPage";
+import MyService from "./MyService";
 
 export const RoutePaths = {
   home: '/',
   login: '/login',
   resetPassword: '/reset-password',
   register: '/register',
+  myService:'/my-service',
+  services:'/service',
+  myCompany:'/my-company',
 }
 
 function RequiredLoggedIn(props: PropsWithChildren) {
@@ -66,6 +70,10 @@ export const router = createBrowserRouter([
   {
     path: RoutePaths.register,
     element: <RegisterPage />
+  },
+  {
+    path: RoutePaths.myService,
+    element: <MyService />
   },
   {
     path: '*',
