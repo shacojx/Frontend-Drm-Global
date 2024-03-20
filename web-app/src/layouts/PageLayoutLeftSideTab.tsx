@@ -2,19 +2,20 @@ import { JSX, MutableRefObject, PropsWithChildren, useEffect, useState } from "r
 import { useTranslation } from "react-i18next";
 import logo_full from "../assets/images/logo_full.png";
 import { FooterVertical } from "../components/base/footers";
-import { IconX } from "../components/icons";
+import { AltArrowRightIcon, IconX } from "../components/icons";
 
 export type TabOption<TabId> = {
   iconElement: JSX.Element,
   id: TabId,
-  label: string
+  label: string,
+  children?: TabOption<any>[]
 }
 
 type Props<T> = PropsWithChildren<{
   tabIdSelected: TabOption<T>["id"],
   tabOptions: TabOption<T>[],
   onClickTabOption: (tabLabel: TabOption<T>["id"]) => void,
-  openCallerRef:  MutableRefObject<() => void>
+  openCallerRef: MutableRefObject<() => void>
 }>
 export function PageLayoutLeftSideTab<T extends string>(props: Props<T>) {
   const translation = useTranslation()
@@ -32,23 +33,52 @@ export function PageLayoutLeftSideTab<T extends string>(props: Props<T>) {
       <div className={"grow"}>
         <div
           className={"flex flex-row items-center mx-4 mt-6 justify-between lg:justify-start"}>
-          <img className="w-[150px] cursor-pointer" src={logo_full} alt="logo_full"/>
+          <img className="w-[150px] cursor-pointer" src={logo_full} alt="logo_full" />
           <div className={"block lg:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}>
             <IconX onClick={setIsOpenOnSmallScreen.bind(undefined, false)} />
           </div>
         </div>
         <div className={"mt-10"}>
           <p className={"ml-4 h-10 uppercase font-bold"}>{translation.t('OVERVIEW')}</p>
-          {props.tabOptions.map(tabOption => <TabOption
-            key={tabOption.id}
-            id={tabOption.id}
-            isOpen={tabOption.id === props.tabIdSelected}
-            iconElement={tabOption.iconElement}
-            label={tabOption.label}
-            onClick={props.onClickTabOption}
-          />)}
+          {props.tabOptions.map(tabOption =>
+            <>
+              <div className="relative group ">
+                <TabOption
+                  key={tabOption.id}
+                  id={tabOption.id}
+                  isOpen={tabOption.id === props.tabIdSelected}
+                  iconElement={tabOption.iconElement}
+                  label={tabOption.label}
+                  onClick={props.onClickTabOption}
+                />
+                {
+                  tabOption.children &&
+                  <>
+                    <div className="absolute top-1/2 -translate-y-2/4 right-5" >
+                      <AltArrowRightIcon />
+                    </div>
+                    <div className="hidden group-hover:block absolute -right-[250px] top-0 bg-white shadow">
+                      {
+                        tabOption?.children?.map(itemChildren => (
+                          <TabOption
+                            key={itemChildren.id}
+                            id={itemChildren.id}
+                            isOpen={itemChildren.id === props.tabIdSelected}
+                            iconElement={itemChildren.iconElement}
+                            label={itemChildren.label}
+                            onClick={props.onClickTabOption}
+                          />
+                        ))
+                      }
+                    </div>
+                  </>
+                }
+              </div>
+            </>
 
-        </div>
+          )}
+
+        </div >
       </div>
       <div className={"w-full p-4"}>
         <FooterVertical />
