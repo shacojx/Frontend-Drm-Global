@@ -413,7 +413,7 @@ function GeneralInformationForm() {
       <p className={"font-bold"}>{translation.t('General information')}</p>
       <div className={"h-[2px] w-[70px] bg-primary"}></div>
     </div>
-    <div className={"space-y-6"}>
+    <div className={"space-y-6 grow"}>
       <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => {
       }} isFixedValue/>
       <FormFieldPhoneNumber
