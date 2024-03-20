@@ -36,7 +36,7 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
   function handleBlur() {
     const isValid = validateEmail(props.isRequired, props.value)
     setShouldShowError(!isValid)
-    if (isValid) {
+    if (isValid && props.shouldLiveCheck) {
       callApiVerifyEmail(props.value!)
         .catch(() => {
           setWasRegister(true)

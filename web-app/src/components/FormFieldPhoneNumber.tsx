@@ -43,15 +43,17 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shou
     const localPhone = props.value ? extractPhone(props.value).localPhone : ''
     const phone = generatePhone(newNationPhone, localPhone)
     props.onChange(phone)
-    const body: ApiVerifyPhone = {
-      codePhone: newNationPhone,
-      phone: localPhone
+    if (props.shouldLiveCheck) {
+      const body: ApiVerifyPhone = {
+        codePhone: newNationPhone,
+        phone: localPhone
+      }
+      callApiVerifyPhone(body)
+        .catch(() => {
+          setWasRegister(true)
+          setShouldShowError(true)
+        })
     }
-    callApiVerifyPhone(body)
-      .catch(() => {
-        setWasRegister(true)
-        setShouldShowError(true)
-      })
   }
 
   function handleBlur() {
