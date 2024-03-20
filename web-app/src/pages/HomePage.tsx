@@ -21,7 +21,7 @@ import {
   IconService,
   IconSpinner,
   IconThreeLines, IconUpload, IconUploadFile,
-  IconUser
+  IconUser, IconX
 } from "../components/icons";
 import { NATION_INFOS } from "../constants/SelectionOptions";
 import { AuthContext } from "../contexts/AuthContextProvider";
@@ -88,6 +88,9 @@ export function HomePage() {
         </div>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
           {isShowAccountPopup && <div ref={ref} className={"absolute z-10 top-3 right-8 flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3"}>
+            <div onClick={setIsShowAccountPopup.bind(undefined, false)} className={"absolute top-2 right-2 p-2 bg-gray-300 rounded-full cursor-pointer"}>
+                <IconX />
+            </div>
             <p className={"text-gray-700 text-cLg"}>{user?.email}</p>
             <IconAccountCircle className={"w-14 h-14 mb-3"}/>
             <p className={"font-bold text-cLg"}>{translation.t("Hello")} {user?.lastName},</p>
