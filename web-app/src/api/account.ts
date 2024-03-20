@@ -50,9 +50,9 @@ export async function callApiVerifyPhone(body: ApiVerifyPhone) {
   return rawResult
 }
 
-export async function callApiSendEmailOTP(body: ApiCheckRecoveryCode) {
+export async function callApiSendEmailOTP(email: string) {
   const path = 'api/user/verifyemail'
-  const rawResult = await callApi<RawResultEmpty>('POST', path, body)
+  const rawResult = await callApi<RawResultEmpty>('POST', path, {email})
   return rawResult
 }
 

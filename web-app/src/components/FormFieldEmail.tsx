@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { callApiVerifyEmail } from "../api/account";
 import { useValidate } from "../hooks-ui/useValidateCaller";
 import { validateApiEmail, validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormFieldProps, ValidateFunction } from "../types/common";
@@ -14,19 +15,34 @@ const validateEmail: ValidateFunction<string> = function (isRequired, pass) {
   return validateApiEmail(pass)
 }
 
-export function FormFieldEmail(props: FormFieldProps<string>) {
+export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?: boolean}) {
   const translation = useTranslation()
+  const [wasRegister, setWasRegister] = useState<boolean>(false)
   const [shouldShowError, setShouldShowError] = useValidate(
     props.id,
     props.isRequired,
     props.value,
     props.validateCaller,
-    validateEmail
+    validateEmail,
+    wasRegister
   )
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    setWasRegister(false)
     const email = event.target.value
     props.onChange(email)
+  }
+
+  function handleBlur() {
+    const isValid = validateEmail(props.isRequired, props.value)
+    setShouldShowError(!isValid)
+    if (isValid) {
+      callApiVerifyEmail(props.value!)
+        .catch(() => {
+          setWasRegister(true)
+          setShouldShowError(true)
+        })
+    }
   }
 
   const statusClassName = (shouldShowError ? 'border-danger bg-red-50' : 'bg-white') + (props.isFixedValue ? ' bg-gray-200' : '')
@@ -41,9 +57,10 @@ export function FormFieldEmail(props: FormFieldProps<string>) {
       value={props.value || ''}
       onChange={handleChange}
       onFocus={setShouldShowError.bind(undefined, false)}
-      onBlur={setShouldShowError.bind(undefined, !validateEmail(props.isRequired, props.value))}
+      onBlur={handleBlur}
       placeholder="Example@hotmail.com"
       className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
     />
+    {wasRegister && <p className={"text-xs text-danger"}>{translation.t('The email was registered')}</p>}
   </div>
 }

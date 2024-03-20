@@ -21,6 +21,7 @@ export function useValidate<T>(
   value: FormFieldProps<T>['value'],
   validateCaller: ValidateCaller,
   validateFunction?: ValidateFunction<T>,
+  wasRegister?: boolean
 ): [boolean, Dispatch<SetStateAction<boolean>>] {
   const [shouldShowError, setShouldShowError] = useState<boolean>(false)
 
@@ -32,10 +33,10 @@ export function useValidate<T>(
     function validateHook() {
       const isValid = (validateFunction || defaultValidate)(isRequired, value)
       setShouldShowError(!isValid)
-      return isValid
+      return isValid && !wasRegister
     }
     validateCaller[id] = validateHook
-  }, [isRequired, value]);
+  }, [isRequired, value, wasRegister]);
 
   return [shouldShowError, setShouldShowError]
 }

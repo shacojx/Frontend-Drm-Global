@@ -225,7 +225,7 @@ export const NATION_INFOS: OptionInfo<NationValue>[] = [
   // {value: 'TO',	label: 'Trinidad & Tobago'},
   // {value: 'LK',	label: 'St. Kitts & Nevis'},
   // {value: 'JM',	label: 'Jamaica'},
-].sort((v1, v2) => v1.value.localeCompare(v2.value))
+]
 
 export const NATION_PHONE_INFOS: OptionInfo<NationPhone>[] = [
   {value: '+1',	label: '+1'	, iconElement: <div>CA</div>},

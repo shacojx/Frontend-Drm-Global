@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { callApiCreateAccount } from "../api/account";
+import { callApiCreateAccount, callApiSendEmailOTP } from "../api/account";
 import { CompanyTypeValue, EntityEnding, Industry, NationValue } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import {
@@ -34,7 +34,7 @@ export function RegisterPage() {
   // step 2
   const [email, setEmail] = useState<string>()
   const [phone, setPhone] = useState<RNPhoneValue>()
-  const [companyType, setCompanyType] = useState<CompanyTypeValue>()
+  const [companyType, setCompanyType] = useState<CompanyTypeValue>(COMPANY_TYPE_INFOS[0].value)
   const [firstName, setFirstName] = useState<string>()
   const [lastName, setLastName] = useState<string>()
   // step 3
@@ -74,6 +74,11 @@ export function RegisterPage() {
   function handleChangeNation(nation: NationValue) {
     setNation(nation)
     setIsNationError(false)
+    if (nation === 'United States') {
+      setCompanyType('LLC')
+    } else {
+      setCompanyType('PLC')
+    }
   }
 
   function handleClickNextAtNation() {
@@ -118,7 +123,7 @@ export function RegisterPage() {
   }
 
   return <PageLayoutOneForm>
-    <p className="text-h4 text-center">{translation.t('Launch your new LLC in')}</p>
+    <p className="text-h4 text-center">{translation.t('Launch your new in', {companyType: companyType})}</p>
     <FormFieldSelect
       id={"nationSelect"}
       isRequired
@@ -141,6 +146,7 @@ export function RegisterPage() {
         email={email}
         phone={phone}
         companyType={companyType}
+        bunchOfCompanyType={[companyType]}
         firstName={firstName}
         lastName={lastName}
         setEmail={setEmail}
@@ -170,6 +176,7 @@ export function RegisterPage() {
       <CreateAccountStep
         onClickCreateAccount={handleClickNextStep}
         onClickPreviousStep={handleClickBackStep}
+        email={email || ''}
         password={password}
         setPassword={setPassword}
         rePassword={rePassword}
@@ -207,12 +214,19 @@ export function RegisterPage() {
         title="Failure!"
         subTitle={errorMessage || "Could not create account"}
         actionElement={
-          <button
-            onClick={handleClickCreateAccount}
-            className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-          >
-            <span>{translation.t('Try again')}</span>
-          </button>
+          <div className={'flex flex-col gap-y-2 justify-center items-center'}>
+            <button
+              onClick={handleClickCreateAccount}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{translation.t('Try again')}</span>
+            </button>
+            <button onClick={setStatus.bind(undefined, "typing")}
+                    className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
+              <IconArrowLeft/>
+              <span>{translation.t('Previous step')}</span>
+            </button>
+          </div>
         }
       />
     }
@@ -230,7 +244,8 @@ type AccountInformationStepProps = {
   setLastName: (value: string) => void,
   phone: RNPhoneValue | undefined,
   setPhone: (value: RNPhoneValue) => void,
-  companyType: CompanyTypeValue | undefined,
+  companyType: CompanyTypeValue,
+  bunchOfCompanyType: CompanyTypeValue[],
   setCompanyType: (value: CompanyTypeValue) => void,
 }
 function AccountInformationStep(props: AccountInformationStepProps) {
@@ -248,7 +263,14 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       <p className="text-cLg font-bold">{translation.t('Account information')}</p>
       <div className="w-1/2 border-2 border-primary"></div>
     </div>
-    <FormFieldEmail id="accountEmail" isRequired value={props.email} onChange={props.setEmail} validateCaller={validateCaller}/>
+    <FormFieldEmail
+      id="accountEmail"
+      isRequired
+      value={props.email}
+      onChange={props.setEmail}
+      validateCaller={validateCaller}
+      shouldLiveCheck
+    />
     <FormFieldPhoneNumber
       id={"phoneNumber"}
       placeholder={"Input number"}
@@ -256,6 +278,7 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       value={props.phone}
       onChange={props.setPhone}
       validateCaller={validateCaller}
+      shouldLiveCheck
     />
     <FormFieldSelect
       id={"companySelect"}
@@ -263,7 +286,7 @@ function AccountInformationStep(props: AccountInformationStepProps) {
       label={'Company Type'}
       placeholder={'LLC'}
       value={props.companyType}
-      optionInfos={COMPANY_TYPE_INFOS}
+      optionInfos={COMPANY_TYPE_INFOS.filter(info => props.bunchOfCompanyType.includes(info.value))}
       onChange={props.setCompanyType}
       validateCaller={validateCaller}
     />
@@ -335,7 +358,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       id={"companyName"}
       label="Company name"
       value={props.companyName}
-      onChange={props.setCompanyName}
+      onChange={value => props.setCompanyName(value.slice(0, 75))}
       placeholder="Input company name"
       validateCaller={validateCaller}
     />
@@ -365,11 +388,11 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       placeholder="Company.com"
       validateCaller={validateCaller}
     />
-    <FormFieldTextArea
+    <FormFieldText
       id={"companyDescription"}
       label="Company description"
       value={props.companyDescription}
-      onChange={props.setCompanyDescription}
+      onChange={value => props.setCompanyDescription(value.slice(0, 255))}
       placeholder="Describe your company"
       validateCaller={validateCaller}
     />
@@ -391,6 +414,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
 type CreateAccountStepProps = {
   onClickCreateAccount: () => void,
   onClickPreviousStep: () => void,
+  email: string,
   password: string | undefined,
   setPassword: (value: string) => void,
   rePassword: string | undefined,
@@ -407,6 +431,7 @@ function CreateAccountStep(props: CreateAccountStepProps) {
       return
     }
     if (validateAll()){
+      callApiSendEmailOTP(props.email).catch(e=>console.error(e))
       props.onClickCreateAccount()
     }
   }
@@ -471,27 +496,51 @@ type Props = {
 
 export function EmailOtpStep(props: Props) {
   const translation = useTranslation()
-  const [isResend, setIsResend] = useState<boolean>(false)
+  const [isResending, setIsResending] = useState<boolean>(false)
+  const MaxCountDown = 60
+  const [disableCountDown, setDisableCountDown] = useState<number>(MaxCountDown)
+  const actionBtnRef = useRef<HTMLButtonElement | null>(null)
 
-  function handleClickResendOtp() {
-    setIsResend(true)
+  useEffect(() => {
+    if (disableCountDown > 0) {
+      setTimeout(() => {
+        setDisableCountDown(i => i >= 1 ? i - 1 : 0)
+      }, 1000)
+    }
+  }, [disableCountDown]);
+
+  async function handleClickResendOtp() {
+    if (!props.email || disableCountDown > 0) {
+      return
+    }
+    setIsResending(true)
+    try {
+      await callApiSendEmailOTP(props.email)
+      setIsResending(false)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return <DialogContainer  isCloseOnClickOverlay={false}>
     <div className="w-full justify-center items-center py-8 px-4 flex flex-col">
       <div className="w-full max-w-[400px] mx-4 flex flex-col gap-y-8">
-        <p className={"text-h3"}>{translation.t('Email Verification')}</p>
+        <p className={"text-h3 text-center"}>{translation.t('Email Verification')}</p>
         <div>
           <p className={"text-center"}>{translation.t('We have sent code to you email')}:</p>
           <p className={"text-center"}>{props.email}</p>
         </div>
-        <FormFieldOtp otpLength={4} onInputOtp={props.onChangeOtp} />
+        <FormFieldOtp otpLength={4} onInputOtp={props.onChangeOtp} onLastOtp={() => actionBtnRef.current?.focus()}/>
         <p className={"flex flex-row justify-center gap-1"}>
           <span>{translation.t('Didn’t receive code')}?</span>
-          <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer"}>{translation.t('Resend')}</span>
-          {isResend && <IconSpinner />}
+          {disableCountDown <= 0
+            ? <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer"}>{translation.t('Resend')}</span>
+            : <span className={"font-bold text-gray-400 cursor-not-allowed"}>{translation.t('Resend')}</span>
+          }
+          {isResending && <IconSpinner />}
         </p>
         <button
+          ref={actionBtnRef}
           onClick={props.onClickVerifyAccount}
           className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
         >
