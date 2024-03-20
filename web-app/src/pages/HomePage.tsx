@@ -4,36 +4,55 @@ import { useNavigate } from "react-router-dom";
 import {
   callApiChangeUserPassword,
   callApiChangeUserProfile,
-  callApiLogout
+  callApiLogout,
 } from "../api/account";
 import { callCreateOrder } from "../api/payment";
-import { ApiChangeUserPassword, ApiChangeUserProfile, ApiCreateOrderParam, Currency } from "../api/types";
+import {
+  ApiChangeUserPassword,
+  ApiChangeUserProfile,
+  ApiCreateOrderParam,
+  Currency,
+} from "../api/types";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { FormFieldText } from "../components/FormFieldText";
 import {
   IconAccountCircle,
-  IconCheck, IconDangerCircle,
-  IconLogout, IconMyCompany,
-  IconMyService, IconRefreshCircle,
+  IconCheck,
+  IconDangerCircle,
+  IconLogout,
+  IconMyCompany,
+  IconMyService,
+  IconRefreshCircle,
   IconSelectCard,
   IconService,
   IconSpinner,
-  IconThreeLines, IconUpload, IconUploadFile,
-  IconUser, IconX
+  IconThreeLines,
+  IconUpload,
+  IconUploadFile,
+  IconUser,
+  IconX,
 } from "../components/icons";
 import { NATION_INFOS } from "../constants/SelectionOptions";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
-import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
+import {
+  PageLayoutLeftSideTab,
+  TabOption,
+} from "../layouts/PageLayoutLeftSideTab";
 import { removeAuthInfo } from "../services-business/api/authentication";
-import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
+import {
+  extractPhone,
+  generatePhone,
+  RNPhoneValue,
+} from "../services-business/api/generate-api-param/account";
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
 import LLCMyService from "./LLCMyService";
+import { MyCompanyDetailPage } from "./my-company/MyCompanyDetailPage";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
 type HomeContent = HomeTab | 'myAccount' | 'KYCUpload' | idTab
@@ -45,7 +64,7 @@ const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
   services: {
     iconElement: <IconService />,
     id: "services",
-    label: 'Services',
+    label: "Services",
   },
   myServices: {
     id: "myServices",
@@ -62,9 +81,9 @@ const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
   myCompany: {
     id: "myCompany",
     iconElement: <IconMyCompany />,
-    label: 'My Company',
+    label: "My Company",
   },
-}
+};
 
 export function HomePage() {
   const translation = useTranslation()
@@ -76,19 +95,19 @@ export function HomePage() {
   const ref = useClickOutside(() => setIsShowAccountPopup(false));
 
   function handleChangeTab(tabLabel: HomeContent) {
-    setHomeContent(tabLabel)
+    setHomeContent(tabLabel);
   }
 
   function handleClickAccountOnPopUp() {
-    handleChangeTab('myAccount')
-    setIsShowAccountPopup(false)
+    handleChangeTab("myAccount");
+    setIsShowAccountPopup(false);
   }
 
   function handleClickLogout() {
-    navigate(RoutePaths.login)
-    callApiLogout().catch(e => console.error(e))
-    removeAuthInfo()
-    removeAuthUser()
+    navigate(RoutePaths.login);
+    callApiLogout().catch((e) => console.error(e));
+    removeAuthInfo();
+    removeAuthUser();
   }
 
   return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
@@ -117,8 +136,10 @@ export function HomePage() {
           </div>}
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.myServices.id && <MyServicesContent key={TabOptionGroup.myServices.id} />}
-          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent key={TabOptionGroup.myCompany.id} />}
           {homeContent === idTab.LCFormationServices && <LLCMyService key={idTab.LCFormationServices} />}
+          {homeContent === TabOptionGroup.myCompany.id && (
+            <MyCompanyDetailPage key={TabOptionGroup.myCompany.id} />
+          )}
           {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} key="KYCUpload" />}
           {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} key="myAccount" />}
         </div>
@@ -128,41 +149,41 @@ export function HomePage() {
 }
 
 type Service = {
-  id: string,
-  label: string,
-  description: string,
-  agents: string[],
-  price: number,
-  currency: Currency,
-}
+  id: string;
+  label: string;
+  description: string;
+  agents: string[];
+  price: number;
+  currency: Currency;
+};
 
 // TODO: fetch from api
 const Services: Service[] = [
   {
-    id: '1',
+    id: "1",
     label: "LLC Formation desk",
     description: "Service Description",
-    agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
+    agents: ["Registered Agent", "Registered Agent", "Registered Agent"],
     price: 5.99,
-    currency: 'USD'
+    currency: "USD",
   },
   {
-    id: '2',
+    id: "2",
     label: "LLC Formation desk",
     description: "Service Description",
-    agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
+    agents: ["Registered Agent", "Registered Agent", "Registered Agent"],
     price: 6.99,
-    currency: 'USD'
+    currency: "USD",
   },
   {
-    id: '3',
+    id: "3",
     label: "LLC Formation desk",
     description: "Service Description",
-    agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
+    agents: ["Registered Agent", "Registered Agent", "Registered Agent"],
     price: 7.99,
-    currency: 'USD'
+    currency: "USD",
   },
-]
+];
 
 function ServicesContent() {
   const translation = useTranslation()
@@ -171,53 +192,57 @@ function ServicesContent() {
   const [stepIndex, setStepIndex] = useState<number>(1)
   const [errorMessageConfirm, setErrorMessageConfirm] = useState<string | undefined>()
 
-  const SelectServiceStepIndex = 1
-  const PayServiceStepIndex = 2
+  const SelectServiceStepIndex = 1;
+  const PayServiceStepIndex = 2;
 
   function handleSelectService(id: string) {
     if (!bunchOfServiceIdSelected.includes(id)) {
-      setBunchOfServiceIdSelected(bunchOfServiceIdSelected.concat([id]))
+      setBunchOfServiceIdSelected(bunchOfServiceIdSelected.concat([id]));
     } else {
-      setBunchOfServiceIdSelected(bunchOfServiceIdSelected.filter(i => i != id))
+      setBunchOfServiceIdSelected(
+        bunchOfServiceIdSelected.filter((i) => i != id)
+      );
     }
   }
 
   function handleClickProceedPayment() {
-    setStepIndex(PayServiceStepIndex)
+    setStepIndex(PayServiceStepIndex);
   }
 
   async function handleClickPaypalConfirm() {
     if (!user) {
-      return
+      return;
     }
     const body: ApiCreateOrderParam = {
       transactionId: generateTransactionId(user.email),
-      currency: 'USD',
+      currency: "USD",
       amount: totalPrice,
-      orderType: "PAYPAL"
-    }
+      orderType: "PAYPAL",
+    };
     try {
-      const rawResult = await callCreateOrder(body)
-      console.log('handleClickPaypalConfirm: ', rawResult)
+      const rawResult = await callCreateOrder(body);
+      console.log("handleClickPaypalConfirm: ", rawResult);
     } catch (e: unknown) {
-      setErrorMessageConfirm(e?.toString())
-      console.error(e)
+      setErrorMessageConfirm(e?.toString());
+      console.error(e);
     }
   }
 
-  function handleClickFinishPayment() {
-
-  }
+  function handleClickFinishPayment() {}
 
   function handleClickCancelPayment() {
-    setStepIndex(SelectServiceStepIndex)
+    setStepIndex(SelectServiceStepIndex);
   }
 
-  const hasSelected = bunchOfServiceIdSelected.length > 0
-  const selectedService = Services.filter(service => bunchOfServiceIdSelected.includes(service.id))
-  let totalPrice = 0
-  const nationName = NATION_INFOS.find(nation => nation.value === user?.llcInNation)?.label
-  Services.forEach(service => totalPrice += service.price)
+  const hasSelected = bunchOfServiceIdSelected.length > 0;
+  const selectedService = Services.filter((service) =>
+    bunchOfServiceIdSelected.includes(service.id)
+  );
+  let totalPrice = 0;
+  const nationName = NATION_INFOS.find(
+    (nation) => nation.value === user?.llcInNation
+  )?.label;
+  Services.forEach((service) => (totalPrice += service.price));
 
   return <div className={"w-full grow flex flex-col"}>
     <div className={"flex p-3 grow overflow-hidden"}>
@@ -303,10 +328,10 @@ function ServicesContent() {
 }
 
 type ServiceCardProps = {
-  isSelected: boolean,
-  service: Service,
-  onSelect: (id: string) => void
-}
+  isSelected: boolean;
+  service: Service;
+  onSelect: (id: string) => void;
+};
 
 function ServiceCard(props: ServiceCardProps) {
   return <div
@@ -332,20 +357,16 @@ function ServiceCard(props: ServiceCardProps) {
 }
 
 function MyServicesContent() {
-  return <>
-    <div>My Services Content</div>
-  </>
-}
-
-function MyCompanyContent() {
-  return <>
-    <div>My Company Content</div>
-  </>
+  return (
+    <>
+      <div>My Services Content</div>
+    </>
+  );
 }
 
 type MyAccountContentProps = {
-  onClickVerifyKYC: () => void
-}
+  onClickVerifyKYC: () => void;
+};
 
 function MyAccountContent(props: MyAccountContentProps) {
   const { user } = useContext(AuthContext)
@@ -387,20 +408,20 @@ function GeneralInformationForm() {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
 
   function handleChangePhone(phone: RNPhoneValue) {
-    setPhone(phone)
-    setStatus("typing")
+    setPhone(phone);
+    setStatus("typing");
   }
   function handleChangeFirstName(firstName: string) {
-    setFirstName(firstName)
-    setStatus("typing")
+    setFirstName(firstName);
+    setStatus("typing");
   }
   function handleChangeLastName(lastName: string) {
-    setLastName(lastName)
-    setStatus("typing")
+    setLastName(lastName);
+    setStatus("typing");
   }
   async function handleClickSave() {
     if (!user?.email || !phone || !firstName || !lastName || !validateAll()) {
-      return
+      return;
     }
     setStatus('requesting')
     const { nationPhone, localPhone } = extractPhone(phone)
@@ -409,16 +430,16 @@ function GeneralInformationForm() {
       codePhone: nationPhone,
       phone: localPhone,
       firstName: firstName,
-      lastName: lastName
-    }
+      lastName: lastName,
+    };
     try {
       // TODO: update API
-      await callApiChangeUserProfile(param)
-      setStatus('success')
+      await callApiChangeUserProfile(param);
+      setStatus("success");
     } catch (e: unknown) {
-      setStatus("failure")
-      setErrorMessage(e?.toString())
-      console.error(e)
+      setStatus("failure");
+      setErrorMessage(e?.toString());
+      console.error(e);
     }
   }
 
@@ -482,81 +503,87 @@ function ChangePasswordForm() {
   const [status, setStatus] = useState<FormStatus>('typing')
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   function handleChangeRePassword(rePass: string) {
-    setRePassword(rePass)
-    setIsPasswordMatch(true)
+    setRePassword(rePass);
+    setIsPasswordMatch(true);
   }
 
   async function handleClickSave() {
     if (password !== rePassword) {
-      setIsPasswordMatch(false)
-      return
+      setIsPasswordMatch(false);
+      return;
     }
     if (!password || !rePassword || !isPasswordMatch || !validateAll()) {
-      return
+      return;
     }
-    setStatus('requesting')
+    setStatus("requesting");
     const param: ApiChangeUserPassword = {
       newPass: password,
       reNewPass: rePassword,
-    }
+    };
     try {
-      await callApiChangeUserPassword(param)
-      setStatus('success')
-      setPassword('')
-      setRePassword('')
-      setStatus('typing')
+      await callApiChangeUserPassword(param);
+      setStatus("success");
+      setPassword("");
+      setRePassword("");
+      setStatus("typing");
     } catch (e: unknown) {
-      setStatus("failure")
-      setErrorMessage(e?.toString())
-      console.error(e)
+      setStatus("failure");
+      setErrorMessage(e?.toString());
+      console.error(e);
     }
   }
 
-  return <>
-    <div className={"mb-8 space-y-1"}>
-      <p className={"font-bold"}>{translation.t('Change password')}</p>
-      <div className={"h-[2px] w-[70px] bg-primary"}></div>
-    </div>
-    <div className={"space-y-6 grow"}>
-      <FormFieldPassword
-        id={"password"}
-        label={"New password"}
-        placeholder={"Enter new password"}
-        isRequired
-        value={password}
-        onChange={setPassword}
-        validateCaller={validateCaller}
-      />
-      <div className={"space-y-2"}>
+  return (
+    <>
+      <div className={"mb-8 space-y-1"}>
+        <p className={"font-bold"}>{translation.t("Change password")}</p>
+        <div className={"h-[2px] w-[70px] bg-primary"}></div>
+      </div>
+      <div className={"space-y-6 grow"}>
         <FormFieldPassword
-          id={"rePassword"}
-          label={"Re-enter password"}
-          placeholder={"Re-type new password"}
+          id={"password"}
+          label={"New password"}
+          placeholder={"Enter new password"}
           isRequired
-          value={rePassword}
-          onChange={handleChangeRePassword}
+          value={password}
+          onChange={setPassword}
           validateCaller={validateCaller}
         />
-        {!isPasswordMatch && <p className={"text-danger"}>{translation.t("The entered passwords do not match")}!</p>}
+        <div className={"space-y-2"}>
+          <FormFieldPassword
+            id={"rePassword"}
+            label={"Re-enter password"}
+            placeholder={"Re-type new password"}
+            isRequired
+            value={rePassword}
+            onChange={handleChangeRePassword}
+            validateCaller={validateCaller}
+          />
+          {!isPasswordMatch && (
+            <p className={"text-danger"}>
+              {translation.t("The entered passwords do not match")}!
+            </p>
+          )}
+        </div>
       </div>
-    </div>
-    <div className={"flex justify-end"}>
-      <button
-        disabled={status === 'requesting'}
-        onClick={handleClickSave}
-        className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-      >
-        {translation.t('Save')}
-        {status === "requesting" && <IconSpinner />}
-      </button>
-    </div>
-    {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
-  </>
+      <div className={"flex justify-end"}>
+        <button
+          disabled={status === "requesting"}
+          onClick={handleClickSave}
+          className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+        >
+          {translation.t("Save")}
+          {status === "requesting" && <IconSpinner />}
+        </button>
+      </div>
+      {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
+    </>
+  );
 }
 
 type KYCBoxProps = {
-  onClickVerify: () => void
-}
+  onClickVerify: () => void;
+};
 function KYCBox(props: KYCBoxProps) {
   const translation = useTranslation()
   const { user } = useContext(AuthContext)
@@ -601,15 +628,15 @@ function KYCBox(props: KYCBoxProps) {
 }
 
 type KYCUploadContentProps = {
-  backToMyAccount: () => void,
-}
+  backToMyAccount: () => void;
+};
 
 function KYCUploadContent(props: KYCUploadContentProps) {
   const translation = useTranslation()
   const { user } = useContext(AuthContext)
   const [file, setFile] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
-  const [status, setStatus] = useState<FormStatus>()
+  const [status, setStatus] = useState<FormStatus>();
 
   function handleClickSend() {
     // TODO: integrate with api
@@ -672,24 +699,24 @@ function KYCUploadContent(props: KYCUploadContentProps) {
 
 type TakeOrUploadPhotoProps = {
   onUpload: (file: File | null) => void;
-}
+};
 
 function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
-  const translation = useTranslation()
-  const uploadFileRef = useRef<HTMLInputElement | null>(null)
-  const [fileName, setFileName] = useState<string>()
+  const translation = useTranslation();
+  const uploadFileRef = useRef<HTMLInputElement | null>(null);
+  const [fileName, setFileName] = useState<string>();
 
   function handleClickUpload() {
     if (uploadFileRef) {
-      uploadFileRef.current?.click()
+      uploadFileRef.current?.click();
     }
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setFileName(file.name)
-      props.onUpload(file)
+      setFileName(file.name);
+      props.onUpload(file);
     }
   }
 

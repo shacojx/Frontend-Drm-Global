@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+     height: {
+        13: '52px'
+     }, 
       colors: {
         'primary': '#094B72',
         'primary_25': '#094B7240',
@@ -18,6 +21,7 @@ module.exports = {
         'disable': '#3B3F48D9',
         'surface': '#CCCCCC',
         'white': '#F6FAF9',
+        'stroke': '#E0E0E0'
       },
       spacing: {
         xs: '4px',

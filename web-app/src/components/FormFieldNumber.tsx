@@ -4,7 +4,7 @@ import { useValidate } from "../hooks-ui/useValidateCaller";
 import { FormFieldProps } from "../types/common";
 import clsx from "clsx";
 
-export function FormFieldTextArea(props: FormFieldProps<string>) {
+export function FormFieldNumber(props: FormFieldProps<number>) {
   const translation = useTranslation();
   const [shouldShowError, setShouldShowError] = useValidate(
     props.id,
@@ -13,9 +13,10 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
     props.validateCaller
   );
 
-  function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
-    const value = event.target.value;
-    props.onChange(value);
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const text = event.target.value;
+
+    props.onChange(Number(text));
   }
 
   const isTextValid = !props.isRequired || !!props.value;
@@ -23,24 +24,26 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
     ? "border-danger bg-red-50"
     : "bg-white";
   return (
-    <div className="flex flex-col gap-2">
+    <div className={clsx("flex flex-col gap-2", props.className)}>
       {!!props.label && (
         <p className="flex text-cBase font-bold gap-1">
           <span>{translation.t(props.label)}</span>
           {props.isRequired && <span className="text-danger">*</span>}
         </p>
       )}
-      <textarea
+      <input
+        type="number"
         value={props.value || ""}
         onChange={handleChange}
+        onFocus={setShouldShowError.bind(undefined, false)}
         onBlur={setShouldShowError.bind(undefined, !isTextValid)}
         placeholder={props.placeholder}
-        // className={"w-full min-h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
         className={clsx(
-          "w-full min-h-[40px] py-1 px-2 rounded-lg",
+          "w-full h-[40px] rounded-lg",
           statusClassName,
-          props.isFixedValue ? "border-none outline-none" : "border"
+          props.isFixedValue ? "border-none outline-none" : "border py-1 px-2"
         )}
+        readOnly={props.isFixedValue}
       />
     </div>
   );
