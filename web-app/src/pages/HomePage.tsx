@@ -33,7 +33,7 @@ import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
-import MyService from "./MyService";
+import LLCMyService from "./LLCMyService";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
 type HomeContent = HomeTab | 'myAccount' | 'KYCUpload' | idTab
@@ -118,7 +118,7 @@ export function HomePage() {
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.myServices.id && <MyServicesContent key={TabOptionGroup.myServices.id} />}
           {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent key={TabOptionGroup.myCompany.id} />}
-          {homeContent === idTab.LCFormationServices && <MyService key={idTab.LCFormationServices} />}
+          {homeContent === idTab.LCFormationServices && <LLCMyService key={idTab.LCFormationServices} />}
           {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} key="KYCUpload" />}
           {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} key="myAccount" />}
         </div>

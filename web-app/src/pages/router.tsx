@@ -7,7 +7,7 @@ import { HomePage } from "./HomePage";
 import { LoginPage } from "./LoginPage";
 import { RegisterPage } from "./RegisterPage";
 import { ResetPasswordPage } from "./ResetPasswordPage";
-import MyService from "./MyService";
+import LLCMyService from "./LLCMyService";
 
 export const RoutePaths = {
   home: '/',
@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
   },
   {
     path: RoutePaths.myService,
-    element: <MyService />
+    element: <LLCMyService />
   },
   {
     path: '*',
