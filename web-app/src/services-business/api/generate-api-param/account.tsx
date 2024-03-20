@@ -57,10 +57,10 @@ export function generateRegisterParam(
     password,
     rePassword,
     otpVerifyEmail,
-    companyName: companyName,
-    entityEnding: entityEnding,
-    industry: industry,
-    website: website,
-    companyDescription: companyDescription,
+    companyName: companyName || '',
+    entityEnding: entityEnding || '',
+    industry: industry || '',
+    website: website || '',
+    companyDescription: companyDescription || '',
   }
 }

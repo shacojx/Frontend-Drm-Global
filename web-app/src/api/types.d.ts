@@ -2,7 +2,7 @@ import { TransformedResultLogin } from "./account";
 
 export type NationValue = string
 export type CompanyTypeValue = 'LLC' | 'PLC'
-export type EntityEnding = 'LLC' | 'L.L.C' | 'LIMITED LIABILITY COMPANY' | 'PRIVATE LIMITED COMPANY'
+export type EntityEnding = 'LLC' | 'L.L.C' | 'LIMITED LIABILITY COMPANY' | 'PRIVATE LIMITED COMPANY' | ''
 export type Industry = string
 export type NationPhone = string
 export type LocalPhone = string
