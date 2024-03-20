@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { IconEssential, IconUpload } from "../../components/icons";
 
 type Document = {
@@ -20,6 +20,14 @@ export function DocumentTab({ readonly }: DocumentTabProps) {
     },
   ]);
 
+  const handleFormChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.item(0);
+    if (!file) return;
+
+    const newDocuments = [...documents, { id: file.name, name: file.name, url: file.name }];
+    setDocuments(newDocuments);
+  };
+
   return (
     <div>
       {!readonly && (
@@ -29,18 +37,7 @@ export function DocumentTab({ readonly }: DocumentTabProps) {
         >
           <IconUpload />
           Upload
-          <input
-            className="hidden"
-            type="file"
-            id="upload"
-            onChange={(event) => {
-              console.log(event.currentTarget.files);
-              const file = event.currentTarget.files?.item(0);
-              if (!file) return;
-
-              setDocuments((prev) => [...prev, { id: file.name, name: file.name, url: file.name }]);
-            }}
-          />
+          <input className="hidden" type="file" id="upload" onChange={handleFormChange} />
         </label>
       )}
 
