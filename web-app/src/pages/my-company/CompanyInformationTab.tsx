@@ -17,10 +17,8 @@ type CompanyInformationTabProps = {
   readonly: boolean;
 };
 
-export function CompanyInformationTab({
-  readonly,
-}: CompanyInformationTabProps) {
-  const { validateAll, validateCaller } = useValidateCaller();
+export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) {
+  const { validateCaller } = useValidateCaller();
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInformation>({
     companyName: "companyName",
@@ -30,6 +28,14 @@ export function CompanyInformationTab({
     description: "description",
     region: "region",
   });
+
+  const handleFormChange = <K extends keyof CompanyInformation>(
+    key: K,
+    value: CompanyInformation[K]
+  ) => {
+    const newInfo = { ...companyInfo, [key]: value };
+    setCompanyInfo(newInfo);
+  };
 
   useEffect(() => {
     // TODO: call api company tab
@@ -47,9 +53,7 @@ export function CompanyInformationTab({
           id="companyName"
           validateCaller={validateCaller}
           value={companyInfo.companyName}
-          onChange={(value) =>
-            setCompanyInfo((prev) => ({ ...prev, companyName: value }))
-          }
+          onChange={(value) => handleFormChange("companyName", value)}
         />
       </div>
 
@@ -63,9 +67,7 @@ export function CompanyInformationTab({
           id="entity"
           value={companyInfo.entityEnding}
           validateCaller={validateCaller}
-          onChange={(value) =>
-            setCompanyInfo((prev) => ({ ...prev, entityEnding: value }))
-          }
+          onChange={(value) => handleFormChange("entityEnding", value)}
         />
       </div>
 
@@ -78,9 +80,7 @@ export function CompanyInformationTab({
           id="region"
           value={companyInfo.region}
           validateCaller={validateCaller}
-          onChange={(value) =>
-            setCompanyInfo((prev) => ({ ...prev, region: value }))
-          }
+          onChange={(value) => handleFormChange("region", value)}
         />
       </div>
 
@@ -94,9 +94,7 @@ export function CompanyInformationTab({
           id="industry"
           value={companyInfo.industry}
           validateCaller={validateCaller}
-          onChange={(value) =>
-            setCompanyInfo((prev) => ({ ...prev, industry: value }))
-          }
+          onChange={(value) => handleFormChange("industry", value)}
         />
       </div>
 
@@ -109,9 +107,7 @@ export function CompanyInformationTab({
           id="website"
           value={companyInfo.website}
           validateCaller={validateCaller}
-          onChange={(value) =>
-            setCompanyInfo((prev) => ({ ...prev, website: value }))
-          }
+          onChange={(value) => handleFormChange("website", value)}
         />
       </div>
 
@@ -124,9 +120,7 @@ export function CompanyInformationTab({
           id="description"
           value={companyInfo.description}
           validateCaller={validateCaller}
-          onChange={(value) =>
-            setCompanyInfo((prev) => ({ ...prev, description: value }))
-          }
+          onChange={(value) => handleFormChange("description", value)}
         />
       </div>
     </div>

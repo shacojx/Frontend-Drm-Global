@@ -36,6 +36,21 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
     },
   ]);
 
+  const handleFormChange = <K extends keyof OwnerInformation>(
+    id: string = "",
+    key: K,
+    value: OwnerInformation[K]
+  ) => {
+    const newOwnersInfo = owners.map((owner) =>
+      owner.id !== id ? owner : { ...owner, [key]: value }
+    );
+
+    const totalShare = newOwnersInfo.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
+    if (totalShare < 0 || totalShare > 100) return;
+
+    setOwners(newOwnersInfo);
+  };
+
   useEffect(() => {
     // TODO: call api for ownership
   }, []);
@@ -80,11 +95,8 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
                   onChange={(event) => {
                     if (owner.type === "Company") return;
                     const isChecked = event.currentTarget.checked;
-
                     if (!isChecked) return;
-                    setOwners((prev) =>
-                      prev.map((o) => (o.id === owner.id ? { ...o, type: "Company" } : o))
-                    );
+                    handleFormChange(owner.id, "type", "Company");
                   }}
                 />
                 <span>Company</span>
@@ -104,9 +116,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
                     if (owner.type === "Individual") return;
                     const isChecked = event.currentTarget.checked;
                     if (!isChecked) return;
-                    setOwners((prev) =>
-                      prev.map((o) => (o.id === owner.id ? { ...o, type: "Individual" } : o))
-                    );
+                    handleFormChange(owner.id, "type", "Individual");
                   }}
                 />
                 <span>Individual</span>
@@ -134,11 +144,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
                 validateCaller={validateCaller}
                 id="companyName"
                 value={owner.companyName}
-                onChange={(value) => {
-                  setOwners((prev) =>
-                    prev.map((o) => (o.id === owner.id ? { ...o, companyName: value } : o))
-                  );
-                }}
+                onChange={(value) => handleFormChange(owner.id, "companyName", value)}
               />
             </div>
 
@@ -150,20 +156,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
                 validateCaller={validateCaller}
                 id="ownership"
                 value={owner.ownership}
-                onChange={(value) => {
-                  setOwners((prev) => {
-                    const newOwners = prev.map((o) =>
-                      o.id === owner.id ? { ...o, ownership: value } : o
-                    );
-
-                    const totalShare = newOwners.reduce(
-                      (acc, owner) => acc + (owner.ownership ?? 0),
-                      0
-                    );
-
-                    return totalShare <= 100 ? newOwners : prev;
-                  });
-                }}
+                onChange={(value) => handleFormChange(owner.id, "ownership", value)}
               />
             </div>
 

@@ -26,6 +26,11 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
     zipCode: "550000",
   });
 
+  const handleFormChange = <K extends keyof MailingAddress>(key: K, value: MailingAddress[K]) => {
+    const newInfo = { ...mailingAddress, [key]: value };
+    setMailingAddress(newInfo);
+  };
+
   useEffect(() => {
     // INFO: call api
   }, []);
@@ -39,9 +44,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
           validateCaller={validateCaller}
           id="state"
           value={mailingAddress.state}
-          onChange={(value) => {
-            setMailingAddress((prev) => ({ ...prev, state: value }));
-          }}
+          onChange={(value) => handleFormChange("state", value)}
         />
       </div>
 
@@ -54,9 +57,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
           validateCaller={validateCaller}
           id="country"
           value={mailingAddress.country}
-          onChange={(value) => {
-            setMailingAddress((prev) => ({ ...prev, country: value }));
-          }}
+          onChange={(value) => handleFormChange("country", value)}
         />
       </div>
 
@@ -68,9 +69,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
           validateCaller={validateCaller}
           id="city"
           value={mailingAddress.city}
-          onChange={(value) => {
-            setMailingAddress((prev) => ({ ...prev, city: value }));
-          }}
+          onChange={(value) => handleFormChange("city", value)}
         />
       </div>
 
@@ -82,9 +81,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
           validateCaller={validateCaller}
           id="address"
           value={mailingAddress.address}
-          onChange={(value) => {
-            setMailingAddress((prev) => ({ ...prev, address: value }));
-          }}
+          onChange={(value) => handleFormChange("address", value)}
         />
       </div>
 
@@ -96,9 +93,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
           validateCaller={validateCaller}
           id="zipCode"
           value={mailingAddress.zipCode}
-          onChange={(value) => {
-            setMailingAddress((prev) => ({ ...prev, zipCode: value }));
-          }}
+          onChange={(value) => handleFormChange("zipCode", value)}
         />
       </div>
     </div>
