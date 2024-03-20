@@ -1,19 +1,15 @@
 import {
   DataGrid,
-  GridCellParams,
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ServiceFilter } from '../components/ServiceFilter';
 import { ServiceSearchFilter } from '../types/serviceSearchFilter';
 import { Service } from '../types/service';
 import { StatusBadge } from '../components/StatusBadge';
-import { DialogConfirmFullScreen } from '../components/DialogFormStatusFullscreen';
-import { DialogContainer } from '../components/DialogContainer';
 
 type Props = {};
 
@@ -169,13 +165,6 @@ export function ServicesContent(props: Props) {
             onPaginationModelChange={(model) => setPaginationModel(model)}
           />
         </div>
-        <DialogContainer
-          handleClickOverlay={() => {}}
-          isAutoSize
-          isCloseOnClickOverlay
-        >
-          abc
-        </DialogContainer>
       </div>
     </div>
   );

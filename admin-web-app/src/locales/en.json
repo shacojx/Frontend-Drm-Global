@@ -156,5 +156,12 @@
   "KYC Management":  "KYC Management",
   "Approve KYC Request?":  "Approve KYC Request?",
   "Reject KYC Request?":  "Reject KYC Request?",
-  "This action cannot be undone":  "This action cannot be undone"
+  "This action cannot be undone":  "This action cannot be undone",
+  "Service Id": "Service Id",
+  "Service name": "Service name",
+  "Customer name": "Customer name",
+  "Customer Email": "Customer Email",
+  "Corporation profile": "Corporation profile",
+  "Payment": "Payment",
+  "PIC": "PIC"
 }
