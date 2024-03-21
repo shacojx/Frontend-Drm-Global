@@ -2,7 +2,7 @@ import { callApi } from "../services-base/api";
 
 const PREFIX = "api/";
 
-export const llcServiceApi = {
+const llcServiceApi = {
   getList: async () => {
     return new Promise((resolve, reject) => {
       resolve({
@@ -15,3 +15,4 @@ export const llcServiceApi = {
   },
 };
 
+export { llcServiceApi };
