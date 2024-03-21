@@ -1,6 +1,7 @@
 import { StatusBadge } from './StatusBadge';
 import { useTranslation } from 'react-i18next';
 import { Service } from '../types/service';
+import { Status } from '../types/status';
 
 type Props = {
   service: Service | null;
@@ -15,7 +16,7 @@ export function StateFilling(props: Props) {
         <button className="w-[150px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 ml-auto self-end">
           Send Reminder
         </button>
-        <StatusBadge status={props.service?.status} showDot />
+        <StatusBadge status={props.service?.status as Status} showDot />
       </div>
       <div className={'mb-4'}>
         <div className={'text-lg font-bold mb-2'}>

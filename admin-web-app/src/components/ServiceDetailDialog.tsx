@@ -196,7 +196,7 @@ export function ServiceDetailDialog(props: Props) {
           </div>
         </div>
         <div className={'col-span-3'}>
-          <StateFilling></StateFilling>
+          <StateFilling service={props.service}></StateFilling>
         </div>
       </div>
     </div>
