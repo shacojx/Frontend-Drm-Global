@@ -4,7 +4,7 @@ type Props = {
     label: string
 }
 
-export default function TitleConent({
+export default function TitleContent({
     label
 }: Props) {
     return (

@@ -1,43 +1,45 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import Button from "src/components/Button";
+import images from "src/assets/images/images";
 import { FormFieldSelect } from "src/components/FormFieldSelect";
-import TitleConent from "src/components/TitleConent";
+import InputFile from "src/components/InputFile";
+import TitleContent from "src/components/TitleContent";
 import {
   BuildingIcon,
   DiplomaVerifiedIcon,
   DocumentIcon,
   IconCheck,
   IconRefreshCircle,
-  IconUpload,
   IdentityIcon,
   MoneyIcon,
   NotificationUnreadLinesIcon,
 } from "src/components/icons";
+import useLLCServiceApi from "src/hook/apis/useLLCServiceApi";
 import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
 import { cn } from "src/utils/cn.util";
+import StepService from "./components/StepService";
+import TabService from "./components/TabService";
 import {
+  ServiceType,
   StepType,
   TabType,
   statusStep,
-  ServiceType,
 } from "./types/my-service.type";
-import TabService from "./components/TabService";
-import StepService from "./components/StepService";
-import images from "src/assets/images/images";
-import useLLCServiceApi from "src/hook/apis/useLLCServiceApi";
-import InputFile from "src/components/InputFile";
+import { useNavigate } from "react-router-dom";
+import { RoutePaths } from "../router";
+import { UploadedDocumentType } from "src/api/llcService/llcServiceApi.type";
 
 export default function LLCMyService() {
   const { t } = useTranslation();
   const [cycle, setCycle] = useState<string>();
   const { validateCaller, validateAll } = useValidateCaller();
-  const [file, setFile] = useState<File>()
+  const [file, setFile] = useState<File>();
 
   const resLLCService = useLLCServiceApi();
 
   const dataService = resLLCService?.data?.data;
+
+  const navigator = useNavigate();
 
   const dataTab: TabType[] = [
     {
@@ -47,6 +49,10 @@ export default function LLCMyService() {
       status: ServiceType.Pending,
       color: "#094B72",
       id: 1,
+      clickable: true,
+      onClick: () => {
+        // Clickable: download file tương ứng, mở tự động tại tab mới của trình duyệt.
+      },
     },
     {
       icon: <IdentityIcon className="w-6 h-6" />,
@@ -55,6 +61,10 @@ export default function LLCMyService() {
       status: ServiceType.InProgress,
       color: "#FF5722",
       id: 2,
+      onClick: () => {
+        // Hệ thống chuyển sang màn hình Chi tiết tài khoản.
+        navigator(RoutePaths.profile);
+      },
     },
     {
       icon: <MoneyIcon className="w-6 h-6" />,
@@ -63,6 +73,7 @@ export default function LLCMyService() {
       status: ServiceType.Issued,
       color: "#FFC327",
       id: 3,
+      clickable: false,
     },
     {
       icon: <BuildingIcon className="w-6 h-6" />,
@@ -71,35 +82,13 @@ export default function LLCMyService() {
       status: ServiceType.InProgress,
       color: "#5D50C6",
       id: 4,
+      onClick: () => {
+        // Chọn để hiển thị Màn hình chi tiết Công ty.
+        navigator(RoutePaths.myCompany);
+      },
     },
   ];
 
-  const dataStep: StepType[] = [
-    {
-      header: "State Filings",
-      deatail: "2 - 5 days",
-      status: statusStep.draf,
-      id: 1,
-    },
-    {
-      header: "Communication",
-      deatail: "2 - 5 days",
-      status: statusStep.peding,
-      id: 2,
-    },
-    {
-      header: "EIN",
-      deatail: "2 - 5 days",
-      status: statusStep.success,
-      id: 3,
-    },
-    {
-      header: "Bank account",
-      deatail: "2 - 5 days",
-      status: statusStep.peding,
-      id: 4,
-    },
-  ];
   const onChangeCycle = (value: string) => {
     setCycle(value);
   };
@@ -122,13 +111,17 @@ export default function LLCMyService() {
     return <>loading...</>;
   }
 
+  const onDownloadServiceUpload = (item: UploadedDocumentType) => {
+    console.log("item: ", item);
+    // download file
+  };
   return (
     <div className="w-full flex grow relative overflow-y-scroll">
       <div className="w-full grow flex flex-col p-3">
         {dataService && (
           <div className="p-5 md:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
             <div className="flex gap-4 flex-col md:flex-row justify-between">
-              <TitleConent label="LLC Formation Services" />
+              <TitleContent label="LLC Formation Services" />
               <div className="flex justify-between md:justify-normal gap-md">
                 <div className="flex gap-md items-center">
                   <div>{t("Cycle")}:</div>
@@ -208,13 +201,13 @@ export default function LLCMyService() {
                 <div className="flex flex-col md:flex-row gap-8 md:gap-3 mt-6">
                   {/* step */}
                   <div className="flex flex-col gap-md">
-                    {dataStep.map((item, index) => (
+                    {dataService?.step?.map((item) => (
                       <StepService item={item} />
                     ))}
                   </div>
                   <div className="border border-primary_25 rounded-xl py-lg px-xl flex-grow">
                     <div className="flex justify-between flex-grow mb-md">
-                      <TitleConent label="State filling" />
+                      <TitleContent label="State filling" />
                       <div>
                         <div className="flex gap-md items-center">
                           <div>{t("Status")}:</div>
@@ -231,11 +224,7 @@ export default function LLCMyService() {
                       <div className="flex items-start py-md">
                         <DiplomaVerifiedIcon className="mr-4 self-center" />
                         <div className="flex-1">
-                          <div>
-                            {t(
-                              "State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State."
-                            )}
-                          </div>
+                          <div>{dataService?.step_description}</div>
                         </div>
                       </div>
                     </div>
@@ -243,11 +232,7 @@ export default function LLCMyService() {
                       <div className="flex items-start border border-primary_25 bg-primary/10 p-md rounded-lg">
                         <NotificationUnreadLinesIcon className="mr-4 self-center" />
                         <div className="flex-1">
-                          <div>
-                            {t(
-                              "You don't have to upload any paper, we will do all the paper work of this step"
-                            )}
-                          </div>
+                          <div>{dataService?.remark}</div>
                         </div>
                       </div>
                     </div>
@@ -257,16 +242,30 @@ export default function LLCMyService() {
                       </div>
                       <div className="border rounded-md border-primary_25 mt-md">
                         <div className="border-b  border-primary_25 grid grid-cols-2 gap-md items-center py-md">
-                          <div className="px-md text-center">{t("Required document")}</div>
-                          <div className="px-md text-center">{t("Uploaded document")}</div>
+                          <div className="px-md text-center">
+                            {t("Required document")}
+                          </div>
+                          <div className="px-md text-center">
+                            {t("Uploaded document")}
+                          </div>
                         </div>
                         <div className="grid grid-cols-2 gap-md items-center py-md">
-                          <div className="px-md text-[#3B3F48]/85 text-center">{t("None")}</div>
-                          <div className="px-md text-center flex justify-center">
+                          <div className="px-md text-[#3B3F48]/85 text-center">
+                            {dataService?.customer_document?.required_document}
+                          </div>
+                          <div
+                            className={cn(
+                              "px-md text-center flex justify-center"
+                            )}
+                          >
                             <InputFile
                               label={t("Upload")}
                               onChange={handleChangeFile}
                               file={file}
+                              disabled={
+                                dataService?.customer_document
+                                  ?.required_document === "none"
+                              }
                             />
                           </div>
                         </div>
@@ -278,20 +277,33 @@ export default function LLCMyService() {
                       </div>
                       <div className="border rounded-md border-primary_25 mt-md">
                         <div className="border-b  border-primary_25 grid grid-cols-2 gap-md items-center py-md">
-                          <div className="px-md text-center">{t("Required document")}</div>
-                          <div className="px-md text-center">{t("Uploaded document")}</div>
+                          <div className="px-md text-center">
+                            {t("Required document")}
+                          </div>
+                          <div className="px-md text-center">
+                            {t("Uploaded document")}
+                          </div>
                         </div>
                         <div className="grid grid-cols-2 gap-md items-center py-md">
                           <div className="text-[#3B3F48]/85 px-md text-center">
-                            1. State Filling Information
+                            {dataService.service_document.required_document}
                           </div>
                           <div className="px-md text-center">
-                            <a
-                              href="#"
-                              className="text-primary font-bold hover:underline"
-                            >
-                              1. EEE Company_State Filling Information.pdf
-                            </a>
+                            {dataService.service_document.uploaded_document.map(
+                              (item, index) => (
+                                <div>
+                                  <a
+                                    href="#"
+                                    className="text-primary font-bold hover:underline"
+                                    onClick={() =>
+                                      onDownloadServiceUpload(item)
+                                    }
+                                  >
+                                    {index + 1}. {item.name}
+                                  </a>
+                                </div>
+                              )
+                            )}
                           </div>
                         </div>
                       </div>

@@ -29,9 +29,9 @@ export default function StepService({ item }: Props) {
                     </div>
                 </div>
                 <div className='flex-1'>
-                    <div className=''>{item.header}</div>
+                    <div className=''>{item.name}</div>
                     <div className='text-sm text-[#A0AEC0]'>
-                        {item.deatail}
+                        {item.issuingDuration}
                     </div>
                 </div>
             </div>

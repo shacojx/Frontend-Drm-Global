@@ -16,6 +16,7 @@ export const RoutePaths = {
   register: '/register',
   myService:'/my-service',
   services:'/service',
+  profile:'/profile',
   myCompany:'/my-company',
 }
 

@@ -8,6 +8,7 @@ interface Props {
   accept?: string;
   label?: string;
   file?: File;
+  disabled?: boolean;
 }
 
 export default function InputFile({
@@ -15,6 +16,7 @@ export default function InputFile({
   accept = "*",
   label = "Upload",
   file,
+  disabled = false,
 }: Props) {
   const { t } = useTranslation();
 
@@ -52,12 +54,14 @@ export default function InputFile({
         accept={accept}
         ref={fileInputRef}
         onChange={onFileChange}
+        disabled={disabled}
       />
       {!file && (
         <Button
           icon={<IconUpload />}
           label={label}
           type="button"
+          disabled={disabled}
           onClick={handleUpload}
         />
       )}

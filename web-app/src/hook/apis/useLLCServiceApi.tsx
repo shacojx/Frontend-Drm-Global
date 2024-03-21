@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { llcServiceApi } from "src/api/llcService.api";
+import llcServiceApi from "src/api/llcService/llcServiceApi";
 import { queryKeyApi } from "src/constants/queryKeyApi";
 
 export default function useLLCServiceApi() {
