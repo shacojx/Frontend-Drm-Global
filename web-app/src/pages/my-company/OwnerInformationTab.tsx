@@ -177,7 +177,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               <FormFieldMultipleUpload
                 maxFiles={3}
                 isFixedValue={readonly}
-                label={`Document ${owner.id}`}
+                label="Document"
                 isRequired
                 validateCaller={validateCaller}
                 id={`document-${owner.id}`}
