@@ -163,5 +163,12 @@
   "Customer Email": "Customer Email",
   "Corporation profile": "Corporation profile",
   "Payment": "Payment",
-  "PIC": "PIC"
+  "PIC": "PIC",
+  "Contract": "Contract",
+  "State Fillings": "State Fillings",
+  "2 - 5 days": "2 - 5 days",
+  "Communication": "Communication",
+  "EIN": "EIN",
+  "Bank Account": "Bank Account",
+  "Admin's remark": "Admin's remark"
 }

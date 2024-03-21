@@ -1,30 +1,34 @@
 import {
   DataGrid,
-  GridCellParams,
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
-  GridValueGetterParams,
+  GridRowParams,
 } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ServiceFilter } from '../components/ServiceFilter';
 import { ServiceSearchFilter } from '../types/serviceSearchFilter';
 import { Service } from '../types/service';
 import { StatusBadge } from '../components/StatusBadge';
-import { DialogConfirmFullScreen } from '../components/DialogFormStatusFullscreen';
 import { DialogContainer } from '../components/DialogContainer';
+import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
 
 type Props = {};
 
 export function ServicesContent(props: Props) {
   const translation = useTranslation();
+
   const [servicesCount, setServicesCount] = useState<number>();
   const [tableData, setTableData] = useState<Service[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
+
+  const [isShowServiceDetailDialog, setIsShowServiceDetailDialog] =
+    useState(false);
+  const [selectService, setSelectService] = useState<Service | null>(null);
 
   // TODO: add i18n for columns
   const serviceColumns: GridColDef<Service>[] = [
@@ -144,6 +148,12 @@ export function ServicesContent(props: Props) {
     ]);
   }
 
+  function showServiceDetail(data: Service) {
+    console.log(data);
+    setIsShowServiceDetailDialog(true);
+    setSelectService(data);
+  }
+
   return (
     <div className={'w-full grow flex flex-col p-3'}>
       <div
@@ -167,15 +177,24 @@ export function ServicesContent(props: Props) {
             rowCount={servicesCount || 0}
             paginationModel={paginationModel}
             onPaginationModelChange={(model) => setPaginationModel(model)}
+            onRowClick={(param: GridRowParams<Service>) =>
+              showServiceDetail(param.row)
+            }
           />
         </div>
-        <DialogContainer
-          handleClickOverlay={() => {}}
-          isAutoSize
-          isCloseOnClickOverlay
-        >
-          abc
-        </DialogContainer>
+        {isShowServiceDetailDialog && (
+          <DialogContainer
+            handleClickOverlay={() => {
+              setIsShowServiceDetailDialog(false);
+            }}
+            isCloseOnClickOverlay
+            isFullSize
+            isAutoSize
+            panelClassName={'max-w-[1200px]'}
+          >
+            <ServiceDetailDialog service={selectService} />
+          </DialogContainer>
+        )}
       </div>
     </div>
   );
