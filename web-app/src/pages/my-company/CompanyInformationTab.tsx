@@ -42,8 +42,8 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-x-4 gap-y-6 justify-start">
-      <div className="min-w-96">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-6 justify-start">
+      <div className="min-w-80">
         <label className="font-bold mb-2 block">
           Company Name <span className="text-danger">*</span>
         </label>
@@ -57,7 +57,7 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
         />
       </div>
 
-      <div className="min-w-96">
+      <div className="min-w-80">
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={[{ label: "option 1", value: "id" }]}
@@ -71,7 +71,7 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
         />
       </div>
 
-      <div className="min-w-96">
+      <div className="min-w-80">
         <FormFieldText
           isFixedValue
           label="Region"
@@ -84,7 +84,7 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
         />
       </div>
 
-      <div className="min-w-96">
+      <div className="min-w-80">
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={[{ label: "option 1", value: "idn2" }]}
@@ -98,7 +98,7 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
         />
       </div>
 
-      <div className="min-w-96">
+      <div className="min-w-80">
         <FormFieldText
           isFixedValue={readonly}
           label="Website"
@@ -111,7 +111,7 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
         />
       </div>
 
-      <div className="min-w-full">
+      <div className="min-w-full col-span-1 xl:col-span-3">
         <FormFieldTextArea
           isFixedValue={readonly}
           label="Company Description"

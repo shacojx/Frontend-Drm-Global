@@ -125,7 +125,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
             </div>
           </div>
 
-          <div className="relative flex justify-start gap-x-4 gap-y-6 mb-6 flex-wrap">
+          <div className="relative justify-start gap-x-4 gap-y-6 mb-6 grid grid-cols-1 xl:grid-cols-3">
             {owners.length > 1 && (
               <button
                 className="absolute right-1 top-1 cursor-pointer"
@@ -137,7 +137,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
               </button>
             )}
 
-            <div className="min-w-96">
+            <div className="min-w-80">
               <FormFieldText
                 isFixedValue={readonly}
                 label="Company Name"
@@ -149,7 +149,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
               />
             </div>
 
-            <div className="min-w-96">
+            <div className="min-w-80">
               <FormFieldNumber
                 isFixedValue={readonly}
                 label="Ownership (%)"
@@ -161,7 +161,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
               />
             </div>
 
-            <div className="min-w-96">
+            <div className="min-w-80">
               <FormFieldMultipleUpload
                 isFixedValue={readonly}
                 label="Document"

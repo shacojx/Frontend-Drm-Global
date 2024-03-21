@@ -7,6 +7,7 @@ type ResponseParty = {
   firstName: string;
   lastName: string;
   hasSSNorITIN: boolean;
+  SSNorITIN?: string;
 };
 
 type ResponsePartyTabProps = {
@@ -23,8 +24,7 @@ export function ResponsePartyTab({ readonly }: ResponsePartyTabProps) {
   });
 
   const handleFormChange = <K extends keyof ResponseParty>(key: K, value: ResponseParty[K]) => {
-    const newInfo = { ...responseParty, [key]: value };
-    setResponseParty(newInfo);
+    setResponseParty((prev) => ({ ...prev, [key]: value }));
   };
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function ResponsePartyTab({ readonly }: ResponsePartyTabProps) {
   }, []);
 
   return (
-    <div className="flex gap-x-4 gap-y-6 flex-wrap justify-start">
+    <div className="gap-x-4 gap-y-6 justify-start grid grid-cols-2 lg:grid-cols-3">
       <div>
         <FormFieldText
           isFixedValue={readonly}
@@ -57,50 +57,60 @@ export function ResponsePartyTab({ readonly }: ResponsePartyTabProps) {
         />
       </div>
 
-      <div className="flex flex-col justify-between">
-        <div className="font-bold">Do you have SSN or ITIN ?</div>
-        <div className={clsx("flex gap-4", { "pointer-events-none": readonly })}>
-          <label htmlFor="yes" className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              className="accent-primary w-5 h-5"
-              id="yes"
-              checked={responseParty.hasSSNorITIN}
-              onChange={(event) => {
-                const isChecked = event.currentTarget.checked;
-                if (!isChecked) return;
+      <div className="flex flex-col justify-between xl:col-span-1 col-span-2">
+        <div className="font-bold mb-2">Do you have SSN or ITIN ?</div>
 
-                handleFormChange("hasSSNorITIN", true);
-              }}
-            />
-            Yes
-          </label>
+        <div
+          className={clsx("flex gap-4 mb-2 flex-col xl:flex-row", {
+            "pointer-events-none": readonly,
+          })}
+        >
+          <div className="flex gap-4">
+            <label htmlFor="yes" className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="accent-primary w-5 h-5"
+                id="yes"
+                checked={responseParty.hasSSNorITIN}
+                onChange={(event) => {
+                  const isChecked = event.currentTarget.checked;
+                  if (!isChecked) return;
 
-          <label htmlFor="no" className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              className="accent-primary w-5 h-5"
-              id="no"
-              checked={!responseParty.hasSSNorITIN}
-              onChange={(event) => {
-                const isChecked = event.currentTarget.checked;
-                if (!isChecked) return;
-                handleFormChange("hasSSNorITIN", false);
-              }}
+                  handleFormChange("hasSSNorITIN", true);
+                }}
+              />
+              Yes
+            </label>
+
+            <label htmlFor="no" className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="accent-primary w-5 h-5"
+                id="no"
+                checked={!responseParty.hasSSNorITIN}
+                onChange={(event) => {
+                  const isChecked = event.currentTarget.checked;
+                  if (!isChecked) return;
+
+                  handleFormChange("SSNorITIN", undefined);
+                  handleFormChange("hasSSNorITIN", false);
+                }}
+              />
+              No
+            </label>
+          </div>
+
+          {responseParty.hasSSNorITIN && (
+            <FormFieldText
+              isRequired
+              className="w-full"
+              id="SSN/ITIN"
+              value={responseParty.SSNorITIN}
+              validateCaller={validateCaller}
+              onChange={(value) => handleFormChange("SSNorITIN", value)}
             />
-            No
-          </label>
+          )}
         </div>
-      </div>
-
-      <div>
-        <FormFieldText
-          isFixedValue
-          label="_"
-          validateCaller={validateCaller}
-          id="_"
-          onChange={() => {}}
-        />
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-x-4 gap-y-6">
+    <div className="gap-x-4 gap-y-6 grid grid-cols-2 xl:grid-cols-6">
       <div>
         <FormFieldText
           isFixedValue={readonly}
@@ -48,7 +48,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
         />
       </div>
 
-      <div className="min-w-52">
+      <div>
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={[{ label: "Viet Nam", value: "vn" }]}
@@ -73,7 +73,7 @@ export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
         />
       </div>
 
-      <div className="min-w-80">
+      <div className="col-span-2 row-start-2 xl:row-start-1 xl:col-start-3">
         <FormFieldText
           isFixedValue={readonly}
           label="Address"
