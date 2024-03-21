@@ -4,6 +4,7 @@ import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import clsx from "clsx";
 import { ResponseParty } from "src/types/my-company";
 import { cn } from "src/services-ui/tailwindcss";
+import { useTranslation } from "react-i18next";
 
 type ResponsePartyTabProps = {
   readonly: boolean;
@@ -12,6 +13,7 @@ type ResponsePartyTabProps = {
 };
 
 export function ResponsePartyTab({ readonly, responseParty, onChange }: ResponsePartyTabProps) {
+  const { t } = useTranslation();
   const { validateCaller } = useValidateCaller();
 
   const handleFormChange = <K extends keyof ResponseParty>(key: K, value: ResponseParty[K]) => {
@@ -23,7 +25,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
       <div>
         <FormFieldText
           isFixedValue={readonly}
-          label="First Name"
+          label={t("First Name")}
           isRequired
           validateCaller={validateCaller}
           id="firstName"
@@ -35,7 +37,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
       <div>
         <FormFieldText
           isFixedValue={readonly}
-          label="Last Name"
+          label={t("Last Name")}
           isRequired
           validateCaller={validateCaller}
           id="lastName"
@@ -45,7 +47,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
       </div>
 
       <div className="flex flex-col justify-between xl:col-span-1 col-span-2">
-        <div className="font-bold mb-2">Do you have SSN or ITIN ?</div>
+        <div className="font-bold mb-2">{t("Do you have SSN or ITIN ?")}</div>
 
         <div
           className={clsx("flex gap-4 flex-col xl:flex-row", {

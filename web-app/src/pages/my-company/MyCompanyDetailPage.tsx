@@ -36,7 +36,7 @@ const TABS = [
 ] as const;
 
 export function MyCompanyDetailPage() {
-  const translation = useTranslation();
+  const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
 
@@ -87,7 +87,7 @@ export function MyCompanyDetailPage() {
       <div className="bg-white w-full flex flex-col border border-l border-stroke">
         <div className="grow p-10 overflow-y-auto">
           <h2 className="mb-12 text-lg font-semibold relative after:absolute after:w-16 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1">
-            Company Detail
+            {t("Company Detail")}
           </h2>
 
           <div className="rounded-lg p-1 border border-solid border-surface mb-12 overflow-x-scroll relative h-14">
@@ -101,7 +101,7 @@ export function MyCompanyDetailPage() {
                   )}
                   onClick={() => setActiveTab(tab)}
                 >
-                  {tab}
+                  {t(tab)}
                 </div>
               ))}
             </div>
@@ -152,7 +152,7 @@ export function MyCompanyDetailPage() {
                 setIsEditing(false);
               }}
             >
-              Cancel
+              {t("Cancel")}
             </button>
           )}
           <button
@@ -165,7 +165,7 @@ export function MyCompanyDetailPage() {
               }
             }}
           >
-            {isEditing ? translation.t("Save") : "Edit"}
+            {isEditing ? t("Save") : t("Edit")}
           </button>
         </div>
       </div>

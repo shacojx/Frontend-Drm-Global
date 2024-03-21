@@ -6,6 +6,7 @@ import { FormFieldTextArea } from "../../components/FormFieldArea";
 import { ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "src/constants/SelectionOptions";
 import { EntityEnding, Industry } from "src/api/types";
 import { CompanyInformation } from "src/types/my-company";
+import { useTranslation } from "react-i18next";
 
 type CompanyInformationTabProps = {
   readonly: boolean;
@@ -18,6 +19,7 @@ export function CompanyInformationTab({
   companyInfo,
   onChange,
 }: CompanyInformationTabProps) {
+  const { t } = useTranslation();
   const { validateCaller } = useValidateCaller();
 
   const handleFormChange = <K extends keyof CompanyInformation>(
@@ -31,10 +33,9 @@ export function CompanyInformationTab({
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-6 justify-start">
       <div>
-        <label className="font-bold mb-2 block">
-          Company Name <span className="text-danger">*</span>
-        </label>
         <FormFieldText
+          isRequired
+          label={t("Company Name")}
           isFixedValue={readonly}
           className="w-full"
           id="companyName"
@@ -48,7 +49,7 @@ export function CompanyInformationTab({
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={ENTITY_ENDING_INFOS}
-          label="Entity Ending"
+          label={t("Entity Ending")}
           isRequired
           className="w-full"
           id="entity"
@@ -62,7 +63,7 @@ export function CompanyInformationTab({
         <FormFieldSelect
           optionInfos={NATION_INFOS}
           isFixedValue={readonly}
-          label="Region"
+          label={t("Region")}
           isRequired
           className="w-full"
           id="region"
@@ -77,7 +78,7 @@ export function CompanyInformationTab({
           isFixedValue={readonly}
           optionInfos={INDUSTRY_INFOS}
           isRequired
-          label="Industry"
+          label={t("Industry")}
           className="w-full"
           id="industry"
           value={companyInfo?.industry}
@@ -89,7 +90,7 @@ export function CompanyInformationTab({
       <div>
         <FormFieldText
           isFixedValue={readonly}
-          label="Website"
+          label={t("Website")}
           isRequired
           className="w-full"
           id="website"
@@ -102,7 +103,7 @@ export function CompanyInformationTab({
       <div className="min-w-full col-span-1 xl:col-span-3">
         <FormFieldTextArea
           isFixedValue={readonly}
-          label="Company Description"
+          label={t("Company Description")}
           isRequired
           className="w-full"
           id="description"

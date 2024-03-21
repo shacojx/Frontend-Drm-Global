@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { IconEssential, IconSpinner, IconUpload } from "../../components/icons";
 import { Document } from "src/types/my-company";
 import { getFile, uploadFile } from "src/api/upload";
+import { useTranslation } from "react-i18next";
 
 type DocumentTabProps = {
   readonly: boolean;
@@ -10,6 +11,7 @@ type DocumentTabProps = {
 };
 
 export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabProps) {
+  const { t } = useTranslation();
   const [downloadingName, setDownloadingName] = useState<string>();
 
   const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +32,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
           className="flex justify-center gap-3 text-primary rounded-lg w-full border border-solid border-primary py-4 font-bold mb-6 cursor-pointer"
         >
           <IconUpload />
-          Upload
+          {t("Upload")}
           <input className="hidden" type="file" id="upload" onChange={handleFormChange} />
         </label>
       )}
@@ -52,7 +54,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
             }}
           >
             {downloadingName === document.name && <IconSpinner />}
-            Download
+            {t("Download")}
           </button>
         </div>
       ))}

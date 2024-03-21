@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { FormFieldMultipleUpload } from "../../components/FormFieldMultipleUpload";
 import { cn } from "src/utils/cn.util";
 import { OwnerInformation } from "src/types/my-company";
+import { useTranslation } from "react-i18next";
 
 type OwnerInformationTabProps = {
   readonly: boolean;
@@ -15,6 +16,7 @@ type OwnerInformationTabProps = {
 };
 
 export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerInformationTabProps) {
+  const { t } = useTranslation();
   const totalShare = owners?.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
 
   const handleFormChange = <K extends keyof OwnerInformation>(
@@ -51,12 +53,16 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
   return (
     <div>
       {totalShare > 100 && (
-        <div className="text-danger mb-2">Total ownership must be less than or equal 100.</div>
+        <div className="text-danger mb-2">
+          {t("Total ownership must be less than or equal 100.")}
+        </div>
       )}
       {owners.map((owner, idx) => (
         <div key={owner.id}>
           <div className="grid grid-cols-[1fr,20px] xl:flex xl:justify-between">
-            <div className="underline text-lg font-bold mb-6">Owner {idx + 1}</div>
+            <div className="underline text-lg font-bold mb-6">
+              {t("Owner")} {idx + 1}
+            </div>
 
             <button
               className={cn("cursor-pointer mt-auto mb-6 block xl:hidden ml-auto", {
@@ -91,7 +97,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                     handleFormChange(owner.id, "type", "Company");
                   }}
                 />
-                <span>Company</span>
+                <span>{t("Company")}</span>
               </label>
 
               <label
@@ -111,7 +117,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                     handleFormChange(owner.id, "type", "Individual");
                   }}
                 />
-                <span>Individual</span>
+                <span>{t("Individual")}</span>
               </label>
             </div>
           </div>
@@ -125,7 +131,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               <div className=" col-span-1 xl:col-span-2">
                 <FormFieldText
                   isFixedValue={readonly}
-                  label="Company Name"
+                  label={t("Company Name")}
                   isRequired
                   validateCaller={validateCaller}
                   id="companyName"
@@ -138,7 +144,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                 <div className="">
                   <FormFieldText
                     isFixedValue={readonly}
-                    label="First Name"
+                    label={t("First Name")}
                     isRequired
                     validateCaller={validateCaller}
                     id="firstName"
@@ -150,7 +156,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                 <div className="">
                   <FormFieldText
                     isFixedValue={readonly}
-                    label="Last Name"
+                    label={t("Last Name")}
                     isRequired
                     validateCaller={validateCaller}
                     id="lastName"
@@ -164,7 +170,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
             <div className="">
               <FormFieldNumber
                 isFixedValue={readonly}
-                label="Ownership (%)"
+                label={t("Ownership (%)")}
                 isRequired
                 validateCaller={validateCaller}
                 id="ownership"
@@ -177,7 +183,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               <FormFieldMultipleUpload
                 maxFiles={3}
                 isFixedValue={readonly}
-                label="Document"
+                label={t("Document")}
                 isRequired
                 validateCaller={validateCaller}
                 id={`document-${owner.id}`}
@@ -217,7 +223,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
           onClick={handleAddOwner}
           disabled={totalShare >= 100}
         >
-          <IconEssential /> Add Owner
+          <IconEssential /> {t("Add Owner")}
         </button>
       )}
     </div>

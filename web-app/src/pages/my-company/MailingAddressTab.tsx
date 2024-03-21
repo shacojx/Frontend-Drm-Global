@@ -4,6 +4,7 @@ import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { MailingAddress } from "src/types/my-company";
 import { NATION_INFOS } from "src/constants/SelectionOptions";
+import { useTranslation } from "react-i18next";
 
 type MailingAddressTabProps = {
   readonly: boolean;
@@ -12,6 +13,7 @@ type MailingAddressTabProps = {
 };
 
 export function MailingAddressTab({ readonly, mailingAddress, onChange }: MailingAddressTabProps) {
+  const { t } = useTranslation();
   const { validateCaller } = useValidateCaller();
 
   const handleFormChange = <K extends keyof MailingAddress>(key: K, value: MailingAddress[K]) => {
@@ -24,7 +26,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
       <div>
         <FormFieldText
           isFixedValue={readonly}
-          label="State"
+          label={t("State")}
           validateCaller={validateCaller}
           id="state"
           value={mailingAddress?.state}
@@ -36,7 +38,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={NATION_INFOS}
-          label="Country"
+          label={t("Country")}
           isRequired
           validateCaller={validateCaller}
           id="country"
@@ -48,7 +50,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
       <div>
         <FormFieldText
           isFixedValue={readonly}
-          label="City"
+          label={t("City")}
           isRequired
           validateCaller={validateCaller}
           id="city"
@@ -60,7 +62,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
       <div className="col-span-2 row-start-2 xl:row-start-1 xl:col-start-3">
         <FormFieldText
           isFixedValue={readonly}
-          label="Address"
+          label={t("Address")}
           isRequired
           validateCaller={validateCaller}
           id="address"
@@ -72,7 +74,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
       <div>
         <FormFieldText
           isFixedValue={readonly}
-          label="Zip Code"
+          label={t("Zip Code")}
           isRequired
           validateCaller={validateCaller}
           id="zipCode"
