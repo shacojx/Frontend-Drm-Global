@@ -55,11 +55,20 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
       )}
       {owners.map((owner, idx) => (
         <div key={owner.id}>
-          <div className="flex justify-between items-start">
+          <div className="grid grid-cols-[1fr,20px] xl:flex xl:justify-between">
             <div className="underline text-lg font-bold mb-6">Owner {idx + 1}</div>
 
+            <button
+              className="cursor-pointer mt-auto mb-6 block xl:hidden ml-auto"
+              onClick={() => {
+                onChange?.(owners.filter((o) => o.id !== owner.id));
+              }}
+            >
+              <IconXCircle />
+            </button>
+
             <div
-              className={clsx("flex gap-3", {
+              className={clsx("flex gap-3 mb-4", {
                 "pointer-events-none": readonly,
               })}
             >
@@ -107,14 +116,11 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
 
           <div
             className={cn(
-              "gap-x-4 gap-y-6 mb-6 grid grid-cols-1",
-              owner.type === "Company"
-                ? "xl:grid-cols-[repeat(3,1fr),20px]"
-                : "grid-cols-[repeat(4,1fr),20px]"
+              "gap-x-4 gap-y-6 mb-8 grid grid-cols-1 xl:grid-cols-[repeat(4,1fr),20px]"
             )}
           >
             {owner.type === "Company" ? (
-              <div className="min-w-72">
+              <div className="min-w-72 col-span-1 xl:col-span-2">
                 <FormFieldText
                   isFixedValue={readonly}
                   label="Company Name"
@@ -180,7 +186,7 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
 
             {owners.length > 1 && (
               <button
-                className="cursor-pointer mt-auto mb-2"
+                className="cursor-pointer mt-auto mb-2 xl:block hidden"
                 onClick={() => {
                   onChange?.(owners.filter((o) => o.id !== owner.id));
                 }}
@@ -191,6 +197,7 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
           </div>
         </div>
       ))}
+
       {!readonly && (
         <button
           className={cn(
