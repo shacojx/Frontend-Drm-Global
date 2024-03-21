@@ -122,7 +122,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
             )}
           >
             {owner.type === "Company" ? (
-              <div className="min-w-72 col-span-1 xl:col-span-2">
+              <div className=" col-span-1 xl:col-span-2">
                 <FormFieldText
                   isFixedValue={readonly}
                   label="Company Name"
@@ -135,7 +135,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               </div>
             ) : (
               <>
-                <div className="min-w-72">
+                <div className="">
                   <FormFieldText
                     isFixedValue={readonly}
                     label="First Name"
@@ -147,7 +147,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                   />
                 </div>
 
-                <div className="min-w-72">
+                <div className="">
                   <FormFieldText
                     isFixedValue={readonly}
                     label="Last Name"
@@ -161,7 +161,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               </>
             )}
 
-            <div className="min-w-72">
+            <div className="">
               <FormFieldNumber
                 isFixedValue={readonly}
                 label="Ownership (%)"
@@ -173,7 +173,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               />
             </div>
 
-            <div className="min-w-72">
+            <div className="">
               <FormFieldMultipleUpload
                 maxFiles={3}
                 isFixedValue={readonly}

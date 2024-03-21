@@ -19,10 +19,6 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
     onChange?.(newInfo);
   };
 
-  useEffect(() => {
-    // INFO: call api
-  }, []);
-
   return (
     <div className="gap-x-4 gap-y-6 grid grid-cols-2 xl:grid-cols-6">
       <div>

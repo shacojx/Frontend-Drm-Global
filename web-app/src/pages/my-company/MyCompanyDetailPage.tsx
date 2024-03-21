@@ -90,13 +90,13 @@ export function MyCompanyDetailPage() {
             Company Detail
           </h2>
 
-          <div className="rounded-lg p-1 border border-solid border-surface mb-12 overflow-x-scroll">
-            <div className="flex justify-between">
+          <div className="rounded-lg p-1 border border-solid border-surface mb-12 overflow-x-scroll relative h-14">
+            <div className="min-w-full whitespace-nowrap absolute flex">
               {TABS.map((tab) => (
                 <div
                   key={tab}
                   className={clsx(
-                    "h-12 flex justify-center items-center grow font-bold rounded-lg cursor-pointer transition-all w-max line-clamp-1 min-w-52",
+                    "inline-flex h-12 justify-center items-center grow font-bold rounded-lg cursor-pointer transition-all w-max line-clamp-1 min-w-52",
                     activeTab === tab ? "bg-primary_25 text-black" : "text-surface"
                   )}
                   onClick={() => setActiveTab(tab)}

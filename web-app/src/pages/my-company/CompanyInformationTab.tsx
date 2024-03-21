@@ -30,7 +30,7 @@ export function CompanyInformationTab({
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-6 justify-start">
-      <div className="min-w-80">
+      <div>
         <label className="font-bold mb-2 block">
           Company Name <span className="text-danger">*</span>
         </label>
@@ -44,7 +44,7 @@ export function CompanyInformationTab({
         />
       </div>
 
-      <div className="min-w-80">
+      <div>
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={ENTITY_ENDING_INFOS}
@@ -58,7 +58,7 @@ export function CompanyInformationTab({
         />
       </div>
 
-      <div className="min-w-80">
+      <div>
         <FormFieldSelect
           optionInfos={NATION_INFOS}
           isFixedValue={readonly}
@@ -72,7 +72,7 @@ export function CompanyInformationTab({
         />
       </div>
 
-      <div className="min-w-80">
+      <div>
         <FormFieldSelect
           isFixedValue={readonly}
           optionInfos={INDUSTRY_INFOS}
@@ -86,7 +86,7 @@ export function CompanyInformationTab({
         />
       </div>
 
-      <div className="min-w-80">
+      <div>
         <FormFieldText
           isFixedValue={readonly}
           label="Website"

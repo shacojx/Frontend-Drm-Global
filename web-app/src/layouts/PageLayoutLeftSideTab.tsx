@@ -38,7 +38,7 @@ export function PageLayoutLeftSideTab<T extends string>(props: Props<T>) {
           (isOpenOnSmallScreen ? "w-full flex" : "w-0 hidden")
         }
       >
-        <div className={"grow"}>
+        <div className={"grow w-[260px]"}>
           <div className={"flex flex-row items-center mx-4 mt-6 justify-between lg:justify-start"}>
             <img className="w-[150px] cursor-pointer" src={logo_full} alt="logo_full" />
             <div className={"block lg:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}>
