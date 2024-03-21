@@ -23,13 +23,15 @@ export function ServiceDetailDialog(props: Props) {
 
   return (
     <div className={'p-6'}>
-      <div className={'font-bold text-xl mb-4'}>[U001S002C03] Services</div>
+      <div className={'font-bold text-xl mb-4'}>
+        {props.service?.serviceName}
+      </div>
 
       <div className={'grid grid-cols-3 gap-4 mb-4' + ''}>
         <div className={'flex flex-col gap-3'}>
-          <div className={'font-bold'}>Victor Hugo Blitz</div>
-          <span>Email: customer @ gmail</span>
-          <span>Phone number: 000000</span>
+          <div className={'font-bold'}>{props.service?.customerName}</div>
+          <span>Email: {props.service?.customerEmail}</span>
+          <span>Phone number: {props.service?.phoneNumber}</span>
         </div>
         <div className={'flex flex-col gap-3'}>
           <div className={'font-bold'}>Global Ecommerce</div>
