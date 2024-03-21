@@ -22,6 +22,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
     key: K,
     value: OwnerInformation[K]
   ) => {
+    console.log(id);
     const newOwnersInfo = owners?.map((owner) =>
       owner.id !== id ? owner : { ...owner, [key]: value }
     );
@@ -174,10 +175,10 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               <FormFieldMultipleUpload
                 maxFiles={3}
                 isFixedValue={readonly}
-                label="Document"
+                label={`Document ${owner.id}`}
                 isRequired
                 validateCaller={validateCaller}
-                id="document"
+                id={`document-${owner.id}`}
                 onChange={(value) =>
                   handleFormChange(
                     owner.id,

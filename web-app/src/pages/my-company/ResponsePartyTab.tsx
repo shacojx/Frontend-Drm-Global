@@ -3,6 +3,7 @@ import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import clsx from "clsx";
 import { ResponseParty } from "src/types/my-company";
+import { cn } from "src/services-ui/tailwindcss";
 
 type ResponsePartyTabProps = {
   readonly: boolean;
@@ -51,11 +52,11 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
         <div className="font-bold mb-2">Do you have SSN or ITIN ?</div>
 
         <div
-          className={clsx("flex gap-4 mb-2 flex-col xl:flex-row", {
+          className={clsx("flex gap-4 flex-col xl:flex-row", {
             "pointer-events-none": readonly,
           })}
         >
-          <div className="flex gap-4">
+          <div className="flex gap-4 mb-4">
             <label htmlFor="yes" className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -90,16 +91,14 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
             </label>
           </div>
 
-          {responseParty?.hasSSNorITIN && (
-            <FormFieldText
-              isRequired
-              className="w-full"
-              id="SSN/ITIN"
-              value={responseParty.SSNorITIN}
-              validateCaller={validateCaller}
-              onChange={(value) => handleFormChange("SSNorITIN", value)}
-            />
-          )}
+          <FormFieldText
+            isRequired
+            className={cn("w-full", { "hidden xl:invisible": !responseParty?.hasSSNorITIN })}
+            id="SSN/ITIN"
+            value={responseParty?.SSNorITIN}
+            validateCaller={validateCaller}
+            onChange={(value) => handleFormChange("SSNorITIN", value)}
+          />
         </div>
       </div>
     </div>

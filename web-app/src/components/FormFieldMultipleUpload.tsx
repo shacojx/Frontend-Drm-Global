@@ -70,10 +70,10 @@ export function FormFieldMultipleUpload({
             </Listbox.Button>
 
             {!isFixedValue && maxFiles && files.length < maxFiles && (
-              <label htmlFor="upload" className="cursor-pointer">
+              <label htmlFor={id} className="cursor-pointer">
                 <IconUpload className="mx-2" />
                 <input
-                  id="upload"
+                  id={id}
                   type="file"
                   className="hidden"
                   onChange={handleUploadFileChange}
