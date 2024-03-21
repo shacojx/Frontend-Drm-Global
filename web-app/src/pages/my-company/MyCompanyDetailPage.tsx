@@ -229,10 +229,31 @@ export function MyCompanyDetailPage() {
         <DialogSuccessFullscreen
           onClose={() => setShowSuccessDialog(false)}
           title="Company information updated"
+          actionElement={
+            <button
+              onClick={() => setShowSuccessDialog(false)}
+              className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              Close
+            </button>
+          }
         />
       )}
 
-      {error && <DialogFailureFullscreen title={error} onClose={() => setError(false)} />}
+      {error && (
+        <DialogFailureFullscreen
+          title={error}
+          onClose={() => setError(false)}
+          actionElement={
+            <button
+              onClick={() => setError(false)}
+              className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              Close
+            </button>
+          }
+        />
+      )}
     </>
   );
 }

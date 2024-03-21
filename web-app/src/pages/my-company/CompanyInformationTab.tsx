@@ -3,7 +3,7 @@ import { FormFieldSelect } from "../../components/FormFieldSelect";
 import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { FormFieldTextArea } from "../../components/FormFieldArea";
-import { ENTITY_ENDING_INFOS, INDUSTRY_INFOS } from "src/constants/SelectionOptions";
+import { ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "src/constants/SelectionOptions";
 import { EntityEnding, Industry } from "src/api/types";
 import { CompanyInformation } from "src/types/my-company";
 
@@ -63,8 +63,9 @@ export function CompanyInformationTab({
       </div>
 
       <div className="min-w-80">
-        <FormFieldText
-          isFixedValue
+        <FormFieldSelect
+          optionInfos={NATION_INFOS}
+          isFixedValue={readonly}
           label="Region"
           isRequired
           className="w-full"
