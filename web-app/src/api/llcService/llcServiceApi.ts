@@ -157,6 +157,14 @@ const llcServiceApi = {
     );
     // return await callApi<any>("GET", `${PREFIX}/register`, {});
   },
+  getById: async () => {
+    return new Promise<SuccessResponseApi<LLCServiceType>>(
+      (resolve, reject) => {
+        resolve(defaultData);
+      }
+    );
+    // return await callApi<any>("GET", `${PREFIX}/register`, {});
+  },
 };
 
 export default llcServiceApi;

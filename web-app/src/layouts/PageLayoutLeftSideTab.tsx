@@ -126,6 +126,7 @@ export function PageLayoutLeftSideTab<T extends string>(props: Props<T>) {
                           iconElement={tabOption.iconElement}
                           label={tabOption.label}
                           onClick={props.onClickTabOption}
+                          items={tabOption.items}
                         />
                         {tabOption.items && (
                           <>
@@ -170,25 +171,47 @@ type TabOptionProps<T> = TabOption<T> & {
 function TabOptionDisclosure<T>(props: TabOptionProps<T>) {
   const translation = useTranslation();
   return (
-    <Disclosure.Button
-      onClick={props.onClick.bind(undefined, props.id)}
-      className={"h-[50px] w-full px-4 py-2 "}
-    >
-      <div
-        className={
-          "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " +
-          (props.isOpen ? "bg-gray-300" : "")
-        }
-      >
-        <div className={"hidden lg:block"}>{props.iconElement}</div>
-        <span>{translation.t(props.label)}</span>
-        {Boolean(props.items) && (
-          <div className={`${props.open ? "rotate-90 " : ""} ml-auto`}>
-            <AltArrowRightIcon />
-          </div>
-        )}
-      </div>
-    </Disclosure.Button>
+    <>
+      {Boolean(props.items) ?
+        <>
+          <Disclosure.Button
+            className={"h-[50px] w-full px-4 py-2 "}
+          >
+            <div
+              className={
+                "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " +
+                (props.isOpen ? "bg-gray-300" : "")
+              }
+            >
+              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <span>{translation.t(props.label)}</span>
+              {Boolean(props.items) && (
+                <div className={`${props.open ? "rotate-90 " : ""} ml-auto`}>
+                  <AltArrowRightIcon />
+                </div>
+              )}
+            </div>
+          </Disclosure.Button>
+        </>
+        : <>
+          <Disclosure.Button
+            onClick={props.onClick.bind(undefined, props.id)}
+            className={"h-[50px] w-full px-4 py-2 "}
+          >
+            <div
+              className={
+                "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " +
+                (props.isOpen ? "bg-gray-300" : "")
+              }
+            >
+              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <span>{translation.t(props.label)}</span>
+            </div>
+          </Disclosure.Button>
+        </>
+      }
+    </>
+
   );
 }
 
@@ -215,20 +238,41 @@ function TabOptionDisclosureItem<T>(props: TabOptionProps<T>) {
 function TabOption<T>(props: TabOptionProps<T>) {
   const translation = useTranslation();
   return (
-    <Menu.Button
-      onClick={props.onClick.bind(undefined, props.id)}
-      className={"h-[50px] w-full px-4 py-2"}
-    >
-      <div
-        className={
-          "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " +
-          (props.isOpen ? "bg-gray-300" : "")
-        }
-      >
-        <div className={"hidden lg:block"}>{props.iconElement}</div>
-        <span>{translation.t(props.label)}</span>
-      </div>
-    </Menu.Button>
+    <>
+      {Boolean(props.items) ?
+        <>
+          <Menu.Button
+            className={"h-[50px] w-full px-4 py-2"}
+          >
+            <div
+              className={
+                "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " +
+                (props.isOpen ? "bg-gray-300" : "")
+              }
+            >
+              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <span>{translation.t(props.label)}</span>
+            </div>
+          </Menu.Button>
+        </>
+        : <>
+          <Menu.Button
+            onClick={props.onClick.bind(undefined, props.id)}
+            className={"h-[50px] w-full px-4 py-2"}
+          >
+            <div
+              className={
+                "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 " +
+                (props.isOpen ? "bg-gray-300" : "")
+              }
+            >
+              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <span>{translation.t(props.label)}</span>
+            </div>
+          </Menu.Button>
+        </>
+      }
+    </>
   );
 }
 
