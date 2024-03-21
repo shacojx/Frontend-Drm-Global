@@ -110,7 +110,7 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
               "gap-x-4 gap-y-6 mb-6 grid grid-cols-1",
               owner.type === "Company"
                 ? "xl:grid-cols-[repeat(3,1fr),20px]"
-                : "grid-cols-[repeat(3,1fr),20px]"
+                : "grid-cols-[repeat(4,1fr),20px]"
             )}
           >
             {owner.type === "Company" ? (
