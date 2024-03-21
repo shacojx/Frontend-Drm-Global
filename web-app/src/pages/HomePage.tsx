@@ -70,7 +70,7 @@ const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
     id: "myServices",
     iconElement: <IconMyService />,
     label: 'My Services',
-    children: [
+    items: [
       {
         id: idTab.LCFormationServices,
         iconElement: <IconMyService />,

@@ -1,3 +1,5 @@
+import { UploadedDocumentType } from "src/api/llcService/llcServiceApi.type";
+
 export enum ServiceType {
   Pending = 1,
   InProgress = 2,
@@ -15,15 +17,21 @@ export type TabType = {
   onClick?: () => void;
 };
 
-export enum statusStep {
-  draf = 1,
-  peding = 2,
-  success = 3,
-}
-
 export type StepType = {
   id: number;
   name: string;
-  status: statusStep;
+  status: ServiceType;
   issuingDuration: string;
+  detail?: {
+    step_description: string;
+    remark: string;
+    customer_document: {
+      required_document: string;
+      uploaded_document: UploadedDocumentType[];
+    };
+    service_document: {
+      required_document: string;
+      uploaded_document: UploadedDocumentType[];
+    };
+  };
 };

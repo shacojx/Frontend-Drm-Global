@@ -1,7 +1,6 @@
 import { Fragment, useRef } from "react";
-import { IconUpload, IconX } from "../icons";
 import Button from "../Button";
-import { useTranslation } from "react-i18next";
+import { IconUpload, IconX } from "../icons";
 
 interface Props {
   onChange?: (file?: File) => void;
@@ -18,8 +17,6 @@ export default function InputFile({
   file,
   disabled = false,
 }: Props) {
-  const { t } = useTranslation();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
