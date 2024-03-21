@@ -33,12 +33,12 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
         onChange={handleChange}
         onBlur={setShouldShowError.bind(undefined, !isTextValid)}
         placeholder={props.placeholder}
-        // className={"w-full min-h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
         className={clsx(
           "w-full min-h-[40px] rounded-lg",
           statusClassName,
           props.isFixedValue ? "border-none outline-none" : "border py-1 px-2"
         )}
+        readOnly={props.isFixedValue}
       />
     </div>
   );

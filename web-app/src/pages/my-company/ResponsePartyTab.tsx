@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import clsx from "clsx";
-
-export type ResponseParty = {
-  firstName: string;
-  lastName: string;
-  hasSSNorITIN: boolean;
-  SSNorITIN?: string;
-};
+import { ResponseParty } from "src/types/my-company";
 
 type ResponsePartyTabProps = {
   readonly: boolean;

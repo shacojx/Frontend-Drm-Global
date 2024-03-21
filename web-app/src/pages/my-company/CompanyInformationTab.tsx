@@ -3,15 +3,9 @@ import { FormFieldSelect } from "../../components/FormFieldSelect";
 import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { FormFieldTextArea } from "../../components/FormFieldArea";
-
-export type CompanyInformation = {
-  companyName: string;
-  entityEnding: string;
-  industry: string;
-  website: string;
-  description: string;
-  region: string;
-};
+import { ENTITY_ENDING_INFOS, INDUSTRY_INFOS } from "src/constants/SelectionOptions";
+import { EntityEnding, Industry } from "src/api/types";
+import { CompanyInformation } from "src/types/my-company";
 
 type CompanyInformationTabProps = {
   readonly: boolean;
@@ -66,10 +60,7 @@ export function CompanyInformationTab({
       <div className="min-w-80">
         <FormFieldSelect
           isFixedValue={readonly}
-          optionInfos={[
-            { label: "option 1", value: "1" },
-            { label: "option 2", value: "2" },
-          ]}
+          optionInfos={ENTITY_ENDING_INFOS}
           label="Entity Ending"
           isRequired
           className="w-full"
@@ -96,10 +87,7 @@ export function CompanyInformationTab({
       <div className="min-w-80">
         <FormFieldSelect
           isFixedValue={readonly}
-          optionInfos={[
-            { label: "Logistics", value: "1" },
-            { label: "IT", value: "2" },
-          ]}
+          optionInfos={INDUSTRY_INFOS}
           isRequired
           label="Industry"
           className="w-full"

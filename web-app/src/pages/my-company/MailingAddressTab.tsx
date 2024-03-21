@@ -2,14 +2,7 @@ import { useEffect, useState } from "react";
 import { FormFieldSelect } from "../../components/FormFieldSelect";
 import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
-
-export type MailingAddress = {
-  state?: string;
-  country: string;
-  city: string;
-  address: string;
-  zipCode: string;
-};
+import { MailingAddress } from "src/types/my-company";
 
 type MailingAddressTabProps = {
   readonly: boolean;

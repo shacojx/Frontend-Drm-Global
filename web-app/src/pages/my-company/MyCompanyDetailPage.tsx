@@ -1,10 +1,18 @@
 import clsx from "clsx";
-import { useState } from "react";
-import { CompanyInformation, CompanyInformationTab } from "./CompanyInformationTab";
-import { OwnerInformation, OwnerInformationTab } from "./OwnerInformationTab";
-import { MailingAddress, MailingAddressTab } from "./MailingAddressTab";
-import { ResponseParty, ResponsePartyTab } from "./ResponsePartyTab";
-import { Document, DocumentTab } from "./DocumentTab";
+import { CompanyInformationTab } from "./CompanyInformationTab";
+import { OwnerInformationTab } from "./OwnerInformationTab";
+import { MailingAddressTab } from "./MailingAddressTab";
+import { ResponsePartyTab } from "./ResponsePartyTab";
+import { DocumentTab } from "./DocumentTab";
+import {
+  CompanyInformation,
+  Document,
+  MailingAddress,
+  OwnerInformation,
+  ResponseParty,
+} from "src/types/my-company";
+import { useEffect, useState } from "react";
+import { callApiGetCompanyInfo } from "src/api/my-company";
 
 const TABS = [
   "Company Information",
@@ -16,8 +24,8 @@ const TABS = [
 
 const MOCK_COMPANY_INFO: CompanyInformation = {
   companyName: "Lesor IT Solution",
-  entityEnding: "1",
-  industry: "2",
+  entityEnding: "LLC",
+  industry: "Art and photography",
   website: "website",
   description: "description",
   region: "region",
@@ -58,6 +66,10 @@ export function MyCompanyDetailPage() {
   const [responseParty, setResponseParty] = useState<ResponseParty>(MOCK_RESPONSE_PARTY);
   const [mailingAddress, setMailingAddress] = useState<MailingAddress>(MOCK_MAILING_ADDRESS);
   const [documents, setDocuments] = useState<Document[]>(MOCK_DOCUMENTS);
+
+  useEffect(() => {
+    callApiGetCompanyInfo().then(setCompanyInfo);
+  }, []);
 
   return (
     <div className="bg-white w-full flex flex-col border border-l border-stroke">

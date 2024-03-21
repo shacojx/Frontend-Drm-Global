@@ -1,13 +1,14 @@
-import React, { createContext, PropsWithChildren, useState } from 'react';
+import React, { createContext, PropsWithChildren, useState } from "react";
 import { RawResultGetUserProfile } from "../api/types";
+import { CompanyInformation } from "src/types/my-company";
 
-type AuthUser = RawResultGetUserProfile
+type AuthUser = RawResultGetUserProfile;
 
 type AuthContextValue = {
-  user: AuthUser | null,
-  saveAuthUser: (user: AuthUser) => void,
-  removeAuthUser: () => void,
-}
+  user: AuthUser | null;
+  saveAuthUser: (user: AuthUser) => void;
+  removeAuthUser: () => void;
+};
 
 export const AuthContext = createContext<AuthContextValue>({
   user: null,
@@ -30,5 +31,5 @@ export function AuthContextProvider(props: PropsWithChildren) {
     <AuthContext.Provider value={{ user, saveAuthUser, removeAuthUser }}>
       {props.children}
     </AuthContext.Provider>
-  )
+  );
 }

@@ -6,16 +6,7 @@ import { FormFieldNumber } from "../../components/FormFieldNumber";
 import clsx from "clsx";
 import { FormFieldMultipleUpload } from "../../components/FormFieldMultipleUpload";
 import { cn } from "src/utils/cn.util";
-
-export type OwnerInformation = {
-  id: string;
-  companyName?: string;
-  ownership: number; // INFO: (%)
-  document: string;
-  type: "Company" | "Individual";
-  firstName?: string;
-  lastName?: string;
-};
+import { OwnerInformation } from "src/types/my-company";
 
 type OwnerInformationTabProps = {
   readonly: boolean;

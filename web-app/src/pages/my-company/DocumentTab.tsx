@@ -1,11 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { IconEssential, IconUpload } from "../../components/icons";
-
-export type Document = {
-  id: string;
-  name: string;
-  url: string;
-};
+import { Document } from "src/types/my-company";
 
 type DocumentTabProps = {
   readonly: boolean;
