@@ -66,7 +66,7 @@ const MOCK_MAILING_ADDRESS: MailingAddress = {
   zipCode: "55000",
 };
 
-const MOCK_DOCUMENTS: Document[] = [{ id: "1", name: "Mock Document", url: "#" }];
+const MOCK_DOCUMENTS: Document[] = [{ id: "1", name: "avt-default.jpg", url: "#" }];
 
 export function MyCompanyDetailPage() {
   const translation = useTranslation();
