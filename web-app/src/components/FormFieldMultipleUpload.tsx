@@ -54,10 +54,12 @@ export function FormFieldMultipleUpload({
           "border-danger bg-red-50": shouldShowError,
         })}
       >
-        <Listbox>
+        <Listbox disabled={isFixedValue}>
           <div className="flex items-center h-full gap-1 w-full">
-            {!isFixedValue && <IconAltArrowDown className="mx-2" />}
-            <Listbox.Button className="grow text-left">{selectedFile?.name}</Listbox.Button>
+            <Listbox.Button className="grow text-left flex items-center">
+              {!isFixedValue && <IconAltArrowDown className="mx-2" />}
+              {selectedFile?.name}
+            </Listbox.Button>
 
             {!isFixedValue && (
               <label htmlFor="upload" className="cursor-pointer">

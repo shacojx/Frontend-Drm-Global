@@ -53,7 +53,7 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
     <div>
       {owners.map((owner, idx) => (
         <div key={owner.id}>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-start">
             <div className="underline text-lg font-bold mb-6">Owner {idx + 1}</div>
 
             <div
@@ -105,21 +105,12 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
 
           <div
             className={cn(
-              "relative justify-start gap-x-4 gap-y-6 mb-6 grid grid-cols-1",
-              owner.type === "Company" ? "xl:grid-cols-3" : "xl:grid-cols-4"
+              "gap-x-4 gap-y-6 mb-6 grid grid-cols-1",
+              owner.type === "Company"
+                ? "xl:grid-cols-[repeat(3,1fr),20px]"
+                : "grid-cols-[repeat(3,1fr),20px]"
             )}
           >
-            {owners.length > 1 && (
-              <button
-                className="absolute right-1 top-1 cursor-pointer"
-                onClick={() => {
-                  onChange?.(owners.filter((o) => o.id !== owner.id));
-                }}
-              >
-                <IconXCircle />
-              </button>
-            )}
-
             {owner.type === "Company" ? (
               <div className="min-w-72">
                 <FormFieldText
@@ -183,6 +174,17 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
                 value={[{ id: "test-id", name: "Chu nghia Mac-Lenin", url: "#", isSelected: true }]}
               />
             </div>
+
+            {owners.length > 1 && (
+              <button
+                className="cursor-pointer mt-auto mb-2"
+                onClick={() => {
+                  onChange?.(owners.filter((o) => o.id !== owner.id));
+                }}
+              >
+                <IconXCircle />
+              </button>
+            )}
           </div>
         </div>
       ))}
