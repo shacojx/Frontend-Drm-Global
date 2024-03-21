@@ -5,6 +5,7 @@ import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { FormFieldNumber } from "../../components/FormFieldNumber";
 import clsx from "clsx";
 import { FormFieldMultipleUpload } from "../../components/FormFieldMultipleUpload";
+import { cn } from "src/utils/cn.util";
 
 const EMPTY_OWNER = {
   id: "",
@@ -16,10 +17,12 @@ const EMPTY_OWNER = {
 
 type OwnerInformation = {
   id: string;
-  companyName: string;
+  companyName?: string;
   ownership: number; // INFO: (%)
   document: string;
   type: "Company" | "Individual";
+  firstName?: string;
+  lastName?: string;
 };
 
 type OwnerInformationTabProps = {
@@ -125,7 +128,12 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
             </div>
           </div>
 
-          <div className="relative justify-start gap-x-4 gap-y-6 mb-6 grid grid-cols-1 xl:grid-cols-3">
+          <div
+            className={cn(
+              "relative justify-start gap-x-4 gap-y-6 mb-6 grid grid-cols-1",
+              owner.type === "Company" ? "xl:grid-cols-3" : "xl:grid-cols-4"
+            )}
+          >
             {owners.length > 1 && (
               <button
                 className="absolute right-1 top-1 cursor-pointer"
@@ -137,19 +145,47 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
               </button>
             )}
 
-            <div className="min-w-80">
-              <FormFieldText
-                isFixedValue={readonly}
-                label="Company Name"
-                isRequired
-                validateCaller={validateCaller}
-                id="companyName"
-                value={owner.companyName}
-                onChange={(value) => handleFormChange(owner.id, "companyName", value)}
-              />
-            </div>
+            {owner.type === "Company" ? (
+              <div className="min-w-72">
+                <FormFieldText
+                  isFixedValue={readonly}
+                  label="Company Name"
+                  isRequired
+                  validateCaller={validateCaller}
+                  id="companyName"
+                  value={owner.companyName}
+                  onChange={(value) => handleFormChange(owner.id, "companyName", value)}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="min-w-72">
+                  <FormFieldText
+                    isFixedValue={readonly}
+                    label="First Name"
+                    isRequired
+                    validateCaller={validateCaller}
+                    id="firstName"
+                    value={owner.companyName}
+                    onChange={(value) => handleFormChange(owner.id, "companyName", value)}
+                  />
+                </div>
 
-            <div className="min-w-80">
+                <div className="min-w-72">
+                  <FormFieldText
+                    isFixedValue={readonly}
+                    label="Last Name"
+                    isRequired
+                    validateCaller={validateCaller}
+                    id="lastName"
+                    value={owner.companyName}
+                    onChange={(value) => handleFormChange(owner.id, "companyName", value)}
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="min-w-72">
               <FormFieldNumber
                 isFixedValue={readonly}
                 label="Ownership (%)"
@@ -161,7 +197,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
               />
             </div>
 
-            <div className="min-w-80">
+            <div className="min-w-72">
               <FormFieldMultipleUpload
                 isFixedValue={readonly}
                 label="Document"
