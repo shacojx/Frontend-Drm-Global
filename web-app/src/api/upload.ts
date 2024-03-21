@@ -1,23 +1,40 @@
+import { getAccessTokenInfo, getAuthorizationString } from "src/services-base/api";
+import { UploadResponse } from "./types";
+
 export const uploadFile = async (file: File) => {
   const headers = new Headers();
-  // headers.append(
-  //   "Authorization",
-  //   "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0cnVuZ2x1Yy5kZXZAZ21haWwuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxMTAxNzY2MCwiZXhwIjoxNzExMDIxMjYwfQ.6qAZCavV_MjkLOUXiZWJ9Bo_HSm4meQR_rPkNZYNou9NIulRFXqcTaRqAJzKhWs8uQuFHxTxW3yvPV9V3mEK8g"
-  // );
+  headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
 
   const formData = new FormData();
   formData.append("files", file);
 
-  var options = {
+  const options = {
     method: "POST",
     headers: headers,
     body: formData,
   };
 
-  const data = await fetch(`${process.env.REACT_APP_URL}/api/file/upload`, options).then(
-    (response) => response.json()
-  );
+  const endpoint = `${process.env.REACT_APP_URL}/api/file/upload`;
 
-  console.log(data);
+  const data = (await fetch(endpoint, options).then((response) =>
+    response.json()
+  )) as UploadResponse;
+
   return data;
+};
+
+export const getFile = async (name: string) => {
+  const headers = new Headers();
+  headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
+
+  const options = {
+    method: "GET",
+    headers: headers,
+  };
+
+  const endpoint = `${process.env.REACT_APP_URL}/api/file/files/${name}`;
+  fetch(endpoint, options)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.log("error", error));
 };

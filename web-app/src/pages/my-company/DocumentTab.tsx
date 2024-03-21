@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { IconEssential, IconUpload } from "../../components/icons";
 import { Document } from "src/types/my-company";
-import { uploadFile } from "src/api/upload";
+import { getFile, uploadFile } from "src/api/upload";
 
 type DocumentTabProps = {
   readonly: boolean;
@@ -13,9 +13,10 @@ export function DocumentTab({ readonly, documents, onChange }: DocumentTabProps)
   const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
-    await uploadFile(file);
+    const { data } = await uploadFile(file);
+    const savedFile = data[0];
 
-    const newDocuments = [...documents, { id: file.name, name: file.name, url: file.name }];
+    const newDocuments = [...documents, { id: savedFile, name: savedFile, url: savedFile }];
     onChange?.(newDocuments);
   };
 
@@ -38,7 +39,15 @@ export function DocumentTab({ readonly, documents, onChange }: DocumentTabProps)
           className="flex justify-between mb-6 border border-solid border-surface py-4 px-3 rounded-lg items-center"
         >
           <div className="font-bold">{document.name}</div>
-          <button className="px-6 font-bold bg-primary text-white rounded-lg py-3">Download</button>
+          <button
+            className="px-6 font-bold bg-primary text-white rounded-lg py-3"
+            onClick={async () => {
+              const data = await getFile(document.name);
+              console.log(data);
+            }}
+          >
+            Download
+          </button>
         </div>
       ))}
     </div>

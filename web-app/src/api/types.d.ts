@@ -14,6 +14,12 @@ export type LocalPhone = string;
 
 export type RawResultEmpty = "";
 
+export type UploadResponse = {
+  message: string;
+  status: string;
+  data: string[];
+};
+
 // ====== Account ======== //
 export type ApiLoginParam = {
   username: string;
