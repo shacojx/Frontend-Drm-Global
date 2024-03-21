@@ -13,8 +13,18 @@ import {
 } from "src/types/my-company";
 import { useEffect, useState } from "react";
 import { callApiGetCompanyInfo } from "src/api/my-company";
-import { DialogSuccessFullscreen } from "src/components/DialogFormStatusFullscreen";
+import {
+  DialogFailureFullscreen,
+  DialogSuccessFullscreen,
+} from "src/components/DialogFormStatusFullscreen";
 import { useTranslation } from "react-i18next";
+import { useValidate } from "src/hooks-ui/useValidateCaller";
+import {
+  validateCompanyInfo,
+  validateMailingAddress,
+  validateOwnersInfo,
+  validateResponseParty,
+} from "src/services-business/my-company";
 
 const TABS = [
   "Company Information",
@@ -37,7 +47,7 @@ const MOCK_OWNERS: OwnerInformation[] = [
   {
     id: "1",
     type: "Company",
-    document: "",
+    document: "#",
     companyName: "Lesor IT Solution",
     ownership: 100,
   },
@@ -64,6 +74,7 @@ export function MyCompanyDetailPage() {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
 
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [error, setError] = useState<string | false>(false);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -76,6 +87,55 @@ export function MyCompanyDetailPage() {
   useEffect(() => {
     callApiGetCompanyInfo().then(setCompanyInfo);
   }, []);
+
+  const handleSave = () => {
+    switch (activeTab) {
+      case "Company Information": {
+        const error = validateCompanyInfo(companyInfo);
+
+        if (typeof error === "string") {
+          return setError(error);
+        }
+        // TODO: call api
+        break;
+      }
+
+      case "Owner Information": {
+        const error = validateOwnersInfo(owners);
+        if (typeof error === "string") {
+          return setError(error);
+        }
+        // TODO: call api
+        break;
+      }
+
+      case "Responsible Party": {
+        const error = validateResponseParty(responseParty);
+        if (typeof error === "string") {
+          return setError(error);
+        }
+        // TODO: call api
+        break;
+      }
+
+      case "Mailing address": {
+        const error = validateMailingAddress(mailingAddress);
+        if (typeof error === "string") {
+          return setError(error);
+        }
+        // TODO: call api
+        break;
+      }
+
+      case "Document": {
+        // TODO: call api
+        break;
+      }
+    }
+
+    setError(false);
+    setShowSuccessDialog(true);
+  };
 
   return (
     <>
@@ -154,9 +214,7 @@ export function MyCompanyDetailPage() {
             className="rounded-lg bg-primary h-13 px-6 text-white font-semibold"
             onClick={() => {
               if (isEditing) {
-                // INFO: handle save
-                setShowSuccessDialog(true);
-                setIsEditing(false);
+                handleSave();
               } else {
                 setIsEditing(true);
               }
@@ -173,6 +231,8 @@ export function MyCompanyDetailPage() {
           title="Company information updated"
         />
       )}
+
+      {error && <DialogFailureFullscreen title={error} onClose={() => setError(false)} />}
     </>
   );
 }

@@ -43,7 +43,7 @@ export function DialogSuccessFullscreen(props: Props) {
 export function DialogFailureFullscreen(props: Props) {
   const translation = useTranslation();
   return (
-    <DialogContainer isAutoSize isCloseOnClickOverlay>
+    <DialogContainer isAutoSize isCloseOnClickOverlay onClose={props.onClose}>
       <div className="w-full max-w-[400px] justify-center items-center py-8 px-4 flex flex-col">
         <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
           <IconXCircle className={"w-40 h-40 text-danger"} />
