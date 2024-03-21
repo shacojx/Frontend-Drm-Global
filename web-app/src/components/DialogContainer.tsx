@@ -1,21 +1,34 @@
+import { Fragment, PropsWithChildren, useEffect, useRef, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 
-import { Fragment, PropsWithChildren, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-
-type Props = PropsWithChildren<Partial<{
-  isCloseOnClickOverlay: boolean,
-  isTransparent: boolean,
-  isAutoSize: boolean,
-}>>
+type Props = PropsWithChildren<
+  Partial<{
+    isCloseOnClickOverlay: boolean;
+    isTransparent: boolean;
+    isAutoSize: boolean;
+    onClose?: () => void;
+  }>
+>;
 export function DialogContainer(props: Props) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
 
-  const cancelButtonRef = useRef(null)
-  const handleClickOverlay = props.isCloseOnClickOverlay ? setOpen : () => {}
+  const cancelButtonRef = useRef(null);
+  const handleClickOverlay = props.isCloseOnClickOverlay ? setOpen : () => {};
+
+  useEffect(() => {
+    if (open === false) {
+      props.onClose?.();
+    }
+  }, [open]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={handleClickOverlay}>
+      <Dialog
+        as="div"
+        className="relative z-50"
+        initialFocus={cancelButtonRef}
+        onClose={handleClickOverlay}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -39,11 +52,13 @@ export function DialogContainer(props: Props) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className={
-                (props.isTransparent ? "" : "shadow-xl bg-white ")
-                + (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ")
-                + "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
-              }>
+              <Dialog.Panel
+                className={
+                  (props.isTransparent ? "" : "shadow-xl bg-white ") +
+                  (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ") +
+                  "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
+                }
+              >
                 {props.children}
               </Dialog.Panel>
             </Transition.Child>
@@ -51,6 +66,5 @@ export function DialogContainer(props: Props) {
         </div>
       </Dialog>
     </Transition.Root>
-  )
+  );
 }
-

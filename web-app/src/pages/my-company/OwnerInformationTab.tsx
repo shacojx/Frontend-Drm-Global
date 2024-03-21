@@ -15,6 +15,8 @@ type OwnerInformationTabProps = {
 };
 
 export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInformationTabProps) {
+  const totalShare = owners.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
+
   const handleFormChange = <K extends keyof OwnerInformation>(
     id: string = "",
     key: K,
@@ -23,9 +25,6 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
     const newOwnersInfo = owners.map((owner) =>
       owner.id !== id ? owner : { ...owner, [key]: value }
     );
-
-    const totalShare = newOwnersInfo.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
-    if (totalShare < 0 || totalShare > 100) return;
 
     onChange?.(newOwnersInfo);
   };
@@ -51,6 +50,9 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
 
   return (
     <div>
+      {totalShare > 100 && (
+        <div className="text-danger mb-2">Total ownership must be less than or equal 100.</div>
+      )}
       {owners.map((owner, idx) => (
         <div key={owner.id}>
           <div className="flex justify-between items-start">
@@ -190,8 +192,14 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
       ))}
       {!readonly && (
         <button
-          className="rounded-lg bg-primary h-13 px-6 text-white font-semibold flex items-center gap-3"
+          className={cn(
+            "rounded-lg bg-primary h-13 px-6 text-white font-semibold flex items-center gap-3",
+            {
+              "bg-disable cursor-not-allowed": totalShare >= 100,
+            }
+          )}
           onClick={handleAddOwner}
+          disabled={totalShare >= 100}
         >
           <IconEssential /> Add Owner
         </button>

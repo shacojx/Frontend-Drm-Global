@@ -13,15 +13,6 @@ type CompanyInformationTabProps = {
   onChange?: (companyInfo: CompanyInformation) => void;
 };
 
-const DEFAULT_COMPANY_INFO = {
-  companyName: "companyName",
-  entityEnding: "1",
-  industry: "2",
-  website: "website",
-  description: "description",
-  region: "region",
-};
-
 export function CompanyInformationTab({
   readonly,
   companyInfo,
