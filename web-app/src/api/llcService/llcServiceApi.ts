@@ -2,7 +2,7 @@ import { SuccessResponseApi } from "src/types/common";
 import { callApi } from "../../services-base/api";
 import { LLCServiceType } from "./llcServiceApi.type";
 
-const PREFIX = "api/";
+const PREFIX = "api/user";
 
 const defaultData = {
   data: {
@@ -155,15 +155,15 @@ const llcServiceApi = {
         resolve(defaultData);
       }
     );
-    // return await callApi<any>("GET", `${PREFIX}/register`, {});
+    // return await callApi<any>("GET", `${PREFIX}/get-service`, {});
   },
-  getById: async () => {
+  getById: async (id: number) => {
     return new Promise<SuccessResponseApi<LLCServiceType>>(
       (resolve, reject) => {
         resolve(defaultData);
       }
     );
-    // return await callApi<any>("GET", `${PREFIX}/register`, {});
+    // return await callApi<any>("GET", `${PREFIX}/detail-service/${id}`, {});
   },
 };
 

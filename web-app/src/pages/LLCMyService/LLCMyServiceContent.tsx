@@ -1,26 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import images from "src/assets/images/images";
 import { FormFieldSelect } from "src/components/FormFieldSelect";
 import TitleContent from "src/components/TitleContent";
 import {
   BuildingIcon,
   DocumentIcon,
-  IconRefreshCircle,
   IdentityIcon,
-  MoneyIcon,
+  MoneyIcon
 } from "src/components/icons";
-import useLLCServiceApi from "src/hook/apis/useLLCServiceApi";
+import { useLLCServiceDetailApi } from "src/hook/apis/useLLCServiceApi";
 import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
-import { cn } from "src/utils/cn.util";
 import { RoutePaths } from "../router";
 import ContentFillingService from "./components/ContentFillingService";
 import StepService from "./components/StepService";
 import TabService from "./components/TabService";
-import { ServiceType, TabType } from "./types/my-service.type";
-import { LLCMyServiceContext } from "./context/llcMyServiceContext";
 import TagService from "./components/TagService";
+import { LLCMyServiceContext } from "./context/llcMyServiceContext";
+import { ServiceType, TabType } from "./types/my-service.type";
 
 export default function LLCMyServiceContent() {
   const { t } = useTranslation();
@@ -28,7 +25,7 @@ export default function LLCMyServiceContent() {
   const { validateCaller } = useValidateCaller();
   const { setDetailFilling } = useContext(LLCMyServiceContext);
 
-  const resLLCService = useLLCServiceApi();
+  const resLLCService = useLLCServiceDetailApi(1);
 
   const dataService = resLLCService?.data?.data;
 
@@ -92,13 +89,7 @@ export default function LLCMyServiceContent() {
   const onChangeCycle = (value: string) => {
     setCycle(value);
   };
-
-  const arrStatusService = {
-    1: t("Pending"),
-    2: t("InProgress"),
-    3: t("Issued"),
-  };
-
+  
   const CYCLE_INFOS = [
     { id: 1, value: "1", label: "1" },
     { id: 2, value: "2", label: "2" },

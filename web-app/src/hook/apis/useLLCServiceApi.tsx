@@ -9,3 +9,15 @@ export default function useLLCServiceApi() {
     // placeholderData: (previousData) => previousData,
   });
 }
+
+
+export function useLLCServiceDetailApi(id: number) {
+  return useQuery({
+    queryKey: [queryKeyApi.llcServiceItem, { id }],
+    queryFn: () => llcServiceApi.getById(id),
+    // placeholderData: (previousData) => previousData,
+    enabled: !!id
+  },
+  );
+}
+

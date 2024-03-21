@@ -26,12 +26,12 @@ type FormFieldProps<T> = {
   className: string;
 }>;
 
-export interface SuccessResponseApi<Data> {
+export interface SuccessResponseApi<T> {
   message: string
-  data: Data
+  data: T
 }
 
-export interface ErrorResponseApi<Data> {
+export interface ErrorResponseApi<T> {
   message: string
-  data?: Data
+  data?: T
 }
