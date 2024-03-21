@@ -31,7 +31,7 @@ export function CompanyInformationTab({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-6 justify-start">
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-x-4 gap-y-6 justify-start">
       <div>
         <FormFieldText
           isRequired
