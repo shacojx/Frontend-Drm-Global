@@ -29,6 +29,7 @@ export function FormFieldText(props: FormFieldProps<string>) {
       onFocus={setShouldShowError.bind(undefined, false)}
       onBlur={setShouldShowError.bind(undefined, !isTextValid)}
       placeholder={props.placeholder}
+      defaultValue={props.defaultValue}
       className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
     />
   </div>

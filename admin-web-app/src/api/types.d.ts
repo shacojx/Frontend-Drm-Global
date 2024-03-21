@@ -146,6 +146,13 @@ export type ViewedUser = {
     name: AccountRole
   }
 }
+
+export type ApiSearchUserParam = {
+  "email": string,
+  "codePhone": NationPhone,
+  "phone": LocalPhone
+}
+
 export type RawResultViewUser = {
   content: ViewedUser[],
   totalPages: number,
@@ -177,6 +184,147 @@ export type ApiDeactiveParam = {
 }
 
 // ====== KYC Management ======== //
+
+// Note: Master Services
+export type ApiViewMasterServiceParam = {
+  page: number,
+  size: number
+}
+
+export type RawResultSearchMasterService = ViewedMasterService
+
+export interface ViewedMasterService {
+  updatedAt:          Date;
+  createdAt:          Date;
+  id:                 number;
+  appliedNation:      AppliedNation[];
+  appliedCompanyType: AppliedCompanyType[];
+  serviceType:        string;
+  serviceName:        string;
+  serviceDescription: string;
+  enable:             number;
+  serviceStep:        ServiceStep[];
+  serviceCycle:       ServiceCycle[];
+}
+
+export interface AppliedCompanyType {
+  id:          number;
+  companyType: string;
+}
+
+export interface AppliedNation {
+  id:     number;
+  nation: string;
+}
+
+export interface ServiceCycle {
+  id:            number;
+  cycleNumber:   number;
+  pricePerCycle: number;
+}
+
+export interface ServiceStep {
+  id:                      number;
+  stepNo:                  number;
+  name:                    string;
+  estimatedCompletionTime: string;
+  description:             string;
+  documentRequired:        DocumentRequired[];
+  result:                  Result[];
+}
+
+export interface DocumentRequired {
+  id:               number;
+  documentRequired: string;
+}
+
+export interface Result {
+  id:     number;
+  result: string;
+}
+
+
+// export type ViewedMasterService = {
+//   id:	number,
+//   llcInNation: NationValue,
+//   username:	string,
+//   email:	string,
+//   codePhone:	string,
+//   phone:	string,
+//   companyType:	CompanyTypeValue,
+//   companyName:	string,
+//   entityEnding:	EntityEnding,
+//   industry:	string,
+//   website:	string,
+//   companyDescription:	string,
+//   enable:	number,
+//   firstName:	string,
+//   lastName:	string,
+//   roles: {
+//     id: number,
+//     name: AccountRole
+//   }
+// }
+
+export type ApiSearchMasterServiceParam = {
+  "serviceId": string,
+  "serviceName": string,
+  "status": string,
+  "appliedNation": string
+}
+
+export type RawResultViewMasterService = {
+  content: ViewedMasterService[],
+  totalPages: number,
+  totalElements: number,
+}
+
+export interface CreateUpdateMasterServiceBody {
+  appliedNation:      string[];
+  appliedCompanyType: string[];
+  serviceType:        string;
+  serviceName:        string;
+  serviceDescription: string;
+  serviceStep:        ServiceStep[];
+  serviceCycle:       ServiceCycle[];
+}
+
+export interface ServiceCycle {
+  cycleNumber:   number;
+  pricePerCycle: number;
+}
+
+export interface ServiceStep {
+  stepNo:                  number;
+  name:                    string;
+  estimatedCompletionTime: string;
+  description:             string;
+  documentRequired:        string[];
+  result:                  string[];
+}
+
+
+export type ApiMasterServiceParam = {
+  appliedNation:      string[];
+  appliedCompanyType: string[];
+  serviceType:        string;
+  serviceName:        string;
+  serviceDescription: string;
+  serviceStep:        ServiceStep[];
+  serviceCycle:       ServiceCycle[];
+}
+
+
+export type ApiDeactiveMasterServiceParam = {
+  "idUser": number,
+  "enable": number,
+  //enable = 1 là Active user
+  //enable = 0 là DeActive user
+}
+
+export type RawResultSearchUser = ViewedUser
+
+// End: Master Service
 
 export type ApiGetKycParam = {
   page: number,

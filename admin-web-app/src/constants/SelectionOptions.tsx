@@ -510,3 +510,8 @@ export const INDUSTRY_INFOS: OptionInfo<Industry>[] = [
   {value: 'Virtual reality', label: 'Virtual reality'},
 ]
 
+export const SERVICE_STATUS: OptionInfo<string>[] = [
+  {value: '', label: 'Active'},
+  {value: 'active', label: 'Active'},
+  {value: 'deactive', label: 'Deactive'},
+]

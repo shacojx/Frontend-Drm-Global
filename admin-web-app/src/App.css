@@ -27,6 +27,10 @@
 .App-link {
   color: #61dafb;
 }
+.svg-white > svg {
+  color: white;
+  background-color: "white"
+}
 
 @keyframes App-logo-spin {
   from {
