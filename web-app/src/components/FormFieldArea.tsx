@@ -19,9 +19,7 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
   }
 
   const isTextValid = !props.isRequired || !!props.value;
-  const statusClassName = shouldShowError
-    ? "border-danger bg-red-50"
-    : "bg-white";
+  const statusClassName = shouldShowError ? "border-danger bg-red-50" : "bg-white";
   return (
     <div className="flex flex-col gap-2">
       {!!props.label && (
@@ -37,9 +35,9 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
         placeholder={props.placeholder}
         // className={"w-full min-h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
         className={clsx(
-          "w-full min-h-[40px] py-1 px-2 rounded-lg",
+          "w-full min-h-[40px] rounded-lg",
           statusClassName,
-          props.isFixedValue ? "border-none outline-none" : "border"
+          props.isFixedValue ? "border-none outline-none" : "border py-1 px-2"
         )}
       />
     </div>

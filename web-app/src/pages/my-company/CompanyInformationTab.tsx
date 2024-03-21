@@ -17,17 +17,19 @@ type CompanyInformationTabProps = {
   readonly: boolean;
 };
 
+const DEFAULT_COMPANY_INFO = {
+  companyName: "companyName",
+  entityEnding: "1",
+  industry: "2",
+  website: "website",
+  description: "description",
+  region: "region",
+};
+
 export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) {
   const { validateCaller } = useValidateCaller();
 
-  const [companyInfo, setCompanyInfo] = useState<CompanyInformation>({
-    companyName: "companyName",
-    entityEnding: "entityEnding",
-    industry: "industry",
-    website: "website",
-    description: "description",
-    region: "region",
-  });
+  const [companyInfo, setCompanyInfo] = useState<CompanyInformation>(DEFAULT_COMPANY_INFO);
 
   const handleFormChange = <K extends keyof CompanyInformation>(
     key: K,
@@ -60,7 +62,10 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
       <div className="min-w-80">
         <FormFieldSelect
           isFixedValue={readonly}
-          optionInfos={[{ label: "option 1", value: "id" }]}
+          optionInfos={[
+            { label: "option 1", value: "1" },
+            { label: "option 2", value: "2" },
+          ]}
           label="Entity Ending"
           isRequired
           className="w-full"
@@ -87,7 +92,10 @@ export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) 
       <div className="min-w-80">
         <FormFieldSelect
           isFixedValue={readonly}
-          optionInfos={[{ label: "option 1", value: "idn2" }]}
+          optionInfos={[
+            { label: "Logistics", value: "1" },
+            { label: "IT", value: "2" },
+          ]}
           isRequired
           label="Industry"
           className="w-full"
