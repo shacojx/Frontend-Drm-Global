@@ -3,7 +3,7 @@ import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import clsx from "clsx";
 
-type ResponseParty = {
+export type ResponseParty = {
   firstName: string;
   lastName: string;
   hasSSNorITIN: boolean;
@@ -12,19 +12,15 @@ type ResponseParty = {
 
 type ResponsePartyTabProps = {
   readonly: boolean;
+  responseParty: ResponseParty;
+  onChange?: (responseParty: ResponseParty) => void;
 };
 
-export function ResponsePartyTab({ readonly }: ResponsePartyTabProps) {
+export function ResponsePartyTab({ readonly, responseParty, onChange }: ResponsePartyTabProps) {
   const { validateCaller } = useValidateCaller();
 
-  const [responseParty, setResponseParty] = useState<ResponseParty>({
-    firstName: "Luc",
-    lastName: "Le",
-    hasSSNorITIN: false,
-  });
-
   const handleFormChange = <K extends keyof ResponseParty>(key: K, value: ResponseParty[K]) => {
-    setResponseParty((prev) => ({ ...prev, [key]: value }));
+    onChange?.({ ...responseParty, [key]: value });
   };
 
   useEffect(() => {

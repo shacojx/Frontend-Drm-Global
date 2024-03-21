@@ -1,10 +1,10 @@
 import clsx from "clsx";
 import { useState } from "react";
-import { CompanyInformationTab } from "./CompanyInformationTab";
-import { OwnerInformationTab } from "./OwnerInformationTab";
-import { MailingAddressTab } from "./MailingAddressTab";
-import { ResponsePartyTab } from "./ResponsePartyTab";
-import { DocumentTab } from "./DocumentTab";
+import { CompanyInformation, CompanyInformationTab } from "./CompanyInformationTab";
+import { OwnerInformation, OwnerInformationTab } from "./OwnerInformationTab";
+import { MailingAddress, MailingAddressTab } from "./MailingAddressTab";
+import { ResponseParty, ResponsePartyTab } from "./ResponsePartyTab";
+import { Document, DocumentTab } from "./DocumentTab";
 
 const TABS = [
   "Company Information",
@@ -14,10 +14,50 @@ const TABS = [
   "Document",
 ] as const;
 
+const MOCK_COMPANY_INFO: CompanyInformation = {
+  companyName: "Lesor IT Solution",
+  entityEnding: "1",
+  industry: "2",
+  website: "website",
+  description: "description",
+  region: "region",
+};
+
+const MOCK_OWNERS: OwnerInformation[] = [
+  {
+    id: "1",
+    type: "Company",
+    document: "",
+    companyName: "Lesor IT Solution",
+    ownership: 100,
+  },
+];
+
+const MOCK_RESPONSE_PARTY: ResponseParty = {
+  firstName: "Hoang",
+  lastName: "Nguyen",
+  hasSSNorITIN: false,
+};
+
+const MOCK_MAILING_ADDRESS: MailingAddress = {
+  country: "Vietnam",
+  city: "Hanoi",
+  address: "Me Linh, Ha Noi",
+  zipCode: "55000",
+};
+
+const MOCK_DOCUMENTS: Document[] = [{ id: "1", name: "Mock Document", url: "#" }];
+
 export function MyCompanyDetailPage() {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
 
   const [isEditing, setIsEditing] = useState(false);
+
+  const [companyInfo, setCompanyInfo] = useState<CompanyInformation>(MOCK_COMPANY_INFO);
+  const [owners, setOwners] = useState<Partial<OwnerInformation>[]>(MOCK_OWNERS);
+  const [responseParty, setResponseParty] = useState<ResponseParty>(MOCK_RESPONSE_PARTY);
+  const [mailingAddress, setMailingAddress] = useState<MailingAddress>(MOCK_MAILING_ADDRESS);
+  const [documents, setDocuments] = useState<Document[]>(MOCK_DOCUMENTS);
 
   return (
     <div className="bg-white w-full flex flex-col border border-l border-stroke">
@@ -44,11 +84,33 @@ export function MyCompanyDetailPage() {
         </div>
 
         <div className="border border-solid border-surface rounded-lg p-6">
-          {activeTab === "Company Information" && <CompanyInformationTab readonly={!isEditing} />}
-          {activeTab === "Owner Information" && <OwnerInformationTab readonly={!isEditing} />}
-          {activeTab === "Responsible Party" && <ResponsePartyTab readonly={!isEditing} />}
-          {activeTab === "Mailing address" && <MailingAddressTab readonly={!isEditing} />}
-          {activeTab === "Document" && <DocumentTab readonly={!isEditing} />}
+          {activeTab === "Company Information" && (
+            <CompanyInformationTab
+              readonly={!isEditing}
+              companyInfo={companyInfo}
+              onChange={setCompanyInfo}
+            />
+          )}
+          {activeTab === "Owner Information" && (
+            <OwnerInformationTab readonly={!isEditing} owners={owners} onChange={setOwners} />
+          )}
+          {activeTab === "Responsible Party" && (
+            <ResponsePartyTab
+              readonly={!isEditing}
+              responseParty={responseParty}
+              onChange={setResponseParty}
+            />
+          )}
+          {activeTab === "Mailing address" && (
+            <MailingAddressTab
+              readonly={!isEditing}
+              mailingAddress={mailingAddress}
+              onChange={setMailingAddress}
+            />
+          )}
+          {activeTab === "Document" && (
+            <DocumentTab readonly={!isEditing} documents={documents} onChange={setDocuments} />
+          )}
         </div>
       </div>
 
@@ -57,6 +119,12 @@ export function MyCompanyDetailPage() {
           <button
             className="border border-solid border-surface h-13 px-6 rounded-lg font-semibold"
             onClick={() => {
+              setCompanyInfo(MOCK_COMPANY_INFO);
+              setOwners(MOCK_OWNERS);
+              setResponseParty(MOCK_RESPONSE_PARTY);
+              setMailingAddress(MOCK_MAILING_ADDRESS);
+              setDocuments(MOCK_DOCUMENTS);
+
               setIsEditing(false);
             }}
           >

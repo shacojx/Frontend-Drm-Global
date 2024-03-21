@@ -7,15 +7,7 @@ import clsx from "clsx";
 import { FormFieldMultipleUpload } from "../../components/FormFieldMultipleUpload";
 import { cn } from "src/utils/cn.util";
 
-const EMPTY_OWNER = {
-  id: "",
-  companyName: "",
-  ownership: 0,
-  document: "",
-  type: "Company",
-};
-
-type OwnerInformation = {
+export type OwnerInformation = {
   id: string;
   companyName?: string;
   ownership: number; // INFO: (%)
@@ -27,19 +19,11 @@ type OwnerInformation = {
 
 type OwnerInformationTabProps = {
   readonly: boolean;
+  owners: Partial<OwnerInformation>[];
+  onChange?: (owners: Partial<OwnerInformation>[]) => void;
 };
 
-export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
-  const [owners, setOwners] = useState<Partial<OwnerInformation>[]>([
-    {
-      id: "A",
-      companyName: "trungluc",
-      ownership: 12,
-      document: "hehe",
-      type: "Company",
-    },
-  ]);
-
+export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInformationTabProps) {
   const handleFormChange = <K extends keyof OwnerInformation>(
     id: string = "",
     key: K,
@@ -52,7 +36,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
     const totalShare = newOwnersInfo.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
     if (totalShare < 0 || totalShare > 100) return;
 
-    setOwners(newOwnersInfo);
+    onChange?.(newOwnersInfo);
   };
 
   useEffect(() => {
@@ -62,8 +46,8 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
   const { validateCaller } = useValidateCaller();
 
   const handleAddOwner = () => {
-    setOwners((prev) => [
-      ...prev,
+    onChange?.([
+      ...owners,
       {
         id: Date.now().valueOf().toString(),
         companyName: "",
@@ -138,7 +122,7 @@ export function OwnerInformationTab({ readonly }: OwnerInformationTabProps) {
               <button
                 className="absolute right-1 top-1 cursor-pointer"
                 onClick={() => {
-                  setOwners((prev) => prev.filter((o) => o.id !== owner.id));
+                  onChange?.(owners.filter((o) => o.id !== owner.id));
                 }}
               >
                 <IconXCircle />

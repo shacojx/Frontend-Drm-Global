@@ -3,8 +3,8 @@ import { FormFieldSelect } from "../../components/FormFieldSelect";
 import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 
-type MailingAddress = {
-  state: string;
+export type MailingAddress = {
+  state?: string;
   country: string;
   city: string;
   address: string;
@@ -13,22 +13,16 @@ type MailingAddress = {
 
 type MailingAddressTabProps = {
   readonly: boolean;
+  mailingAddress: MailingAddress;
+  onChange?: (mailingAddress: MailingAddress) => void;
 };
 
-export function MailingAddressTab({ readonly }: MailingAddressTabProps) {
+export function MailingAddressTab({ readonly, mailingAddress, onChange }: MailingAddressTabProps) {
   const { validateCaller } = useValidateCaller();
-
-  const [mailingAddress, setMailingAddress] = useState<MailingAddress>({
-    state: "",
-    country: "vn",
-    city: "Ha Noi",
-    address: "Me Linh, Ha Noi",
-    zipCode: "550000",
-  });
 
   const handleFormChange = <K extends keyof MailingAddress>(key: K, value: MailingAddress[K]) => {
     const newInfo = { ...mailingAddress, [key]: value };
-    setMailingAddress(newInfo);
+    onChange?.(newInfo);
   };
 
   useEffect(() => {

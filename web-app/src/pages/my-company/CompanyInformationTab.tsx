@@ -4,7 +4,7 @@ import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { FormFieldTextArea } from "../../components/FormFieldArea";
 
-type CompanyInformation = {
+export type CompanyInformation = {
   companyName: string;
   entityEnding: string;
   industry: string;
@@ -15,6 +15,8 @@ type CompanyInformation = {
 
 type CompanyInformationTabProps = {
   readonly: boolean;
+  companyInfo: CompanyInformation;
+  onChange?: (companyInfo: CompanyInformation) => void;
 };
 
 const DEFAULT_COMPANY_INFO = {
@@ -26,17 +28,19 @@ const DEFAULT_COMPANY_INFO = {
   region: "region",
 };
 
-export function CompanyInformationTab({ readonly }: CompanyInformationTabProps) {
+export function CompanyInformationTab({
+  readonly,
+  companyInfo,
+  onChange,
+}: CompanyInformationTabProps) {
   const { validateCaller } = useValidateCaller();
-
-  const [companyInfo, setCompanyInfo] = useState<CompanyInformation>(DEFAULT_COMPANY_INFO);
 
   const handleFormChange = <K extends keyof CompanyInformation>(
     key: K,
     value: CompanyInformation[K]
   ) => {
     const newInfo = { ...companyInfo, [key]: value };
-    setCompanyInfo(newInfo);
+    onChange?.(newInfo);
   };
 
   useEffect(() => {

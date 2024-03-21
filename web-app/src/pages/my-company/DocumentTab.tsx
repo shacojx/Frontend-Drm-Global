@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { IconEssential, IconUpload } from "../../components/icons";
 
-type Document = {
+export type Document = {
   id: string;
   name: string;
   url: string;
@@ -9,23 +9,17 @@ type Document = {
 
 type DocumentTabProps = {
   readonly: boolean;
+  documents: Document[];
+  onChange?: (documents: Document[]) => void;
 };
 
-export function DocumentTab({ readonly }: DocumentTabProps) {
-  const [documents, setDocuments] = useState<Document[]>([
-    {
-      id: "1",
-      name: "Document 1",
-      url: "$",
-    },
-  ]);
-
+export function DocumentTab({ readonly, documents, onChange }: DocumentTabProps) {
   const handleFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
 
     const newDocuments = [...documents, { id: file.name, name: file.name, url: file.name }];
-    setDocuments(newDocuments);
+    onChange?.(newDocuments);
   };
 
   return (
