@@ -12,8 +12,8 @@ export default function TabService({
     item
 }: Props) {
     return (
-        <div className='col-span-6 md:col-span-3' key={item.id}>
-            <div className='md:border relative md:border-primary_25 rounded-xl flex flex-col md:flex-row justify-center md:justify-normal gap-6 pl-xl py-[1.375rem] text-center md:text-left'>
+        <div className='col-span-6 md:col-span-3 ' key={item.id}>
+            <div className='md:border relative hover:shadow cursor-pointer bg-[#F3F5F7] md:border-primary_25 rounded-xl flex flex-col md:flex-row justify-center md:justify-normal gap-6 pl-xl py-[1.375rem] text-center md:text-left'>
                 <div>
                     <div className={cn(
                         "inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full ",

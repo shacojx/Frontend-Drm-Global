@@ -10,7 +10,7 @@ type Props = {
 export default function StepService({ item }: Props) {
     return (
         <div className=' ' key={item.id}>
-            <div className='border relative border-primary_25 rounded-xl flex items-center gap-6 pl-xl px-md py-sm'>
+            <div className='border relative border-primary_25 rounded-xl flex items-center gap-6 pl-xl px-md py-sm '>
                 <div>
                     <div className={cn(
                         "inline-flex items-center text-white justify-center flex-shrink-0 w-5 h-5 rounded-full ",
