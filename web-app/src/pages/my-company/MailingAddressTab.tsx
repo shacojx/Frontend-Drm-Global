@@ -3,6 +3,7 @@ import { FormFieldSelect } from "../../components/FormFieldSelect";
 import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { MailingAddress } from "src/types/my-company";
+import { NATION_INFOS } from "src/constants/SelectionOptions";
 
 type MailingAddressTabProps = {
   readonly: boolean;
@@ -38,7 +39,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
       <div>
         <FormFieldSelect
           isFixedValue={readonly}
-          optionInfos={[{ label: "Viet Nam", value: "vn" }]}
+          optionInfos={NATION_INFOS}
           label="Country"
           isRequired
           validateCaller={validateCaller}
