@@ -3,7 +3,7 @@ import { useValidate } from "../hooks-ui/useValidateCaller";
 import { FormFieldProps } from "../types/common";
 import { ChangeEvent, useState } from "react";
 import { cn } from "../services-ui/tailwindcss";
-import { IconAltArrowDown, IconUpload } from "./icons";
+import { IconAltArrowDown, IconUpload, IconXCircle } from "./icons";
 
 export type File = {
   id: string;
@@ -18,7 +18,9 @@ export function FormFieldMultipleUpload({
   validateCaller,
   label,
   isFixedValue,
-}: FormFieldProps<(File & { isSelected: boolean })[]>) {
+  onChange,
+  maxFiles,
+}: FormFieldProps<(File & { isSelected: boolean })[]> & { maxFiles?: number }) {
   const [shouldShowError, setShouldShowError] = useValidate(id, isRequired, value, validateCaller);
 
   const [files, setFiles] = useState<(File & { isSelected: boolean })[]>(value);
@@ -28,15 +30,19 @@ export function FormFieldMultipleUpload({
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
 
-    setFiles((prev) => [
-      ...prev.map((file) => ({ ...file, isSelected: false })),
+    if (maxFiles && files.length >= maxFiles) return;
+
+    const newFiles = [
+      ...files.map((file) => ({ ...file, isSelected: false })),
       {
         id: file.name,
         name: file.name,
         url: file.name,
         isSelected: true,
       },
-    ]);
+    ];
+    setFiles(newFiles);
+    onChange?.(newFiles);
   };
 
   return (
@@ -56,12 +62,12 @@ export function FormFieldMultipleUpload({
       >
         <Listbox disabled={isFixedValue}>
           <div className="flex items-center h-full gap-1 w-full">
-            <Listbox.Button className="grow text-left flex items-center">
-              {!isFixedValue && <IconAltArrowDown className="mx-2" />}
+            <Listbox.Button className="grow text-left flex items-center line-clamp-1">
+              {!isFixedValue && <IconAltArrowDown className="mx-2 shrink-0" />}
               {selectedFile?.name}
             </Listbox.Button>
 
-            {!isFixedValue && (
+            {!isFixedValue && maxFiles && files.length < maxFiles && (
               <label htmlFor="upload" className="cursor-pointer">
                 <IconUpload className="mx-2" />
                 <input
@@ -77,8 +83,17 @@ export function FormFieldMultipleUpload({
 
           <Listbox.Options className="shadow rounded-lg bg-white translate-y-2">
             {files?.map((file) => (
-              <Listbox.Option key={file.id} value={file.id} className="p-3">
-                {file.name}
+              <Listbox.Option key={file.id} value={file.id} className="p-3 line-clamp-1 flex gap-2">
+                <div className="grow line-clamp-1">{file.name}</div>
+                <IconXCircle
+                  className="shrink-0 cursor-pointer"
+                  onClick={() => {
+                    const newFiles = files.filter((f) => f.id !== file.id);
+                    newFiles[0].isSelected = true;
+                    setFiles(newFiles);
+                    onChange?.(newFiles);
+                  }}
+                />
               </Listbox.Option>
             ))}
           </Listbox.Options>

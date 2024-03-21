@@ -167,6 +167,7 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
 
             <div className="min-w-72">
               <FormFieldMultipleUpload
+                maxFiles={3}
                 isFixedValue={readonly}
                 label="Document"
                 isRequired

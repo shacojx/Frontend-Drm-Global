@@ -24,7 +24,7 @@ export const validateOwnersInfo = (owners: Partial<OwnerInformation>[]): string 
   }
 
   const totalShare = owners.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
-  if (totalShare < 100) return "Total ownership should be 100.";
+  if (totalShare !== 100) return "Total ownership should be 100.";
 
   return false;
 };
