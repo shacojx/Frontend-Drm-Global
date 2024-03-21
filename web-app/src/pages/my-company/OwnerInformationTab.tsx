@@ -10,28 +10,27 @@ import { OwnerInformation } from "src/types/my-company";
 
 type OwnerInformationTabProps = {
   readonly: boolean;
-  owners: Partial<OwnerInformation>[];
-  onChange?: (owners: Partial<OwnerInformation>[]) => void;
+  owners?: Partial<OwnerInformation>[];
+  onChange?: (owners?: Partial<OwnerInformation>[]) => void;
 };
 
-export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInformationTabProps) {
-  const totalShare = owners.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
+export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerInformationTabProps) {
+  const totalShare = owners?.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
 
   const handleFormChange = <K extends keyof OwnerInformation>(
     id: string = "",
     key: K,
     value: OwnerInformation[K]
   ) => {
-    const newOwnersInfo = owners.map((owner) =>
+    const newOwnersInfo = owners?.map((owner) =>
       owner.id !== id ? owner : { ...owner, [key]: value }
     );
 
+    console.log(owners);
+    console.log("newOwnersInfo: ", newOwnersInfo);
+
     onChange?.(newOwnersInfo);
   };
-
-  useEffect(() => {
-    // TODO: call api for ownership
-  }, []);
 
   const { validateCaller } = useValidateCaller();
 
@@ -42,7 +41,7 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
         id: Date.now().valueOf().toString(),
         companyName: "",
         ownership: 0,
-        document: "",
+        document: [],
         type: "Company",
       },
     ]);
@@ -179,8 +178,14 @@ export function OwnerInformationTab({ readonly, owners, onChange }: OwnerInforma
                 isRequired
                 validateCaller={validateCaller}
                 id="document"
-                onChange={() => {}}
-                value={[{ id: "test-id", name: "Chu nghia Mac-Lenin", url: "#", isSelected: true }]}
+                onChange={(value) =>
+                  handleFormChange(
+                    owner.id,
+                    "document",
+                    value.map((f) => f.name)
+                  )
+                }
+                value={owner.document?.map((doc) => ({ id: doc, name: doc, url: doc }))}
               />
             </div>
 

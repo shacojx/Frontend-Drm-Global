@@ -12,7 +12,7 @@ import {
   ResponseParty,
 } from "src/types/my-company";
 import { useEffect, useState } from "react";
-import { callApiGetCompanyInfo } from "src/api/my-company";
+import { callApiGetCompanyDetail } from "src/api/my-company";
 import {
   DialogFailureFullscreen,
   DialogSuccessFullscreen,
@@ -25,6 +25,7 @@ import {
   validateOwnersInfo,
   validateResponseParty,
 } from "src/services-business/my-company";
+import { useQuery } from "react-query";
 
 const TABS = [
   "Company Information",
@@ -33,40 +34,6 @@ const TABS = [
   "Mailing address",
   "Document",
 ] as const;
-
-const MOCK_COMPANY_INFO: CompanyInformation = {
-  companyName: "Lesor IT Solution",
-  entityEnding: "LLC",
-  industry: "Art and photography",
-  website: "website",
-  description: "description",
-  region: "region",
-};
-
-const MOCK_OWNERS: OwnerInformation[] = [
-  {
-    id: "1",
-    type: "Company",
-    document: "#",
-    companyName: "Lesor IT Solution",
-    ownership: 100,
-  },
-];
-
-const MOCK_RESPONSE_PARTY: ResponseParty = {
-  firstName: "Hoang",
-  lastName: "Nguyen",
-  hasSSNorITIN: false,
-};
-
-const MOCK_MAILING_ADDRESS: MailingAddress = {
-  country: "Vietnam",
-  city: "Hanoi",
-  address: "Me Linh, Ha Noi",
-  zipCode: "55000",
-};
-
-const MOCK_DOCUMENTS: Document[] = [{ id: "1", name: "avt-default.jpg", url: "#" }];
 
 export function MyCompanyDetailPage() {
   const translation = useTranslation();
@@ -78,59 +45,35 @@ export function MyCompanyDetailPage() {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [companyInfo, setCompanyInfo] = useState<CompanyInformation>(MOCK_COMPANY_INFO);
-  const [owners, setOwners] = useState<Partial<OwnerInformation>[]>(MOCK_OWNERS);
-  const [responseParty, setResponseParty] = useState<ResponseParty>(MOCK_RESPONSE_PARTY);
-  const [mailingAddress, setMailingAddress] = useState<MailingAddress>(MOCK_MAILING_ADDRESS);
-  const [documents, setDocuments] = useState<Document[]>(MOCK_DOCUMENTS);
+  const [companyInfo, setCompanyInfo] = useState<Partial<CompanyInformation>>();
+  const [owners, setOwners] = useState<Partial<OwnerInformation>[]>();
+  const [responseParty, setResponseParty] = useState<Partial<ResponseParty>>();
+  const [mailingAddress, setMailingAddress] = useState<Partial<MailingAddress>>();
+  const [documents, setDocuments] = useState<Partial<Document>[]>();
 
-  useEffect(() => {
-    callApiGetCompanyInfo().then(setCompanyInfo);
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["companyDetail"],
+    queryFn: () => callApiGetCompanyDetail(),
+    onSuccess: (data) => {
+      setCompanyInfo(data.companyInfo);
+      setOwners(data.owners);
+      setResponseParty(data.responseParty);
+      setMailingAddress(data.mailingAddress);
+      setDocuments(data.documents);
+    },
+  });
 
   const handleSave = () => {
-    switch (activeTab) {
-      case "Company Information": {
-        const error = validateCompanyInfo(companyInfo);
+    const companyInfoError = companyInfo && validateCompanyInfo(companyInfo);
+    const ownersError = owners && validateOwnersInfo(owners);
+    const responsePartyError = responseParty && validateResponseParty(responseParty);
+    const mailingAddressError = mailingAddress && validateMailingAddress(mailingAddress);
 
-        if (typeof error === "string") {
-          return setError(error);
-        }
-        // TODO: call api
-        break;
-      }
+    const error = companyInfoError || ownersError || responsePartyError || mailingAddressError;
 
-      case "Owner Information": {
-        const error = validateOwnersInfo(owners);
-        if (typeof error === "string") {
-          return setError(error);
-        }
-        // TODO: call api
-        break;
-      }
-
-      case "Responsible Party": {
-        const error = validateResponseParty(responseParty);
-        if (typeof error === "string") {
-          return setError(error);
-        }
-        // TODO: call api
-        break;
-      }
-
-      case "Mailing address": {
-        const error = validateMailingAddress(mailingAddress);
-        if (typeof error === "string") {
-          return setError(error);
-        }
-        // TODO: call api
-        break;
-      }
-
-      case "Document": {
-        // TODO: call api
-        break;
-      }
+    if (typeof error === "string") {
+      setError(error);
+      return;
     }
 
     setError(false);
@@ -198,11 +141,11 @@ export function MyCompanyDetailPage() {
             <button
               className="border border-solid border-surface h-13 px-6 rounded-lg font-semibold"
               onClick={() => {
-                setCompanyInfo(MOCK_COMPANY_INFO);
-                setOwners(MOCK_OWNERS);
-                setResponseParty(MOCK_RESPONSE_PARTY);
-                setMailingAddress(MOCK_MAILING_ADDRESS);
-                setDocuments(MOCK_DOCUMENTS);
+                setCompanyInfo(data?.companyInfo);
+                setOwners(data?.owners);
+                setResponseParty(data?.responseParty);
+                setMailingAddress(data?.mailingAddress);
+                setDocuments(data?.documents);
 
                 setIsEditing(false);
               }}

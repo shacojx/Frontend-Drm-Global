@@ -9,8 +9,8 @@ import { CompanyInformation } from "src/types/my-company";
 
 type CompanyInformationTabProps = {
   readonly: boolean;
-  companyInfo: CompanyInformation;
-  onChange?: (companyInfo: CompanyInformation) => void;
+  companyInfo?: Partial<CompanyInformation>;
+  onChange?: (companyInfo: Partial<CompanyInformation>) => void;
 };
 
 export function CompanyInformationTab({
@@ -28,10 +28,6 @@ export function CompanyInformationTab({
     onChange?.(newInfo);
   };
 
-  useEffect(() => {
-    // TODO: call api company tab
-  }, []);
-
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-6 justify-start">
       <div className="min-w-80">
@@ -43,7 +39,7 @@ export function CompanyInformationTab({
           className="w-full"
           id="companyName"
           validateCaller={validateCaller}
-          value={companyInfo.companyName}
+          value={companyInfo?.companyName}
           onChange={(value) => handleFormChange("companyName", value)}
         />
       </div>
@@ -56,7 +52,7 @@ export function CompanyInformationTab({
           isRequired
           className="w-full"
           id="entity"
-          value={companyInfo.entityEnding}
+          value={companyInfo?.entityEnding}
           validateCaller={validateCaller}
           onChange={(value) => handleFormChange("entityEnding", value)}
         />
@@ -70,7 +66,7 @@ export function CompanyInformationTab({
           isRequired
           className="w-full"
           id="region"
-          value={companyInfo.region}
+          value={companyInfo?.region}
           validateCaller={validateCaller}
           onChange={(value) => handleFormChange("region", value)}
         />
@@ -84,7 +80,7 @@ export function CompanyInformationTab({
           label="Industry"
           className="w-full"
           id="industry"
-          value={companyInfo.industry}
+          value={companyInfo?.industry}
           validateCaller={validateCaller}
           onChange={(value) => handleFormChange("industry", value)}
         />
@@ -97,7 +93,7 @@ export function CompanyInformationTab({
           isRequired
           className="w-full"
           id="website"
-          value={companyInfo.website}
+          value={companyInfo?.website}
           validateCaller={validateCaller}
           onChange={(value) => handleFormChange("website", value)}
         />
@@ -110,7 +106,7 @@ export function CompanyInformationTab({
           isRequired
           className="w-full"
           id="description"
-          value={companyInfo.description}
+          value={companyInfo?.description}
           validateCaller={validateCaller}
           onChange={(value) => handleFormChange("description", value)}
         />

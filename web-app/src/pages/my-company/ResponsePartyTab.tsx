@@ -6,8 +6,8 @@ import { ResponseParty } from "src/types/my-company";
 
 type ResponsePartyTabProps = {
   readonly: boolean;
-  responseParty: ResponseParty;
-  onChange?: (responseParty: ResponseParty) => void;
+  responseParty?: Partial<ResponseParty>;
+  onChange?: (responseParty: Partial<ResponseParty>) => void;
 };
 
 export function ResponsePartyTab({ readonly, responseParty, onChange }: ResponsePartyTabProps) {
@@ -30,7 +30,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
           isRequired
           validateCaller={validateCaller}
           id="firstName"
-          value={responseParty.firstName}
+          value={responseParty?.firstName}
           onChange={(value) => handleFormChange("firstName", value)}
         />
       </div>
@@ -42,7 +42,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
           isRequired
           validateCaller={validateCaller}
           id="lastName"
-          value={responseParty.lastName}
+          value={responseParty?.lastName}
           onChange={(value) => handleFormChange("lastName", value)}
         />
       </div>
@@ -61,7 +61,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
                 type="checkbox"
                 className="accent-primary w-5 h-5"
                 id="yes"
-                checked={responseParty.hasSSNorITIN}
+                checked={responseParty?.hasSSNorITIN}
                 onChange={(event) => {
                   const isChecked = event.currentTarget.checked;
                   if (!isChecked) return;
@@ -77,7 +77,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
                 type="checkbox"
                 className="accent-primary w-5 h-5"
                 id="no"
-                checked={!responseParty.hasSSNorITIN}
+                checked={!responseParty?.hasSSNorITIN}
                 onChange={(event) => {
                   const isChecked = event.currentTarget.checked;
                   if (!isChecked) return;
@@ -90,7 +90,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
             </label>
           </div>
 
-          {responseParty.hasSSNorITIN && (
+          {responseParty?.hasSSNorITIN && (
             <FormFieldText
               isRequired
               className="w-full"

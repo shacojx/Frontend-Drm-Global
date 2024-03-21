@@ -4,6 +4,7 @@ import { FormFieldProps } from "../types/common";
 import { ChangeEvent, useState } from "react";
 import { cn } from "../services-ui/tailwindcss";
 import { IconAltArrowDown, IconUpload, IconXCircle } from "./icons";
+import { uploadFile } from "src/api/upload";
 
 export type File = {
   id: string;
@@ -20,25 +21,26 @@ export function FormFieldMultipleUpload({
   isFixedValue,
   onChange,
   maxFiles,
-}: FormFieldProps<(File & { isSelected: boolean })[]> & { maxFiles?: number }) {
+}: FormFieldProps<File[]> & { maxFiles?: number }) {
   const [shouldShowError, setShouldShowError] = useValidate(id, isRequired, value, validateCaller);
 
-  const [files, setFiles] = useState<(File & { isSelected: boolean })[]>(value);
-  const selectedFile = files.filter((file) => file.isSelected)[0];
+  const [files, setFiles] = useState<File[]>(value);
+  const selectedFile = files[files.length - 1];
 
-  const handleUploadFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
 
     if (maxFiles && files.length >= maxFiles) return;
 
+    await uploadFile(file);
+
     const newFiles = [
-      ...files.map((file) => ({ ...file, isSelected: false })),
+      ...files,
       {
         id: file.name,
         name: file.name,
         url: file.name,
-        isSelected: true,
       },
     ];
     setFiles(newFiles);
@@ -82,14 +84,13 @@ export function FormFieldMultipleUpload({
           </div>
 
           <Listbox.Options className="shadow rounded-lg bg-white translate-y-2">
-            {files?.map((file) => (
-              <Listbox.Option key={file.id} value={file.id} className="p-3 line-clamp-1 flex gap-2">
+            {files?.map((file, idx) => (
+              <Listbox.Option key={idx} value={file.id} className="p-3 line-clamp-1 flex gap-2">
                 <div className="grow line-clamp-1">{file.name}</div>
                 <IconXCircle
                   className="shrink-0 cursor-pointer"
                   onClick={() => {
                     const newFiles = files.filter((f) => f.id !== file.id);
-                    newFiles[0].isSelected = true;
                     setFiles(newFiles);
                     onChange?.(newFiles);
                   }}

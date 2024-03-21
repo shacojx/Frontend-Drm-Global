@@ -13,7 +13,7 @@ import { saveAuthInfo } from "../services-business/api/authentication";
 import { validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
-import { callApiGetCompanyInfo } from "src/api/my-company";
+import { callApiGetCompanyDetail } from "src/api/my-company";
 
 export function LoginPage() {
   const translation = useTranslation();

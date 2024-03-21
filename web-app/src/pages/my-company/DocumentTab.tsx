@@ -1,15 +1,17 @@
 import { ChangeEvent, useState } from "react";
-import { IconEssential, IconUpload } from "../../components/icons";
+import { IconEssential, IconSpinner, IconUpload } from "../../components/icons";
 import { Document } from "src/types/my-company";
 import { getFile, uploadFile } from "src/api/upload";
 
 type DocumentTabProps = {
   readonly: boolean;
-  documents: Document[];
-  onChange?: (documents: Document[]) => void;
+  documents?: Partial<Document>[];
+  onChange?: (documents: Partial<Document>[]) => void;
 };
 
-export function DocumentTab({ readonly, documents, onChange }: DocumentTabProps) {
+export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabProps) {
+  const [downloadingName, setDownloadingName] = useState<string>();
+
   const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
@@ -40,12 +42,16 @@ export function DocumentTab({ readonly, documents, onChange }: DocumentTabProps)
         >
           <div className="font-bold">{document.name}</div>
           <button
-            className="px-6 font-bold bg-primary text-white rounded-lg py-3"
+            className="px-6 font-bold bg-primary text-white rounded-lg py-3 flex gap-1"
             onClick={async () => {
-              const data = await getFile(document.name);
-              console.log(data);
+              if (!document.name) return;
+
+              setDownloadingName(document.name);
+              await getFile(document.name);
+              setDownloadingName(undefined);
             }}
           >
+            {downloadingName === document.name && <IconSpinner />}
             Download
           </button>
         </div>

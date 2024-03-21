@@ -1,3 +1,5 @@
+import { EntityEnding } from "src/api/types";
+
 export type CompanyInformation = {
   companyName: string;
   entityEnding: EntityEnding;
@@ -11,7 +13,7 @@ export type OwnerInformation = {
   id: string;
   companyName?: string;
   ownership: number; // INFO: (%)
-  document: string;
+  document: string[];
   type: "Company" | "Individual";
   firstName?: string;
   lastName?: string;
@@ -36,4 +38,12 @@ export type Document = {
   id: string;
   name: string;
   url: string;
+};
+
+export type CompanyDetail = {
+  companyInfo: CompanyInformation;
+  owners: OwnerInformation[];
+  responseParty: ResponseParty;
+  mailingAddress: MailingAddress;
+  documents: Document[];
 };

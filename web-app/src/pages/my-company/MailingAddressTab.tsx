@@ -7,8 +7,8 @@ import { NATION_INFOS } from "src/constants/SelectionOptions";
 
 type MailingAddressTabProps = {
   readonly: boolean;
-  mailingAddress: MailingAddress;
-  onChange?: (mailingAddress: MailingAddress) => void;
+  mailingAddress?: Partial<MailingAddress>;
+  onChange?: (mailingAddress: Partial<MailingAddress>) => void;
 };
 
 export function MailingAddressTab({ readonly, mailingAddress, onChange }: MailingAddressTabProps) {
@@ -31,7 +31,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
           label="State"
           validateCaller={validateCaller}
           id="state"
-          value={mailingAddress.state}
+          value={mailingAddress?.state}
           onChange={(value) => handleFormChange("state", value)}
         />
       </div>
@@ -44,7 +44,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
           isRequired
           validateCaller={validateCaller}
           id="country"
-          value={mailingAddress.country}
+          value={mailingAddress?.country}
           onChange={(value) => handleFormChange("country", value)}
         />
       </div>
@@ -56,7 +56,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
           isRequired
           validateCaller={validateCaller}
           id="city"
-          value={mailingAddress.city}
+          value={mailingAddress?.city}
           onChange={(value) => handleFormChange("city", value)}
         />
       </div>
@@ -68,7 +68,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
           isRequired
           validateCaller={validateCaller}
           id="address"
-          value={mailingAddress.address}
+          value={mailingAddress?.address}
           onChange={(value) => handleFormChange("address", value)}
         />
       </div>
@@ -80,7 +80,7 @@ export function MailingAddressTab({ readonly, mailingAddress, onChange }: Mailin
           isRequired
           validateCaller={validateCaller}
           id="zipCode"
-          value={mailingAddress.zipCode}
+          value={mailingAddress?.zipCode}
           onChange={(value) => handleFormChange("zipCode", value)}
         />
       </div>

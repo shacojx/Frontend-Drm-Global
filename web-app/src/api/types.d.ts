@@ -119,4 +119,4 @@ export type ApiCreateOrderParam = {
 };
 
 // ====== My Company ====== //
-export type RawCompanyInfo = never;
+export type RawCompanyDetail = never;
