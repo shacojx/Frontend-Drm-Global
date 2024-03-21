@@ -1,7 +1,12 @@
 import { StatusBadge } from './StatusBadge';
 import { useTranslation } from 'react-i18next';
+import { Service } from '../types/service';
 
-export function StateFilling() {
+type Props = {
+  service: Service | null;
+};
+
+export function StateFilling(props: Props) {
   const translation = useTranslation();
   return (
     <div className={'w-full p-3'}>
@@ -10,13 +15,16 @@ export function StateFilling() {
         <button className="w-[150px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 ml-auto self-end">
           Send Reminder
         </button>
-        <StatusBadge status={'PENDING'} showDot />
+        <StatusBadge status={props.service?.status} showDot />
       </div>
       <div className={'mb-4'}>
         <div className={'text-lg font-bold mb-2'}>
           {translation.t("Admin's remark")}
         </div>
-        <textarea className={'w-full p-2 border border-gray-300'}></textarea>
+        <textarea
+          className={'w-full p-2 border border-gray-300'}
+          maxLength={500}
+        ></textarea>
       </div>
       <div className={'mb-4'}>
         <div className={'text-lg font-bold mb-2'}>
