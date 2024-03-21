@@ -77,6 +77,8 @@ export function MyCompanyDetailPage() {
     }
 
     setError(false);
+
+    // TODO: call api to save
     setShowSuccessDialog(true);
   };
 

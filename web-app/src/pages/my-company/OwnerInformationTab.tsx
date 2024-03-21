@@ -58,14 +58,16 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
           <div className="grid grid-cols-[1fr,20px] xl:flex xl:justify-between">
             <div className="underline text-lg font-bold mb-6">Owner {idx + 1}</div>
 
-            <button
-              className="cursor-pointer mt-auto mb-6 block xl:hidden ml-auto"
-              onClick={() => {
-                onChange?.(owners.filter((o) => o.id !== owner.id));
-              }}
-            >
-              <IconXCircle />
-            </button>
+            {owners.length > 1 && (
+              <button
+                className="cursor-pointer mt-auto mb-6 block xl:hidden ml-auto"
+                onClick={() => {
+                  onChange?.(owners.filter((o) => o.id !== owner.id));
+                }}
+              >
+                <IconXCircle />
+              </button>
+            )}
 
             <div
               className={clsx("flex gap-3 mb-4", {

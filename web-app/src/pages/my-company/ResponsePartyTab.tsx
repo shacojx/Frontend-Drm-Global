@@ -18,10 +18,6 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
     onChange?.({ ...responseParty, [key]: value });
   };
 
-  useEffect(() => {
-    // INFO: call api for response party
-  }, []);
-
   return (
     <div className="gap-x-4 gap-y-6 justify-start grid grid-cols-2 lg:grid-cols-3">
       <div>
