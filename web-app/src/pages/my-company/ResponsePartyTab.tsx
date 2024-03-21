@@ -3,6 +3,7 @@ import { FormFieldText } from "../../components/FormFieldText";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import clsx from "clsx";
 import { ResponseParty } from "src/types/my-company";
+import { cn } from "src/services-ui/tailwindcss";
 
 type ResponsePartyTabProps = {
   readonly: boolean;
@@ -90,16 +91,14 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
             </label>
           </div>
 
-          {responseParty?.hasSSNorITIN && (
-            <FormFieldText
-              isRequired
-              className="w-full"
-              id="SSN/ITIN"
-              value={responseParty.SSNorITIN}
-              validateCaller={validateCaller}
-              onChange={(value) => handleFormChange("SSNorITIN", value)}
-            />
-          )}
+          <FormFieldText
+            isRequired
+            className={cn("w-full", { invisible: !responseParty?.hasSSNorITIN })}
+            id="SSN/ITIN"
+            value={responseParty?.SSNorITIN}
+            validateCaller={validateCaller}
+            onChange={(value) => handleFormChange("SSNorITIN", value)}
+          />
         </div>
       </div>
     </div>
