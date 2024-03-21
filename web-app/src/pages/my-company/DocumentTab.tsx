@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { IconEssential, IconUpload } from "../../components/icons";
 import { Document } from "src/types/my-company";
+import { uploadFile } from "src/api/upload";
 
 type DocumentTabProps = {
   readonly: boolean;
@@ -9,9 +10,10 @@ type DocumentTabProps = {
 };
 
 export function DocumentTab({ readonly, documents, onChange }: DocumentTabProps) {
-  const handleFormChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
+    await uploadFile(file);
 
     const newDocuments = [...documents, { id: file.name, name: file.name, url: file.name }];
     onChange?.(newDocuments);
