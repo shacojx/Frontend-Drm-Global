@@ -11,11 +11,8 @@ export function StateFilling(props: Props) {
   const translation = useTranslation();
   return (
     <div className={'w-full p-3'}>
-      <div className={'flex gap-4 mb-4'}>
+      <div className={'flex gap-4 mb-4 justify-between'}>
         <div className={'font-bold text-xl'}>State Filling</div>
-        <button className="w-[150px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 ml-auto self-end">
-          Send Reminder
-        </button>
         <StatusBadge status={props.service?.status as Status} showDot />
       </div>
       <div className={'mb-4'}>

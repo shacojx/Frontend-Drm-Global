@@ -7,6 +7,9 @@ import { OptionInfo } from '../types/common';
 import { StatusBadge } from './StatusBadge';
 import { Service } from '../types/service';
 import { Status } from '../types/status';
+import { DialogContainer } from './DialogContainer';
+import { useState } from 'react';
+import { CompanyDetailDialog } from './CompanyDetailDialog';
 
 type Props = {
   service: Service | null;
@@ -15,6 +18,8 @@ type Props = {
 export function ServiceDetailDialog(props: Props) {
   const translator = useTranslation();
   const { validateCaller, validateAll } = useValidateCaller();
+  let showCompanyDetailDialog: any, setShowCompanyDetailDialog: any;
+  [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
 
   const cycleOptions: OptionInfo<number>[] = [{ value: 1, label: '1' }];
   const picOptions: OptionInfo<number>[] = [
@@ -75,7 +80,7 @@ export function ServiceDetailDialog(props: Props) {
           </div>
           <div
             className={
-              'text-xs text-right text-cyan-500 underline cursor-pointer'
+              'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
             }
           >
             Click here to upload contract
@@ -92,7 +97,7 @@ export function ServiceDetailDialog(props: Props) {
           </div>
           <div
             className={
-              'text-xs text-right text-cyan-500 underline cursor-pointer'
+              'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
             }
           >
             View KYC Status
@@ -109,7 +114,7 @@ export function ServiceDetailDialog(props: Props) {
           </div>
           <div
             className={
-              'text-xs text-right text-cyan-500 underline cursor-pointer'
+              'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
             }
           >
             Click here to upload contract
@@ -126,10 +131,13 @@ export function ServiceDetailDialog(props: Props) {
           </div>
           <div
             className={
-              'text-xs text-right text-cyan-500 underline cursor-pointer'
+              'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
             }
+            onClick={() => {
+              setShowCompanyDetailDialog(true);
+            }}
           >
-            Click here to upload contract
+            {translator.t('Click here to edit')}
           </div>
         </div>
       </div>
@@ -198,6 +206,19 @@ export function ServiceDetailDialog(props: Props) {
         <div className={'col-span-3'}>
           <StateFilling service={props.service}></StateFilling>
         </div>
+        {showCompanyDetailDialog && (
+          <DialogContainer
+            handleClickOverlay={() => {
+              setShowCompanyDetailDialog(false);
+            }}
+            isCloseOnClickOverlay
+            isFullSize
+            isAutoSize
+            panelClassName={'max-w-[1200px]'}
+          >
+            <CompanyDetailDialog />
+          </DialogContainer>
+        )}
       </div>
     </div>
   );

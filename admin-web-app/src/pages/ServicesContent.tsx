@@ -5,7 +5,7 @@ import {
   GridRenderCellParams,
   GridRowParams,
 } from '@mui/x-data-grid';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ServiceFilter } from '../components/ServiceFilter';
 import { ServiceSearchFilter } from '../types/serviceSearchFilter';
@@ -13,6 +13,8 @@ import { Service } from '../types/service';
 import { StatusBadge } from '../components/StatusBadge';
 import { DialogContainer } from '../components/DialogContainer';
 import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
+import { callApiGetServiceDetail } from '../api/serviceManagement';
+import { callApiLViewUser } from '../api/userManagement';
 
 type Props = {};
 
@@ -108,44 +110,19 @@ export function ServicesContent(props: Props) {
     },
   ];
 
-  function search(data: ServiceSearchFilter) {
+  useEffect(() => {
+    search();
+  }, []);
+
+  async function search(data?: ServiceSearchFilter) {
     console.log('service search filter ==>', data);
     // TODO: Implement API Search Service here
-    setTableData([
-      {
-        id: '1',
-        status: 'PENDING',
-        kyc: 'PENDING',
-        corporationProfile: 'PENDING',
-        payment: 'PENDING',
-        serviceName: 'Service AAA',
-        customerName: 'Nguyễn Văn A',
-        phoneNumber: '0123456789',
-        customerEmail: 'anv@gmail.com',
-      },
-      {
-        id: '2',
-        status: 'IN_PROGRESS',
-        kyc: 'PENDING',
-        corporationProfile: 'PENDING',
-        payment: 'PENDING',
-        serviceName: 'Service ABC',
-        customerName: 'Nguyễn Văn B',
-        phoneNumber: '0123456789',
-        customerEmail: 'anv@gmail.com',
-      },
-      {
-        id: '3',
-        status: 'APPROVED',
-        kyc: 'PENDING',
-        corporationProfile: 'PENDING',
-        payment: 'PENDING',
-        serviceName: 'Service 123',
-        customerName: 'Nguyễn Văn A',
-        phoneNumber: '0123456789',
-        customerEmail: 'anv@gmail.com',
-      },
-    ]);
+    const output = await callApiGetServiceDetail(data);
+    setTableData(output);
+
+    async function getUsers() {
+      const output = await callApiLViewUser(param);
+    }
   }
 
   function showServiceDetail(data: Service) {
