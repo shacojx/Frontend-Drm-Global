@@ -4,62 +4,93 @@ import { useNavigate } from "react-router-dom";
 import {
   callApiChangeUserPassword,
   callApiChangeUserProfile,
-  callApiLogout
+  callApiLogout,
 } from "../api/account";
 import { callCreateOrder } from "../api/payment";
-import { ApiChangeUserPassword, ApiChangeUserProfile, ApiCreateOrderParam, Currency } from "../api/types";
+import {
+  ApiChangeUserPassword,
+  ApiChangeUserProfile,
+  ApiCreateOrderParam,
+  Currency,
+} from "../api/types";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
 import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
 import { FormFieldText } from "../components/FormFieldText";
 import {
   IconAccountCircle,
-  IconCheck, IconDangerCircle,
-  IconLogout, IconMyCompany,
-  IconMyService, IconRefreshCircle,
+  IconCheck,
+  IconDangerCircle,
+  IconLogout,
+  IconMyCompany,
+  IconMyService,
+  IconRefreshCircle,
   IconSelectCard,
   IconService,
   IconSpinner,
-  IconThreeLines, IconUpload, IconUploadFile,
-  IconUser, IconX
+  IconThreeLines,
+  IconUpload,
+  IconUploadFile,
+  IconUser,
+  IconX,
 } from "../components/icons";
 import { NATION_INFOS } from "../constants/SelectionOptions";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { useClickOutside } from "../hooks-ui/useClickOutside";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
-import { PageLayoutLeftSideTab, TabOption } from "../layouts/PageLayoutLeftSideTab";
+import {
+  PageLayoutLeftSideTab,
+  TabOption,
+} from "../layouts/PageLayoutLeftSideTab";
 import { removeAuthInfo } from "../services-business/api/authentication";
-import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
+import {
+  extractPhone,
+  generatePhone,
+  RNPhoneValue,
+} from "../services-business/api/generate-api-param/account";
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
+import LLCMyService from "./LLCMyService";
+import { MyCompanyDetailPage } from "./my-company/MyCompanyDetailPage";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
-type HomeContent = HomeTab | 'myAccount' | 'KYCUpload'
+type HomeContent = HomeTab | 'myAccount' | 'KYCUpload' | idTab
+
+enum idTab  {
+  LCFormationServices='LLCFormationServices'
+}
 const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
   services: {
-    iconElement: <IconService/>,
+    iconElement: <IconService />,
     id: "services",
-    label: 'Services',
+    label: "Services",
   },
   myServices: {
     id: "myServices",
-    iconElement: <IconMyService/>,
+    iconElement: <IconMyService />,
     label: 'My Services',
+    items: [
+      {
+        id: idTab.LCFormationServices,
+        iconElement: <IconMyService />,
+        label: 'LLC Formation Services',
+      },
+    ]
   },
   myCompany: {
     id: "myCompany",
     iconElement: <IconMyCompany />,
-    label: 'My Company',
+    label: "My Company",
   },
 }
 
 export function HomePage() {
   const translation = useTranslation()
   const navigate = useNavigate()
-  const {user, removeAuthUser} = useContext(AuthContext)
+  const { user, removeAuthUser } = useContext(AuthContext)
   const [homeContent, setHomeContent] = useState<HomeContent>('myAccount')
-  const openCallerRef = useRef<()=>void>(()=>{})
+  const openCallerRef = useRef<() => void>(() => { })
   const [isShowAccountPopup, setIsShowAccountPopup] = useState<boolean>(false)
   const ref = useClickOutside(() => setIsShowAccountPopup(false));
 
@@ -68,13 +99,13 @@ export function HomePage() {
   }
 
   function handleClickAccountOnPopUp() {
-    handleChangeTab('myAccount')
+    handleChangeTab("myAccount")
     setIsShowAccountPopup(false)
   }
 
   function handleClickLogout() {
     navigate(RoutePaths.login)
-    callApiLogout().catch(e => console.error(e))
+    callApiLogout().catch((e) => console.error(e))
     removeAuthInfo()
     removeAuthUser()
   }
@@ -92,20 +123,21 @@ export function HomePage() {
                 <IconX />
             </div>
             <p className={"text-gray-700 text-cLg"}>{user?.email}</p>
-            <IconAccountCircle className={"w-14 h-14 mb-3"}/>
+            <IconAccountCircle className={"w-14 h-14 mb-3"} />
             <p className={"font-bold text-cLg"}>{translation.t("Hello")} {user?.lastName},</p>
             <div onClick={handleClickAccountOnPopUp} className={"flex flex-row gap-2 w-[290px] bg-white px-6 py-4 mt-3 rounded-xl cursor-pointer"}>
               <IconUser />
               <span className={"font-bold"}>{translation.t("Account")}</span>
             </div>
             <div onClick={handleClickLogout} className={"flex flex-row gap-2 w-[290px] bg-white px-6 py-4 rounded-xl cursor-pointer"}>
-              <IconLogout/>
+              <IconLogout />
               <span className={"font-bold"}>{translation.t("Log out")}</span>
             </div>
           </div>}
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.myServices.id && <MyServicesContent key={TabOptionGroup.myServices.id} />}
-          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent key={TabOptionGroup.myCompany.id} />}
+          {homeContent === idTab.LCFormationServices && <LLCMyService key={idTab.LCFormationServices} />}
+          {homeContent === TabOptionGroup.myCompany.id && <MyCompanyDetailPage key={TabOptionGroup.myCompany.id} />}
           {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} key="KYCUpload" />}
           {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} key="myAccount" />}
         </div>
@@ -153,7 +185,7 @@ const Services: Service[] = [
 
 function ServicesContent() {
   const translation = useTranslation()
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<string[]>([])
   const [stepIndex, setStepIndex] = useState<number>(1)
   const [errorMessageConfirm, setErrorMessageConfirm] = useState<string | undefined>()
@@ -181,7 +213,7 @@ function ServicesContent() {
       transactionId: generateTransactionId(user.email),
       currency: 'USD',
       amount: totalPrice,
-      orderType: "PAYPAL"
+      orderType: "PAYPAL",
     }
     try {
       const rawResult = await callCreateOrder(body)
@@ -209,11 +241,11 @@ function ServicesContent() {
   return <div className={"w-full grow flex flex-col"}>
     <div className={"flex p-3 grow overflow-hidden"}>
       {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden space-y-8"}>
-        {user?.companyType && <div
-          className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new in", {companyType: user.companyType})}
+        {user?.companyType && <div className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new in", { companyType: user.companyType })}
           <span
             className={"text-cLg font-bold text-primary"}>{nationName}</span> <span
-            className={"text-h4"}>...</span></div>}
+            className={"text-h4"}>...</span>
+        </div>}
         <div className={"flex flex-col gap-3"}>
           {Services.map(service =>
             <ServiceCard
@@ -300,7 +332,7 @@ function ServiceCard(props: ServiceCardProps) {
     className={"relative pl-8 sm:pl-14 w-full flex cursor-pointer border rounded-2xl " + (props.isSelected ? 'border-primary' : 'border-gray-300')}
     onClick={props.onSelect.bind(undefined, props.service.id)}
   >
-    {props.isSelected && <IconSelectCard className={"absolute -top-[1px] left-0"}/>}
+    {props.isSelected && <IconSelectCard className={"absolute -top-[1px] left-0"} />}
     <div className={"flex flex-col grow py-6 gap-3"}>
       <p className={"text-cLg sm:text-h4 font-bold"}>{props.service.label}</p>
       <div>
@@ -324,25 +356,19 @@ function MyServicesContent() {
   </>
 }
 
-function MyCompanyContent() {
-  return <>
-    <div>My Company Content</div>
-  </>
-}
-
 type MyAccountContentProps = {
   onClickVerifyKYC: () => void
 }
 
 function MyAccountContent(props: MyAccountContentProps) {
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const translation = useTranslation()
 
   return <div className={"w-full grow flex flex-col p-3"}>
     <div className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
       <div>
         {user?.avatar
-          ? <img src={user?.avatar} alt=""/>
+          ? <img src={user?.avatar} alt="" />
           : <IconAccountCircle className={"w-16 h-16"} />
         }
       </div>
@@ -353,10 +379,10 @@ function MyAccountContent(props: MyAccountContentProps) {
           <GeneralInformationForm />
         </div>
         <div className={"border rounded-lg grow md:w-1/3 p-6 flex flex-col"}>
-          <ChangePasswordForm/>
+          <ChangePasswordForm />
         </div>
         <div className={"border rounded-lg grow md:w-1/3 p-6 flex flex-col"}>
-          <KYCBox onClickVerify={props.onClickVerifyKYC}/>
+          <KYCBox onClickVerify={props.onClickVerifyKYC} />
         </div>
       </div>
     </div>
@@ -365,8 +391,8 @@ function MyAccountContent(props: MyAccountContentProps) {
 
 function GeneralInformationForm() {
   const translation = useTranslation()
-  const {user} = useContext(AuthContext)
-  const {validateCaller, validateAll} = useValidateCaller()
+  const { user } = useContext(AuthContext)
+  const { validateCaller, validateAll } = useValidateCaller()
   const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || ''))
   const [firstName, setFirstName] = useState<string>(user?.firstName || '')
   const [lastName, setLastName] = useState<string>(user?.lastName || '')
@@ -390,7 +416,7 @@ function GeneralInformationForm() {
       return
     }
     setStatus('requesting')
-    const {nationPhone, localPhone} = extractPhone(phone)
+    const { nationPhone, localPhone } = extractPhone(phone)
     const param: ApiChangeUserProfile = {
       email: user.email,
       codePhone: nationPhone,
@@ -415,7 +441,7 @@ function GeneralInformationForm() {
       <div className={"h-[2px] w-[70px] bg-primary"}></div>
     </div>
     <div className={"space-y-6 grow"}>
-      <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => {}} isFixedValue/>
+      <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => { }} isFixedValue />
       <FormFieldPhoneNumber
         id={"phoneNumber"}
         placeholder={"Input number"}
@@ -462,7 +488,7 @@ function GeneralInformationForm() {
 
 function ChangePasswordForm() {
   const translation = useTranslation()
-  const {validateCaller, validateAll} = useValidateCaller()
+  const { validateCaller, validateAll } = useValidateCaller()
   const [password, setPassword] = useState<string>('')
   const [rePassword, setRePassword] = useState<string>('')
   const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true)
@@ -546,7 +572,7 @@ type KYCBoxProps = {
 }
 function KYCBox(props: KYCBoxProps) {
   const translation = useTranslation()
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
 
   return <>
     <div className={"flex flex-row justify-between mb-8"}>
@@ -593,10 +619,10 @@ type KYCUploadContentProps = {
 
 function KYCUploadContent(props: KYCUploadContentProps) {
   const translation = useTranslation()
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const [file, setFile] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
-  const [status, setStatus] = useState<FormStatus>()
+  const [status, setStatus] = useState<FormStatus>();
 
   function handleClickSend() {
     // TODO: integrate with api
@@ -648,7 +674,7 @@ function KYCUploadContent(props: KYCUploadContentProps) {
               className={"py-4 px-6 flex flex-row justify-center items-center gap-2 text-white font-semibold rounded-lg " + (isDisableSend ? " bg-primary_25" : " bg-primary")}
             >
               <span className={"font-bold"}>{translation.t('Send')}</span>
-              {status === 'requesting' && <IconSpinner/>}
+              {status === 'requesting' && <IconSpinner />}
             </button>
           </div>
         </div>
@@ -672,7 +698,7 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
     }
   }
 
-  function handleChange (event: ChangeEvent<HTMLInputElement>) {
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       setFileName(file.name)
@@ -683,10 +709,10 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
   return <div className={"w-full flex flex-col items-center border border-primary_light rounded-xl px-2 py-6"}>
     {!fileName
       ? <div className={"rounded-full bg-primary_light p-4"}>
-        <IconUploadFile/>
+        <IconUploadFile />
       </div>
       : <div className={"flex flex-row gap-2 items-center"}>
-        <IconCheck className={"w-14 h-14 text-success"}/>
+        <IconCheck className={"w-14 h-14 text-success"} />
         <p className={"text-h4"}>{fileName}</p>
       </div>
     }
@@ -696,8 +722,8 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
       {/*  <p className={"font-bold"}>{translation.t('Take a photo')}</p>*/}
       {/*</div>*/}
       <div className={"py-4 px-6 flex flex-row gap-3 bg-primary rounded-lg cursor-pointer"} onClick={handleClickUpload}>
-        <IconUpload className={"text-white"}/>
-        <input ref={uploadFileRef} className={"hidden"} type="file" accept="application/pdf" onChange={handleChange}/>
+        <IconUpload className={"text-white"} />
+        <input ref={uploadFileRef} className={"hidden"} type="file" accept="application/pdf" onChange={handleChange} />
         <p className={"text-white font-bold"}>{translation.t('Upload file')}</p>
       </div>
     </div>

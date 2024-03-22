@@ -107,3 +107,34 @@ export type ApiCreateOrderParam = {
   "amount": number,
   "orderType": OrderType,
 }
+
+// ====== LLC Service ======== //
+
+export type UploadedDocumentType = {
+  name: string;
+  link: string;
+};
+
+export type StepType = {
+  id: number;
+  name: string;
+  status: ServiceType;
+  issuingDuration: string;
+  detail?: {
+    step_description: string;
+    remark: string;
+    customer_document: {
+      required_document: string;
+      uploaded_document: UploadedDocumentType[];
+    };
+    service_document: {
+      required_document: string;
+      uploaded_document: UploadedDocumentType[];
+    };
+  };
+};
+
+export type LLCServiceType = {
+  status: number;
+  step: StepType [];
+};

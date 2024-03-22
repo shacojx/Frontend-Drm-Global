@@ -13,6 +13,8 @@ export const RoutePaths = {
   login: '/login',
   resetPassword: '/reset-password',
   register: '/register',
+  profile:'/profile',
+  myCompany:'/my-company',
 }
 
 function RequiredLoggedIn(props: PropsWithChildren) {

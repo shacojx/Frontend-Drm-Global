@@ -18,6 +18,7 @@ module.exports = {
         'disable': '#3B3F48D9',
         'surface': '#CCCCCC',
         'white': '#F6FAF9',
+        'stroke': '#E0E0E0',
       },
       spacing: {
         xs: '4px',
@@ -74,5 +75,7 @@ module.exports = {
     }
   },
   plugins: [],
+  mode: 'jit',
+  darkMode: 'class',
 }
 
