@@ -6,6 +6,10 @@ const QueryKey = {
   getMyCompany: 'myCompany/getDetail',
 } as const
 
+const MutationKey = {
+  postMyCompany: 'myCompany/postDetail',
+}
+
 export type KeyType = string | number | undefined
 
 function generateKey(...keys: KeyType[]): string[] {
@@ -23,7 +27,8 @@ const KeyFactory = {
   },
   getMyCompanyDetail() {
     return generateKey(QueryKey.getMyCompany)
-  }
+  },
+  postCompanyDetail: () => generateKey(MutationKey.postMyCompany)
 }
 
 export default KeyFactory

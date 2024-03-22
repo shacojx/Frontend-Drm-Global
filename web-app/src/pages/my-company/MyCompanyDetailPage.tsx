@@ -1,14 +1,23 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CompanyInformation, Document, MailingAddress, OwnerInformation, ResponseParty } from "../../api/types";
-import { DialogFailureFullscreen, DialogSuccessFullscreen } from "../../components/DialogFormStatusFullscreen";
-import { useApiGetMyCompanyDetail } from "../../hooks-api/useMyCompany";
+import {
+  CompanyInformation,
+  Document,
+  MailingAddress,
+  OwnerInformation,
+  ResponseParty,
+} from "../../api/types";
+import {
+  DialogFailureFullscreen,
+  DialogSuccessFullscreen,
+} from "../../components/DialogFormStatusFullscreen";
+import { useApiGetMyCompanyDetail, useApiPostMyCompanyDetail } from "../../hooks-api/useMyCompany";
 import {
   validateCompanyInfo,
   validateMailingAddress,
   validateOwnersInfo,
-  validateResponseParty
+  validateResponseParty,
 } from "../../services-business/myCompany";
 import { CompanyInformationTab } from "./CompanyInformationTab";
 import { DocumentTab } from "./DocumentTab";
@@ -25,20 +34,21 @@ const TABS = [
 ] as const;
 
 export function MyCompanyDetailPage() {
-  const { t } = useTranslation()
-  const { data, status } = useApiGetMyCompanyDetail()
+  const { t } = useTranslation();
+  const { data, status } = useApiGetMyCompanyDetail();
+  const { mutateAsync: saveMyCompany, status: savingCompany } = useApiPostMyCompanyDetail();
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [error, setError] = useState<string | false>(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [companyInfo, setCompanyInfo] = useState<Partial<CompanyInformation>>();
-  const [owners, setOwners] = useState<Partial<OwnerInformation>[]>();
-  const [responseParty, setResponseParty] = useState<Partial<ResponseParty>>();
-  const [mailingAddress, setMailingAddress] = useState<Partial<MailingAddress>>();
-  const [documents, setDocuments] = useState<Partial<Document>[]>();
+  const [companyInfo, setCompanyInfo] = useState<Partial<CompanyInformation>>({});
+  const [owners, setOwners] = useState<Partial<OwnerInformation>[]>([]);
+  const [responseParty, setResponseParty] = useState<Partial<ResponseParty>>({});
+  const [mailingAddress, setMailingAddress] = useState<Partial<MailingAddress>>({});
+  const [documents, setDocuments] = useState<Document[]>([]);
 
   useEffect(() => {
-    if (status === 'success') {
+    if (status === "success") {
       setCompanyInfo(data.companyInfo);
       setOwners(data.owners);
       setResponseParty(data.responseParty);
@@ -47,24 +57,27 @@ export function MyCompanyDetailPage() {
     }
   }, [status, data]);
 
-  const handleSave = () => {
-    const companyInfoError = companyInfo && validateCompanyInfo(companyInfo);
-    const ownersError = owners && validateOwnersInfo(owners);
-    const responsePartyError = responseParty && validateResponseParty(responseParty);
-    const mailingAddressError = mailingAddress && validateMailingAddress(mailingAddress);
-
-    const error = companyInfoError || ownersError || responsePartyError || mailingAddressError;
-
-    // TODO: handle case undefined
-    if (typeof error === "string") {
-      setError(error);
-      return;
+  const handleSave = async () => {
+    try {
+      if (
+        validateCompanyInfo(companyInfo) &&
+        validateOwnersInfo(owners) &&
+        validateResponseParty(responseParty) &&
+        validateMailingAddress(mailingAddress)
+      ) {
+        setError(false);
+        await saveMyCompany({
+          companyInfo,
+          documents,
+          mailingAddress,
+          owners,
+          responseParty,
+        });
+        setShowSuccessDialog(true);
+      }
+    } catch (error) {
+      setError(error as string);
     }
-
-    setError(false);
-
-    // TODO: call api to save
-    setShowSuccessDialog(true);
   };
 
   return (
@@ -128,11 +141,13 @@ export function MyCompanyDetailPage() {
             <button
               className="border border-solid border-surface h-13 px-6 rounded-lg font-semibold"
               onClick={() => {
-                setCompanyInfo(data?.companyInfo);
-                setOwners(data?.owners);
-                setResponseParty(data?.responseParty);
-                setMailingAddress(data?.mailingAddress);
-                setDocuments(data?.documents);
+                if (!data) return;
+
+                setCompanyInfo(data.companyInfo);
+                setOwners(data.owners);
+                setResponseParty(data.responseParty);
+                setMailingAddress(data.mailingAddress);
+                setDocuments(data.documents);
 
                 setIsEditing(false);
               }}

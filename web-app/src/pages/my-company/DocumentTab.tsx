@@ -6,8 +6,8 @@ import { IconSpinner, IconUpload } from "../../components/icons";
 
 type DocumentTabProps = {
   readonly: boolean;
-  documents?: Partial<Document>[];
-  onChange?: (documents: Partial<Document>[]) => void;
+  documents?: Document[];
+  onChange?: (documents: Document[]) => void;
 };
 
 export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabProps) {

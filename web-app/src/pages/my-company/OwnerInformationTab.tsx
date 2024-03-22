@@ -11,7 +11,7 @@ import { cn } from "../../utils/cn.util";
 type OwnerInformationTabProps = {
   readonly: boolean;
   owners?: Partial<OwnerInformation>[];
-  onChange?: (owners?: Partial<OwnerInformation>[]) => void;
+  onChange?: (owners: Partial<OwnerInformation>[]) => void;
 };
 
 export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerInformationTabProps) {
