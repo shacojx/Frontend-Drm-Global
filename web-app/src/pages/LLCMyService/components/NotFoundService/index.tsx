@@ -8,7 +8,7 @@ export default function NotFoundService() {
     <>
       <div className="mt-md flex flex-col justify-center items-center h-[368px]">
         <div>
-          <img src={IMAGE.NotFound} />
+          <img src={IMAGE.NotFound} alt={"image-not-found"} />
         </div>
         <div className="text-lg font-bold mt-[10px]">
           {t("It's empty here")}
