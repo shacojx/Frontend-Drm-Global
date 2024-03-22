@@ -42,7 +42,9 @@ const MOCK_MAILING_ADDRESS: MailingAddress = {
 
 const MOCK_DOCUMENTS: Document[] = [{ id: "1", name: "avt-default.jpg", url: "#" }];
 
-export function transformGetCompanyInfo(data: RawCompanyDetail): CompanyDetail {
+export function transformGetCompanyDetail(data: RawCompanyDetail): CompanyDetail {
+  // TODO:  implement after api is ready
+
   const companyDetail: CompanyDetail = {
     companyInfo: MOCK_COMPANY_INFO,
     owners: MOCK_OWNERS,
@@ -52,4 +54,11 @@ export function transformGetCompanyInfo(data: RawCompanyDetail): CompanyDetail {
   };
 
   return companyDetail;
+}
+
+
+export const transformPostCompanyDetail = (companyDetail: CompanyDetail): RawCompanyDetail => {
+  // TODO:  implement after api is ready
+
+  return {} as unknown as RawCompanyDetail
 }

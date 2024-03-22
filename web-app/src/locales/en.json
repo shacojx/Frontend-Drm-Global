@@ -187,5 +187,21 @@
   "Country": "Country",
   "City": "City",
   "Zip Code": "Zip Code",
-  "Download": "Download"
+  "Download": "Download",
+  "Entity ending is required": "Entity ending is required",
+  "Industry is required": "Industry is required",
+  "Website is required": "Website is required",
+  "Description is required": "Description is required",
+  "Region is required": "Region is required",
+  "Company name is required": "Company name is required",
+  "Ownership is required": "Ownership is required",
+  "Document is required": "Document is required",
+  "Total ownership should be 100.": "Total ownership should be 100.",
+  "First name is required": "First name is required",
+  "Last name is required": "Last name is required",
+  "SSN or ITIN is required": "SSN or ITIN is required",
+  "Country is required": "Country is required",
+  "City is required": "City is required",
+  "Address is required": "Address is required",
+  "Zip code is required": "Zip code is required"
 }
