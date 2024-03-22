@@ -3,6 +3,7 @@ import { isNotNullish } from "../../utils/typeCheck";
 const QueryKey = {
   getLlcServiceList: 'llcService/getList',
   getLlcServiceDetail: 'llcService/getDetail',
+  getMyCompany: 'myCompany/getDetail',
 } as const
 
 export type KeyType = string | number | undefined
@@ -19,6 +20,9 @@ const KeyFactory = {
   },
   getLlcServiceDetail(id: KeyType) {
     return generateKey(QueryKey.getLlcServiceDetail, id)
+  },
+  getMyCompanyDetail() {
+    return generateKey(QueryKey.getMyCompany)
   }
 }
 

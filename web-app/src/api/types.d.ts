@@ -1,4 +1,4 @@
-import { TransformedResultLogin } from "./account";
+import { ServiceType } from "../pages/LLCMyService/types/my-service.type";
 
 export type NationValue = string
 export type CompanyTypeValue = 'LLC' | 'PLC'
@@ -138,3 +138,56 @@ export type LLCServiceType = {
   status: number;
   step: StepType [];
 };
+
+// ====== My Company ====== //
+export type CompanyInformation = {
+  companyName: string;
+  entityEnding: EntityEnding;
+  industry: Industry;
+  website: string;
+  description: string;
+  region: string;
+};
+
+export type OwnerInformation = {
+  id: string;
+  companyName?: string;
+  ownership: number; // INFO: (%)
+  document: string[];
+  type: "Company" | "Individual";
+  firstName?: string;
+  lastName?: string;
+};
+
+export type ResponseParty = {
+  firstName: string;
+  lastName: string;
+  hasSSNorITIN: boolean;
+  SSNorITIN?: string;
+};
+
+export type MailingAddress = {
+  state?: string;
+  country: string;
+  city: string;
+  address: string;
+  zipCode: string;
+};
+
+export type Document = {
+  id: string;
+  name: string;
+  url: string;
+};
+
+export type CompanyDetail = {
+  companyInfo: CompanyInformation;
+  owners: OwnerInformation[];
+  responseParty: ResponseParty;
+  mailingAddress: MailingAddress;
+  documents: Document[];
+};
+
+export type RawCompanyDetail = never;
+
+
