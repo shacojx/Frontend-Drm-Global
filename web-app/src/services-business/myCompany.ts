@@ -1,6 +1,5 @@
 import { CompanyInformation, MailingAddress, OwnerInformation, ResponseParty } from "../api/types";
 
-// TODO add i18n for all following error message
 export const validateCompanyInfo = (info: Partial<CompanyInformation>): info is CompanyInformation => {
   if (info.companyName === "") throw "Company name is required";
   if (info.entityEnding === "") throw "Entity ending is required";
