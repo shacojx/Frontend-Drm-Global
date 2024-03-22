@@ -512,6 +512,11 @@ export const INDUSTRY_INFOS: OptionInfo<Industry>[] = [
 
 export const SERVICE_STATUS: OptionInfo<string>[] = [
   {value: '', label: 'Active'},
-  {value: 'active', label: 'Active'},
-  {value: 'deactive', label: 'Deactive'},
+  {value: '1', label: 'Active'},
+  {value: '0', label: 'Deactive'},
+]
+
+export const APPLY_COMPANY_TYPE: OptionInfo<CompanyTypeValue>[] = [
+  { label: 'LLC', value: 'LLC' },
+  { label: 'PLC', value: 'PLC' },
 ]

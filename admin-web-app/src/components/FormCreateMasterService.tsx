@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { callApiCreateMasterService } from "../api/masterServiceManagement";
 import {
   ApiMasterServiceParam,
+  CreateMasterServiceBody,
   DocumentRequired,
   Result,
   ServiceCycle,
@@ -29,7 +30,7 @@ import {
 type Props = {
   onCreated: () => void;
   serviceStep: ServiceStep[];
-  cycleFee?: ServiceCycle[];
+  serviceCycle?: ServiceCycle[];
   name?: string;
   enable: boolean;
   onCancelModal: () => void;
@@ -547,10 +548,9 @@ export function BackButton(props: BackButtonProps) {
 }
 
 export type ConfirmActiveModalProps = {
-  visible: boolean;
   onCancel: () => void;
-  onSubmit: () => void;
   enable: boolean;
+  onSubmit: () => void;
 };
 
 export function ConfirmActiveModal(props: ConfirmActiveModalProps) {
@@ -621,7 +621,7 @@ export function FormCreateMasterService(props: Props) {
     serviceName: props.serviceName ?? "",
     serviceType: props.serviceType ?? "",
     serviceStep: props.serviceStep,
-    serviceCycle: props.cycleFee,
+    serviceCycle: props.serviceCycle,
     appliedCompanyType: [props?.appliedCompanyType],
   } as ApiMasterServiceParam & { enable: boolean });
   const onUpdateBody = React.useCallback(
@@ -643,7 +643,25 @@ export function FormCreateMasterService(props: Props) {
   async function onSubmitAction() {
     try {
       setStatus("requesting");
-      callApiCreateMasterService(body).then(() => props.onCreated());
+      const createMasterServiceBody: CreateMasterServiceBody = {
+        serviceDescription: body.serviceDescription,
+        appliedNation: body.appliedNation,
+        serviceName: body.serviceName ?? "",
+        serviceType: body.serviceType ?? "",
+        serviceCycle: body.serviceCycle,
+        appliedCompanyType: body.appliedCompanyType,
+        serviceStep: body.serviceStep.map((item) => ({
+          ...item,
+          documentRequired: item.documentRequired
+            .filter((item) => item?.documentRequired)
+            .map((item) => item.documentRequired),
+          result: item.result
+            .filter((item) => item?.result)
+            .map((item) => item.result),
+        })),
+      };
+
+      callApiCreateMasterService(createMasterServiceBody);
       setStatus("success");
       props.onCreated();
     } catch (e: unknown) {
@@ -658,21 +676,35 @@ export function FormCreateMasterService(props: Props) {
   };
 
   const onSubmitActive = () => {
-    onSubmitAction()
+    onSubmitAction();
   };
   const translation = useTranslation();
   const onCreateServiceStep = (value: ServiceStep[]) => {
     onUpdateBody("serviceStep", value);
   };
-  const onCreateServiceCycle = (value: ServiceCycle[]) => {
-    onUpdateBody("serviceCycle", value);
-  };
+  const onUpdateServiceCycleFee = React.useCallback(
+    (id: number, value: string) => {
+      const newServiceCycleList = body.serviceCycle.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            pricePerCycle: Number(value),
+          };
+        }
+
+        return item;
+      });
+
+      onUpdateBody("serviceCycle", newServiceCycleList);
+    },
+    [body]
+  );
 
   const onClickActiveAction = () => {
     props.onCancelModal();
   };
 
-  const onRemoveServiceSCycleFee = React.useCallback(
+  const onRemoveServiceCycleFee = React.useCallback(
     (id: number) => {
       setBody({
         ...body,
@@ -704,7 +736,6 @@ export function FormCreateMasterService(props: Props) {
       {isVisibleChangeState && (
         <ConfirmActiveModal
           enable={props.enable}
-          visible={isVisibleChangeState}
           onSubmit={onSubmitActive}
           onCancel={onHide}
         />
@@ -743,9 +774,9 @@ export function FormCreateMasterService(props: Props) {
         {translation.t("masterService.serviceCycleAndFee")}
       </div>
       <ServiceCycleTable
-        cycleFee={(body.serviceCycle ?? []) as ServiceCycle[]}
-        onUpdateServiceCycle={onCreateServiceCycle}
-        onRemoveServiceSCycleFee={onRemoveServiceSCycleFee}
+        serviceCycle={(body.serviceCycle ?? []) as ServiceCycle[]}
+        onUpdateServiceCycleFee={onUpdateServiceCycleFee}
+        onRemoveServiceCycleFee={onRemoveServiceCycleFee}
         onAddMoreServiceSCycleFee={onAddMoreServiceSCycleFee}
       />
 

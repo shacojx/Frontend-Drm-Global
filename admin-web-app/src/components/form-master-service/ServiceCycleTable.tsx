@@ -3,43 +3,32 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ServiceCycle } from "../../../src/api/types";
-import { OptionInfo } from "../../../src/types/common";
-import { DAY_IN_MONTH_SELECT } from "../../../src/utils/date";
-import { FormFieldSelect } from "../../../src/components/FormFieldSelect";
+// import { OptionInfo } from "../../../src/types/common";
+// import { DAY_IN_MONTH_SELECT } from "../../../src/utils/date";
+// import { FormFieldSelect } from "../../../src/components/FormFieldSelect";
 import { FormFieldText } from "../../../src/components/FormFieldText";
 import { IconTrash } from "../../../src/components/icons";
 
 export type ServiceCycleTableProps = {
-  cycleFee: ServiceCycle[];
-  onUpdateServiceCycle: (value: ServiceCycle[]) => void;
-  onRemoveServiceSCycleFee: (id: number) => void;
+  serviceCycle: ServiceCycle[];
+  onUpdateServiceCycleFee: (id: number, value: string) => void;
+  onRemoveServiceCycleFee: (id: number) => void;
   onAddMoreServiceSCycleFee: (id: number) => void;
 };
 
 export function ServiceCycleTable(props: ServiceCycleTableProps) {
-  const [cycleDataList, setCycleDataList] = React.useState(props.cycleFee);
   const onChangeItem = React.useCallback(
     (cycleId: number, value: string) => {
-      setCycleDataList((cycleDataList) =>
-        cycleDataList.map((item) => {
-          if (item.id === cycleId) {
-            return {
-              ...item,
-              pricePerCycle: Number(value),
-            };
-          }
-
-          return item;
-        })
-      );
+      props.onUpdateServiceCycleFee(cycleId, value);
     },
-    [cycleDataList]
+    [props.onUpdateServiceCycleFee]
   );
-  const onRemoveItem = React.useCallback((id: number) => {
-    setCycleDataList((cycleDataList) =>
-      cycleDataList.filter((item) => item.id !== id)
-    );
-  }, []);
+  const onRemoveItem = React.useCallback(
+    (id: number) => {
+      props.onRemoveServiceCycleFee(id);
+    },
+    [props.onRemoveServiceCycleFee]
+  );
   const translation = useTranslation();
   const masterServiceColumns: GridColDef<ServiceCycle>[] = [
     {
@@ -98,6 +87,7 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
         if (isNaN(Number(row.id))) {
           return <></>;
         }
+        console.log("click remove");
 
         return (
           <button onClick={() => onRemoveItem(Number(row.id))}>
@@ -107,25 +97,21 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
       },
     },
   ];
-  const tableData = cycleDataList;
+  const tableData = [
+    ...props.serviceCycle,
+    { id: NaN, cycleNumber: 0, pricePerCycle: 0 } as ServiceCycle,
+  ];
 
-  React.useEffect(() => {
-    props.onUpdateServiceCycle(cycleDataList);
-  }, [cycleDataList]);
+  // Note: REMOVE THIS IF LOGIC REMOVE
+  // const [month, setMonth] = React.useState("");
+  // const optionDayList = React.useMemo(() => {
+  //   if (DAY_IN_MONTH_SELECT) {
+  //     return (DAY_IN_MONTH_SELECT ?? [])?.find((item) => item?.value === month)
+  //       ?.items as [] as OptionInfo<number>[];
+  //   }
 
-  React.useEffect(() => {
-    setCycleDataList(props.cycleFee);
-  }, [props.cycleFee]);
-
-  const [month, setMonth] = React.useState("");
-  const optionDayList = React.useMemo(() => {
-    if (DAY_IN_MONTH_SELECT) {
-      return (DAY_IN_MONTH_SELECT ?? [])?.find((item) => item?.value === month)
-        ?.items as [] as OptionInfo<number>[];
-    }
-
-    return [] as OptionInfo<number>[];
-  }, [month, DAY_IN_MONTH_SELECT]);
+  //   return [] as OptionInfo<number>[];
+  // }, [month, DAY_IN_MONTH_SELECT]);
 
   return (
     <div className="px-5">
@@ -161,10 +147,7 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
         <Grid md={12}>
           <DataGrid
             paginationMode="server"
-            rows={[
-              ...tableData,
-              { id: NaN, cycleNumber: 0, pricePerCycle: 0 } as ServiceCycle,
-            ]}
+            rows={tableData}
             columns={masterServiceColumns}
             pageSizeOptions={[25]}
             onRowClick={() => {}}

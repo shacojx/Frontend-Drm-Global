@@ -2,6 +2,7 @@ import { Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ServiceCycle, ServiceStep } from "../../../src/api/types";
 import {
+  APPLY_COMPANY_TYPE,
   ENTITY_ENDING_INFOS,
   INDUSTRY_INFOS,
   NATION_INFOS,
@@ -29,7 +30,7 @@ export function ServiceInformation(props: ServiceInformationProps) {
   };
 
   const onUpdateApplyCompanyType = (v: string) => {
-    console.log('v', v)
+    console.log("v", v);
     props.onUpdateBody("appliedCompanyType", [v]);
   };
 
@@ -64,9 +65,11 @@ export function ServiceInformation(props: ServiceInformationProps) {
               <FormFieldSelect
                 id={"appliedNation"}
                 validateCaller={{}}
+                isRequired={true}
                 label={translation.t("masterService.appliedNation")}
                 onChange={onUpdateAppliedNation}
                 value={props.appliedNation}
+                defaultValue={NATION_INFOS?.at(0)?.value}
                 optionInfos={NATION_INFOS}
                 placeholder="Applied Nation"
               />
@@ -75,20 +78,24 @@ export function ServiceInformation(props: ServiceInformationProps) {
               <FormFieldSelect
                 id={"applyCompanyType"}
                 validateCaller={{}}
+                isRequired={true}
                 label={translation.t("masterService.serviceCompanyType")}
                 onChange={onUpdateApplyCompanyType}
                 value={props.applyCompanyType}
-                optionInfos={ENTITY_ENDING_INFOS}
+                defaultValue={APPLY_COMPANY_TYPE?.at(0)?.value}
+                optionInfos={APPLY_COMPANY_TYPE}
                 placeholder="Applied Company Type"
               />
             </Grid>
             <Grid item md={2}>
               <FormFieldSelect
                 id={"serviceType"}
+                isRequired={true}
                 label={translation.t("masterService.serviceType")}
                 validateCaller={{}}
                 onChange={onUpdateServiceType}
                 value={props.serviceType}
+                defaultValue={INDUSTRY_INFOS?.at(0)?.value}
                 optionInfos={INDUSTRY_INFOS}
                 placeholder={"Service type..."}
               />
@@ -107,7 +114,7 @@ export function ServiceInformation(props: ServiceInformationProps) {
               <FormFieldText
                 id={"description"}
                 label={translation.t("masterService.description")}
-                placeholder={'Service description...'}
+                placeholder={"Service description..."}
                 validateCaller={{}}
                 onChange={onUpdateServiceDescription}
                 value={props.serviceDescription}

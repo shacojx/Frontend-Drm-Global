@@ -1,4 +1,4 @@
-import { OptionInfo } from "../../../src/types/common"
+import { OptionInfo } from "../../src/types/common"
 
 export function generateDayInMonth(quantity: number) {
     let index = 1

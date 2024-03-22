@@ -177,7 +177,7 @@ export type ApiEditUserParam = {
 }
 
 export type ApiDeactiveParam = {
-  "idUser": number,
+  "idUser"?: number,
   "enable": number,
   //enable = 1 là Active user
   //enable = 0 là DeActive user
@@ -279,17 +279,34 @@ export type RawResultViewMasterService = {
   totalElements: number,
 }
 
-export interface CreateUpdateMasterServiceBody {
+export interface CreateMasterServiceBody {
   appliedNation:      string[];
   appliedCompanyType: string[];
   serviceType:        string;
   serviceName:        string;
   serviceDescription: string;
-  serviceStep:        ServiceStep[];
-  serviceCycle:       ServiceCycle[];
+  serviceStep:        ServiceStepBody[];
+  serviceCycle:       ServiceCycleBody[];
 }
 
+export type UpdateMasterServiceBody = CreateMasterServiceBody
+
 export interface ServiceCycle {
+  cycleNumber:   number;
+  pricePerCycle: number;
+}
+
+export interface ServiceStepBody {
+  stepNo:                  number;
+  name:                    string;
+  estimatedCompletionTime: string;
+  description:             string;
+  documentRequired:        string[];
+  result:                  string[];
+}
+
+
+export interface ServiceCycleBody {
   cycleNumber:   number;
   pricePerCycle: number;
 }

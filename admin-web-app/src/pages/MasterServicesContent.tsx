@@ -69,7 +69,7 @@ export function MasterServiceContent(props: Props) {
 
   async function handleClickSearch() {
     const param: ApiSearchMasterServiceParam = {
-      serviceId: String(serviceId),
+      serviceId: String(serviceId ?? ''),
       serviceName,
       status,
       appliedNation,
@@ -107,12 +107,15 @@ export function MasterServiceContent(props: Props) {
     };
     const rawResult = await callApiViewMasterService(param);
     setTableData(rawResult.content);
+    let lastSelectId = serviceId
+    setServiceId('')
     const updatedMasterServiceClicked = rawResult.content.find(
       (masterService) => masterService.id === masterServiceClicked?.id
     );
     if (updatedMasterServiceClicked) {
       setMasterServiceClicked(updatedMasterServiceClicked);
     }
+    setServiceId(serviceId)
   }
 
   async function handleCreated() {
@@ -341,8 +344,8 @@ export function MasterServiceContent(props: Props) {
           <div className="w-full max-w-[1600px] min-w-[800px] justify-center items-center py-8 px-4 flex flex-col">
             <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
               <FormUpdateMasterService
-                cycleFee={selectItem.serviceCycle as ServiceCycle[]}
-                serviceStep={selectItem.serviceStep as ServiceStep[]}
+                serviceCycle={selectItem.serviceCycle as ServiceCycle[]}
+                serviceStep={selectItem.serviceStep }
                 serviceDescription={selectItem.serviceDescription}
                 appliedCompanyType={
                   selectItem.appliedCompanyType?.at(0)?.companyType ?? ""
@@ -353,7 +356,7 @@ export function MasterServiceContent(props: Props) {
                 name={selectItem.serviceName ?? ""}
                 enable={Boolean(selectItem?.enable)}
                 serviceId={Number(selectItem?.id)}
-                onCreated={handleCreated}
+                onSubmitted={handleEdit}
                 onCancelModal={() => setShouldShowUpdateMasterService(false)}
               />
             </div>
@@ -371,7 +374,7 @@ export function MasterServiceContent(props: Props) {
             <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
               <FormCreateMasterService
                 name={""}
-                cycleFee={
+                serviceCycle={
                   [
                     { id: 0, cycleNumber: 0, pricePerCycle: 0 },
                   ] as ServiceCycle[]

@@ -3,22 +3,15 @@ import { styled } from "@mui/system";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  callApiActiveMasterService,
-  callApiDeactiveMasterService,
-  callApiUpdateMasterService,
-} from "../api/masterServiceManagement";
-import {
   ApiMasterServiceParam,
   DocumentRequired,
   Result,
   ServiceCycle,
   ServiceStep,
+  UpdateMasterServiceBody,
 } from "../../src/api/types";
-import { FormStatus } from "../../src/types/common";
 import { DialogContainer } from "../../src/components/DialogContainer";
 import { FormFieldText } from "../../src/components/FormFieldText";
-import { ServiceCycleTable } from "./form-master-service/ServiceCycleTable";
-import { ServiceInformation } from "./form-master-service/ServiceInformation";
 import {
   IconAddSquare,
   IconAddSquareOutLine,
@@ -29,12 +22,20 @@ import {
   IconTrash,
   IconX,
 } from "../../src/components/icons";
+import { FormStatus } from "../../src/types/common";
+import {
+  callApiActiveMasterService,
+  callApiDeactiveMasterService,
+  callApiUpdateMasterService,
+} from "../api/masterServiceManagement";
+import { ServiceCycleTable } from "./form-master-service/ServiceCycleTable";
+import { ServiceInformation } from "./form-master-service/ServiceInformation";
 
 type Props = {
-  onCreated: () => void;
+  onSubmitted: () => void;
   onCancelModal: () => void;
   serviceStep: ServiceStep[];
-  cycleFee?: ServiceCycle[];
+  serviceCycle?: ServiceCycle[];
   name: string;
   enable: boolean;
   serviceId: number;
@@ -479,9 +480,9 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 }
 
 export type ServiceCycleTableProps = {
-  cycleFee: ServiceCycle[];
-  onUpdateServiceCycle: (value: ServiceCycle[]) => void;
-  onRemoveServiceSCycleFee: (id: number) => void;
+  serviceCycle: ServiceCycle[];
+  onUpdateServiceCycleFee: (id: number, value: string) => void;
+  onRemoveServiceCycleFee: (id: number) => void;
 };
 
 export type ChangeStateProps = {
@@ -629,7 +630,7 @@ export function FormUpdateMasterService(props: Props) {
     serviceName: props.serviceName ?? "",
     serviceType: props.serviceType ?? "",
     serviceStep: props.serviceStep,
-    serviceCycle: props.cycleFee,
+    serviceCycle: props.serviceCycle,
     appliedCompanyType: [props?.appliedCompanyType],
   } as unknown as ApiMasterServiceParam & { enable: boolean });
 
@@ -649,20 +650,6 @@ export function FormUpdateMasterService(props: Props) {
     [body]
   );
 
-  async function onSubmitAction() {
-    try {
-      setStatus("requesting");
-      callApiUpdateMasterService(body).then((response) => {
-        props.onCreated();
-      });
-      setStatus("success");
-      props.onCreated();
-    } catch (e: unknown) {
-      setStatus("failure");
-      setErrorMessage(e?.toString());
-      console.error(e);
-    }
-  }
   const [isVisibleChangeState, setIsVisibleChangeState] = React.useState(false);
   const onShow = () => {
     setIsVisibleChangeState(true);
@@ -671,20 +658,11 @@ export function FormUpdateMasterService(props: Props) {
     setIsVisibleChangeState(false);
   };
 
-  const onSubmitActive = () => {
-    if (!props.enable) {
+  const onSubmitActive = React.useCallback(() => {
+    if (props.enable) {
       try {
         setStatus("requesting");
-        callApiDeactiveMasterService(
-          {
-            // Note: test
-            idUser: 0,
-            enable: 1,
-          },
-          props.serviceId
-        ).then((response) => {
-          props.onCreated();
-        });
+        callApiDeactiveMasterService({ enable: 0 }, props.serviceId);
         setStatus("success");
       } catch (e: unknown) {
         setStatus("failure");
@@ -696,13 +674,10 @@ export function FormUpdateMasterService(props: Props) {
         setStatus("requesting");
         callApiActiveMasterService(
           {
-            idUser: 0,
             enable: 1,
           },
           props.serviceId
-        ).then((response) => {
-          props.onCreated();
-        });
+        );
         setStatus("success");
       } catch (e: unknown) {
         setStatus("failure");
@@ -711,21 +686,77 @@ export function FormUpdateMasterService(props: Props) {
       }
     }
     onHide();
-  };
+    props.onSubmitted();
+  }, [props.enable]);
+
+  async function onSubmitUpdate() {
+    try {
+      setStatus("requesting");
+      const updateMasterServiceBody: UpdateMasterServiceBody = {
+        serviceDescription: body.serviceDescription,
+        appliedNation: body.appliedNation,
+        serviceName: body.serviceName ?? "",
+        serviceType: body.serviceType ?? "",
+        serviceCycle: body.serviceCycle,
+        appliedCompanyType: body.appliedCompanyType,
+        serviceStep: body.serviceStep.map((item) => ({
+          ...item,
+          documentRequired: item.documentRequired
+            .filter((item) => item?.documentRequired)
+            .map((item) => item.documentRequired),
+          result: item.result
+            .filter((item) => item?.result)
+            .map((item) => item.result),
+        })),
+      };
+
+      callApiUpdateMasterService(updateMasterServiceBody, props.serviceId);
+      setStatus("success");
+      props.onSubmitted();
+      props.onCancelModal();
+    } catch (e: unknown) {
+      setStatus("failure");
+      setErrorMessage(e?.toString());
+      console.error(e);
+    }
+  }
+
+  const onSubmitAction = React.useCallback(() => {
+    if (props.enable) {
+      onSubmitUpdate();
+    } else {
+      onSubmitActive();
+    }
+  }, [props.enable, onSubmitActive, onSubmitUpdate]);
 
   const translation = useTranslation();
   const onUpdateServiceStep = (value: ServiceStep[]) => {
     onUpdateBody("serviceStep", value);
   };
-  const onUpdateServiceCycle = (value: ServiceCycle[]) => {
-    onUpdateBody("serviceCycle", value);
-  };
+  const onUpdateServiceCycleFee = React.useCallback(
+    (id: number, value: string) => {
+      console.log(id, value)
+      const newServiceCycleList = body.serviceCycle.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            pricePerCycle: Number(value),
+          };
+        }
+
+        return item;
+      });
+
+      onUpdateBody("serviceCycle", newServiceCycleList);
+    },
+    [body]
+  );
 
   const onClickActiveAction = () => {
     setIsVisibleChangeState(true);
   };
 
-  const onRemoveServiceSCycleFee = React.useCallback(
+  const onRemoveServiceCycleFee = React.useCallback(
     (id: number) => {
       console.log(id);
       setBody({
@@ -737,7 +768,7 @@ export function FormUpdateMasterService(props: Props) {
   );
 
   const onAddMoreServiceSCycleFee = React.useCallback(
-    (id: number) => {
+    () => {
       setBody({
         ...body,
         serviceCycle: [
@@ -774,14 +805,12 @@ export function FormUpdateMasterService(props: Props) {
           </div>
         </Grid>
         <Grid item md={2}>
-          <div>
-            <ActionButton
-              onDeactive={onShow}
-              onActive={onShow}
-              id={props.serviceId}
-              enable={props.enable}
-            ></ActionButton>
-          </div>
+          <ActionButton
+            onDeactive={onShow}
+            onActive={onShow}
+            id={props.serviceId}
+            enable={props.enable}
+          ></ActionButton>
         </Grid>
       </Grid>
       <ServiceInformation
@@ -807,9 +836,9 @@ export function FormUpdateMasterService(props: Props) {
         {translation.t("masterService.serviceCycleAndFee")}
       </div>
       <ServiceCycleTable
-        cycleFee={(body.serviceCycle ?? []) as ServiceCycle[]}
-        onUpdateServiceCycle={onUpdateServiceCycle}
-        onRemoveServiceSCycleFee={onRemoveServiceSCycleFee}
+        serviceCycle={(body.serviceCycle ?? []) as ServiceCycle[]}
+        onUpdateServiceCycleFee={onUpdateServiceCycleFee}
+        onRemoveServiceCycleFee={onRemoveServiceCycleFee}
         onAddMoreServiceSCycleFee={onAddMoreServiceSCycleFee}
       />
 
