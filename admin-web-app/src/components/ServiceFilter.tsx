@@ -52,7 +52,7 @@ export function ServiceFilter(props: Props) {
           />
         </div>
         <button
-          className="w-[100px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 ml-auto self-end"
+          className="w-[100px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 self-end"
           onClick={reset}
         >
           Reset

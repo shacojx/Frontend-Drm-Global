@@ -14,7 +14,6 @@ import { StatusBadge } from '../components/StatusBadge';
 import { DialogContainer } from '../components/DialogContainer';
 import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
 import { callApiGetServiceDetail } from '../api/serviceManagement';
-import { callApiLViewUser } from '../api/userManagement';
 
 type Props = {};
 
@@ -119,10 +118,6 @@ export function ServicesContent(props: Props) {
     // TODO: Implement API Search Service here
     const output = await callApiGetServiceDetail(data);
     setTableData(output);
-
-    async function getUsers() {
-      const output = await callApiLViewUser(param);
-    }
   }
 
   function showServiceDetail(data: Service) {
