@@ -1,6 +1,4 @@
-type Props = {}
-
-export function SupportContent(props: Props) {
+export function SupportContent() {
   return <iframe
     className={"w-full h-full"}
     id="chatbot"
