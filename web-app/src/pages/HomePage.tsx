@@ -58,7 +58,7 @@ export function HomePage() {
   const translation = useTranslation()
   const navigate = useNavigate()
   const {user, removeAuthUser} = useContext(AuthContext)
-  const [homeContent, setHomeContent] = useState<HomeContent>('myAccount')
+  const [homeContent, setHomeContent] = useState<HomeContent>('KYCUpload')
   const openCallerRef = useRef<()=>void>(()=>{})
   const [isShowAccountPopup, setIsShowAccountPopup] = useState<boolean>(false)
   const ref = useClickOutside(() => setIsShowAccountPopup(false));
@@ -664,7 +664,7 @@ type TakeOrUploadPhotoProps = {
 function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
   const translation = useTranslation()
   const uploadFileRef = useRef<HTMLInputElement | null>(null)
-  const [fileName, setFileName] = useState<string>()
+  const [imgUrl, setImgUrl] = useState<string>()
 
   function handleClickUpload() {
     if (uploadFileRef) {
@@ -675,19 +675,21 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
   function handleChange (event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setFileName(file.name)
-      props.onUpload(file)
+      if (file) {
+        props.onUpload(file)
+        const imageUrl = URL.createObjectURL(file);
+        setImgUrl(imageUrl)
+      }
     }
   }
 
   return <div className={"w-full flex flex-col items-center border border-primary_light rounded-xl px-2 py-6"}>
-    {!fileName
+    {!imgUrl
       ? <div className={"rounded-full bg-primary_light p-4"}>
         <IconUploadFile/>
       </div>
       : <div className={"flex flex-row gap-2 items-center"}>
-        <IconCheck className={"w-14 h-14 text-success"}/>
-        <p className={"text-h4"}>{fileName}</p>
+        <img src={imgUrl} className={"h-[150px] rounded-2xl"} alt="preview-kyc"/>
       </div>
     }
     <div className={"flex flex-row gap-4 my-4"}>
@@ -697,14 +699,14 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
       {/*</div>*/}
       <div className={"py-4 px-6 flex flex-row gap-3 bg-primary rounded-lg cursor-pointer"} onClick={handleClickUpload}>
         <IconUpload className={"text-white"}/>
-        <input ref={uploadFileRef} className={"hidden"} type="file" accept="application/pdf" onChange={handleChange}/>
+        <input ref={uploadFileRef} className={"hidden"} type="file" accept="image/png, image/jpeg, image/jpg" onChange={handleChange}/>
         <p className={"text-white font-bold"}>{translation.t('Upload file')}</p>
       </div>
     </div>
     <ul className={"list-disc flex flex-col items-center"}>
       <li>{translation.t('All corners of the passport are visible against the backdrop')}</li>
       <li>{translation.t('All passport data is legible')}</li>
-      <li>{translation.t('The photo is in color and should be a valid file (PDF)')}</li>
+      <li>{translation.t('The photo is in color and should be a valid file (PNG, JPG, JPEG)')}</li>
       <li>{translation.t('Maximum allowed size is 10MB')}</li>
     </ul>
   </div>
