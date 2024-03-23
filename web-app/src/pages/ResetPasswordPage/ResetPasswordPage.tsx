@@ -1,17 +1,17 @@
 import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { callApiResetPassword } from "../api/account";
-import { ApiResetPasswordParam } from "../api/types";
-import { DialogFailureFullscreen, DialogRequestingFullscreen } from "../components/DialogFormStatusFullscreen";
-import { FormFieldPassword } from "../components/FormFieldPassword";
-import { FormSendRecoveryCode } from "../components/FormSendRecoveryCode";
-import { FormValidateRecoveryCode } from "../components/FormValidateRecoveryCode";
-import { IconArrowLeft, IconCheckCircle } from "../components/icons";
-import { useValidateCaller } from "../hooks-ui/useValidateCaller";
-import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
-import { FormStatus } from "../types/common";
-import { RoutePaths } from "./router";
+import { callApiResetPassword } from "src/api/account";
+import { ApiResetPasswordParam } from "src/api/types";
+import { DialogFailureFullscreen, DialogRequestingFullscreen } from "src/components/DialogFormStatusFullscreen";
+import { FormFieldPassword } from "src/components/FormFieldPassword";
+import { FormSendRecoveryCode } from "src/components/FormSendRecoveryCode";
+import { FormValidateRecoveryCode } from "src/components/FormValidateRecoveryCode";
+import { IconArrowLeft, IconCheckCircle } from "src/components/icons";
+import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
+import { PageLayoutOneForm } from "src/layouts/PageLayoutOneForm";
+import { FormStatus } from "src/types/common";
+import { RoutePaths } from "src/constants/routerPaths";
 
 export function ResetPasswordPage() {
   const translation = useTranslation()

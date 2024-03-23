@@ -1,9 +1,9 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RouterProvider } from "react-router-dom";
+import { BrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css';
 import { AuthContextProvider } from './contexts/AuthContextProvider';
-import { router } from "./pages/router";
+import AppRouter from './routers/AppRouter';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,11 +15,13 @@ export const queryClient = new QueryClient({
 })
 
 function App() {
-  return <QueryClientProvider client={queryClient}>
-    <AuthContextProvider>
-       <RouterProvider router={router} />
-    </AuthContextProvider>
-  </QueryClientProvider>
+  return <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
+        <AppRouter />
+      </AuthContextProvider>
+    </QueryClientProvider>
+  </BrowserRouter>
 }
 
 export default App;

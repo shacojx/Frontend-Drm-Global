@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { RoutePaths } from "../router";
+import { RoutePaths } from "src/constants/routerPaths";
+
 import ContentFillingService from "./components/ContentFillingService";
 import StepService from "./components/StepService";
 import TabService from "./components/TabService";
@@ -55,7 +56,7 @@ export default function LLCMyServiceContent() {
       id: 2,
       onClick: () => {
         // Hệ thống chuyển sang màn hình Chi tiết tài khoản.
-        navigator(RoutePaths.profile);
+        navigator(RoutePaths.myAccount);
       },
     },
     {

@@ -1,28 +1,28 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { callApiCreateAccount, callApiSendEmailOTP } from "../api/account";
-import { CompanyTypeValue, EntityEnding, Industry, NationValue } from "../api/types";
-import { DialogContainer } from "../components/DialogContainer";
+import { callApiCreateAccount, callApiSendEmailOTP } from "src/api/account";
+import { CompanyTypeValue, EntityEnding, Industry, NationValue } from "src/api/types";
+import { DialogContainer } from "src/components/DialogContainer";
 import {
   DialogFailureFullscreen,
   DialogRequestingFullscreen,
   DialogSuccessFullscreen
-} from "../components/DialogFormStatusFullscreen";
-import { FormFieldTextArea } from "../components/FormFieldArea";
-import { FormFieldEmail } from "../components/FormFieldEmail";
-import { FormFieldOtp } from "../components/FormFieldOtp";
-import { FormFieldPassword } from "../components/FormFieldPassword";
-import { FormFieldPhoneNumber } from "../components/FormFieldPhoneNumber";
-import { FormFieldSelect } from "../components/FormFieldSelect";
-import { FormFieldText } from "../components/FormFieldText";
-import { IconAddCircle, IconArrowLeft, IconSpinner } from "../components/icons";
-import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "../constants/SelectionOptions";
-import { useValidateCaller } from "../hooks-ui/useValidateCaller";
-import { PageLayoutOneForm } from "../layouts/PageLayoutOneForm";
-import { generateRegisterParam, RNPhoneValue } from "../services-business/api/generate-api-param/account";
-import { FormStatus } from "../types/common";
-import { RoutePaths } from "./router";
+} from "src/components/DialogFormStatusFullscreen";
+import { FormFieldTextArea } from "src/components/FormFieldArea";
+import { FormFieldEmail } from "src/components/FormFieldEmail";
+import { FormFieldOtp } from "src/components/FormFieldOtp";
+import { FormFieldPassword } from "src/components/FormFieldPassword";
+import { FormFieldPhoneNumber } from "src/components/FormFieldPhoneNumber";
+import { FormFieldSelect } from "src/components/FormFieldSelect";
+import { FormFieldText } from "src/components/FormFieldText";
+import { IconAddCircle, IconArrowLeft, IconSpinner } from "src/components/icons";
+import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "src/constants/SelectionOptions";
+import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
+import { PageLayoutOneForm } from "src/layouts/PageLayoutOneForm";
+import { generateRegisterParam, RNPhoneValue } from "src/services-business/api/generate-api-param/account";
+import { FormStatus } from "src/types/common";
+import { RoutePaths } from "src/constants/routerPaths";
 
 export function RegisterPage() {
   const translation = useTranslation()
