@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import logo_full from "src/assets/images/logo_full.png";
+import IMAGE from 'src/assets/images';
 import MainMenu from 'src/components/MainMenu';
 import { FooterVertical } from 'src/components/base/footers';
 import { IconX } from 'src/components/icons';
@@ -35,7 +35,7 @@ export default function Sidebar({
                 <div
                     className={"flex flex-row items-center mx-4 mt-6 justify-between lg:justify-start"}>
                     <Link to={RoutePaths.services}>
-                        <img className="w-[150px] cursor-pointer" src={logo_full} alt="logo_full" />
+                        <img className="w-[150px] cursor-pointer" src={IMAGE.logoFull} alt="logo_full" />
                     </Link>
                     <div className={"block lg:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}
                         onClick={onCloseSide}
