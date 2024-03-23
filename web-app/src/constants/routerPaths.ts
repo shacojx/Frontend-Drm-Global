@@ -8,5 +8,6 @@ export const RoutePaths = {
     myCompany: '/my-company',
     myServices: '/my-services',
     myServicesItem: '/my-services/1',
-    services:'/services'
+    services:'/services',
+    support:'/support',
 } as const

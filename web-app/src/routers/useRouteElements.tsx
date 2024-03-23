@@ -3,6 +3,7 @@ import LLCMyService from 'src/pages/LLCMyService';
 import NotFoundPage from 'src/pages/NotFoundPage';
 import RegisterPage from 'src/pages/RegisterPage';
 import ResetPasswordPage from 'src/pages/ResetPasswordPage';
+import { SupportContent } from "../pages/SupportContent";
 import { RequiredLoggedIn } from './RequiredLoggedIn';
 import { useRoutes } from 'react-router-dom';
 import MainLayout from 'src/layouts/MainLayout';
@@ -58,6 +59,10 @@ export default function useRouteElements() {
                         {
                             path: RoutePaths.myCompany,
                             element: <MyCompanyDetailPage />,
+                        },
+                        {
+                            path: RoutePaths.support,
+                            element: <SupportContent />,
                         },
 
                     ]
