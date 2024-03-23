@@ -7,13 +7,23 @@ import { FooterVertical } from 'src/components/base/footers';
 import { IconX } from 'src/components/icons';
 import { RoutePaths } from 'src/constants/routerPaths';
 
-export default function Sidebar() {
+type Props = {
+    isOpenOnSmallScreen: boolean,
+    setIsOpenOnSmallScreen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+
+
+export default function Sidebar({
+    isOpenOnSmallScreen,
+    setIsOpenOnSmallScreen
+}: Props) {
 
     const translation = useTranslation()
-    const [isOpenOnSmallScreen, setIsOpenOnSmallScreen] = useState<boolean>(false)
-    // useEffect(() => {
-    //     props.openCallerRef.current = setIsOpenOnSmallScreen.bind(undefined, true)
-    // }, [props.openCallerRef]);
+
+    const onCloseSide = () => {
+        setIsOpenOnSmallScreen(false)
+    }
 
     return <>
         {isOpenOnSmallScreen && <div className={"lg:none bg-black absolute z-50 top-0 left-0 w-screen h-screen opacity-40"}></div>}
@@ -27,8 +37,10 @@ export default function Sidebar() {
                     <Link to={RoutePaths.services}>
                         <img className="w-[150px] cursor-pointer" src={logo_full} alt="logo_full" />
                     </Link>
-                    <div className={"block lg:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}>
-                        <IconX onClick={setIsOpenOnSmallScreen.bind(undefined, false)} />
+                    <div className={"block lg:hidden p-2 bg-gray-100 rounded-full cursor-pointer"}
+                        onClick={onCloseSide}
+                    >
+                        <IconX />
                     </div>
                 </div>
                 <div className={"mt-10"}>
