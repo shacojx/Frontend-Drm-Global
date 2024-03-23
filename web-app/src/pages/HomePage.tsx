@@ -33,6 +33,7 @@ import {
   IconUploadFile,
   IconUser,
   IconX,
+  IconSupport
 } from "../components/icons";
 import { NATION_INFOS } from "../constants/SelectionOptions";
 import { AuthContext } from "../contexts/AuthContextProvider";
@@ -53,9 +54,10 @@ import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
 import LLCMyService from "./LLCMyService";
 import { MyCompanyDetailPage } from "./my-company/MyCompanyDetailPage";
+import { SupportContent } from "./SupportContent";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
-type HomeContent = HomeTab | 'myAccount' | 'KYCUpload' | idTab
+type HomeContent = HomeTab | 'myAccount' | 'KYCUpload' | idTab | 'Support'
 
 enum idTab  {
   LCFormationServices='LLCFormationServices'
@@ -115,7 +117,12 @@ export function HomePage() {
       <div className={"w-full h-full flex flex-col"}>
         <div className={"w-full h-20 shrink-0 bg-white flex justify-between lg:justify-end items-center px-6"}>
           <IconThreeLines className={"block lg:hidden w-5 h-5 cursor-pointer"} onClick={openCallerRef.current} />
-          <IconAccountCircle className={"w-10 h-10 cursor-pointer"} onClick={setIsShowAccountPopup.bind(undefined, value => !value)} />
+          <div className={"flex items-center gap-4"}>
+            <div className={"w-10 h-10 rounded-full bg-gray-300 flex justify-center items-center cursor-pointer"} onClick={setHomeContent.bind(undefined, 'Support')}>
+              <IconSupport />
+            </div>
+            <IconAccountCircle className={"w-10 h-10 cursor-pointer"} onClick={setIsShowAccountPopup.bind(undefined, value => !value)} />
+          </div>
         </div>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
           {isShowAccountPopup && <div ref={ref} className={"absolute z-10 top-3 right-8 flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3"}>
@@ -140,6 +147,7 @@ export function HomePage() {
           {homeContent === TabOptionGroup.myCompany.id && <MyCompanyDetailPage key={TabOptionGroup.myCompany.id} />}
           {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} key="KYCUpload" />}
           {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} key="myAccount" />}
+          {homeContent === 'Support' && <SupportContent key="Support" />}
         </div>
       </div>
     </PageLayoutLeftSideTab>
@@ -690,7 +698,7 @@ type TakeOrUploadPhotoProps = {
 function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
   const translation = useTranslation()
   const uploadFileRef = useRef<HTMLInputElement | null>(null)
-  const [fileName, setFileName] = useState<string>()
+  const [imgUrl, setImgUrl] = useState<string>()
 
   function handleClickUpload() {
     if (uploadFileRef) {
@@ -701,19 +709,21 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setFileName(file.name)
-      props.onUpload(file)
+      if (file) {
+        props.onUpload(file)
+        const imageUrl = URL.createObjectURL(file);
+        setImgUrl(imageUrl)
+      }
     }
   }
 
   return <div className={"w-full flex flex-col items-center border border-primary_light rounded-xl px-2 py-6"}>
-    {!fileName
+    {!imgUrl
       ? <div className={"rounded-full bg-primary_light p-4"}>
         <IconUploadFile />
       </div>
       : <div className={"flex flex-row gap-2 items-center"}>
-        <IconCheck className={"w-14 h-14 text-success"} />
-        <p className={"text-h4"}>{fileName}</p>
+        <img src={imgUrl} className={"h-[150px] rounded-2xl"} alt="preview-kyc" />
       </div>
     }
     <div className={"flex flex-row gap-4 my-4"}>
@@ -723,14 +733,14 @@ function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
       {/*</div>*/}
       <div className={"py-4 px-6 flex flex-row gap-3 bg-primary rounded-lg cursor-pointer"} onClick={handleClickUpload}>
         <IconUpload className={"text-white"} />
-        <input ref={uploadFileRef} className={"hidden"} type="file" accept="application/pdf" onChange={handleChange} />
+        <input ref={uploadFileRef} className={"hidden"} type="file" accept="image/png, image/jpeg, image/jpg" onChange={handleChange}/>
         <p className={"text-white font-bold"}>{translation.t('Upload file')}</p>
       </div>
     </div>
     <ul className={"list-disc flex flex-col items-center"}>
       <li>{translation.t('All corners of the passport are visible against the backdrop')}</li>
       <li>{translation.t('All passport data is legible')}</li>
-      <li>{translation.t('The photo is in color and should be a valid file (PDF)')}</li>
+      <li>{translation.t('The photo is in color and should be a valid file (PNG, JPG, JPEG)')}</li>
       <li>{translation.t('Maximum allowed size is 10MB')}</li>
     </ul>
   </div>

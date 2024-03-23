@@ -33,6 +33,7 @@ import { ReactComponent as DiplomaVerifiedIcon } from '../assets/svgs/DiplomaVer
 import { ReactComponent as NotificationUnreadLinesIcon } from '../assets/svgs/NotificationUnreadLinesIcon.svg';
 import { ReactComponent as AltArrowRightIcon } from '../assets/svgs/AltArrowRightIcon.svg';
 import { ReactComponent as IconEssential } from "../assets/svgs/OutlineEssentination.svg";
+import { ReactComponent as IconSupport } from '../assets/svgs/SupportIcon.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -74,4 +75,5 @@ export {
   NotificationUnreadLinesIcon,
   AltArrowRightIcon,
   IconEssential,
+  IconSupport,
 }
