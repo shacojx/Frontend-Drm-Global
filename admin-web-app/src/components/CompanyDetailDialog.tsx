@@ -4,6 +4,9 @@ import { OptionInfo } from '../types/common';
 import { Service } from '../types/service';
 import { useEffect, useState } from 'react';
 import { CompanyInformation } from './CompanyInformation';
+import { ResponsibleParty } from './ResponsibleParty';
+import { MailingAddress } from './MailingAddress';
+import { Document } from './Document';
 
 type Props = {
   service?: Service | null;
@@ -57,13 +60,13 @@ export function CompanyDetailDialog(props: Props) {
         return <CompanyInformation />;
       }
       case 'RESPONSIBLE_PARTY': {
-        return <CompanyInformation />;
+        return <ResponsibleParty />;
       }
       case 'MAIL_ADDRESS': {
-        return <CompanyInformation />;
+        return <MailingAddress />;
       }
       case 'DOCUMENT': {
-        return <CompanyInformation />;
+        return <Document />;
       }
       default: {
         return '';
@@ -96,7 +99,21 @@ export function CompanyDetailDialog(props: Props) {
           </div>
         ))}
       </div>
-      <div>{renderContent()}</div>
+      <div className={'mb-4'}>{renderContent()}</div>
+      <div className={'flex gap-4 justify-end'}>
+        <button
+          className="w-[100px] h-[40px] flex justify-center items-center gap-2 bg-white border border-gray-300 text-gray-500 font-semibold rounded-lg py-2"
+          onClick={() => {}}
+        >
+          {translation.t('Cancel')}
+        </button>
+        <button
+          className="w-[100px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2"
+          onClick={() => {}}
+        >
+          {translation.t('Save')}
+        </button>
+      </div>
     </div>
   );
 }
