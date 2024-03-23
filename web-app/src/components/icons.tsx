@@ -25,6 +25,7 @@ import { ReactComponent as IconUploadFile } from '../assets/svgs/UploadFile.svg'
 import { ReactComponent as IconCamera } from '../assets/svgs/Camera.svg';
 import { ReactComponent as IconUpload } from '../assets/svgs/Upload.svg';
 import { ReactComponent as IconInfoCircle } from '../assets/svgs/InfoCircle.svg';
+import { ReactComponent as IconSupport } from '../assets/svgs/SupportIcon.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -58,4 +59,5 @@ export {
   IconCamera,
   IconUpload,
   IconInfoCircle,
+  IconSupport,
 }

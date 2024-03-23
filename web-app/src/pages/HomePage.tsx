@@ -19,7 +19,7 @@ import {
   IconMyService, IconRefreshCircle,
   IconSelectCard,
   IconService,
-  IconSpinner,
+  IconSpinner, IconSupport,
   IconThreeLines, IconUpload, IconUploadFile,
   IconUser, IconX
 } from "../components/icons";
@@ -33,9 +33,10 @@ import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/
 import { generateTransactionId } from "../services-business/api/generate-api-param/payment";
 import { FormStatus } from "../types/common";
 import { RoutePaths } from "./router";
+import { SupportContent } from "./SupportContent";
 
 type HomeTab = 'services' | 'myServices' | 'myCompany'
-type HomeContent = HomeTab | 'myAccount' | 'KYCUpload'
+type HomeContent = HomeTab | 'myAccount' | 'KYCUpload' | 'Support'
 const TabOptionGroup: Record<HomeTab, TabOption<HomeTab>> = {
   services: {
     iconElement: <IconService/>,
@@ -58,7 +59,7 @@ export function HomePage() {
   const translation = useTranslation()
   const navigate = useNavigate()
   const {user, removeAuthUser} = useContext(AuthContext)
-  const [homeContent, setHomeContent] = useState<HomeContent>('KYCUpload')
+  const [homeContent, setHomeContent] = useState<HomeContent>('services')
   const openCallerRef = useRef<()=>void>(()=>{})
   const [isShowAccountPopup, setIsShowAccountPopup] = useState<boolean>(false)
   const ref = useClickOutside(() => setIsShowAccountPopup(false));
@@ -84,7 +85,12 @@ export function HomePage() {
       <div className={"w-full h-full flex flex-col"}>
         <div className={"w-full h-20 shrink-0 bg-white flex justify-between lg:justify-end items-center px-6"}>
           <IconThreeLines className={"block lg:hidden w-5 h-5 cursor-pointer"} onClick={openCallerRef.current} />
-          <IconAccountCircle className={"w-10 h-10 cursor-pointer"} onClick={setIsShowAccountPopup.bind(undefined, value => !value)} />
+          <div className={"flex items-center gap-4"}>
+            <div className={"w-10 h-10 rounded-full bg-gray-300 flex justify-center items-center cursor-pointer"} onClick={setHomeContent.bind(undefined, 'Support')}>
+              <IconSupport />
+            </div>
+            <IconAccountCircle className={"w-10 h-10 cursor-pointer"} onClick={setIsShowAccountPopup.bind(undefined, value => !value)} />
+          </div>
         </div>
         <div className={"w-full flex grow relative overflow-y-scroll"}>
           {isShowAccountPopup && <div ref={ref} className={"absolute z-10 top-3 right-8 flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3"}>
@@ -108,6 +114,7 @@ export function HomePage() {
           {homeContent === TabOptionGroup.myCompany.id && <MyCompanyContent key={TabOptionGroup.myCompany.id} />}
           {homeContent === 'myAccount' && <MyAccountContent onClickVerifyKYC={setHomeContent.bind(undefined, 'KYCUpload')} key="KYCUpload" />}
           {homeContent === 'KYCUpload' && <KYCUploadContent backToMyAccount={setHomeContent.bind(undefined, 'myAccount')} key="myAccount" />}
+          {homeContent === 'Support' && <SupportContent key="Support" />}
         </div>
       </div>
     </PageLayoutLeftSideTab>
