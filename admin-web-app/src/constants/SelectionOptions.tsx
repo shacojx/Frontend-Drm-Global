@@ -510,3 +510,18 @@ export const INDUSTRY_INFOS: OptionInfo<Industry>[] = [
   {value: 'Virtual reality', label: 'Virtual reality'},
 ]
 
+export const SERVICE_STATUS: OptionInfo<string>[] = [
+  {value: '', label: 'Active'},
+  {value: '1', label: 'Active'},
+  {value: '0', label: 'Deactive'},
+]
+
+export const APPLY_COMPANY_TYPE: OptionInfo<CompanyTypeValue>[] = [
+  { label: 'LLC', value: 'LLC' },
+  { label: 'PLC', value: 'PLC' },
+]
+
+export const SERVICE_TYPE: OptionInfo<string>[] = [
+  { label: 'Based', value: 'Based' },
+  { label: 'Add-on', value: 'Add-on' },
+]

@@ -28,6 +28,15 @@ import { ReactComponent as IconInfoCircle } from '../assets/svgs/InfoCircle.svg'
 import { ReactComponent as IconFaceScan } from '../assets/svgs/FaceScan.svg';
 import { ReactComponent as IconSetting } from '../assets/svgs/Setting.svg';
 import { ReactComponent as IconSupportPhone } from '../assets/svgs/SupportPhone.svg';
+import { ReactComponent as IconCopy } from '../assets/svgs/Copy.svg';
+import { ReactComponent as IconAddSquare } from '../assets/svgs/AddSquare.svg';
+import { ReactComponent as IconTrash } from '../assets/svgs/Trash Bin Minimalistic 2.svg';
+import { ReactComponent as IconAddSquareOutLine } from '../assets/svgs/AddSquareOutLine.svg';
+import { ReactComponent as IconReload } from '../assets/svgs/Restart.svg';
+import { ReactComponent as IconFilter } from '../assets/svgs/Filter.svg';
+import { ReactComponent as IconEdit } from '../assets/svgs/Document Add.svg';
+import { ReactComponent as IconPen } from '../assets/svgs/Pen.svg';
+
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -64,4 +73,12 @@ export {
   IconFaceScan,
   IconSetting,
   IconSupportPhone,
+  IconCopy,
+  IconAddSquare,
+  IconTrash,
+  IconAddSquareOutLine,
+  IconReload,
+  IconFilter,
+  IconEdit,
+  IconPen
 }
