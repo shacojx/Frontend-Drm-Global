@@ -97,7 +97,7 @@ export default function LLCMyServiceContent() {
 
   return (
     <div className="w-full flex grow relative overflow-y-scroll">
-      <div className="w-full grow flex flex-col p-3">
+      <div className="w-full grow flex flex-col p-3 bg-white border-t border-l border-solid">
         {dataService && (
           <div className="p-5 md:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
             <div className="flex gap-4 flex-col md:flex-row justify-between">
