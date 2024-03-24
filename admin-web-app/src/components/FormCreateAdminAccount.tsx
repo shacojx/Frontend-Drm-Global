@@ -11,12 +11,14 @@ import { FormFieldPhoneNumber } from './FormFieldPhoneNumber';
 import { FormFieldSelect } from './FormFieldSelect';
 import { FormFieldText } from './FormFieldText';
 import { IconCheck, IconSpinner } from './icons';
+import { useApiCreateUser } from '../hooks/api/user';
+import { toast } from 'react-toastify';
 
 type Props = {
   onCreated: () => void;
 };
 
-export function FormCreateAdminAccount(props: Props) {
+export function FormCreateAdminAccount({ onCreated }: Props) {
   const translation = useTranslation();
   const [email, setEmail] = useState<string>();
   const [phone, setPhone] = useState<RNPhoneValue>();
@@ -25,34 +27,35 @@ export function FormCreateAdminAccount(props: Props) {
   const { validateCaller, validateAll } = useValidateCaller();
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
-  const [status, setStatus] = useState<FormStatus>('typing');
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  async function onClickCreate() {
+  
+  
+
+  const { mutateAsync: createUser, isPending, isSuccess } = useApiCreateUser();
+
+  const onClickCreate = async () => {
     if (!validateAll()) {
       return;
     }
+
     if (!email || !phone || !password || !role || !firstName || !lastName) {
       return;
     }
-    const { nationPhone, localPhone } = extractPhone(phone);
-    const body: ApiRegisterAdminAccountParam = {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      password: password,
-      codePhone: nationPhone,
-      phone: localPhone,
-      role: role,
-    };
+
+    
     try {
-      setStatus('requesting');
-      await callApiCreateAdminAccount(body);
-      setStatus('success');
-      props.onCreated();
+      const { nationPhone, localPhone } = extractPhone(phone);
+      await createUser({
+        email,
+        firstName,
+        lastName,
+        password,
+        codePhone: nationPhone,
+        phone: localPhone,
+        role,
+      })
+      onCreated();
     } catch (e: unknown) {
-      setStatus('failure');
-      setErrorMessage(e?.toString());
-      console.error(e);
+      toast.error(String(e))
     }
   }
 
@@ -67,8 +70,10 @@ export function FormCreateAdminAccount(props: Props) {
     },
   ];
 
+
   return (
     <div className={'flex flex-col gap-y-8 px-8'}>
+
       <FormFieldEmail
         id="accountEmail"
         isRequired
@@ -126,11 +131,10 @@ export function FormCreateAdminAccount(props: Props) {
           className="px-4 py-2 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
         >
           {translation.t('Create Admin Account')}
-          {status === 'requesting' && <IconSpinner />}
-          {status === 'success' && <IconCheck className={'text-success'} />}
+          {isPending && <IconSpinner />}
+          {isSuccess && <IconCheck className={'text-success'} />}
         </button>
       </div>
-      {status === 'failure' && <p className={'text-danger text-center -my-4'}>{errorMessage}</p>}
     </div>
   );
 }

@@ -1,23 +1,29 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { ApiViewUserParam } from '../../api/types';
 import { callApiLViewUser, callApiSearchUser } from '../../api/userManagement';
 import { KeyFactory } from '../../services-base/key-factory';
+import { callApiCreateAdminAccount } from '../../api/account';
 
 type UseGetUsersProps = {
   page: number;
   size: number;
   codePhone?: string;
   phone?: string;
-  email?: string
-} 
+  email?: string;
+};
 
-export const useApiGetUsers = ({ page, size, codePhone = '', phone = '', email = '' }: UseGetUsersProps) => {
-
+export const useApiGetUsers = ({
+  page,
+  size,
+  codePhone = '',
+  phone = '',
+  email = '',
+}: UseGetUsersProps) => {
   // if (codePhone || phone || email) {
   //   return useQuery({
   //     queryKey: KeyFactory.getAllUsers(page, size),
   //     queryFn: () => callApiSearchUser({codePhone, email, phone}),
-  //   });    
+  //   });
   // }
 
   return useQuery({
@@ -28,4 +34,9 @@ export const useApiGetUsers = ({ page, size, codePhone = '', phone = '', email =
 
 
 
-
+export const useApiCreateUser = () => {
+  return useMutation({
+    mutationKey: KeyFactory.createUser(),
+    mutationFn: callApiCreateAdminAccount,
+  });
+};
