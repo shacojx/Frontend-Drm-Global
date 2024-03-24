@@ -21,7 +21,15 @@ export function transformGetCompanyDetail(data: RawCompanyDetail): CompanyDetail
       region: data.region ?? '',
       website: data.website
     },
-    owners: data.owner,
+    owners: data.owner.map((o, idx) => ({
+      id: idx.toString(), 
+      companyName: o.companyName ?? '',
+      ownership: Number(o.ownerShip), 
+      type: o.company ? 'Company' : 'Individual',
+      firstName: o.firstName ?? '', 
+      lastName: o.lastName ?? '', 
+      document: typeof o.document === 'string' ? [o.document] : o.document
+    })),
     responseParty: {
       firstName: data.responsiblePartyFirstName ?? '',
       lastName: data.responsiblePartyLastName ?? '',
@@ -35,7 +43,7 @@ export function transformGetCompanyDetail(data: RawCompanyDetail): CompanyDetail
       zipCode: data.mailingZipCode ?? '',
       state: data.mailingState ?? '', 
     },
-    documents: data.document,
+    documents: data.document.map(doc => ({name: doc.document})),
   };
 
   return companyDetail;

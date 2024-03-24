@@ -1,25 +1,25 @@
-import { ServiceType } from '../pages/LLCMyService/types/my-service.type';
+import { ServiceType } from string;
 
 export type NationValue = string;
-export type CompanyTypeValue = 'LLC' | 'PLC';
+export type CompanyTypeValue = string;
 export type EntityEnding =
-  | 'LLC'
-  | 'L.L.C'
-  | 'LIMITED LIABILITY COMPANY'
-  | 'PRIVATE LIMITED COMPANY'
-  | '';
+  | string
+  | string
+  | string
+  | string
+  | string;
 export type Industry = string;
 export type NationPhone = string;
 export type LocalPhone = string;
 
-export type RawResultEmpty = '';
+export type RawResultEmpty = string;
 
 // ====== Account ======== //
 export type ApiLoginParam = {
   username: string;
   password: string;
 };
-export type UserRole = 'ROLE_USER';
+export type UserRole = string;
 export type RawResultLogin = {
   id: number;
   email: string;
@@ -65,16 +65,16 @@ export type ApiRegisterAccountParam = {
   website: string;
   companyDescription: string;
 }>;
-export type RawResultRegisterAccount = Omit<ApiRegisterAccountParam, 'password' | 'rePassword'>;
+export type RawResultRegisterAccount = Omit<ApiRegisterAccountParam, string>;
 
 export type ApiResetPasswordParam = {
   newPass: string;
   reNewPass: string;
   signature: string;
 };
-export type RawResultResetPassword = '';
+export type RawResultResetPassword = string;
 
-export type KYCStatus = 'Pending' | 'In-progress' | 'Approved';
+export type KYCStatus = string;
 
 export type RawResultGetUserProfile = {
   llcInNation: NationValue;
@@ -107,8 +107,8 @@ export type ApiUploadKYC = {
 
 // ====== Payment ======== //
 
-export type Currency = 'USD';
-export type OrderType = 'PAYPAL';
+export type Currency = string;
+export type OrderType = string;
 
 export type ApiCreateOrderParam = {
   transactionId: string;
@@ -163,7 +163,7 @@ export type OwnerInformation = {
   companyName?: string;
   ownership: number; // INFO: (%)
   document: string[];
-  type: 'Company' | 'Individual';
+  type: string;
   firstName?: string;
   lastName?: string;
 };
@@ -184,9 +184,7 @@ export type MailingAddress = {
 };
 
 export type Document = {
-  id: string;
   name: string;
-  url: string;
 };
 
 export type CompanyDetail = {
@@ -206,7 +204,14 @@ export type RawCompanyDetail = {
   industry: string;
   website: string;
   companyDescription: string;
-  owner: [];
+  owner: Array<{
+    companyName: string,
+    firstName: string,
+    lastName: string,
+    ownerShip: string,
+    document: string,
+    company: number, // INFO: 1 - true | 0 - false
+  }>;
   responsiblePartyFirstName: null;
   responsiblePartyLastName: null;
   responsiblePartySSNOrITIN: null;
@@ -215,5 +220,35 @@ export type RawCompanyDetail = {
   mailingCity: null;
   mailingAddress: null;
   mailingZipCode: null;
-  document: [];
+  document: Array<{id: string, document: string}>;
+};
+
+export const EditCompanyBody = {
+  companyName: string,
+  entityEnding: string,
+  region: string,
+  industry: string,
+  website: string,
+  companyDescription: string,
+  owner: Array<{
+    companyName: string,
+    firstName: string,
+    lastName: string,
+    ownerShip: string,
+    document: string,
+    company: number, // INFO: 1 - true | 0 - false
+    individual: number, // INFO: 1 - true | 0 - false
+  },>,
+  responsiblePartyFirstName: string,
+  responsiblePartyLastName: string,
+  responsiblePartySSNOrITIN: string,
+  mailingState: string,
+  mailingCountry: string,
+  mailingCity: string,
+  mailingAddress: string,
+  mailingZipCode: string,
+  document: Array< {
+    id: string, 
+    document: string,
+  }>,
 };
