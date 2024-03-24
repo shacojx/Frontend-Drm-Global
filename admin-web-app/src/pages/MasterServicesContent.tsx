@@ -85,7 +85,7 @@ export function MasterServiceContent(props: Props) {
   }
 
   async function handleResearch() {
-    setServiceId("");
+    setSearchId("");
     setServiceName("");
     setStatus("");
     setServiceName("");
@@ -165,7 +165,6 @@ export function MasterServiceContent(props: Props) {
       type: "string",
       width: 120,
       renderCell: (params: GridCellParams) => {
-        console.log(`param: ${params.row.enable}`);
         const value = params.row.enable
           ? translation.t("masterService.active")
           : translation.t("masterService.inactive");
