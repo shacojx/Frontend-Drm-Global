@@ -20,7 +20,7 @@ export default function KYCUploadContent() {
 
     const isDisableSend = !file || !file2
     return <>
-        <div className={"w-full grow flex flex-col p-3"}>
+        <div className={"w-full grow flex flex-col p-3 bg-white border border-solid border-t border-l"}>
             <div className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4"}>
                 <div className={"w-full max-w-[800px] flex flex-col gap-y-6"}>
                     <div className={"flex flex-row justify-between"}>
