@@ -63,18 +63,12 @@ export function MasterServiceContent(props: Props) {
         size: paginationModel.pageSize,
       };
       const rawResult = await callApiViewMasterService(param);
-      setTableData(rawResult.content.sort((i1, i2) => i1.id - i2.id));
+      setTableData(rawResult.content);
       setMasterServiceCount(rawResult.totalElements);
     };
 
-    fetchData().catch((e) => console.log(e));
+    fetchData().catch((e) => console.error(e));
   }, [paginationModel]);
-  const fetchServiceDetail = () => {
-    const fetchData = async () => {
-      const rawResult = await callApiMasterServiceDetail(Number(serviceId));
-      console.log(rawResult);
-    };
-  };
 
   async function handleClickSearch() {
     const param: ApiSearchMasterServiceParam = {
@@ -96,13 +90,13 @@ export function MasterServiceContent(props: Props) {
     setStatus("");
     setServiceName("");
     setAppliedNation("");
-    const rawResult = await callApiSearchMasterService(
-      {} as ApiSearchMasterServiceParam
-    );
-    if (rawResult) {
-      setTableData([rawResult]);
-      setMasterServiceCount(1);
-    }
+    const param: ApiViewMasterServiceParam = {
+      page: paginationModel.page,
+      size: paginationModel.pageSize,
+    };
+    const rawResult = await callApiViewMasterService(param);
+    setTableData(rawResult.content);
+    setMasterServiceCount(rawResult.totalElements);
   }
 
   function handleRowClick(params: GridRowEventLookup["rowClick"]["params"]) {
@@ -197,7 +191,7 @@ export function MasterServiceContent(props: Props) {
       sortable: false,
       type: "string",
       width: 200,
-      valueGetter: (params: GridValueGetterParams) => 
+      valueGetter: (params: GridValueGetterParams) =>
         params.row.serviceStep.length > 10 ? params.row.serviceStep.length : `0${params.row.serviceStep.length}`,
     },
     {

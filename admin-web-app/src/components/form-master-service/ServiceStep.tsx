@@ -44,13 +44,15 @@ export function ContentInfoItem(props: ContentInfoProps) {
   return (
     <ContentInfoContainer>
       <label>{`${props.index + 1}. `}</label>
-      <FormFieldText
-        value={props.content}
-        onChange={onChangeItem}
-        id={"result"}
-        placeholder={props.placeholder}
-        validateCaller={{}}
-      />
+      <div className={"mr-6"}>
+        <FormFieldText
+          value={props.content}
+          onChange={onChangeItem}
+          id={"result"}
+          placeholder={props.placeholder}
+          validateCaller={{}}
+        />
+      </div>
       <div className="absolute right-0 top-3 pr-2 justify-right">
         <button onClick={onRemoveItem}>
           <Tooltip
