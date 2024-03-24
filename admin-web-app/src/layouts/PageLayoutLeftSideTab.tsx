@@ -1,4 +1,4 @@
-import { JSX, MutableRefObject, PropsWithChildren, useContext, useEffect, useState } from "react";
+import { JSX, PropsWithChildren, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { callApiLogout } from "../api/account";
@@ -7,6 +7,7 @@ import { I18nLanguage } from "../components/I18nLanguage";
 import { IconAccountCircle, IconLogout, IconX } from "../components/icons";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { removeAuthInfo } from "../services-business/api/authentication";
+import { RoutePaths } from "../pages/router";
 
 export type TabOption<TabId> = {
   iconElement: JSX.Element,
