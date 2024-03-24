@@ -26,7 +26,7 @@ import { ServiceCycleTable } from "./form-master-service/ServiceCycleTable";
 import { ServiceInformation } from "./form-master-service/ServiceInformation";
 
 type Props = {
-  onSubmitted: () => void;
+  onSubmitted: () => Promise<void>;
   onCancelModal: () => void;
   serviceStep: ServiceStep[];
   serviceCycle?: ServiceCycle[];
@@ -34,8 +34,8 @@ type Props = {
   enable: boolean;
   serviceId: number;
   serviceDescription: string;
-  appliedCompanyType: string;
-  appliedNation: string;
+  appliedCompanyType: string[];
+  appliedNation: string[];
   serviceType: string;
   serviceName: string;
 };
@@ -182,14 +182,29 @@ export function FormUpdateMasterService(props: Props) {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [body, setBody] = React.useState({
     serviceDescription: props.serviceDescription,
-    appliedNation: [props?.appliedNation],
+    appliedNation: props?.appliedNation,
     enable: props.enable ?? false,
     serviceName: props.serviceName ?? "",
     serviceType: props.serviceType ?? "",
     serviceStep: props.serviceStep,
     serviceCycle: props.serviceCycle,
-    appliedCompanyType: [props?.appliedCompanyType],
+    appliedCompanyType: props?.appliedCompanyType,
   } as unknown as ApiMasterServiceParam & { enable: boolean });
+  const onRecallData = React.useCallback(() => {
+    setBody(
+      (body) =>
+        ({
+          serviceDescription: body.serviceDescription,
+          appliedNation: body?.appliedNation,
+          enable: props.enable ?? false,
+          serviceName: body.serviceName ?? "",
+          serviceType: body.serviceType ?? "",
+          serviceStep: props.serviceStep,
+          serviceCycle: props.serviceCycle,
+          appliedCompanyType: props?.appliedCompanyType,
+        } as unknown as ApiMasterServiceParam & { enable: boolean })
+    );
+  }, [props, body]);
   const [loading, setLoading] = React.useState(false);
   const [validatorSchema, setValidatorSchema] = React.useState({
     error: {
@@ -271,7 +286,10 @@ export function FormUpdateMasterService(props: Props) {
           })
           .finally(() => {
             window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-            props.onSubmitted();
+            props.onSubmitted().then(() => {
+              setIsSubmitted(false);
+              onRecallData();
+            });
           });
         setStatus("success");
       } catch (e: unknown) {
@@ -282,6 +300,7 @@ export function FormUpdateMasterService(props: Props) {
     } else {
       try {
         setStatus("requesting");
+        setIsSubmitted(true);
         callApiActiveMasterService(
           {
             enable: 1,
@@ -294,9 +313,9 @@ export function FormUpdateMasterService(props: Props) {
           .finally(() => {
             props.onSubmitted();
             window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+            setIsSubmitted(false);
             setLoading(false);
           });
-        setIsSubmitted(true);
       } catch (e: unknown) {
         setStatus("failure");
         setErrorMessage(e?.toString());

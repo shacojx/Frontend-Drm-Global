@@ -642,10 +642,7 @@ export function FormCreateMasterService(props: Props) {
             <Grid item md={6}>
               <button
                 onClick={onClickActiveAction}
-                className={`px-4 py-2 flex justify-center items-center gap-2 bg-red-500 text-white font-semibold rounded-lg ${
-                  !props.enable && "disabled disabled:opacity-50"
-                }`}
-                disabled={props.enable}
+                className={`px-4 py-2 flex justify-center items-center gap-2 bg-red-500 text-white font-semibold rounded-lg`}
               >
                 {translation.t("masterService.cancel")}
                 {status === "requesting" && <IconSpinner />}

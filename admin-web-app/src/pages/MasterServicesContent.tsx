@@ -360,9 +360,9 @@ export function MasterServiceContent(props: Props) {
                 serviceStep={selectItem.serviceStep}
                 serviceDescription={selectItem.serviceDescription}
                 appliedCompanyType={
-                  selectItem.appliedCompanyType?.at(0)?.companyType ?? ""
+                  selectItem.appliedCompanyType?.map(item => item?.companyType) ?? [] as string[]
                 }
-                appliedNation={selectItem.appliedNation?.at(0)?.nation ?? ""}
+                appliedNation={selectItem.appliedNation?.map(item => item?.nation) ?? [] as string[]}
                 serviceName={selectItem.serviceName ?? ""}
                 serviceType={selectItem.serviceType ?? ""}
                 name={selectItem.serviceName ?? ""}
