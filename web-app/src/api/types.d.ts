@@ -223,7 +223,7 @@ export type RawCompanyDetail = {
   document: Array<{id: string, document: string}>;
 };
 
-export const EditCompanyBody = {
+export type EditCompanyBody = {
   companyName: string,
   entityEnding: string,
   region: string,

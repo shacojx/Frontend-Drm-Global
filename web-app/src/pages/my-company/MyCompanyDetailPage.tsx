@@ -35,7 +35,7 @@ const TABS = [
 
 export function MyCompanyDetailPage() {
   const { t } = useTranslation();
-  const { data, status } = useApiGetMyCompanyDetail();
+  const { data, status, refetch } = useApiGetMyCompanyDetail();
   const { mutateAsync: saveMyCompany, status: savingCompany } = useApiPostMyCompanyDetail();
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -67,13 +67,33 @@ export function MyCompanyDetailPage() {
       ) {
         setError(false);
         await saveMyCompany({
-          companyInfo,
-          documents,
-          mailingAddress,
-          owners,
-          responseParty,
+          companyDescription: companyInfo.description,
+          companyName: companyInfo.companyName,
+          entityEnding: companyInfo.entityEnding,
+          industry: companyInfo.industry, 
+          mailingAddress: mailingAddress.address,
+          mailingCity: mailingAddress.city,
+          mailingCountry: mailingAddress.country,
+          mailingState: mailingAddress.state ?? '',
+          mailingZipCode: mailingAddress.zipCode,
+          owner: owners.map((item) => ({
+            companyName: item.companyName ?? '',
+            firstName: item.firstName ?? '',
+            lastName: item.lastName ?? '',
+            ownerShip: item.ownership.toString(),
+            document: item.document[0],
+            company: item.type === 'Company' ? 1 : 0,
+            individual: item.type === 'Individual' ? 1 : 0
+          })),
+          region: companyInfo.region ?? '',
+          responsiblePartyFirstName: responseParty.firstName, 
+          responsiblePartyLastName: responseParty.lastName, 
+          responsiblePartySSNOrITIN: responseParty.SSNorITIN ?? '',
+          website: companyInfo.website,
+          document: documents.map((item) => ({id: item.name,  document: item.name})),
         });
         setShowSuccessDialog(true);
+        refetch()
       }
     } catch (error) {
       setError(error as string);

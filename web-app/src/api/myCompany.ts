@@ -1,6 +1,6 @@
 import { callApi } from "src/services-base/api";
 import { transformGetCompanyDetail } from "../services-business/api/transform-result/myCompany";
-import { CompanyDetail, RawCompanyDetail } from "./types";
+import { CompanyDetail, EditCompanyBody, RawCompanyDetail } from "./types";
 
 export const callApiGetCompanyDetail = async () => {
   const path = "/api/user/get-my-company";
@@ -11,9 +11,7 @@ export const callApiGetCompanyDetail = async () => {
 };
 
 
-export const callApiPostCompanyDetail = async (companyDetail: CompanyDetail) => {
-  // TODO:  implement after api is ready
-
-  // const path = "url";
-  // const rawResult = await callApi<("POST", path);
+export const callApiPostCompanyDetail = async (companyDetail: EditCompanyBody) => {
+  const path = "/api/user/update-company";
+  const rawResult = await callApi("POST", path, companyDetail, true);
 }
