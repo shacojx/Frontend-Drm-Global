@@ -2,6 +2,7 @@ import { Disclosure, Menu } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
+import { DialogFailureFullscreen } from "src/components/DialogFormStatusFullscreen";
 import {
   AltArrowRightIcon,
   IconMyCompany,
@@ -26,6 +27,7 @@ type MenuType = {
 
 export default function MainMenu({ isOpenOnSmallScreen }: Props) {
   const [menuData, setMenuData] = useState<MenuType[]>([]);
+  const { t } = useTranslation();
 
   const menuDefault: MenuType[] = [
     {
@@ -73,55 +75,79 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
     }
   }, [resApiLLCService.data, resApiLLCService.isFetching]);
 
+  const handleClickSubmit = () => {
+    resApiLLCService.refetch();
+  };
+
   return (
     <div>
-      {isOpenOnSmallScreen ? (
-        <>
-          <Disclosure>
-            {({ open }) => (
-              <>
-                {menuData.map((tabOption) => (
-                  <div className="relative group " key={tabOption.id}>
-                    <TabOptionDisclosure {...tabOption} open={open} />
-                    {tabOption.items && (
-                      <>
-                        {tabOption?.items?.map((itemChildren) => (
-                          <TabOptionDisclosureItem {...itemChildren} />
-                        ))}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
-          </Disclosure>
-        </>
+      {resApiLLCService.isError ? (
+        <DialogFailureFullscreen
+          title="Failure!"
+          subTitle={resApiLLCService?.error?.message}
+          actionElement={
+            <button
+              onClick={handleClickSubmit}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{t("Try again")}</span>
+            </button>
+          }
+        />
       ) : (
         <>
-          {menuData.map((tabOption) => (
-            <Fragment key={tabOption.id}>
-              <Menu as="div" className="relative">
-                <div className="relative group " key={tabOption.id}>
-                  <TabOption {...tabOption} />
-                  {tabOption.items && (
-                    <>
-                      <Menu.Items className={`
+          {isOpenOnSmallScreen ? (
+            <>
+              <Disclosure>
+                {({ open }) => (
+                  <>
+                    {menuData.map((tabOption) => (
+                      <div className="relative group " key={tabOption.id}>
+                        <TabOptionDisclosure {...tabOption} open={open} />
+                        {tabOption.items && (
+                          <>
+                            {tabOption?.items?.map((itemChildren) => (
+                              <TabOptionDisclosureItem {...itemChildren} />
+                            ))}
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </>
+                )}
+              </Disclosure>
+            </>
+          ) : (
+            <>
+              {menuData.map((tabOption) => (
+                <Fragment key={tabOption.id}>
+                  <Menu as="div" className="relative">
+                    <div className="relative group " key={tabOption.id}>
+                      <TabOption {...tabOption} />
+                      {tabOption.items && (
+                        <>
+                          <Menu.Items
+                            className={`
                       absolute w-[260px] -right-[250px] top-[50px] lg:top-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10
                       `}
-                      style={{height: tabOption.items.length * 65 + 'px'}}
-                      >
-                        <div className="flex flex-col">
-                          {tabOption.items?.map((itemChildren) => (
-                            <TabOptionItem {...itemChildren} />
-                          ))}
-                        </div>
-                      </Menu.Items>
-                    </>
-                  )}
-                </div>
-              </Menu>
-            </Fragment>
-          ))}
+                            style={{
+                              height: tabOption.items.length * 65 + "px",
+                            }}
+                          >
+                            <div className="flex flex-col">
+                              {tabOption.items?.map((itemChildren) => (
+                                <TabOptionItem {...itemChildren} />
+                              ))}
+                            </div>
+                          </Menu.Items>
+                        </>
+                      )}
+                    </div>
+                  </Menu>
+                </Fragment>
+              ))}
+            </>
+          )}
         </>
       )}
     </div>
@@ -180,7 +206,10 @@ function TabOptionDisclosure(props: TabOptionDisclosureProps) {
 function TabOptionDisclosureItem(props: MenuType) {
   const translation = useTranslation();
   return (
-    <Disclosure.Panel className={"h-[50px] w-full px-4 py-2"} key={`menu-panel${props.id}`}>
+    <Disclosure.Panel
+      className={"h-[50px] w-full px-4 py-2"}
+      key={`menu-panel${props.id}`}
+    >
       <NavLink
         to={props.path as string}
         className={({ isActive }) =>
