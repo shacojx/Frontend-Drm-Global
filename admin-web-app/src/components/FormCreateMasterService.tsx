@@ -45,13 +45,13 @@ export type ServiceStepDisplayProps = {
 };
 
 export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
-  const [stepDataList, setStepDateList] = React.useState(
+  const [stepDataList, setStepDataList] = React.useState(
     (props?.serviceStep ?? []) as ServiceStep[]
   );
 
   const onAddDocumentRequire = React.useCallback(
     (stepIndex: number, index: number) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -74,7 +74,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 
   const onAddResultRequired = React.useCallback(
     (stepIndex: number, value: number) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -94,7 +94,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 
   const onRemoveDocumentRequire = React.useCallback(
     (stepIndex: number, documentId: number) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -113,7 +113,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 
   const onRemoveResultRequire = React.useCallback(
     (stepIndex: number, resultId: number) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -130,7 +130,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 
   const onChangeResultItem = React.useCallback(
     (stepIndex: number, resultId: number, value: string) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -152,7 +152,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 
   const onChangeDocumentItem = React.useCallback(
     (stepIndex: number, resultId: number, value: string) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -172,9 +172,12 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
     [stepDataList]
   );
 
+  React.useEffect(() => {
+    setStepDataList(props.serviceStep)
+  }, [props.serviceStep.length])
   const onChangeStepContent = React.useCallback(
     (stepIndex: number, name: keyof ServiceStep, value: string) => {
-      setStepDateList((stepDataList) =>
+      setStepDataList((stepDataList) =>
         stepDataList?.map((step, index) => {
           if (index === stepIndex) {
             return {
@@ -191,7 +194,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
   );
 
   const onAddNewItem = React.useCallback(() => {
-    setStepDateList([
+    setStepDataList([
       ...stepDataList,
       {
         id: stepDataList.length,
@@ -208,7 +211,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
   const onDeleteItem = React.useCallback(
     (index: number) => {
       if (stepDataList.length > 1) {
-        setStepDateList((stepDataList) =>
+        setStepDataList((stepDataList) =>
           stepDataList?.filter((item, stepIndex) => stepIndex !== index)
         );
       }
@@ -221,7 +224,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
       const newItem = stepDataList?.find((item, stepIndex) => stepIndex === index);
 
       if (newItem) {
-        setStepDateList([
+        setStepDataList([
           ...stepDataList,
           { ...newItem, id: stepDataList.length + 1 },
         ]);

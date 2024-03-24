@@ -191,19 +191,16 @@ export function FormUpdateMasterService(props: Props) {
     appliedCompanyType: props?.appliedCompanyType,
   } as unknown as ApiMasterServiceParam & { enable: boolean });
   const onRecallData = React.useCallback(() => {
-    setBody(
-      (body) =>
-        ({
-          serviceDescription: body.serviceDescription,
-          appliedNation: body?.appliedNation,
-          enable: props.enable ?? false,
-          serviceName: body.serviceName ?? "",
-          serviceType: body.serviceType ?? "",
-          serviceStep: props.serviceStep,
-          serviceCycle: props.serviceCycle,
-          appliedCompanyType: props?.appliedCompanyType,
-        } as unknown as ApiMasterServiceParam & { enable: boolean })
-    );
+    setBody({
+      serviceDescription: body.serviceDescription,
+      appliedNation: body?.appliedNation,
+      enable: props.enable ?? false,
+      serviceName: body.serviceName ?? "",
+      serviceType: body.serviceType ?? "",
+      serviceStep: props.serviceStep,
+      serviceCycle: props.serviceCycle,
+      appliedCompanyType: props?.appliedCompanyType,
+    } as unknown as ApiMasterServiceParam & { enable: boolean });
   }, [props, body]);
   const [loading, setLoading] = React.useState(false);
   const [validatorSchema, setValidatorSchema] = React.useState({
@@ -323,7 +320,7 @@ export function FormUpdateMasterService(props: Props) {
       }
     }
     onHide();
-  }, [props.enable]);
+  }, [props.enable, onRecallData]);
 
   async function onSubmitUpdate() {
     setIsSubmitted(true);
