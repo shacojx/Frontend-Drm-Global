@@ -12,7 +12,7 @@ import {
   DialogFailureFullscreen,
   DialogSuccessFullscreen,
 } from "../../components/DialogFormStatusFullscreen";
-import { useApiGetMyCompanyDetail, useApiPostMyCompanyDetail } from "../../hooks-api/useMyCompany";
+import { useApiGetMyCompanyDetail, useApiUpdateMyCompanyDetail } from "../../hooks-api/useMyCompany";
 import {
   validateCompanyInfo,
   validateMailingAddress,
@@ -36,7 +36,6 @@ const TABS = [
 export function MyCompanyDetailPage() {
   const { t } = useTranslation();
   const { data, status, refetch } = useApiGetMyCompanyDetail();
-  const { mutateAsync: saveMyCompany, status: savingCompany } = useApiPostMyCompanyDetail();
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [error, setError] = useState<string | false>(false);
@@ -46,6 +45,10 @@ export function MyCompanyDetailPage() {
   const [responseParty, setResponseParty] = useState<Partial<ResponseParty>>({});
   const [mailingAddress, setMailingAddress] = useState<Partial<MailingAddress>>({});
   const [documents, setDocuments] = useState<Document[]>([]);
+
+  const { mutateAsync: saveMyCompany, status: savingCompany } = useApiUpdateMyCompanyDetail({
+    onError: error => setError(String(error))
+  });
 
   useEffect(() => {
     if (status === "success") {
