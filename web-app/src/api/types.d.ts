@@ -331,7 +331,7 @@ export type EditCompanyBody = {
     document: string,
     company: number, // INFO: 1 - true | 0 - false
     individual: number, // INFO: 1 - true | 0 - false
-  },>,
+  }>,
   responsiblePartyFirstName: string,
   responsiblePartyLastName: string,
   responsiblePartySSNOrITIN: string,

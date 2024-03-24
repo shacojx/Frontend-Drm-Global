@@ -1,15 +1,21 @@
 import { callApi } from "src/services-base/api"
+import { filterServiceToDisplay } from "../services-business/api/transform-result/service";
+import { callApiGetListLlcServices } from "./llcService";
 import { PaymentServiceBody, RawService, RawServiceDetail } from "./types"
 
-export const callApiGetAvailableServices = () => {
+export const callApiGetAvailableServices = async () => {
   const path = '/api/user/get-service'
-  const rawResult = callApi<RawService[]>("GET", path, {}, true)
-
-  return rawResult
+  const [rawServiceResult, allPaidService] = await Promise.all(
+    [
+      callApi<RawService[]>("GET", path, {}, true),
+      callApiGetListLlcServices(),
+    ]
+  )
+  return filterServiceToDisplay(rawServiceResult, allPaidService)
 }
 
 
-export const callApiGetDetailServices = (id: string | number) => { 
+export const callApiGetDetailServices = (id: string | number) => {
   const path = `/api/user/detail-service/${id}`
   const rawResult = callApi<RawServiceDetail>("GET", path, {}, true)
 

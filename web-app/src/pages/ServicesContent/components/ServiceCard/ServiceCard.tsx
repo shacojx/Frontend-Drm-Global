@@ -27,7 +27,7 @@ export default function ServiceCard(props: ServiceCardProps) {
             </div>
         </div>
         <div className={"p-6 text-orange flex items-center justify-center shrink-0"}>
-            <span className={"text-h4 font-bold"}>{props.service.currency}{props.service.price}</span>
+            <span className={"text-h4 font-bold"}>{props.service.currency} {props.service.price}</span>
         </div>
     </div>
 }

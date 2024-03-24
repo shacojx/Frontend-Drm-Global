@@ -136,7 +136,7 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
                           >
                             <div className="flex flex-col">
                               {tabOption.items?.map((itemChildren) => (
-                                <TabOptionItem {...itemChildren} />
+                                <TabOptionItem key={itemChildren.id} {...itemChildren} />
                               ))}
                             </div>
                           </Menu.Items>

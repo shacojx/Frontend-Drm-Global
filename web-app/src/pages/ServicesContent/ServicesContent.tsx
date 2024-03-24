@@ -5,6 +5,7 @@ import { ApiCreateOrderParam, Currency } from 'src/api/types'
 import { NATION_INFOS } from 'src/constants/SelectionOptions'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { generateTransactionId } from 'src/services-business/api/generate-api-param/payment'
+import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard'
 
 export type Service = {
@@ -19,35 +20,8 @@ export type Service = {
 
 
 export default function ServicesContent() {
-
-    // TODO: fetch from api
-    const Services: Service[] = [
-        {
-            id: '1',
-            label: "LLC Formation desk",
-            description: "Service Description",
-            agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
-            price: 5.99,
-            currency: 'USD'
-        },
-        {
-            id: '2',
-            label: "LLC Formation desk",
-            description: "Service Description",
-            agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
-            price: 6.99,
-            currency: 'USD'
-        },
-        {
-            id: '3',
-            label: "LLC Formation desk",
-            description: "Service Description",
-            agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
-            price: 7.99,
-            currency: 'USD'
-        },
-    ]
-
+    const allServiceQuery = useApiGetAvailableServices()
+    const Services: Service[] = allServiceQuery.data || []
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
     const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<string[]>([])
@@ -107,7 +81,7 @@ export default function ServicesContent() {
             {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden space-y-8"}>
                 {user?.companyType && <div className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new in", { companyType: user.companyType })}
                     <span
-                        className={"text-cLg font-bold text-primary"}>{nationName}</span> <span
+                        className={"text-cLg font-bold text-primary"}> {nationName}</span> <span
                             className={"text-h4"}>...</span>
                 </div>}
                 <div className={"flex flex-col gap-3"}>

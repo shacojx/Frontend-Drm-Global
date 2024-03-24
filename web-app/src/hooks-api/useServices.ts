@@ -17,7 +17,7 @@ export const useApiGetServiceDetail = ({ id }: UseApiGetServiceDetailProps) => {
   return useQuery({
     queryKey: KeyFactory.getServiceDetail(id),
     queryFn: () => callApiGetDetailServices(id!),
-    enabled: !!id
+    enabled: !!id,
   })
 }
 
