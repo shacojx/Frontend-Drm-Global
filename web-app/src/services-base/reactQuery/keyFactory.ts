@@ -4,6 +4,7 @@ const QueryKey = {
   getLlcServiceList: 'llcService/getList',
   getLlcServiceDetail: 'llcService/getDetail',
   getMyCompany: 'myCompany/getDetail',
+  getAvailableServices: 'services/availableServices'
 } as const
 
 const MutationKey = {
@@ -30,7 +31,8 @@ const KeyFactory = {
     return generateKey(QueryKey.getMyCompany)
   },
   postCompanyDetail: () => generateKey(MutationKey.postMyCompany),
-  uploadKYC: () => generateKey(MutationKey.uploadKYC)
+  uploadKYC: () => generateKey(MutationKey.uploadKYC),
+  getAvailableServices: () => generateKey(QueryKey.getAvailableServices)
 }
 
 export default KeyFactory

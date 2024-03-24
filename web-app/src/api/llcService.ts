@@ -1,4 +1,5 @@
-import { LLCServiceType } from "./types";
+import { callApi } from "src/services-base/api";
+import { LLCServiceType, RawService } from "./types";
 
 // TODO: remove sample data
 const sampleLlcService: LLCServiceType = {
