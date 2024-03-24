@@ -62,7 +62,7 @@ export function UsersContent(props: Props) {
     };
     const rawResult = await callApiLViewUser(param);
     // setTableData(rawResult.content);
-    const updatedUserClicked = rawResult.content.find((user) => user.id === userClicked?.id);
+    const updatedUserClicked = rawResult?.content.find((user) => user.id === userClicked?.id);
     if (updatedUserClicked) {
       setUserClicked(updatedUserClicked);
     }

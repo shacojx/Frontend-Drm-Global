@@ -42,8 +42,8 @@ export function OrderPaymentContent(props: Props) {
         size: paginationModel.pageSize
       }
       const rawResult = await callApiLViewUser(param)
-      setTableData(rawResult.content);
-      setUserCount(rawResult.totalElements)
+      setTableData(rawResult?.content ?? []);
+      setUserCount(rawResult?.totalElements)
     };
 
     fetchData().catch(e=> console.log(e))

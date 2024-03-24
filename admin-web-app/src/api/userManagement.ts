@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { callApi } from "../services-base/api";
 import {
   ApiDeactiveParam,
@@ -15,9 +16,13 @@ export async function callApiSearchUser(body: ApiSearchUserParam) {
 }
 
 export async function callApiLViewUser(param: ApiViewUserParam) {
-  const path = 'api/admin/get-user'
-  const rawResult = await callApi<RawResultViewUser>('GET', path, param, true)
-  return rawResult
+  try {
+    const path = 'api/admin/get-user'
+    const rawResult = await callApi<RawResultViewUser>('GET', path, param, true)
+    return rawResult
+  } catch (error) {
+    toast(String(error))
+  }
 }
 
 export async function callApiEditAccount(body: ApiEditUserParam) {
