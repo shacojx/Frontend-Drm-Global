@@ -15,7 +15,7 @@ export function DialogContainer(props: Props) {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={handleClickOverlay}>
+      <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={handleClickOverlay}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

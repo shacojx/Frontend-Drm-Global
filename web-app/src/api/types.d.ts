@@ -1,4 +1,4 @@
-import { TransformedResultLogin } from "./account";
+import { ServiceType } from "../pages/LLCMyService/types/my-service.type";
 
 export type NationValue = string
 export type CompanyTypeValue = 'LLC' | 'PLC'
@@ -25,7 +25,6 @@ export type RawResultLogin = {
   roles: UserRole[],
 }
 export type TransformedResultLogin = RawResultLogin
-
 
 export type ApiSendRecoveryCode = {
   email: string
@@ -96,14 +95,154 @@ export type ApiChangeUserPassword = {
   "reNewPass": string,
 }
 
-// ====== Payment ======== //
+export type ApiUploadKYC = {
+  passport: File
+  picture: File
+};
 
+// ====== Payment ======== //
 export type Currency = 'USD'
 export type OrderType = 'PAYPAL'
 
 export type ApiCreateOrderParam = {
-  "transactionId": string,
-  "currency": Currency,
-  "amount": number,
-  "orderType": OrderType,
-}
+  transactionId: string;
+  currency: Currency;
+  amount: number;
+  orderType: OrderType;
+};
+
+// ====== LLC Service ======== //
+
+export type UploadedDocumentType = {
+  name: string;
+  link: string;
+};
+
+export type StepType = {
+  id: number;
+  name: string;
+  status: ServiceType;
+  issuingDuration: string;
+  detail?: {
+    step_description: string;
+    remark: string;
+    customer_document: {
+      required_document: string;
+      uploaded_document: UploadedDocumentType[];
+    };
+    service_document: {
+      required_document: string;
+      uploaded_document: UploadedDocumentType[];
+    };
+  };
+};
+
+export type LLCServiceType = {
+  status: number;
+  step: StepType[];
+};
+
+// ====== My Company ====== //
+export type CompanyInformation = {
+  companyName: string;
+  entityEnding: EntityEnding;
+  industry: Industry;
+  website: string;
+  description: string;
+  region: string;
+};
+
+export type OwnerInformation = {
+  id: string;
+  companyName?: string;
+  ownership: number; // INFO: (%)
+  document: string[];
+  type: "Company" | "Individual";
+  firstName?: string;
+  lastName?: string;
+};
+
+export type ResponseParty = {
+  firstName: string;
+  lastName: string;
+  hasSSNorITIN: boolean;
+  SSNorITIN?: string;
+};
+
+export type MailingAddress = {
+  state?: string;
+  country: string;
+  city: string;
+  address: string;
+  zipCode: string;
+};
+
+export type Document = {
+  name: string;
+};
+
+export type CompanyDetail = {
+  companyInfo: CompanyInformation;
+  owners: OwnerInformation[];
+  responseParty: ResponseParty;
+  mailingAddress: MailingAddress;
+  documents: Document[];
+};
+
+export type RawCompanyDetail = {
+  id: number;
+  userId: number;
+  companyName: string;
+  entityEnding: string;
+  region: null | string;
+  industry: string;
+  website: string;
+  companyDescription: string;
+  owner: Array<{
+    companyName: string,
+    firstName: string,
+    lastName: string,
+    ownerShip: string,
+    document: string,
+    company: number, // INFO: 1 - true | 0 - false
+  }>;
+  responsiblePartyFirstName: null;
+  responsiblePartyLastName: null;
+  responsiblePartySSNOrITIN: null;
+  mailingState: null;
+  mailingCountry: null;
+  mailingCity: null;
+  mailingAddress: null;
+  mailingZipCode: null;
+  document: Array<{id: string, document: string}>;
+};
+
+export type EditCompanyBody = {
+  companyName: string,
+  entityEnding: string,
+  region: string,
+  industry: string,
+  website: string,
+  companyDescription: string,
+  owner: Array<{
+    companyName: string,
+    firstName: string,
+    lastName: string,
+    ownerShip: string,
+    document: string,
+    company: number, // INFO: 1 - true | 0 - false
+    individual: number, // INFO: 1 - true | 0 - false
+  },>,
+  responsiblePartyFirstName: string,
+  responsiblePartyLastName: string,
+  responsiblePartySSNOrITIN: string,
+  mailingState: string,
+  mailingCountry: string,
+  mailingCity: string,
+  mailingAddress: string,
+  mailingZipCode: string,
+  document: Array< {
+    id: string, 
+    document: string,
+  }>,
+};
