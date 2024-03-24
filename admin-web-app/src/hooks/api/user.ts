@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ApiViewUserParam } from '../../api/types';
-import { callApiLViewUser, callApiSearchUser } from '../../api/userManagement';
-import { KeyFactory } from '../../services-base/key-factory';
 import { callApiCreateAdminAccount } from '../../api/account';
+import { callApiLViewUser } from '../../api/userManagement';
+import { KeyFactory } from '../../services-base/key-factory';
 
 type UseGetUsersProps = {
   page: number;

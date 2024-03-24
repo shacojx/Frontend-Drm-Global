@@ -12,6 +12,7 @@ import { ApiGetKycParam, KycDetail, RawResultGetKyc } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
 import { generateFormatDate } from "../services-ui/date";
+import { useApiGetKYCs } from "../hooks/api/kyc";
 
 type Props = {}
 const sampleRow:RawResultGetKyc = {
@@ -78,31 +79,24 @@ const sampleRow:RawResultGetKyc = {
 }
 export function KycContent(props: Props) {
   const translation = useTranslation()
-  const [tableData, setTableData] = useState<KycDetail[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
-  const [kycCount, setKycCount] = useState<number>()
   const [shouldShowConfirmDialog, setShouldShowConfirmDialog] = useState<boolean>()
   const [shouldShowPictureDialog, setShouldShowPictureDialog] = useState<boolean>()
   const [isApproved, setIsApproved] = useState<boolean>()
   const [idSelected, setIdSelected] = useState<number>()
   const [pictureIndexInit, setPictureIndexInit] = useState<number>(0)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const param: ApiGetKycParam = {
-        page: paginationModel.page,
-        size: paginationModel.pageSize
-      }
-      const rawResult = await callApiGetKyc(param)
-      setTableData([...rawResult.content, ...sampleRow.content]);
-      setKycCount(rawResult.totalElements)
-    };
+  const {data, isLoading: gettingKYCs} = useApiGetKYCs({
+    page: paginationModel.page,
+    size: paginationModel.pageSize
+  })
 
-    fetchData().catch(e=> console.log(e))
-  }, [paginationModel]);
+  const tableData = data?.content ?? []
+  const kycCount = data?.totalElements 
+
 
   function handleClickReject(id: number) {
     setIsApproved(false)
