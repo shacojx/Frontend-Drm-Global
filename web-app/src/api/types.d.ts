@@ -142,6 +142,8 @@ export type LLCServiceType = {
   step: StepType[];
 };
 
+// ====== Service ====== //
+
 export type RawService = {
   updatedAt: string;
   createdAt: string;
@@ -177,6 +179,51 @@ export type RawService = {
     id: number;
     cycleNumber: number;
     pricePerCycle: number;
+  }>;
+};
+
+export type RawServiceDetail = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  appliedNation: Array<{
+    id: number;
+    nation: string;
+  }>;
+  appliedCompanyType: Array<{
+    id: number;
+    companyType: string;
+  }>;
+  serviceType: string;
+  serviceName: string;
+  serviceDescription: string;
+  enable: number;
+  serviceStep: Array<{
+    id: number;
+    stepNo: number;
+    name: string;
+    estimatedCompletionTime: string;
+    description: string;
+    documentRequired: Array<{
+      id: number;
+      documentRequired: string;
+    }>;
+    result: Array<{
+      id: number;
+      result: string;
+    }>;
+  }>;
+  serviceCycle: Array<{
+    id: number;
+    cycleNumber: number;
+    pricePerCycle: number;
+  }>;
+};
+
+export type PaymentServiceBody = {
+  cashout: Array<{
+    serviceId: 4;
+    cycleNumber: 1;
   }>;
 };
 

@@ -4,12 +4,14 @@ const QueryKey = {
   getLlcServiceList: 'llcService/getList',
   getLlcServiceDetail: 'llcService/getDetail',
   getMyCompany: 'myCompany/getDetail',
-  getAvailableServices: 'services/availableServices'
+  getAvailableServices: 'services/availableServices',
+  getServiceDetail: 'service/getServiceDetail',
 } as const
 
 const MutationKey = {
   postMyCompany: 'myCompany/postDetail',
   uploadKYC: 'account/uploadKYC',
+  paymentService: 'service/paymentService',
 }
 
 export type KeyType = string | number | undefined
@@ -32,7 +34,9 @@ const KeyFactory = {
   },
   postCompanyDetail: () => generateKey(MutationKey.postMyCompany),
   uploadKYC: () => generateKey(MutationKey.uploadKYC),
-  getAvailableServices: () => generateKey(QueryKey.getAvailableServices)
+  getAvailableServices: () => generateKey(QueryKey.getAvailableServices),
+  getServiceDetail: (id: KeyType) => generateKey(QueryKey.getServiceDetail, id),
+  paymentService: () => generateKey(MutationKey.paymentService),
 }
 
 export default KeyFactory
