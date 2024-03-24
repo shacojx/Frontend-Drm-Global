@@ -28,7 +28,7 @@ export function transformGetCompanyDetail(data: RawCompanyDetail): CompanyDetail
       type: o.company ? 'Company' : 'Individual',
       firstName: o.firstName ?? '', 
       lastName: o.lastName ?? '', 
-      document: typeof o.document === 'string' ? [o.document] : o.document
+      document: o.document.split(',')
     })),
     responseParty: {
       firstName: data.responsiblePartyFirstName ?? '',
