@@ -38,6 +38,7 @@ export function MasterServiceContent(props: Props) {
   const translation = useTranslation();
   const { validateCaller, validateAll } = useValidateCaller();
   const [serviceId, setServiceId] = useState<string>();
+  const [searchId, setSearchId] = useState<string>();
   const [serviceName, setServiceName] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [appliedNation, setAppliedNation] = useState<string>("");
@@ -115,7 +116,6 @@ export function MasterServiceContent(props: Props) {
     };
     const rawResult = await callApiViewMasterService(param);
     setTableData(rawResult.content);
-    let lastSelectId = serviceId;
     setServiceId("");
     const updatedMasterServiceClicked = rawResult.content.find(
       (masterService) => masterService.id === masterServiceClicked?.id
@@ -262,9 +262,9 @@ export function MasterServiceContent(props: Props) {
                 id={"searchId"}
                 validateCaller={validateCaller}
                 label={translation.t("masterService.serviceId")}
-                onChange={(v) => setServiceId(v)}
+                onChange={(v) => setSearchId(v)}
                 placeholder={translation.t("masterService.serviceIdPlaceholder")}
-                value={serviceId}
+                value={searchId}
               />
             </Grid>
             <Grid item md={2.4}>
