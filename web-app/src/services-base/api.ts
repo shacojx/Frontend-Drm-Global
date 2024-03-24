@@ -63,7 +63,7 @@ export async function getAccessTokenInfo() {
   return null
 }
 
-export function getAuthorizationString(accessTokenInfo: TokenInfo) { // TODO check export
+export function getAuthorizationString(accessTokenInfo: TokenInfo) {
   if (accessTokenInfo.type === 'Bearer') {
     return `Bearer ${accessTokenInfo.token}`
   }
