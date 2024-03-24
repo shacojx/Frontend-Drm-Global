@@ -1,27 +1,37 @@
+import { Fragment, PropsWithChildren, useRef, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { IconSpinner } from "./icons";
+import { CommonLoading } from "./CommonLoading";
 
-import { Fragment, PropsWithChildren, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-
-type Props = PropsWithChildren<Partial<{
-  isCloseOnClickOverlay: boolean,
-  isTransparent: boolean,
-  isAutoSize: boolean,
-  handleClickOverlay: (shouldOpen: boolean) => void
-}>>
+type Props = PropsWithChildren<
+  Partial<{
+    isCloseOnClickOverlay: boolean;
+    isTransparent: boolean;
+    isAutoSize: boolean;
+    loading?: boolean;
+    handleClickOverlay: (shouldOpen: boolean) => void;
+  }>
+>;
 export function DialogContainer(props: Props) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
 
-  const cancelButtonRef = useRef(null)
-  const handleClickOverlay = props.isCloseOnClickOverlay || !!props.handleClickOverlay
-    ? (shouldOpen: boolean) => {
-      props.handleClickOverlay?.(shouldOpen)
-      setOpen(shouldOpen)
-    }
-    : () => {}
+  const cancelButtonRef = useRef(null);
+  const handleClickOverlay =
+    props.isCloseOnClickOverlay || !!props.handleClickOverlay
+      ? (shouldOpen: boolean) => {
+          props.handleClickOverlay?.(shouldOpen);
+          setOpen(shouldOpen);
+        }
+      : () => {};
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={handleClickOverlay}>
+      <Dialog
+        as="div"
+        className="relative z-50"
+        initialFocus={cancelButtonRef}
+        onClose={handleClickOverlay}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -45,11 +55,14 @@ export function DialogContainer(props: Props) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className={
-                (props.isTransparent ? "" : "shadow-xl bg-white ")
-                + (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ")
-                + "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
-              }>
+              <Dialog.Panel
+                className={
+                  (props.isTransparent ? "" : "shadow-xl bg-white ") +
+                  (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ") +
+                  "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
+                }
+              >
+                <CommonLoading loading={Boolean(props?.loading)} />
                 {props.children}
               </Dialog.Panel>
             </Transition.Child>
@@ -57,6 +70,5 @@ export function DialogContainer(props: Props) {
         </div>
       </Dialog>
     </Transition.Root>
-  )
+  );
 }
-
