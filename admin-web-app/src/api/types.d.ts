@@ -282,7 +282,7 @@ export type RawResultViewMasterService = {
 export interface CreateMasterServiceBody {
   appliedNation:      string[];
   appliedCompanyType: string[];
-  serviceType:        string[]
+  serviceType:        string
   serviceName:        string;
   serviceDescription: string;
   serviceStep:        ServiceStepBody[];
@@ -324,7 +324,7 @@ export interface ServiceStep {
 export type ApiMasterServiceParam = {
   appliedNation:      string[];
   appliedCompanyType: string[];
-  serviceType:        string[]
+  serviceType:        string
   serviceName:        string;
   serviceDescription: string;
   serviceStep:        ServiceStep[];

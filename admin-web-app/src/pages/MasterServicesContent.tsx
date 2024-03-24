@@ -18,6 +18,7 @@ import {
 import {
   ApiSearchMasterServiceParam,
   ApiViewMasterServiceParam,
+  AppliedNation,
   ServiceCycle,
   ServiceStep,
   ViewedMasterService,
@@ -137,13 +138,6 @@ export function MasterServiceContent(props: Props) {
   // TODO: add i18n for columns
   const masterServiceColumns: GridColDef<ViewedMasterService>[] = [
     {
-      field: "id",
-      headerName: "No",
-      width: 70,
-      sortable: false,
-      type: "string",
-    },
-    {
       field: "serviceId",
       headerName: "Service ID",
       sortable: false,
@@ -161,13 +155,13 @@ export function MasterServiceContent(props: Props) {
       width: 200,
     },
     {
-      field: "applyNation",
+      field: "appliedNation",
       headerName: "Applied Nation",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       width: 220,
       renderCell: (params: GridCellParams) => {
-        return params.row.appliedNation?.at(1)?.nation;
+        return params.row.appliedNation?.map((item: AppliedNation) => item?.nation).join(", ");
       },
     },
     {
@@ -203,8 +197,8 @@ export function MasterServiceContent(props: Props) {
       sortable: false,
       type: "string",
       width: 200,
-      valueGetter: (params: GridValueGetterParams) =>
-        params.row.id > 10 ? params.row.id : `0${params.row.id}`,
+      valueGetter: (params: GridValueGetterParams) => 
+        params.row.serviceStep.length > 10 ? params.row.serviceStep.length : `0${params.row.serviceStep.length}`,
     },
     {
       field: "createdAt",
@@ -269,8 +263,8 @@ export function MasterServiceContent(props: Props) {
                 validateCaller={validateCaller}
                 label={translation.t("masterService.serviceId")}
                 onChange={(v) => setServiceId(v)}
+                placeholder={translation.t("masterService.serviceIdPlaceholder")}
                 value={serviceId}
-                placeholder="Service ID..."
               />
             </Grid>
             <Grid item md={2.4}>
@@ -280,7 +274,7 @@ export function MasterServiceContent(props: Props) {
                 label={translation.t("masterService.searchName")}
                 onChange={setServiceName}
                 value={serviceName}
-                placeholder="Service Name..."
+                placeholder={translation.t("masterService.searchNamePlaceholder")}
               />
             </Grid>
             <Grid item md={2.4}>
@@ -288,6 +282,7 @@ export function MasterServiceContent(props: Props) {
                 id={"status"}
                 validateCaller={validateCaller}
                 label={translation.t("masterService.status")}
+                placeholder={translation.t("masterService.statusPlaceholder")}
                 onChange={setStatus}
                 value={status}
                 optionInfos={[
@@ -304,11 +299,11 @@ export function MasterServiceContent(props: Props) {
                 validateCaller={validateCaller}
                 onChange={setAppliedNation}
                 value={appliedNation}
-                placeholder={"Applied Nation..."}
+                placeholder={translation.t("masterService.appliedNationPlaceholder")}
                 optionInfos={NATION_INFOS}
               />
             </Grid>
-            <Grid md={2.4}>
+            <Grid item md={2.4}>
               <div className="flex pt-10 justify-end items-bottom">
                 <button
                   onClick={handleResearch}
@@ -413,7 +408,7 @@ export function MasterServiceContent(props: Props) {
                 serviceName={""}
                 appliedCompanyType={[] as string[]}
                 appliedNation={[] as string[]}
-                serviceType={[] as string[]}
+                serviceType={''}
                 enable={false}
                 serviceId={tableData.length}
                 onCreated={handleCreated}

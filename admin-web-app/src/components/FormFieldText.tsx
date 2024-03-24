@@ -18,7 +18,7 @@ export function FormFieldText(props: FormFieldProps<string>) {
   }
 
   const isTextValid = !props.isRequired || !!props.value;
-  const statusClassName = shouldShowError
+  const statusClassName = shouldShowError || props.isError
     ? "border-danger bg-red-50"
     : "bg-white";
   return (

@@ -43,7 +43,11 @@
 
 .disabled > svg > path {
   fill: gray;
-  cursor: disabled;
+}
+
+.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .default-box:hover {

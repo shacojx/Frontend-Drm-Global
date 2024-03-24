@@ -1,27 +1,26 @@
 import { Grid } from "@mui/material";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   ApiMasterServiceParam,
   ServiceCycle,
   ServiceStep,
 } from "../../../src/api/types";
-import { FormFieldSelect } from "../../../src/components/FormFieldSelect";
 import { FormFieldText } from "../../../src/components/FormFieldText";
 import {
   APPLY_COMPANY_TYPE,
-  INDUSTRY_INFOS,
   NATION_INFOS,
   SERVICE_TYPE,
 } from "../../../src/constants/SelectionOptions";
 import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 import { ErrorMessage } from "../ErrorMessage";
-import React from "react";
 import { FormFieldMultiSelect } from "../FormFieldMultiSelect";
+import { FormFieldSelect } from "../FormFieldSelect";
 
 export type ServiceInformationProps = {
-  appliedNation: string[]
-  applyCompanyType: string[]
-  serviceType: string[]
+  appliedNation: string[];
+  applyCompanyType: string[];
+  serviceType: string;
   enable: boolean;
   serviceName: string;
   serviceDescription: string;
@@ -60,7 +59,7 @@ export function ServiceInformation(props: ServiceInformationProps) {
     [props.onUpdateBody]
   );
   const onUpdateServiceType = React.useCallback(
-    (v: string[]) => {
+    (v: string) => {
       props.onUpdateBody("serviceType", v);
     },
     [props.onUpdateBody]
@@ -73,7 +72,6 @@ export function ServiceInformation(props: ServiceInformationProps) {
     [props.onUpdateBody]
   );
 
-  console.log("validateAll");
   return (
     <div
       className={
@@ -99,7 +97,9 @@ export function ServiceInformation(props: ServiceInformationProps) {
                 value={props.appliedNation as string[]}
                 defaultValue={NATION_INFOS?.at(0)?.value}
                 optionInfos={NATION_INFOS}
-                placeholder="Applied Nation"
+                placeholder={translation.t(
+                  "masterService.appliedNationPlaceholder"
+                )}
                 errorComponent={
                   <ErrorMessage
                     message={translation.t("masterService.appliedNationError")}
@@ -119,10 +119,14 @@ export function ServiceInformation(props: ServiceInformationProps) {
                 value={props.applyCompanyType}
                 defaultValue={APPLY_COMPANY_TYPE?.at(0)?.value}
                 optionInfos={APPLY_COMPANY_TYPE}
-                placeholder="Applied Company Type"
+                placeholder={translation.t(
+                  "masterService.appliedCompanyTypePlaceholder"
+                )}
                 errorComponent={
                   <ErrorMessage
-                    message={translation.t("masterService.appliedCompanyTypeError")}
+                    message={translation.t(
+                      "masterService.appliedCompanyTypeError"
+                    )}
                     isError={!props.applyCompanyType.length}
                     showErrorMessage={props.isSubmitted}
                   />
@@ -130,16 +134,17 @@ export function ServiceInformation(props: ServiceInformationProps) {
               />
             </Grid>
             <Grid item md={2}>
-              <FormFieldMultiSelect
+              <FormFieldSelect
                 id={"serviceType"}
                 isRequired={true}
                 label={translation.t("masterService.serviceType")}
                 validateCaller={validateCaller}
                 onChange={onUpdateServiceType}
                 value={props.serviceType}
-                defaultValue={SERVICE_TYPE?.at(0)?.value}
                 optionInfos={SERVICE_TYPE}
-                placeholder={"Service type..."}
+                placeholder={translation.t(
+                  "masterService.serviceTypePlaceholder"
+                )}
                 errorComponent={
                   <ErrorMessage
                     message={translation.t("masterService.serviceTypeError")}
@@ -152,18 +157,30 @@ export function ServiceInformation(props: ServiceInformationProps) {
             <Grid item md={2}>
               <FormFieldText
                 id={"serviceName"}
+                isRequired={true}
                 validateCaller={validateCaller}
                 label={translation.t("masterService.serviceName")}
                 onChange={onUpdateServiceName}
                 value={props.serviceName}
-                placeholder={"Service name..."}
+                placeholder={translation.t(
+                  "masterService.serviceNamePlaceholder"
+                )}
+                errorComponent={
+                  <ErrorMessage
+                    message={translation.t("masterService.serviceTypeError")}
+                    isError={!props.serviceName.length}
+                    showErrorMessage={props.isSubmitted}
+                  />
+                }
               />
             </Grid>
             <Grid item md={4}>
               <FormFieldText
                 id={"description"}
                 label={translation.t("masterService.description")}
-                placeholder={"Service description..."}
+                placeholder={translation.t(
+                  "masterService.serviceDescriptionPlaceholder"
+                )}
                 validateCaller={{}}
                 onChange={onUpdateServiceDescription}
                 value={props.serviceDescription}

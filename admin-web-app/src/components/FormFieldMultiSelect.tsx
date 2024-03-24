@@ -61,9 +61,7 @@ export function FormFieldMultiSelect<T extends React.Key>(props: Props<T>) {
                         : "text-cBase font-bold")
                     }
                   >
-                    {findMultiOptionInfo(props.value)
-                      ?.map((item) => translation.t(item.label))
-                      .join(", ") ?? props.placeholder}
+                    {props?.placeholder}
                   </span>
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">

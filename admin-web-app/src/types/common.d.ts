@@ -14,6 +14,7 @@ type FormFieldProps<T> = {
   validateCaller: ValidateCaller
   onChange: (value: T) => void,
   errorComponent?: React.ReactNode | JSX.Element
+  isError?: boolean
 } & Partial<{
   label: string,
   isRequired: boolean,

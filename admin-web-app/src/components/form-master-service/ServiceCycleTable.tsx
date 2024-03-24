@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,9 +8,11 @@ import { ServiceCycle } from "../../../src/api/types";
 // import { FormFieldSelect } from "../../../src/components/FormFieldSelect";
 import { FormFieldText } from "../../../src/components/FormFieldText";
 import { IconTrash } from "../../../src/components/icons";
+import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
 
 export type ServiceCycleTableProps = {
   serviceCycle: ServiceCycle[];
+  isSubmitted: boolean;
   onUpdateServiceCycleFee: (id: number, value: string) => void;
   onRemoveServiceCycleFee: (id: number) => void;
   onAddMoreServiceSCycleFee: (id: number) => void;
@@ -30,6 +32,7 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
     [props.onRemoveServiceCycleFee]
   );
   const translation = useTranslation();
+  const { validateCaller } = useValidateCaller();
   const masterServiceColumns: GridColDef<ServiceCycle>[] = [
     {
       field: "cycleNumber",
@@ -51,18 +54,23 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
     },
     {
       field: "pricePerCycle",
-      headerName: translation.t("masterService.pricePerCycle"),
       sortable: false,
       type: "string",
       width: 450,
+      renderHeader: () => {
+        return (
+          <>
+            {translation.t("masterService.pricePerCycle")}{" "}
+            <span className="text-danger ml-2">*</span>
+          </>
+        );
+      },
       renderCell: (row) => {
         if (isNaN(Number(row.id))) {
           return (
             <button
               className="bg-gray-200 px-4 py-2 rounded-2xl font-bold"
-              onClick={() =>
-                props.onAddMoreServiceSCycleFee(Number(row.id))
-              }
+              onClick={() => props.onAddMoreServiceSCycleFee(Number(row.id))}
             >
               + {translation.t("masterService.nextCycle")}
             </button>
@@ -73,8 +81,11 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
           <FormFieldText
             id={String(row.id)}
             value={row.value}
-            validateCaller={{}}
-            onChange={(v) => onChangeItem(Number(row.id), v)}
+            validateCaller={validateCaller}
+            placeholder={translation.t("masterService.priceCyclePlaceholder")}
+            isRequired={true}
+            isError={!row.value && props.isSubmitted}
+            onChange={(v) => onChangeItem(Number(row?.id), v)}
           />
         );
       },
@@ -97,12 +108,18 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
               className: "disabled",
             })}
           >
-            <IconTrash />
+            <Tooltip
+              placement="top"
+              title={translation.t("masterService.delete")}
+            >
+              <IconTrash />
+            </Tooltip>
           </button>
         );
       },
     },
   ];
+
   const tableData = [
     ...props.serviceCycle,
     {
@@ -154,7 +171,7 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
             />
           </div>
         </Grid> */}
-        <Grid md={12}>
+        <Grid item md={12}>
           <DataGrid
             paginationMode="server"
             rows={tableData}
