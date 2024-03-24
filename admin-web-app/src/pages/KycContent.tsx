@@ -12,7 +12,7 @@ import { ApiGetKycParam, KycDetail, RawResultGetKyc } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
 import { generateFormatDate } from "../services-ui/date";
-import { useApiGetKYCs } from "../hooks/api/kyc";
+import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/kyc";
 
 type Props = {}
 const sampleRow:RawResultGetKyc = {
@@ -98,7 +98,11 @@ export function KycContent(props: Props) {
   const kycCount = data?.totalElements 
 
 
-  function handleClickReject(id: number) {
+  const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC()
+  const {mutateAsync: rejectKYC,  isPending: rejectingKYC } = useApiRejectKYC()
+
+  const handleClickReject = (id: number) => {
+
     setIsApproved(false)
     setIdSelected(id)
     setShouldShowConfirmDialog(true)
