@@ -6,6 +6,7 @@ import logo_full from "../assets/images/logo_full.png";
 import { I18nLanguage } from "../components/I18nLanguage";
 import { IconAccountCircle, IconLogout, IconX } from "../components/icons";
 import { AuthContext } from "../contexts/AuthContextProvider";
+import { RoutePaths } from "../pages/router";
 import { removeAuthInfo } from "../services-business/api/authentication";
 
 export type TabOption<TabId> = {
