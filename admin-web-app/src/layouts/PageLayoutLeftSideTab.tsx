@@ -8,7 +8,6 @@ import { IconAccountCircle, IconLogout, IconX } from "../components/icons";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { RoutePaths } from "../pages/router";
 import { removeAuthInfo } from "../services-business/api/authentication";
-import { RoutePaths } from "../pages/router";
 
 export type TabOption<TabId> = {
   iconElement: JSX.Element,

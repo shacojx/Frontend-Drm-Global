@@ -37,7 +37,6 @@ export const getFile = async (name: string) => {
     headers: headers,
   };
 
-  // const endpoint = `${process.env.REACT_APP_URL}/api/file/files/${name}`;
   const endpoint = `${process.env.REACT_APP_URL}/api/file/files/${name}`;
 
   const blob = await fetch(endpoint, options)

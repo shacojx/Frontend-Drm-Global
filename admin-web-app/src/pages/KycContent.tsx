@@ -55,15 +55,18 @@ export function KycContent(props: Props) {
   }
 
   const handleConfirm = async () => {
+    console.log("handle confirm")
     if (!idSelected) return
 
+    setShouldShowConfirmDialog(false)
+
     if (shouldShowConfirmDialog === "approve") {
-      await approveKYC(idSelected)
+      return await approveKYC(idSelected)
     } {
-      await rejectKYC(idSelected)
+      return await rejectKYC(idSelected)
     }
 
-    setShouldShowConfirmDialog(false)
+    
   }
 
   function handleClickPhoto(id: number, type: 'passport' | 'holdPassport') {
@@ -195,6 +198,7 @@ export function KycContent(props: Props) {
           onConfirm={handleConfirm}
         />
       )}
+
       {shouldShowPictureDialog && (
         <DialogContainer
           handleClickOverlay={setShouldShowPictureDialog.bind(undefined, false)}

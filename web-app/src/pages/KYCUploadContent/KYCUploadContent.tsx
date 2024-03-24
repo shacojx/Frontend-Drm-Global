@@ -1,9 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { uploadFile } from 'src/api/upload'
+import { DialogFailureFullscreen, DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen'
 import { IconCheck, IconDangerCircle, IconRefreshCircle, IconSpinner } from 'src/components/icons'
 import { RoutePaths } from 'src/constants/routerPaths'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
+import { useVerifyKYC } from 'src/hooks-api/useVerifyKYC'
 import TakeOrUploadPhoto from 'src/pages/KYCUploadContent/components/TakeOrUploadPhoto'
 import { FormStatus } from 'src/types/common'
 
@@ -12,13 +15,24 @@ export default function KYCUploadContent() {
     const { user } = useContext(AuthContext)
     const [file, setFile] = useState<File | null>(null);
     const [file2, setFile2] = useState<File | null>(null);
-    const [status, setStatus] = useState<FormStatus>();
+    
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+    const [showErrorDialog, setShowErrorDialog] = useState(false)
 
-    function handleClickSend() {
-        // TODO: integrate with api
+    const { mutateAsync: uploadKYC, isPending, error } = useVerifyKYC({
+        onError: () => setShowErrorDialog(true),
+        onSuccess: () => setShowSuccessDialog(true)
+    })
+    
+
+    const handleClickSend = async () => {
+        if (!file || !file2) return
+
+        await uploadKYC({passport: file, picture: file2})
     }
 
     const isDisableSend = !file || !file2
+
     return <>
         <div className={"w-full grow flex flex-col p-3 bg-white border border-solid border-t border-l"}>
             <div className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4"}>
@@ -63,11 +77,14 @@ export default function KYCUploadContent() {
                             className={"py-4 px-6 flex flex-row justify-center items-center gap-2 text-white font-semibold rounded-lg " + (isDisableSend ? " bg-primary_25" : " bg-primary")}
                         >
                             <span className={"font-bold"}>{translation.t('Send')}</span>
-                            {status === 'requesting' && <IconSpinner />}
+                            {isPending && <IconSpinner />}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        {showErrorDialog  && <DialogFailureFullscreen onClose={() => setShowErrorDialog(false)} title='Upload Failed' subTitle={error?.message} />}
+        {showSuccessDialog && <DialogSuccessFullscreen onClose={() => setShowSuccessDialog(false)} title='Upload Successfully' /> }
     </>
 }
