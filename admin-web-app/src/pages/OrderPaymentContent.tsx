@@ -35,6 +35,7 @@ export function OrderPaymentContent(props: Props) {
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
+
   useEffect(() => {
     const fetchData = async () => {
       const param: ApiViewUserParam = {
@@ -84,8 +85,7 @@ export function OrderPaymentContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 80,
-      valueGetter: (params: GridValueGetterParams) =>
-        params.row.enable ? 'Enable' : 'Disable',
+      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Enable' : 'Disable'),
       cellClassName: (params: GridCellParams) => {
         if (params.value === 'Enable') {
           return 'text-success';
@@ -167,15 +167,20 @@ export function OrderPaymentContent(props: Props) {
       type: 'string',
       width: 100,
       renderCell: (params: GridRenderCellParams) => {
-        return <div className={"flex flex-row gap-3"}>
-          <button onClick={handleClickApproved.bind(undefined, params.row.id)}
-                  className={"py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success"}
-          >
-            Approved
-          </button>
-        </div>
+        return (
+          <div className={'flex flex-row gap-3'}>
+            <button
+              // onClick={handleClickApproved.bind(undefined, params.row.id)}
+              className={
+                'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
+              }
+            >
+              Approved
+            </button>
+          </div>
+        );
       },
-    }
+    },
   ];
 
   return <div className={"w-full grow flex flex-col p-3"}>
