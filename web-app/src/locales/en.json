@@ -203,5 +203,6 @@
   "Country is required": "Country is required",
   "City is required": "City is required",
   "Address is required": "Address is required",
-  "Zip code is required": "Zip code is required"
+  "Zip code is required": "Zip code is required",
+  "Close": "Close"
 }
