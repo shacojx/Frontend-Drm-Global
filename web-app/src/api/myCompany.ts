@@ -1,13 +1,11 @@
+import { callApi } from "src/services-base/api";
 import { transformGetCompanyDetail } from "../services-business/api/transform-result/myCompany";
-import { CompanyDetail } from "./types";
+import { CompanyDetail, RawCompanyDetail } from "./types";
 
 export const callApiGetCompanyDetail = async () => {
-  // TODO:  implement after api is ready
-
-  // const path = "url";
-  // const rawResult = await callApi<RawCompanyInfo>("GET", path);
-
-  const rawResult = {} as never;
+  const path = "/api/user/get-my-company";
+  const rawResult = await callApi<RawCompanyDetail>("GET", path, {}, true);
+  console.log(rawResult)
 
   return transformGetCompanyDetail(rawResult);
 };
