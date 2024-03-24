@@ -6,14 +6,29 @@ type ResponseOk<T = unknown> = {
   "message": string,
   "data": T
 }
-export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any>, isPrivateApi: boolean = false): Promise<T> {
+
+export enum CONTENT_TYPE {
+  MULTIPART_FORM_DATA = 'multipart/form-data',
+  APPLICATION_JSON = 'application/json'
+}
+
+export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any> | any , isPrivateApi: boolean = false, contentTypeCode: string = CONTENT_TYPE.APPLICATION_JSON): Promise<T> {
   const apiUrl = new URL(path, API_DOMAIN)
   if (method === 'GET') {
     addParamsToSearchParams(apiUrl.searchParams, paramsOrBody)
   }
-  const body = method === "GET" ? undefined : JSON.stringify(paramsOrBody)
-  const contentType = method === "GET" ? undefined : {
-    'Content-Type': 'application/json',
+  let body = method === "GET" ? undefined : JSON.stringify(paramsOrBody)
+  let contentType
+  if (contentTypeCode === CONTENT_TYPE.MULTIPART_FORM_DATA){
+    body = paramsOrBody 
+    console.log('body: ', body);
+    contentType = {
+      'Content-Type': contentTypeCode,
+    }
+  } else{
+    contentType = method === "GET" ? undefined : {
+      'Content-Type': contentTypeCode,
+    }
   }
 
   let authorization = undefined

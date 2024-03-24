@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { LLCMyServiceContext } from "../../context/llcMyServiceContext";
-import { ServiceType } from "../../types/my-service.type";
+import { ServiceStatusType } from "../../types/my-service.type";
 import { IconCheck } from "../../../../components/icons";
 import { cn } from "../../../../utils/cn.util";
-import { StepType } from "../../../../api/types";
+import { MyServiceStepType } from "../../../../api/types";
 
 type Props = {
-  item: StepType;
+  item: MyServiceStepType;
 };
 
 export default function StepService({ item }: Props) {
@@ -14,7 +14,8 @@ export default function StepService({ item }: Props) {
     const { setDetailFilling } = useContext(LLCMyServiceContext);
 
 
-  const onClickStep = (item: StepType) => {
+  const onClickStep = (item: MyServiceStepType) => {
+    console.log('item: ', item);
       // lấy api thông tin step mới nhất trả ra content
     setDetailFilling(item)
   };
@@ -29,13 +30,13 @@ export default function StepService({ item }: Props) {
             className={cn(
               "inline-flex items-center text-white justify-center flex-shrink-0 w-5 h-5 rounded-full ",
               {
-                "bg-[#CCCCCC] ": item.status === ServiceType.Pending,
+                "bg-[#CCCCCC] ": item.statusStep === ServiceStatusType.Pending,
               },
               {
-                "bg-[#FF5722]/25": item.status === ServiceType.InProgress,
+                "bg-[#FF5722]/25": item.statusStep === ServiceStatusType.InProgress,
               },
               {
-                "bg-success": item.status === ServiceType.Issued,
+                "bg-success": item.statusStep === ServiceStatusType.Issued,
               }
             )}
           >
@@ -43,8 +44,8 @@ export default function StepService({ item }: Props) {
           </div>
         </div>
         <div className="flex-1">
-          <div className="">{item.name}</div>
-          <div className="text-sm text-[#A0AEC0]">{item.issuingDuration}</div>
+          <div className="">{item.stepName}</div>
+          <div className="text-sm text-[#A0AEC0]">{item.estimatedCompletionTime}</div>
         </div>
       </div>
     </div>

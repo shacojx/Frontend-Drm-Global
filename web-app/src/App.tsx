@@ -4,7 +4,7 @@ import { BrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css';
 import { AuthContextProvider } from './contexts/AuthContextProvider';
 import AppRouter from './routers/AppRouter';
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -20,6 +20,8 @@ function App() {
       <AuthContextProvider>
         <AppRouter />
       </AuthContextProvider>
+      {/* chỉ chạy môi trường dev */}
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </BrowserRouter>
 }

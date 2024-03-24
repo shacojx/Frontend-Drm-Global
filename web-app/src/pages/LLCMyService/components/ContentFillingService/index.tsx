@@ -1,28 +1,54 @@
-import { UploadedDocumentType } from "../../../../api/types";
+import { Fragment, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useContext, useState } from "react";
-import { LLCMyServiceContext } from "../../context/llcMyServiceContext";
-import TitleContent from "../../../../components/TitleContent";
-import TagService from "../TagService";
-import { ServiceType } from "../../types/my-service.type";
-import NotFoundService from "../NotFoundService";
-import { DiplomaVerifiedIcon, NotificationUnreadLinesIcon } from "../../../../components/icons";
+import { getFile, uploadFile } from "src/api/upload";
+import { UploadedDocumentType } from "../../../../api/types";
 import InputFile from "../../../../components/InputFile";
-import { cn } from "../../../../utils/cn.util";
+import TitleContent from "../../../../components/TitleContent";
+import {
+  DiplomaVerifiedIcon,
+  NotificationUnreadLinesIcon,
+} from "../../../../components/icons";
+import { LLCMyServiceContext } from "../../context/llcMyServiceContext";
+import { NONE_REQUIRED, ServiceStatusType } from "../../types/my-service.type";
+import NotFoundService from "../NotFoundService";
+import TagService from "../TagService";
+import { useApiLLCServiceUploadDocument } from "src/hooks-api/useLlcService";
 
 export default function ContentFillingService() {
   const { t } = useTranslation();
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File[]>([]);
 
   const { detailFilling } = useContext(LLCMyServiceContext);
 
-  const handleChangeFile = (file?: File) => {
-    setFile(file);
+  const mutateUploadFile = useApiLLCServiceUploadDocument();
+
+  // @ts-ignore
+  const handleChangeFile = async (file?: File, id: number) => {
+    const formData = new FormData();
+    // @ts-ignore
+    formData.append("files", file);
+    // @ts-ignore
+    formData.append("id", id);
+    try {
+      const res = await mutateUploadFile.mutateAsync(formData);
+      if (res) {
+        console.log("res: ", res);
+        setFile((pre) => {
+          let newArr: File[] = [...pre];
+          // @ts-ignore
+          newArr[id] = file;
+          return newArr;
+        });
+      }
+    } catch (error) {
+      console.error("error: ", error);
+    }
   };
 
   const onDownloadServiceUpload = (item: UploadedDocumentType) => {
-    console.log("item: ", item);
-    // download file
+    if (item.fileDocument) {
+      getFile(item.fileDocument);
+    }
   };
 
   return (
@@ -30,30 +56,40 @@ export default function ContentFillingService() {
       {detailFilling && (
         <div className="border border-primary_25 rounded-xl py-lg px-xl flex-grow">
           <div className="flex justify-between flex-grow mb-md">
-            <TitleContent label={detailFilling.name} />
+            <TitleContent label={detailFilling.stepName} />
             <div>
-              <TagService status={detailFilling.status as ServiceType} />
+              <TagService
+                status={detailFilling.statusStep as ServiceStatusType}
+              />
             </div>
           </div>
-          {detailFilling.status === ServiceType.Pending && <NotFoundService />}
-          {detailFilling.status !== ServiceType.Pending && (
+          {detailFilling.statusStep === ServiceStatusType.Pending && (
+            <NotFoundService />
+          )}
+          {detailFilling.statusStep !== ServiceStatusType.Pending && (
             <>
-              <div className="">
-                <div className="flex items-start py-md">
-                  <DiplomaVerifiedIcon className="mr-4 self-center" />
-                  <div className="flex-1">
-                    <div>{detailFilling?.detail?.step_description}</div>
+              {detailFilling?.description && (
+                <div className="">
+                  <div className="flex items-start py-md">
+                    <DiplomaVerifiedIcon className="mr-4 self-center" />
+                    <div className="flex-1">
+                      <div>{detailFilling?.description}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-rootRootPadding">
-                <div className="flex items-start border border-primary_25 bg-primary/10 p-md rounded-lg">
-                  <NotificationUnreadLinesIcon className="mr-4 self-center" />
-                  <div className="flex-1">
-                    <div>{detailFilling?.detail?.remark}</div>
+              )}
+
+              {detailFilling?.adminRemark && (
+                <div className="mt-rootRootPadding">
+                  <div className="flex items-start border border-primary_25 bg-primary/10 p-md rounded-lg">
+                    <NotificationUnreadLinesIcon className="mr-4 self-center" />
+                    <div className="flex-1">
+                      <div>{detailFilling?.adminRemark}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
               <div className="mt-rootRootPadding">
                 <div className="text-base font-bold leading-6">
                   {t("Customer document")}
@@ -68,25 +104,22 @@ export default function ContentFillingService() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-md items-center py-md">
-                    <div className="px-md text-[#3B3F48]/85 text-center">
-                      {
-                        detailFilling?.detail?.customer_document
-                          ?.required_document
-                      }
-                    </div>
-                    <div
-                      className={cn("px-md text-center flex justify-center")}
-                    >
-                      <InputFile
-                        label={t("Upload")}
-                        onChange={handleChangeFile}
-                        file={file}
-                        disabled={
-                          detailFilling?.detail?.customer_document
-                            ?.required_document === "none"
-                        }
-                      />
-                    </div>
+                    {detailFilling.customerDocument.map((item, index) => (
+                      <Fragment key={`customerDocument${item.id}`}>
+                        <div className="px-md text-[#3B3F48]/85 text-center">
+                          {index + 1}. {item.requiredDocument}
+                        </div>
+                        <div className="px-md flex justify-center items-center">
+                          <InputFile
+                            key={`file${item.id}`}
+                            label={t("Upload")}
+                            onChange={(file) => handleChangeFile(file, item.id)}
+                            file={file[item.id]}
+                            disabled={item.requiredDocument === NONE_REQUIRED}
+                          />
+                        </div>
+                      </Fragment>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -104,27 +137,22 @@ export default function ContentFillingService() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-md items-center py-md">
-                    <div className="text-[#3B3F48]/85 px-md text-center">
-                      {detailFilling.status === ServiceType.Issued &&
-                        detailFilling.detail?.service_document
-                          .required_document}
-                    </div>
-                    <div className="px-md text-center">
-                      {detailFilling.status === ServiceType.Issued &&
-                        detailFilling.detail?.service_document.uploaded_document.map(
-                          (item, index) => (
-                            <div>
-                              <a
-                                href="#"
-                                className="text-primary font-bold hover:underline"
-                                onClick={() => onDownloadServiceUpload(item)}
-                              >
-                                {index + 1}. {item.name}
-                              </a>
-                            </div>
-                          )
-                        )}
-                    </div>
+                    {detailFilling.result.map((item, index) => (
+                      <Fragment key={`result${item.id}`}>
+                        <div className="text-[#3B3F48]/85 px-md text-center">
+                          {index + 1}. {item.requiredDocument}
+                        </div>
+                        <div className="px-md text-center">
+                          <a
+                            href="#"
+                            className="text-primary font-bold hover:underline"
+                            onClick={() => onDownloadServiceUpload(item)}
+                          >
+                            {index + 1}. {item.fileDocument}
+                          </a>
+                        </div>
+                      </Fragment>
+                    ))}
                   </div>
                 </div>
               </div>

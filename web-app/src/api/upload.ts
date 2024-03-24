@@ -1,4 +1,4 @@
-import { getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
+import { callApi, getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
 
 export type UploadResponse = {
   message: string;
@@ -51,3 +51,5 @@ export const getFile = async (name: string) => {
     })
     .catch((error) => console.log("error", error));
 };
+
+const URL_DOWNLOAD = 'api/file/files'
