@@ -14,6 +14,8 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
   const { t } = useTranslation();
   const [downloadingName, setDownloadingName] = useState<string>();
 
+  console.log(documents)
+
   const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
@@ -39,7 +41,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
 
       {documents.map((document) => (
         <div
-          key={document.id}
+          key={document.name}
           className="flex justify-between mb-6 border border-solid border-surface py-4 px-3 rounded-lg items-center"
         >
           <div className="font-bold">{document.name}</div>
@@ -53,6 +55,10 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
               setDownloadingName(undefined);
             }}
           >
+            {(() => {
+              console.log(downloadingName, document.name)
+              return ''
+            })()}
             {downloadingName === document.name && <IconSpinner />}
             {t("Download")}
           </button>

@@ -2,55 +2,48 @@ import {
   CompanyDetail,
   CompanyInformation,
   Document,
+  EntityEnding,
   MailingAddress,
   OwnerInformation,
   RawCompanyDetail,
   ResponseParty
 } from "src/api/types";
 
-const MOCK_COMPANY_INFO: CompanyInformation = {
-  companyName: "Test IT Solution",
-  entityEnding: "LLC",
-  industry: "Art and photography",
-  website: "website",
-  description: "description",
-  region: "region",
-};
-
-const MOCK_OWNERS: OwnerInformation[] = [
-  {
-    id: "10",
-    type: "Company",
-    document: [],
-    companyName: "Test IT Solution",
-    ownership: 100,
-  },
-];
-
-const MOCK_RESPONSE_PARTY: ResponseParty = {
-  firstName: "Hoang",
-  lastName: "Nguyen",
-  hasSSNorITIN: false,
-};
-
-const MOCK_MAILING_ADDRESS: MailingAddress = {
-  country: "Vietnam",
-  city: "Hanoi",
-  address: "Me Linh, Ha Noi",
-  zipCode: "55000",
-};
-
-const MOCK_DOCUMENTS: Document[] = [{ id: "1", name: "avt-default.jpg", url: "#" }];
-
 export function transformGetCompanyDetail(data: RawCompanyDetail): CompanyDetail {
   // TODO:  implement after api is ready
 
   const companyDetail: CompanyDetail = {
-    companyInfo: MOCK_COMPANY_INFO,
-    owners: MOCK_OWNERS,
-    responseParty: MOCK_RESPONSE_PARTY,
-    mailingAddress: MOCK_MAILING_ADDRESS,
-    documents: MOCK_DOCUMENTS,
+    companyInfo: {
+      companyName: data.companyName,
+      description: data.companyDescription,
+      entityEnding: data.entityEnding as EntityEnding,
+      industry: data.industry,
+      region: data.region ?? '',
+      website: data.website
+    },
+    owners: data.owner.map((o, idx) => ({
+      id: idx.toString(), 
+      companyName: o.companyName ?? '',
+      ownership: Number(o.ownerShip), 
+      type: o.company ? 'Company' : 'Individual',
+      firstName: o.firstName ?? '', 
+      lastName: o.lastName ?? '', 
+      document: typeof o.document === 'string' ? [o.document] : o.document
+    })),
+    responseParty: {
+      firstName: data.responsiblePartyFirstName ?? '',
+      lastName: data.responsiblePartyLastName ?? '',
+      hasSSNorITIN: !!data.responsiblePartySSNOrITIN,
+      SSNorITIN: data.responsiblePartySSNOrITIN ?? '',
+    },
+    mailingAddress: {
+      address: data.mailingAddress ?? '',
+      city: data.mailingCity ?? '',
+      country: data.mailingCountry ?? '',
+      zipCode: data.mailingZipCode ?? '',
+      state: data.mailingState ?? '', 
+    },
+    documents: data.document.map(doc => ({name: doc.document})),
   };
 
   return companyDetail;

@@ -15,6 +15,7 @@ type OwnerInformationTabProps = {
 };
 
 export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerInformationTabProps) {
+  console.log(owners)
   const { t } = useTranslation();
   const totalShare = owners?.reduce((acc, cur) => acc + (cur.ownership ?? 0), 0);
 
@@ -44,6 +45,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
     ]);
   };
 
+
   return (
     <div>
       {totalShare > 100 && (
@@ -51,7 +53,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
           {t("Total ownership must be less than or equal 100.")}
         </div>
       )}
-      {owners.map((owner, idx) => (
+      {owners?.map((owner, idx) => (
         <div key={owner.id}>
           <div className="grid grid-cols-[1fr,20px] xl:flex xl:justify-between">
             <div className="underline text-lg font-bold mb-6">
@@ -142,7 +144,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                     isRequired
                     validateCaller={validateCaller}
                     id="firstName"
-                    value={owner.companyName}
+                    value={owner.firstName}
                     onChange={(value) => handleFormChange(owner.id, "companyName", value)}
                   />
                 </div>
@@ -154,7 +156,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                     isRequired
                     validateCaller={validateCaller}
                     id="lastName"
-                    value={owner.companyName}
+                    value={owner.lastName}
                     onChange={(value) => handleFormChange(owner.id, "companyName", value)}
                   />
                 </div>
@@ -185,10 +187,10 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                   handleFormChange(
                     owner.id,
                     "document",
-                    value.map((f) => f.name)
+                    value?.map((f) => f.name)
                   )
                 }
-                value={owner.document?.map((doc) => ({ id: doc, name: doc, url: doc }))}
+                value={owner?.document?.map((doc) => ({ id: doc, name: doc, url: doc }))}
               />
             </div>
 
@@ -196,7 +198,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               <button
                 className="cursor-pointer mt-auto mb-2 xl:block hidden"
                 onClick={() => {
-                  onChange?.(owners.filter((o) => o.id !== owner.id));
+                  onChange?.(owners?.filter((o) => o.id !== owner.id));
                 }}
               >
                 <IconXCircle />
