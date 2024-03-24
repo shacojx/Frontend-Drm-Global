@@ -49,7 +49,6 @@ export function LoginPage() {
     }
     try {
       const result = await callApiLogin(param)
-      console.log('result.roles: ', result.roles, !result.roles.includes('ROLE_USER'))
       if (!result.roles.includes('ROLE_USER')) {
         setStatus("failure")
         return
