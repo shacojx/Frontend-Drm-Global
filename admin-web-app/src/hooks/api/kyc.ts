@@ -18,7 +18,6 @@ export const useApiApproveKYC = () => {
   return useMutation({
     mutationKey: [],
     mutationFn: callApiApproveKyc,
-    // onSuccess: 
   })
 }
 
