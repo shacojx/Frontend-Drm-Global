@@ -11,7 +11,7 @@ export default function MyAccountContent() {
     const translation = useTranslation()
 
 
-    return <div className={"w-full grow flex flex-col p-3"}>
+    return <div className={"w-full grow flex flex-col p-3 border-solid border-t border-l bg-white"}>
         <div className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
             <div>
                 {user?.avatar

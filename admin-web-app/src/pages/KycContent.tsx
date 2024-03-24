@@ -12,125 +12,61 @@ import { ApiGetKycParam, KycDetail, RawResultGetKyc } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
 import { generateFormatDate } from "../services-ui/date";
+import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/kyc";
 
 type Props = {}
-const sampleRow:RawResultGetKyc = {
-  "content": [
-    {
-      "id": 2,
-      "llcInNation": "United States",
-      "username": "shacojx0011@gmail.com",
-      "email": "shacojx0011@gmail.com",
-      "codePhone": "+84",
-      "phone": "383052825",
-      "companyType": "Buon lau",
-      "companyName": "",
-      "entityEnding": "",
-      "industry": "",
-      "website": "",
-      "companyDescription": "",
-      "enable": 1,
-      "firstName": "Sample",
-      "lastName": "Row",
-      "avatarImage": null,
-      "kycStatus": "In-progress",
-      "passport": null,
-      "pictureHoldPassport": null,
-      "requestKYCAt": "2024-03-17T09:03:41.000+00:00",
-      "roles": [
-        {
-          "id": 1,
-          "name": "ROLE_USER"
-        }
-      ]
-    },
-    {
-      "id": 1,
-      "llcInNation": "USA",
-      "username": "toanvv1@gmail.com",
-      "email": "toanvv1@gmail.com",
-      "codePhone": "+84",
-      "phone": "383052877",
-      "companyType": "LLC",
-      "companyName": "LuxPay",
-      "entityEnding": "demo entityEnding",
-      "industry": "Demo industry",
-      "website": "luxpay.com",
-      "companyDescription": "công ty thanh toán tiền tệ",
-      "enable": 1,
-      "firstName": "Sample",
-      "lastName": "Row",
-      "avatarImage": "picture-1-1710614359562.jpg",
-      "kycStatus": "In-progress",
-      "passport": "passport-1-1710664838998.jpg",
-      "pictureHoldPassport": "picture-1-1710664839017.jpg",
-      "requestKYCAt": "2024-03-17T08:40:39.000+00:00",
-      "roles": [
-        {
-          "id": 3,
-          "name": "ROLE_ADMIN"
-        }
-      ]
-    }
-  ],
-  "totalPages": 2,
-  "totalElements": 4,
-}
+
 export function KycContent(props: Props) {
   const translation = useTranslation()
-  const [tableData, setTableData] = useState<KycDetail[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
-  const [kycCount, setKycCount] = useState<number>()
-  const [shouldShowConfirmDialog, setShouldShowConfirmDialog] = useState<boolean>()
+  const [shouldShowConfirmDialog, setShouldShowConfirmDialog] = useState<false | "approve" | "reject">()
   const [shouldShowPictureDialog, setShouldShowPictureDialog] = useState<boolean>()
-  const [isApproved, setIsApproved] = useState<boolean>()
   const [idSelected, setIdSelected] = useState<number>()
   const [pictureIndexInit, setPictureIndexInit] = useState<number>(0)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const param: ApiGetKycParam = {
-        page: paginationModel.page,
-        size: paginationModel.pageSize
-      }
-      const rawResult = await callApiGetKyc(param)
-      setTableData([...rawResult.content, ...sampleRow.content]);
-      setKycCount(rawResult.totalElements)
-    };
+  const {data, isLoading: gettingKYCs} = useApiGetKYCs({
+    page: paginationModel.page,
+    size: paginationModel.pageSize
+  })
 
-    fetchData().catch(e=> console.log(e))
-  }, [paginationModel]);
+  const tableData = data?.content ?? []
+  const kycCount = data?.totalElements 
 
-  function handleClickReject(id: number) {
-    setIsApproved(false)
+
+  const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC()
+  const {mutateAsync: rejectKYC,  isPending: rejectingKYC } = useApiRejectKYC()
+
+  const handleClickReject = (id: number) => {
     setIdSelected(id)
-    setShouldShowConfirmDialog(true)
+    setShouldShowConfirmDialog("reject")
   }
 
-  function handleClickApproved(id: number) {
-    setIsApproved(true)
+  const handleClickApproved = (id: number) => {
     setIdSelected(id)
-    setShouldShowConfirmDialog(true)
+    setShouldShowConfirmDialog("approve")
   }
 
-  function handleCancel() {
-    setIsApproved(undefined)
+  const handleCancel = () => {
     setIdSelected(undefined)
     setShouldShowConfirmDialog(false)
   }
 
-  function handleConfirm() {
-    // TODO: implement
-    try {
+  const handleConfirm = async () => {
+    console.log("handle confirm")
+    if (!idSelected) return
 
-    } catch (e) {
-      console.error(e)
-    }
-    setIsApproved(undefined)
     setShouldShowConfirmDialog(false)
+
+    if (shouldShowConfirmDialog === "approve") {
+      return await approveKYC(idSelected)
+    } {
+      return await rejectKYC(idSelected)
+    }
+
+    
   }
 
   function handleClickPhoto(id: number, type: 'passport' | 'holdPassport') {
@@ -216,12 +152,12 @@ export function KycContent(props: Props) {
       width: 200,
       renderCell: (params: GridRenderCellParams) => {
         return <div className={"flex flex-row gap-3"}>
-          <button onClick={handleClickReject.bind(undefined, params.row.id)}
+          <button onClick={() => handleClickReject(params.row.id)}
                className={"py-2 px-3 rounded-lg cursor-pointer bg-red-100 hover:bg-red-200 text-danger"}
           >
             Reject
           </button>
-          <button onClick={handleClickApproved.bind(undefined, params.row.id)}
+          <button onClick={() => handleClickApproved(params.row.id)}
                className={"py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success"}
           >
             Approved
@@ -231,39 +167,49 @@ export function KycContent(props: Props) {
     },
   ];
 
-  return <div className={"w-full grow flex flex-col p-3"}>
-    <div
-      className={"flex flex-col grow overflow-x-scroll overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
-      <p className={"text-h4 w-full text-start mb-6"}>{translation.t('KYC Management')}</p>
-      <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
-        <DataGrid
-          paginationMode="server"
-          rows={tableData}
-          columns={kycColumns}
-          pageSizeOptions={[25]}
-          rowCount={kycCount || 0}
-          paginationModel={paginationModel}
-          onPaginationModelChange={(model) => setPaginationModel(model)}
-        />
-      </div>
-    </div>
-    {shouldShowConfirmDialog && <DialogConfirmFullScreen
-      onClose={setShouldShowConfirmDialog.bind(undefined, false)}
-      title={isApproved ? "Approve KYC Request?" : "Reject KYC Request?"}
-      content={"This action cannot be undone"}
-      onCancel={handleCancel}
-      onConfirm={handleConfirm}
-    />}
-    {shouldShowPictureDialog && <DialogContainer
-      handleClickOverlay={setShouldShowPictureDialog.bind(undefined, false)}
-      isAutoSize
-      isCloseOnClickOverlay
-    >
-      <div className="w-full max-w-[400px] justify-center items-center py-8 px-4 flex flex-col">
-        <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
+  return (
+    <div className={'w-full grow flex flex-col p-3'}>
+      <div
+        className={
+          'flex flex-col grow overflow-x-scroll overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
+        }
+      >
+        <p className={'text-h4 w-full text-start mb-6'}>{translation.t('KYC Management')}</p>
+        <div className={'w-full grow'} key={tableData.map((value) => value.id).join('_')}>
+          <DataGrid
+            paginationMode="server"
+            rows={tableData}
+            columns={kycColumns}
+            pageSizeOptions={[25]}
+            rowCount={kycCount || 0}
+            paginationModel={paginationModel}
+            onPaginationModelChange={(model) => setPaginationModel(model)}
+          />
         </div>
       </div>
-    </DialogContainer>
-    }
-  </div>;
+      {shouldShowConfirmDialog && (
+        <DialogConfirmFullScreen
+          onClose={() => setShouldShowConfirmDialog(false)}
+          title={
+            shouldShowConfirmDialog === 'approve' ? 'Approve KYC Request?' : 'Reject KYC Request?'
+          }
+          content={'This action cannot be undone'}
+          onCancel={handleCancel}
+          onConfirm={handleConfirm}
+        />
+      )}
+
+      {shouldShowPictureDialog && (
+        <DialogContainer
+          handleClickOverlay={setShouldShowPictureDialog.bind(undefined, false)}
+          isAutoSize
+          isCloseOnClickOverlay
+        >
+          <div className="w-full max-w-[400px] justify-center items-center py-8 px-4 flex flex-col">
+            <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8"></div>
+          </div>
+        </DialogContainer>
+      )}
+    </div>
+  );
 }

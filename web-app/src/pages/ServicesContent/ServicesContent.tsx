@@ -103,7 +103,7 @@ export default function ServicesContent() {
     Services.forEach(service => totalPrice += service.price)
 
     return <div className={"w-full grow flex flex-col"}>
-        <div className={"flex p-3 grow overflow-hidden"}>
+        <div className={"flex bg-white border-t border-l border-solid grow overflow-hidden"}>
             {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden space-y-8"}>
                 {user?.companyType && <div className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new in", { companyType: user.companyType })}
                     <span

@@ -1,4 +1,4 @@
-import { callApi } from "../services-base/api";
+import { callApi, getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
 import { transformLoginResult } from "../services-business/api/transform-result/account";
 import {
   ApiChangeUserPassword,
@@ -6,7 +6,7 @@ import {
   ApiCheckRecoveryCode,
   ApiLoginParam,
   ApiRegisterAccountParam, ApiResetPasswordParam,
-  ApiSendRecoveryCode, ApiVerifyPhone,
+  ApiSendRecoveryCode, ApiUploadKYC, ApiVerifyPhone,
   RawResultCheckRecoveryCode, RawResultEmpty,
   RawResultGetUserProfile,
   RawResultLogin, RawResultRegisterAccount, RawResultResetPassword,
@@ -84,4 +84,27 @@ export async function callApiChangeUserPassword(body: ApiChangeUserPassword) {
   const path = 'api/user/changepass'
   const rawResult = await callApi<RawResultGetUserProfile>('PUT', path, body, true)
   return rawResult
+}
+
+export const callApiUploadKYC = async ({passport, picture}: ApiUploadKYC) => {
+  const headers = new Headers();
+  headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
+
+  const formData = new FormData();
+  formData.append("passport", passport);
+  formData.append("picture", picture)
+
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: formData,
+  };
+
+  const endpoint = `${process.env.REACT_APP_URL}/api/file/upload-kyc`;
+
+  const data = (await fetch(endpoint, options).then((response) =>
+    response.json()
+  ));
+
+  return data;
 }

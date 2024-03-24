@@ -39,17 +39,17 @@ export default function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
             {/*<div className={"py-4 px-6 flex flex-row gap-3 border rounded-lg cursor-pointer"}>*/}
             {/*  <IconCamera className={"text-gray-400"}/>*/}
             {/*  <p className={"font-bold"}>{translation.t('Take a photo')}</p>*/}
-            {/*</div>*/}
+            {/* </div> */}
             <div className={"py-4 px-6 flex flex-row gap-3 bg-primary rounded-lg cursor-pointer"} onClick={handleClickUpload}>
                 <IconUpload className={"text-white"} />
-                <input ref={uploadFileRef} className={"hidden"} type="file" accept="application/pdf" onChange={handleChange} />
+                <input ref={uploadFileRef} className={"hidden"} type="file" accept="image/png, image/jpeg, image/jpg" onChange={handleChange}/>
                 <p className={"text-white font-bold"}>{translation.t('Upload file')}</p>
             </div>
         </div>
         <ul className={"list-disc flex flex-col items-center"}>
             <li>{translation.t('All corners of the passport are visible against the backdrop')}</li>
             <li>{translation.t('All passport data is legible')}</li>
-            <li>{translation.t('The photo is in color and should be a valid file (PDF)')}</li>
+            <li>{translation.t('The photo is in color and should be a valid file (PNG, JPG, JPEG)')}</li>
             <li>{translation.t('Maximum allowed size is 10MB')}</li>
         </ul>
     </div>

@@ -96,6 +96,11 @@ export type ApiChangeUserPassword = {
   "reNewPass": string,
 }
 
+export type ApiUploadKYC = {
+  passport: File,
+  picture: File,
+}
+
 // ====== Payment ======== //
 
 export type Currency = 'USD'

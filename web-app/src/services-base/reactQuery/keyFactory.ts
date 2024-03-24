@@ -8,6 +8,7 @@ const QueryKey = {
 
 const MutationKey = {
   postMyCompany: 'myCompany/postDetail',
+  uploadKYC: 'account/uploadKYC',
 }
 
 export type KeyType = string | number | undefined
@@ -28,7 +29,8 @@ const KeyFactory = {
   getMyCompanyDetail() {
     return generateKey(QueryKey.getMyCompany)
   },
-  postCompanyDetail: () => generateKey(MutationKey.postMyCompany)
+  postCompanyDetail: () => generateKey(MutationKey.postMyCompany),
+  uploadKYC: () => generateKey(MutationKey.uploadKYC)
 }
 
 export default KeyFactory
