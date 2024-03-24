@@ -4,7 +4,7 @@ import { UploadResponse } from "src/api/upload";
 
 // TODO: remove sample data
 
-const URL = 'api/user/get-paid-service'
+const URL = 'api/user/get-paid-122service1'
 const URL_UPLOAD = 'api/file/upload-customer-document'
 
 
