@@ -1,8 +1,8 @@
 
-export enum ServiceType {
-  Pending = 1,
-  InProgress = 2,
-  Issued = 3,
+export enum ServiceStatusType {
+  Pending = 'Pending',
+  InProgress = 'In-Progress',
+  Issued = 'Issued',
 }
 
 export type TabType = {
@@ -10,8 +10,10 @@ export type TabType = {
   icon: JSX.Element;
   header: string;
   deatail: string;
-  status: ServiceType;
+  status: ServiceStatusType;
   color: string;
   clickable?: boolean;
   onClick?: () => void;
 };
+
+export const NONE_REQUIRED = 'none';

@@ -1,4 +1,4 @@
-import { ServiceType } from "../pages/LLCMyService/types/my-service.type";
+import { ServiceStatusType } from "../pages/LLCMyService/types/my-service.type";
 
 export type NationValue = string
 export type CompanyTypeValue = 'LLC' | 'PLC'
@@ -110,33 +110,47 @@ export type ApiCreateOrderParam = {
 
 // ====== LLC Service ======== //
 
-export type UploadedDocumentType = {
-  name: string;
-  link: string;
-};
-
-export type StepType = {
+export type UploadedDocumentType ={
   id: number;
-  name: string;
-  status: ServiceType;
-  issuingDuration: string;
-  detail?: {
-    step_description: string;
-    remark: string;
-    customer_document: {
-      required_document: string;
-      uploaded_document: UploadedDocumentType[];
-    };
-    service_document: {
-      required_document: string;
-      uploaded_document: UploadedDocumentType[];
-    };
-  };
-};
+  requiredDocument: string;
+  fileDocument: string | null;
+}
 
-export type LLCServiceType = {
+export type MyServiceStepType = {
+  id: number;
+  stepNo: number|null;
+  stepName: string;
+  statusStep: string;
+  estimatedCompletionTime: string;
+  description: string;
+  adminRemark: null;
+  customerDocument: UploadedDocumentType[];
+  result: UploadedDocumentType[];
+}
+
+export type MyServiceType = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  userId: number;
+  serviceId: number;
+  ServiceStatusType: string;
+  serviceName: string;
+  serviceDescription: string;
+  statusService: ServiceStatusType;
+  cycleNumber: number;
+  pricePerCycle: number;
+  transitionId: number;
+  statusPayment: ServiceStatusType;
+  statusContract: ServiceStatusType;
+  contractFile: string| null;
+  pic: null;
+  serviceStep: MyServiceStepType[];
+}
+
+export type LLCServiceStatusType = {
   status: number;
-  step: StepType [];
+  step: MyServiceStepType [];
 };
 
 // ====== My Company ====== //
