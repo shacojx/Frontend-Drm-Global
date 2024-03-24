@@ -60,7 +60,9 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
           return (
             <button
               className="bg-gray-200 px-4 py-2 rounded-2xl font-bold"
-              onClick={() => props.onAddMoreServiceSCycleFee(Number(row.id))}
+              onClick={() =>
+                props.onAddMoreServiceSCycleFee(Number(row.id))
+              }
             >
               + {translation.t("masterService.nextCycle")}
             </button>
@@ -84,13 +86,17 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
       type: "string",
       width: 100,
       renderCell: (row) => {
-        if (isNaN(Number(row.id))) {
+        if (isNaN(Number(row.id)) || !props?.serviceCycle?.length) {
           return <></>;
         }
-        console.log("click remove");
-
         return (
-          <button onClick={() => onRemoveItem(Number(row.id))}>
+          <button
+            onClick={() => onRemoveItem(Number(row.id))}
+            {...(props?.serviceCycle?.length < 2 && {
+              disabled: true,
+              className: "disabled",
+            })}
+          >
             <IconTrash />
           </button>
         );
@@ -99,7 +105,11 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
   ];
   const tableData = [
     ...props.serviceCycle,
-    { id: NaN, cycleNumber: 0, pricePerCycle: 0 } as ServiceCycle,
+    {
+      id: NaN,
+      cycleNumber: props.serviceCycle.length + 1,
+      pricePerCycle: 0,
+    } as ServiceCycle,
   ];
 
   // Note: REMOVE THIS IF LOGIC REMOVE

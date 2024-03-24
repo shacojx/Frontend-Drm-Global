@@ -520,3 +520,8 @@ export const APPLY_COMPANY_TYPE: OptionInfo<CompanyTypeValue>[] = [
   { label: 'LLC', value: 'LLC' },
   { label: 'PLC', value: 'PLC' },
 ]
+
+export const SERVICE_TYPE: OptionInfo<string>[] = [
+  { label: 'Based', value: 'Based' },
+  { label: 'Add-on', value: 'Add-on' },
+]

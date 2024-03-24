@@ -9,6 +9,7 @@ import { IconCheck, IconAltArrowDown } from "./icons";
 
 type Props<T extends React.Key> = FormFieldProps<T> & {
   optionInfos: OptionInfo<T>[],
+  errorComponent?: React.ReactNode | JSX.Element
 } & Partial<{
   minWidth: string
 }>
@@ -99,6 +100,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
             </Transition>
           </div>
           {!!props.errorMessage && <p>{translation.t(props.errorMessage)}</p>}
+          {!!props.errorComponent && props.errorComponent}
         </>
       )}
     </Listbox>

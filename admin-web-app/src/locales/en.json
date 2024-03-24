@@ -164,7 +164,7 @@
   "masterService.appliedNation": "Applied Nation",
   "masterService.serviceCompanyType": "Applied Company Type",
   "masterService.reload": "Reset",
-  "masterService.apply": "Apply",
+  "masterService.apply": "Applied",
   "masterService.createNew": "Create New",
   "masterService.deactive": "Deactivate",
   "masterService.deactivate": "Deactivate",
@@ -195,6 +195,9 @@
   "masterService.description": "Description",
   "masterService.update": "Update",
   "masterService.inactive": "Inactive",
-  "masterService.serviceType": "Service Type",
-  "masterService.serviceName": "Service Name"
+  "masterService.serviceName": "Service Name",
+  "masterService.appliedNationError": "Applied nation is required min 1 value",
+  "masterService.appliedCompanyTypeError": "Applied company type is required min 1 value",
+  "masterService.serviceTypeError": "Service type require min 1 value",
+  "masterService.serviceType": "Service type"
 }

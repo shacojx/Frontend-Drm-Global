@@ -26,6 +26,8 @@ import {
   IconTrash,
   IconX,
 } from "../../src/components/icons";
+import { toast } from "react-toastify";
+import { CommonLoading } from "./CommonLoading";
 
 type Props = {
   onCreated: () => void;
@@ -36,15 +38,14 @@ type Props = {
   onCancelModal: () => void;
   serviceId: number;
   serviceDescription: string;
-  appliedCompanyType: string;
-  appliedNation: string;
-  serviceType: string;
+  appliedCompanyType: string[];
+  appliedNation: string[];
+  serviceType: string[];
   serviceName: string;
 };
 
 export const ContentInfoContainer = styled("div")(() => ({
   padding: 10,
-  borderBottom: "1px solid #111111",
   position: "relative",
   display: "flex",
   alignItems: "center",
@@ -66,14 +67,14 @@ export function ContentInfoItem(props: ContentInfoProps) {
     props.onChangeItem(props.stepIndex, props.index, value);
   return (
     <ContentInfoContainer>
-      {`${props.index + 1}. `}
+      <label className="text-bold mr-1">{`${props.index + 1}. `}</label>
       <FormFieldText
         value={props.content}
         onChange={onChangeItem}
         id={"result"}
         validateCaller={{}}
       />
-      <div className="flex right-2 top-2">
+      <div className="absolute right-0 top-3">
         <button onClick={onRemoveItem}>
           <IconX />
         </button>
@@ -142,7 +143,7 @@ export function ContentInfoList(props: ContentInfoListProps) {
 
 export type ServiceStepDisplayProps = {
   serviceStep: ServiceStep[];
-  onCreateServiceStep: (value: ServiceStep[]) => void;
+  onUpdateServiceStep: (value: ServiceStep[]) => void;
 };
 
 export type ServiceStepItemProps = {
@@ -170,10 +171,10 @@ export type ServiceStepItemProps = {
   onDuplicateItem: (id: number) => void;
   step: ServiceStep;
   index: number;
+  disableDelete: boolean;
 };
 
 export function ServiceStepItem(props: ServiceStepItemProps) {
-  const translation = useTranslation();
   const onChangeStepValue = (value: string, name: keyof ServiceStep) => {
     if (props?.onChangeStepContent) {
       props?.onChangeStepContent(props?.index, name, value);
@@ -184,7 +185,7 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
   return (
     <div
       className={
-        "flex space-x-10 items-center justify-right bg-zinc-50 border-solid border-1 border-black-100 mb-2 py-10 border-solid"
+        "flex space-x-10 items-center justify-right bg-zinc-50 mb-2 py-10"
       }
     >
       <p className="font-bold text-2xl pl-2">{props?.index + 1}</p>
@@ -254,10 +255,13 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
         <button onClick={props.onAddNewItem} className="mb-4">
           <IconAddSquareOutLine />
         </button>
-        <button onClick={onDeleteItem} className="mb-4">
+        <button onClick={onDuplicateItem} className="mb-4">
           <IconCopy />
         </button>
-        <button onClick={onDuplicateItem} className="mb-4">
+        <button
+          onClick={onDeleteItem}
+          className={`mb-4 ${props.disableDelete && "disabled"}`}
+        >
           <IconTrash />
         </button>
       </Box>
@@ -437,8 +441,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
 
   const onDuplicateItem = React.useCallback(
     (id: number) => {
-      console.log("index", id);
-      const newItem = stepDataList?.find((item) => item.id !== id);
+      const newItem = stepDataList?.find((item) => item.id === id);
 
       if (newItem) {
         setStepDateList([...stepDataList, newItem]);
@@ -448,16 +451,13 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
   );
 
   React.useEffect(() => {
-    props.onCreateServiceStep(stepDataList);
+    props.onUpdateServiceStep(stepDataList);
   }, [stepDataList]);
 
   return (
     <Box>
       {stepDataList.map((step, index) => (
-        <div
-          key={`${index}`}
-          className="border-solid border-gray-500 border-2 px-2 rounded-2xl mb-2"
-        >
+        <div key={`${index}`} className="px-2 rounded-2xl mb-2 default-box">
           <ServiceStepItem
             step={step}
             index={index}
@@ -471,6 +471,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
             onDuplicateItem={onDuplicateItem}
             onAddNewItem={onAddNewItem}
             onDeleteItem={onDeleteItem}
+            disableDelete={Boolean(stepDataList.length)}
           ></ServiceStepItem>
         </div>
       ))}
@@ -614,16 +615,57 @@ export function ConfirmActiveModal(props: ConfirmActiveModalProps) {
 export function FormCreateMasterService(props: Props) {
   const [status, setStatus] = useState<FormStatus>("typing");
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [body, setBody] = React.useState({
     serviceDescription: props.serviceDescription,
-    appliedNation: [props?.appliedNation],
-    enable: props.enable ?? false,
-    serviceName: props.serviceName ?? "",
-    serviceType: props.serviceType ?? "",
     serviceStep: props.serviceStep,
+    appliedNation: props?.appliedNation,
+    enable: props.enable ?? false,
+    serviceName: props.serviceName,
+    serviceType: props.serviceType ?? ([] as string[]),
     serviceCycle: props.serviceCycle,
-    appliedCompanyType: [props?.appliedCompanyType],
+    appliedCompanyType: props?.appliedCompanyType ?? ([] as string[]),
   } as ApiMasterServiceParam & { enable: boolean });
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [validatorSchema, setValidatorSchema] = React.useState({
+    error: {
+      serviceDescription: false,
+      appliedNation: false,
+      serviceName: false,
+      serviceType: false,
+      serviceStep: false,
+      serviceCycle: false,
+      appliedCompanyType: false,
+    } as Record<keyof ApiMasterServiceParam, boolean>,
+    isError: false,
+  });
+
+  const onRecallValidate = React.useCallback(
+    (body: ApiMasterServiceParam & { enable: boolean }) => {
+      const validateList: Record<keyof ApiMasterServiceParam, boolean> = {
+        serviceDescription: false,
+        appliedNation: body.appliedNation.length <= 1,
+        serviceName: false,
+        serviceType: false,
+        serviceStep: body.serviceStep.length <= 1,
+        serviceCycle: body.serviceStep.length <= 1,
+        appliedCompanyType: body.appliedCompanyType.length <= 1,
+      };
+
+      setValidatorSchema({
+        error: validateList,
+        isError:
+          Object.values(validateList).some((item) => item) && isSubmitted,
+      });
+
+      return {
+        error: validateList,
+        isError:
+          Object.values(validateList).some((item) => item) && isSubmitted,
+      };
+    },
+    [body]
+  );
   const onUpdateBody = React.useCallback(
     (
       name: string,
@@ -636,38 +678,62 @@ export function FormCreateMasterService(props: Props) {
         | boolean
     ) => {
       setBody({ ...body, [name]: value });
+      onRecallValidate({ ...body, [name]: value });
     },
     [body]
   );
 
   async function onSubmitAction() {
-    try {
-      setStatus("requesting");
-      const createMasterServiceBody: CreateMasterServiceBody = {
-        serviceDescription: body.serviceDescription,
-        appliedNation: body.appliedNation,
-        serviceName: body.serviceName ?? "",
-        serviceType: body.serviceType ?? "",
-        serviceCycle: body.serviceCycle,
-        appliedCompanyType: body.appliedCompanyType,
-        serviceStep: body.serviceStep.map((item) => ({
-          ...item,
-          documentRequired: item.documentRequired
-            .filter((item) => item?.documentRequired)
-            .map((item) => item.documentRequired),
-          result: item.result
-            .filter((item) => item?.result)
-            .map((item) => item.result),
-        })),
-      };
+    setIsSubmitted(true);
 
-      callApiCreateMasterService(createMasterServiceBody);
-      setStatus("success");
-      props.onCreated();
-    } catch (e: unknown) {
-      setStatus("failure");
-      setErrorMessage(e?.toString());
-      console.error(e);
+    console.log(body);
+
+    if (
+      body.appliedCompanyType.length &&
+      body.appliedNation.length &&
+      body.serviceType.length
+    ) {
+      setLoading(true);
+
+      try {
+        setStatus("requesting");
+        const createMasterServiceBody: CreateMasterServiceBody = {
+          serviceDescription: body.serviceDescription,
+          appliedNation: body.appliedNation,
+          serviceName: body.serviceName ?? "",
+          serviceType: body.serviceType ?? "",
+          serviceCycle: body.serviceCycle,
+          appliedCompanyType: body.appliedCompanyType,
+          serviceStep: body.serviceStep.map((item) => ({
+            ...item,
+            documentRequired: item.documentRequired
+              .filter((item) => item?.documentRequired)
+              .map((item) => item.documentRequired),
+            result: item.result
+              .filter((item) => item?.result)
+              .map((item) => item.result),
+          })),
+        };
+        console.log(createMasterServiceBody, "call api");
+        callApiCreateMasterService(createMasterServiceBody)
+          .then((response) => {
+            toast.success("Created service successfully")
+          })
+          .catch((e) => {
+            toast.error(e?.toString());
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+        setStatus("success");
+        // props.onCreated();
+      } catch (e: unknown) {
+        setStatus("failure");
+        setErrorMessage(e?.toString());
+        toast.error(e?.toString());
+        console.log("Error", e);
+        console.error(e);
+      }
     }
   }
   const [isVisibleChangeState, setIsVisibleChangeState] = React.useState(false);
@@ -679,11 +745,15 @@ export function FormCreateMasterService(props: Props) {
     onSubmitAction();
   };
   const translation = useTranslation();
-  const onCreateServiceStep = (value: ServiceStep[]) => {
-    onUpdateBody("serviceStep", value);
-  };
+  const onUpdateServiceStep = React.useCallback(
+    (value: ServiceStep[]) => {
+      onUpdateBody("serviceStep", value);
+    },
+    [onUpdateBody]
+  );
   const onUpdateServiceCycleFee = React.useCallback(
     (id: number, value: string) => {
+      console.log(id);
       const newServiceCycleList = body.serviceCycle.map((item) => {
         if (item.id === id) {
           return {
@@ -697,7 +767,7 @@ export function FormCreateMasterService(props: Props) {
 
       onUpdateBody("serviceCycle", newServiceCycleList);
     },
-    [body]
+    [body, onUpdateBody]
   );
 
   const onClickActiveAction = () => {
@@ -721,8 +791,8 @@ export function FormCreateMasterService(props: Props) {
         serviceCycle: [
           ...body.serviceCycle,
           {
-            id: body.serviceCycle.length,
-            cycleNumber: body.serviceCycle.length,
+            id: body.serviceCycle.length + 1,
+            cycleNumber: body.serviceCycle.length + 1,
             pricePerCycle: 0,
           },
         ],
@@ -732,88 +802,92 @@ export function FormCreateMasterService(props: Props) {
   );
 
   return (
-    <div className={"flex flex-col gap-y-8 px-8"}>
-      {isVisibleChangeState && (
-        <ConfirmActiveModal
-          enable={props.enable}
-          onSubmit={onSubmitActive}
-          onCancel={onHide}
-        />
-      )}
-
-      <Grid container>
-        <Grid item md={2}>
-          <BackButton onBack={props.onCancelModal}></BackButton>
-        </Grid>
-        <Grid item md={8}>
-          <div className={"text-center text-4xl font-bold"}>
-            {translation.t("masterService.createNewService")}
-          </div>
-        </Grid>
-      </Grid>
-      <ServiceInformation
-        serviceDescription={body.serviceDescription}
-        enable={body?.enable}
-        serviceName={body.serviceName}
-        applyCompanyType={body?.appliedCompanyType?.at(0) ?? ""}
-        serviceType={body?.serviceType}
-        appliedNation={body?.appliedNation?.at(0) || ""}
-        onUpdateBody={onUpdateBody}
-      />
-      {/* Header */}
-      <div className={"text-lg font-bold"}>
-        {translation.t("masterService.serviceStep")}
-      </div>
-
-      {/* Input form */}
-      <ServiceStepDisplay
-        onCreateServiceStep={onCreateServiceStep}
-        serviceStep={body.serviceStep}
-      ></ServiceStepDisplay>
-      <div className={"text-lg font-bold"}>
-        {translation.t("masterService.serviceCycleAndFee")}
-      </div>
-      <ServiceCycleTable
-        serviceCycle={(body.serviceCycle ?? []) as ServiceCycle[]}
-        onUpdateServiceCycleFee={onUpdateServiceCycleFee}
-        onRemoveServiceCycleFee={onRemoveServiceCycleFee}
-        onAddMoreServiceSCycleFee={onAddMoreServiceSCycleFee}
-      />
-
-      {/* Input form */}
-      <div className={"w-full flex justify-center items-center font-bold"}>
+    <>
+      <CommonLoading loading={loading} />
+      <div className={"flex flex-col gap-y-8 px-8"}>
+        {isVisibleChangeState && (
+          <ConfirmActiveModal
+            enable={props.enable}
+            onSubmit={onSubmitActive}
+            onCancel={onHide}
+          />
+        )}
         <Grid container>
-          <Grid md={6}>
-            <button
-              onClick={onClickActiveAction}
-              className={`px-4 py-2 flex justify-center items-center gap-2 bg-red-500 text-white font-semibold rounded-lg ${
-                !props.enable && "disabled disabled:opacity-50"
-              }`}
-              disabled={props.enable}
-            >
-              {translation.t("masterService.cancel")}
-              {status === "requesting" && <IconSpinner />}
-            </button>
+          <Grid item md={2}>
+            <BackButton onBack={props.onCancelModal}></BackButton>
           </Grid>
-          <Grid md={6}>
-            <div className="w-full flex items-right justify-end ">
-              <button
-                onClick={onSubmitAction}
-                className="px-4 py-2 flex justify-right items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-              >
-                {translation.t("masterService.save")}
-                {status === "requesting" && <IconSpinner />}
-                {status === "success" && (
-                  <IconCheck className={"text-success"} />
-                )}
-              </button>
+          <Grid item md={8}>
+            <div className={"text-center text-4xl font-bold"}>
+              {translation.t("masterService.createNewService")}
             </div>
           </Grid>
         </Grid>
+        <ServiceInformation
+          serviceDescription={body.serviceDescription}
+          enable={body?.enable}
+          serviceName={body.serviceName}
+          applyCompanyType={body?.appliedCompanyType}
+          serviceType={body?.serviceType}
+          appliedNation={body?.appliedNation}
+          onUpdateBody={onUpdateBody}
+          validatorSchema={validatorSchema}
+          isSubmitted={isSubmitted}
+        />
+        {/* Header */}
+        <div className={"text-lg font-bold"}>
+          {translation.t("masterService.serviceStep")}
+        </div>
+
+        {/* Input form */}
+        <ServiceStepDisplay
+          onUpdateServiceStep={onUpdateServiceStep}
+          serviceStep={body.serviceStep}
+        ></ServiceStepDisplay>
+        <div className={"text-lg font-bold"}>
+          {translation.t("masterService.serviceCycleAndFee")}
+        </div>
+        <ServiceCycleTable
+          serviceCycle={(body.serviceCycle ?? []) as ServiceCycle[]}
+          onUpdateServiceCycleFee={onUpdateServiceCycleFee}
+          onRemoveServiceCycleFee={onRemoveServiceCycleFee}
+          onAddMoreServiceSCycleFee={onAddMoreServiceSCycleFee}
+        />
+
+        {/* Input form */}
+        <div className={"w-full flex justify-center items-center font-bold"}>
+          <Grid container>
+            <Grid md={6}>
+              <button
+                onClick={onClickActiveAction}
+                className={`px-4 py-2 flex justify-center items-center gap-2 bg-red-500 text-white font-semibold rounded-lg ${
+                  !props.enable && "disabled disabled:opacity-50"
+                }`}
+                disabled={props.enable}
+              >
+                {translation.t("masterService.cancel")}
+                {status === "requesting" && <IconSpinner />}
+              </button>
+            </Grid>
+            <Grid md={6}>
+              <div className="w-full flex items-right justify-end ">
+                <button
+                  onClick={onSubmitAction}
+                  className="px-4 py-2 flex justify-right items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+                >
+                  {translation.t("masterService.save")}
+                  {status === "requesting" && <IconSpinner />}
+                  {status === "success" && (
+                    <IconCheck className={"text-success"} />
+                  )}
+                </button>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
+        {status === "failure" && (
+          <p className={"text-danger text-center -my-4"}>{errorMessage}</p>
+        )}
       </div>
-      {status === "failure" && (
-        <p className={"text-danger text-center -my-4"}>{errorMessage}</p>
-      )}
-    </div>
+    </>
   );
 }

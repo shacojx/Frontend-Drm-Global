@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import {
   callApiViewMasterService,
   callApiSearchMasterService,
+  callApiMasterServiceDetail,
 } from "../api/masterServiceManagement";
 import {
   ApiSearchMasterServiceParam,
@@ -60,16 +61,22 @@ export function MasterServiceContent(props: Props) {
         size: paginationModel.pageSize,
       };
       const rawResult = await callApiViewMasterService(param);
-      setTableData(rawResult.content);
+      setTableData(rawResult.content.sort((i1, i2) => i1.id - i2.id));
       setMasterServiceCount(rawResult.totalElements);
     };
 
     fetchData().catch((e) => console.log(e));
   }, [paginationModel]);
+  const fetchServiceDetail = () => {
+    const fetchData = async () => {
+      const rawResult = await callApiMasterServiceDetail(Number(serviceId));
+      console.log(rawResult);
+    };
+  };
 
   async function handleClickSearch() {
     const param: ApiSearchMasterServiceParam = {
-      serviceId: String(serviceId ?? ''),
+      serviceId: String(serviceId ?? ""),
       serviceName,
       status,
       appliedNation,
@@ -107,15 +114,15 @@ export function MasterServiceContent(props: Props) {
     };
     const rawResult = await callApiViewMasterService(param);
     setTableData(rawResult.content);
-    let lastSelectId = serviceId
-    setServiceId('')
+    let lastSelectId = serviceId;
+    setServiceId("");
     const updatedMasterServiceClicked = rawResult.content.find(
       (masterService) => masterService.id === masterServiceClicked?.id
     );
     if (updatedMasterServiceClicked) {
       setMasterServiceClicked(updatedMasterServiceClicked);
     }
-    setServiceId(serviceId)
+    setServiceId(serviceId);
   }
 
   async function handleCreated() {
@@ -124,17 +131,27 @@ export function MasterServiceContent(props: Props) {
       size: paginationModel.pageSize,
     };
     const rawResult = await callApiViewMasterService(param);
+    setShouldShowCreateMasterService(false);
     setTableData(rawResult.content);
   }
   // TODO: add i18n for columns
   const masterServiceColumns: GridColDef<ViewedMasterService>[] = [
-    { field: "id", headerName: "ID", width: 70 },
+    {
+      field: "id",
+      headerName: "No",
+      width: 70,
+      sortable: false,
+      type: "string",
+    },
     {
       field: "serviceId",
       headerName: "Service ID",
       sortable: false,
       type: "string",
       width: 80,
+      renderCell: (params: GridCellParams) => {
+        return params.row.id;
+      },
     },
     {
       field: "serviceName",
@@ -145,7 +162,7 @@ export function MasterServiceContent(props: Props) {
     },
     {
       field: "applyNation",
-      headerName: "Apply Nation",
+      headerName: "Applied Nation",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       width: 220,
@@ -345,7 +362,7 @@ export function MasterServiceContent(props: Props) {
             <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
               <FormUpdateMasterService
                 serviceCycle={selectItem.serviceCycle as ServiceCycle[]}
-                serviceStep={selectItem.serviceStep }
+                serviceStep={selectItem.serviceStep}
                 serviceDescription={selectItem.serviceDescription}
                 appliedCompanyType={
                   selectItem.appliedCompanyType?.at(0)?.companyType ?? ""
@@ -376,14 +393,14 @@ export function MasterServiceContent(props: Props) {
                 name={""}
                 serviceCycle={
                   [
-                    { id: 0, cycleNumber: 0, pricePerCycle: 0 },
+                    { id: 1, cycleNumber: 1, pricePerCycle: 0 },
                   ] as ServiceCycle[]
                 }
                 serviceStep={
                   [
                     {
-                      id: 0,
-                      stepNo: 0,
+                      id: 1,
+                      stepNo: 1,
                       name: "",
                       estimatedCompletionTime: "",
                       description: "",
@@ -393,13 +410,13 @@ export function MasterServiceContent(props: Props) {
                   ] as ServiceStep[]
                 }
                 serviceDescription={""}
-                appliedCompanyType={""}
-                appliedNation={""}
                 serviceName={""}
-                serviceType={""}
+                appliedCompanyType={[] as string[]}
+                appliedNation={[] as string[]}
+                serviceType={[] as string[]}
                 enable={false}
                 serviceId={tableData.length}
-                onCreated={handleEdit}
+                onCreated={handleCreated}
                 onCancelModal={() => setShouldShowCreateMasterService(false)}
               />
             </div>

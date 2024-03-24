@@ -13,11 +13,27 @@ type FormFieldProps<T> = {
   id: string,
   validateCaller: ValidateCaller
   onChange: (value: T) => void,
+  errorComponent?: React.ReactNode | JSX.Element
 } & Partial<{
   label: string,
   isRequired: boolean,
   placeholder: string,
   value: T,
+  errorMessage: string,
+  isFixedValue: boolean
+  defaultValue?: string,
+}>
+
+type FormFieldMultiProps<T> = {
+  id: string,
+  validateCaller: ValidateCaller
+  onChange: (value: T[]) => void,
+  errorComponent?: React.ReactNode | JSX.Element
+} & Partial<{
+  label: string,
+  isRequired: boolean,
+  placeholder: string,
+  value: T[]
   errorMessage: string,
   isFixedValue: boolean
   defaultValue?: string,

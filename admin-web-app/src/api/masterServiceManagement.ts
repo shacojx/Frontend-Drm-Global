@@ -22,6 +22,13 @@ export async function callApiViewMasterService(param: ApiViewMasterServiceParam)
   return rawResult
 }
 
+export async function callApiMasterServiceDetail(serviceId: number) {
+  const path = `api/admin/detail-service/${serviceId}`
+  const rawResult = await callApi<RawResultViewMasterService>('GET', path, {}, true)
+  return rawResult
+}
+
+
 export async function callApiCreateMasterService(body: CreateMasterServiceBody) {
   const path = 'api/admin/create-service'
   const rawResult = await callApi<RawResultViewMasterService>('POST', path, body, true)
