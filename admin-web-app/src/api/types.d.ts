@@ -111,6 +111,76 @@ export type ApiCreateOrderParam = {
   "orderType": OrderType,
 }
 
+export type ApiGetOrdersParam = {
+  page: number,
+}
+
+export type RawRegisterServicesResult = {
+  content: Array<{
+    updatedAt: string;
+    createdAt: string;
+    id: number;
+    userId: number;
+    serviceId: number;
+    serviceType: string;
+    serviceName: string;
+    serviceDescription: string;
+    statusService: string;
+    cycleNumber: number;
+    pricePerCycle: number;
+    transitionId: number;
+    statusPayment: string;
+    paymentMethod: null;
+    statusContract: string;
+    contractFile: null;
+    pic: string;
+    serviceStep: Array<{
+      id: number;
+      stepNo: number;
+      stepName: string;
+      statusStep: string;
+      estimatedCompletionTime: string;
+      description: string;
+      adminRemark: string;
+      customerDocument: Array<{
+        id: number;
+        requiredDocument: string;
+        fileDocument: string;
+      }>;
+      result: Array<{
+        id: number;
+        requiredDocument: string;
+        fileDocument: null;
+      }>;
+    }>;
+  }>;
+  pageable: {
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    offset: number;
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  totalPages: number;
+  totalElements: number;
+  last: boolean;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  size: number;
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+};
+
 // ====== User Management ======== //
 
 export type ApiSearchUserParam = {

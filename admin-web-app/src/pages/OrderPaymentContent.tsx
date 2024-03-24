@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ApiSearchUserParam, ApiViewUserParam, ViewedUser } from "../api/types";
+import { ApiSearchUserParam, ApiViewUserParam, RawRegisterServicesResult, ViewedUser } from "../api/types";
 import { callApiSearchUser, callApiLViewUser } from "../api/userManagement";
 import { DialogContainer } from "../components/DialogContainer";
 import { FormCreateAdminAccount } from "../components/FormCreateAdminAccount";
@@ -17,6 +17,7 @@ import {
   GridValueGetterParams
 } from '@mui/x-data-grid';
 import { generateFormatDate } from "../services-ui/date";
+import { useApiGetOrders } from "../hooks/api/order-payment";
 
 type Props = {}
 
@@ -34,6 +35,11 @@ export function OrderPaymentContent(props: Props) {
   const [userCount, setUserCount] = useState<number>()
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
+
+  const { data } = useApiGetOrders({page: 0})
+  const { orders } = data ?? {}
+
+  console.log(orders)
 
 
   useEffect(() => {
@@ -77,21 +83,21 @@ export function OrderPaymentContent(props: Props) {
 
   }
 // TODO: add i18n for columns
-  const orderPaymentColumns: GridColDef<ViewedUser>[] = [
+  const orderPaymentColumns: GridColDef<RawRegisterServicesResult['content'][number]>[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
-      field: 'status',
+      field: 'statusPayment',
       headerName: 'Status',
       sortable: false,
       type: 'string',
       width: 80,
-      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Enable' : 'Disable'),
-      cellClassName: (params: GridCellParams) => {
-        if (params.value === 'Enable') {
-          return 'text-success';
-        }
-        return 'text-danger';
-      },
+      // valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Enable' : 'Disable'),
+      // cellClassName: (params: GridCellParams) => {
+      //   if (params.value === 'Enable') {
+      //     return 'text-success';
+      //   }
+      //   return 'text-danger';
+      // },
     },
     {
       field: 'name',
@@ -199,7 +205,7 @@ export function OrderPaymentContent(props: Props) {
       <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
         <DataGrid
           paginationMode="server"
-          rows={tableData}
+          rows={orders ?? []}
           columns={orderPaymentColumns}
           pageSizeOptions={[25]}
           rowCount={userCount || 0}
