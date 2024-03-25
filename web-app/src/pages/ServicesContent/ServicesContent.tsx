@@ -2,12 +2,13 @@ import { Tab } from '@headlessui/react';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
-import { callCreateOrderPaypal } from 'src/api/payment';
+import { callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
 import { ApiCreateOrderParam, BankAccount, Currency } from 'src/api/types';
 import { NATION_INFOS } from 'src/constants/SelectionOptions';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
 import { cn } from 'src/utils/cn.util';
 import { IconMasterCard, IconPaypal, IconQR, IconSpinner, IconVisa } from "../../components/icons";
+import { useApiLLCService } from "../../hooks-api/useLlcService";
 import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard';
 import IMAGE from 'src/assets/images';
@@ -46,8 +47,9 @@ export default function ServicesContent() {
     const [activeTab, setActiveTab] = useState<'visa'|'paypal'|'bank'>('visa')
 
     const { data: bankAccounts } = useApiGetBanks()
-    const [bankAccount, setBankAccount] = useState<BankAccount>()
-    console.log(bankAccount?.region)
+    const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(bankAccounts?.[0])
+
+    const myServiceQuery = useApiLLCService()
 
     const SelectServiceStepIndex = 1
     const PayServiceStepIndex = 2
@@ -64,15 +66,10 @@ export default function ServicesContent() {
         setStepIndex(PayServiceStepIndex)
     }
 
-    async function handleClickPaypalConfirm() {
-
-    }
-
-    async function handleClickFinishPayment() {
+    async function handleClickFinishPaymentByPayPal() {
       if (!user) return
-
+      setErrorMessageConfirm('');
       setIsRequestingCreateOrder(true);
-
       const serviceSelected = bunchOfAvailableServices.filter((service) =>
         bunchOfServiceIdSelected.includes(service.id)
       );
@@ -87,10 +84,16 @@ export default function ServicesContent() {
       };
 
       try {
-        const rawResult = await callCreateOrderPaypal(body);
+        const isUsingPaypal = activeTab !== "bank"
+        const rawResult = isUsingPaypal
+          ? await callCreateOrderPaypal(body)
+          : await callCreateOrderBankToBank(body)
         allServiceQuery.refetch().then(() => setStepIndex(SelectServiceStepIndex));
-        const paypalLink = rawResult.data.links.find((link) => link.rel === 'approve')?.href;
-        window.open(paypalLink, '_blank', 'noopener,noreferrer');
+        myServiceQuery.refetch().catch(e => console.error(e))
+        if (isUsingPaypal) {
+          const paypalLink = rawResult.data.links.find((link) => link.rel === 'approve')?.href;
+          window.open(paypalLink, '_blank', 'noopener,noreferrer');
+        }
       } catch (e: unknown) {
         setErrorMessageConfirm(e?.toString());
         console.error(e);
@@ -99,7 +102,8 @@ export default function ServicesContent() {
     }
 
     function handleClickCancelPayment() {
-        setStepIndex(SelectServiceStepIndex)
+      setErrorMessageConfirm('');
+      setStepIndex(SelectServiceStepIndex)
     }
 
     const hasSelected = bunchOfServiceIdSelected.length > 0
@@ -239,16 +243,35 @@ export default function ServicesContent() {
                                   value: account.region,
                                 }))}
                                 validateCaller={validateCaller}
-                                value={bankAccount?.region ?? bankAccounts?.[0].region}
+                                value={bankAccount?.region}
                               />
                               <div className='flex gap-2 mt-4'>
-                                <div className='font-semibold'>Account Name: </div> <div>{bankAccount?.accountName}</div>
+                                <div className='font-semibold'>Bank Name:</div>
+                                <div>{bankAccount?.bankName}</div>
                               </div>
                               <div className='flex gap-2 mt-4'>
-                                <div className='font-semibold'>Bank Account: </div> <div>{bankAccount?.bankAccount}</div>
+                                <div className='font-semibold'>Bank Account:</div>
+                                <div>{bankAccount?.bankAccount}</div>
                               </div>
                               <div className='flex gap-2 mt-4'>
-                                <div className='font-semibold'>Bank Code: </div> <div>{bankAccount?.bankCode}</div>
+                                <div className='font-semibold'>Account Name:</div>
+                                <div>{bankAccount?.accountName}</div>
+                              </div>
+                              <div className='flex gap-2 mt-4'>
+                                <div className='font-semibold'>Bank Code:</div>
+                                <div>{bankAccount?.bankCode}</div>
+                              </div>
+                              <div className='flex gap-2 mt-4'>
+                                <div className='font-semibold'>Swift Code:</div>
+                                <div>{bankAccount?.swiftCode}</div>
+                              </div>
+                              <div className='flex gap-2 mt-4'>
+                                <div className='font-semibold'>Rounting No.:</div>
+                                <div>{bankAccount?.rountingNo}</div>
+                              </div>
+                              <div className='flex gap-2 mt-4'>
+                                <div className='font-semibold'>ABA/Fedwire:</div>
+                                <div>{bankAccount?.abaFedwire}</div>
                               </div>
                             </div>
                           </Tab.Panel>
@@ -261,7 +284,7 @@ export default function ServicesContent() {
             </div>
           )}
         </div>
-        <div className={'w-full flex justify-end py-5 pr-8 bg-white gap-2'}>
+        <div className={'w-full flex justify-end items-center py-5 pr-8 bg-white gap-2'}>
           {stepIndex === SelectServiceStepIndex && (
             <button
               disabled={!hasSelected}
@@ -276,6 +299,7 @@ export default function ServicesContent() {
           )}
           {stepIndex === PayServiceStepIndex && (
             <>
+              {errorMessageConfirm && <p className={"text-danger"}>{errorMessageConfirm}</p>}
               <button
                 disabled={!hasSelected}
                 className={
@@ -290,7 +314,7 @@ export default function ServicesContent() {
                 className={
                   'flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary'
                 }
-                onClick={handleClickFinishPayment}
+                onClick={handleClickFinishPaymentByPayPal}
               >
                 <span>{translation.t('Pay now')}</span>
                 {isRequestingCreateOrder && <IconSpinner />}

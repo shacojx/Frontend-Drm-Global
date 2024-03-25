@@ -9,6 +9,6 @@ export async function callCreateOrderPaypal(body: ApiCreateOrderParam) {
 
 export async function callCreateOrderBankToBank(body: ApiCreateOrderParam) {
   const path = '/api/user/register-service/2'
-  const rawResult = await callApi<unknown>('POST', path, body, true)
+  const rawResult = await callApi<RawResulCreateOrder>('POST', path, body, true)
   return rawResult
 }
