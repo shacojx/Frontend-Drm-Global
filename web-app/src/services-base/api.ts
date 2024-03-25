@@ -12,8 +12,8 @@ export enum CONTENT_TYPE {
   APPLICATION_JSON = 'application/json'
 }
 
-export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any> | any , isPrivateApi: boolean = false, contentTypeCode: string = CONTENT_TYPE.APPLICATION_JSON, isPayment?: boolean): Promise<T> {
-  const apiUrl = isPayment ? new URL('http://222.255.117.238:8080/payment/api/v1/orders') : new URL(path, API_DOMAIN)
+export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any> | any , isPrivateApi: boolean = false, contentTypeCode: string = CONTENT_TYPE.APPLICATION_JSON): Promise<T> {
+  const apiUrl = new URL(path, API_DOMAIN)
   if (method === 'GET') {
     addParamsToSearchParams(apiUrl.searchParams, paramsOrBody)
   }

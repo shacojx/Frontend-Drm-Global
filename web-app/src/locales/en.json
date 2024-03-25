@@ -204,5 +204,6 @@
   "City is required": "City is required",
   "Address is required": "Address is required",
   "Zip code is required": "Zip code is required",
-  "Close": "Close"
+  "Close": "Close",
+  "No Available Service": "No Available Service"
 }

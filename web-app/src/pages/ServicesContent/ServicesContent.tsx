@@ -1,11 +1,10 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from "react-router-dom";
-import { callCreateOrder } from 'src/api/payment'
+import { callCreateOrderPaypal } from 'src/api/payment'
 import { ApiCreateOrderParam, Currency } from 'src/api/types'
 import { NATION_INFOS } from 'src/constants/SelectionOptions'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
-import { generateTransactionId } from 'src/services-business/api/generate-api-param/payment'
 import { RoutePaths } from "../../constants/routerPaths";
 import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard'
@@ -16,6 +15,7 @@ export type Service = {
     description: string,
     agents: string[],
     price: number,
+    cycleNumber: number,
     currency: Currency,
 }
 
@@ -24,7 +24,7 @@ export type Service = {
 export default function ServicesContent() {
     const navigate = useNavigate()
     const allServiceQuery = useApiGetAvailableServices()
-    const Services: Service[] = allServiceQuery.data || []
+    const bunchOfAvailableServices: Service[] = allServiceQuery.data || []
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
     const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<string[]>([])
@@ -51,14 +51,18 @@ export default function ServicesContent() {
         if (!user) {
             return
         }
+        const serviceSelected = bunchOfAvailableServices
+          .filter(service => bunchOfServiceIdSelected.includes(service.id))
         const body: ApiCreateOrderParam = {
-            transactionId: new Date().valueOf().toString(),
-            currency: 'USD',
-            amount: totalPrice,
-            orderType: "PAYPAL",
+            cashout: serviceSelected.map(service => {
+                return {
+                    "serviceId": +service.id,
+                    "cycleNumber": service.cycleNumber
+                }
+            })
         }
         try {
-            const rawResult = await callCreateOrder(body)
+            const rawResult = await callCreateOrderPaypal(body)
             console.log('handleClickPaypalConfirm: ', rawResult)
             setOrderData(rawResult)
         } catch (e: unknown) {
@@ -67,14 +71,15 @@ export default function ServicesContent() {
         }
     }
 
-    function handleClickFinishPayment() {
+    async function handleClickFinishPayment() {
+        await handleClickPaypalConfirm()
         try {
             if (!orderData) {
                 return
             }
             // TODO: update code
             const idService = orderData
-            navigate(`${RoutePaths.myServices}/${idService}`)
+            navigate(RoutePaths.services, {replace: true})
             // @ts-ignore
             const paypalLink = orderData.links.find(link => link.rel === 'approve')?.href
             window.open(paypalLink, '_blank', 'noopener,noreferrer');
@@ -89,10 +94,10 @@ export default function ServicesContent() {
     }
 
     const hasSelected = bunchOfServiceIdSelected.length > 0
-    const selectedService = Services.filter(service => bunchOfServiceIdSelected.includes(service.id))
+    const selectedService = bunchOfAvailableServices.filter(service => bunchOfServiceIdSelected.includes(service.id))
     let totalPrice = 0
     const nationName = NATION_INFOS.find(nation => nation.value === user?.llcInNation)?.label
-    Services.forEach(service => totalPrice += service.price)
+    bunchOfAvailableServices.forEach(service => totalPrice += service.price)
 
     return <div className={"w-full grow flex flex-col"}>
         <div className={"flex bg-white border-t border-l border-solid grow overflow-hidden"}>
@@ -103,7 +108,8 @@ export default function ServicesContent() {
                             className={"text-h4"}>...</span>
                 </div>}
                 <div className={"flex flex-col gap-3"}>
-                    {Services.map(service =>
+                    {bunchOfAvailableServices.length === 0 && <p>{translation.t('No Available Service')}</p>}
+                    {bunchOfAvailableServices.map(service =>
                         <ServiceCard
                             key={service.id}
                             isSelected={bunchOfServiceIdSelected.includes(service.id)}
@@ -137,13 +143,13 @@ export default function ServicesContent() {
                             <div className={"h-[2px] bg-black w-1/2"}></div>
                         </div>
                         <div className={"flex grow justify-center items-center"}>
-                            <button
-                                disabled={!hasSelected || !!orderData}
-                                className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary"}
-                                onClick={handleClickPaypalConfirm}
-                            >
-                                <span>{translation.t('Confirm')}</span>
-                            </button>
+                            {/*<button*/}
+                            {/*    disabled={!hasSelected || !!orderData}*/}
+                            {/*    className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary"}*/}
+                            {/*    onClick={handleClickPaypalConfirm}*/}
+                            {/*>*/}
+                            {/*    <span>{translation.t('Confirm')}</span>*/}
+                            {/*</button>*/}
                         </div>
                     </div>
                 </div>

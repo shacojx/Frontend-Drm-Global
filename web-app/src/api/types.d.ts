@@ -102,14 +102,14 @@ export type ApiUploadKYC = {
 
 // ====== Payment ======== //
 export type Currency = 'USD'
-export type OrderType = 'PAYPAL'
+export type OrderType = 'PAYPAL' | 'BankToBank'
 
 export type ApiCreateOrderParam = {
-  transactionId: string;
-  currency: Currency;
-  amount: number;
-  orderType: OrderType;
-};
+  "cashout": {
+    "serviceId": number,
+    "cycleNumber": number
+  }[]
+}
 
 // ====== LLC Service ======== //
 
