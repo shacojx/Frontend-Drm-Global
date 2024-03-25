@@ -1,16 +1,18 @@
 import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { DialogFailureFullscreen, DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen'
 import { IconCheck, IconDangerCircle, IconRefreshCircle, IconSpinner } from 'src/components/icons'
 import { RoutePaths } from 'src/constants/routerPaths'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { useVerifyKYC } from 'src/hooks-api/useVerifyKYC'
 import TakeOrUploadPhoto from 'src/pages/KYCUploadContent/components/TakeOrUploadPhoto'
+import { callApiGetUserProfile } from "../../api/account";
 
 export default function KYCUploadContent() {
     const translation = useTranslation()
-    const { user } = useContext(AuthContext)
+    const navigate = useNavigate()
+    const { user, saveAuthUser } = useContext(AuthContext)
     const [passport, setPassport] = useState<File | null>(null);
     const [pictureHoldPassport, setPictureHoldPassport] = useState<File | null>(null);
 
@@ -25,11 +27,22 @@ export default function KYCUploadContent() {
 
     const handleClickSend = async () => {
         if (!passport || !pictureHoldPassport) return
-
-        await uploadKYC({passport: passport, picture: pictureHoldPassport})
+        try {
+            await uploadKYC({passport: passport, picture: pictureHoldPassport})
+            const user = await callApiGetUserProfile()
+            saveAuthUser(user)
+        } catch (e: unknown) {
+            console.error(e)
+        }
     }
 
-    const isDisableSend = !passport || !pictureHoldPassport
+
+    function handleCloseSuccessKyc(isOpen: boolean) {
+        setShowSuccessDialog(false)
+        navigate(RoutePaths.myAccount)
+    }
+
+    const isDisableSend = !passport || !pictureHoldPassport || user?.kycStatus === 'In-progress'
 
     return <>
         <div className={"w-full grow flex flex-col p-3 bg-white border border-solid border-t border-l"}>
@@ -83,6 +96,6 @@ export default function KYCUploadContent() {
         </div>
 
         {showErrorDialog  && <DialogFailureFullscreen onClose={() => setShowErrorDialog(false)} title='Upload Failed' subTitle={error?.message} />}
-        {showSuccessDialog && <DialogSuccessFullscreen onClose={() => setShowSuccessDialog(false)} title='Upload Successfully' /> }
+        {showSuccessDialog && <DialogSuccessFullscreen onClose={handleCloseSuccessKyc} title='Upload Successfully' /> }
     </>
 }

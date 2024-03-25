@@ -7,7 +7,7 @@ import { RoutePaths } from 'src/constants/routerPaths'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 
 
-  
+
 export default function KYCBox() {
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
@@ -34,11 +34,8 @@ export default function KYCBox() {
           }
         })
       }
-      
-      
     }, [])
-    
-  
+
     return (
       <>
         <div className={'flex flex-row justify-between mb-8'}>
@@ -75,27 +72,26 @@ export default function KYCBox() {
           </div>
         </div>
 
-          {(user?.kycStatus === 'Pending' || user?.kycStatus === 'Rejected') && (
-            <div className={'flex flex-row gap-4 items-center p-2 bg-red-200 rounded-lg'}>
-              <IconDangerCircle className={'shrink-0 text-danger'} />
-              <p>{translation.t('You have not verified your account. Please verify for the best experience')}.</p>
+          {(user?.kycStatus === 'Pending' || user?.kycStatus === 'Rejected') && <>
+            <div className={"grow"}>
+              <div className={'flex flex-row gap-4 items-center p-2 bg-red-200 rounded-lg'}>
+                <IconDangerCircle className={'shrink-0 text-danger'}/>
+                <p>{translation.t('You have not verified your account. Please verify for the best experience')}.</p>
+              </div>
             </div>
-          )}
-
-        {user?.kycStatus === 'Pending' && (
-          <div className={'flex justify-end'}>
-            <Link
-              to={RoutePaths.KYCUpload}
-              className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-            >
+            <div className={'flex justify-end'}>
+              <Link
+                to={RoutePaths.KYCUpload}
+                className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+              >
               {translation.t('Verify now')}
-            </Link>
-          </div>
-        )}
+              </Link>
+            </div>
+          </>}
 
-        {user?.kycStatus === 'Approved' && (
+        {(user?.kycStatus === 'Approved' || user?.kycStatus === 'In-progress') && (
           <div className='grow flex justify-center items-center flex-col gap-4'>
-            <img className='aspect-video rounded object-contain' src={passport} />
+            <img className='aspect-video rounded object-contain' src={passport}/>
             <img className='aspect-video rounded object-contain' src={holdPassport} />
           </div>
         )}
