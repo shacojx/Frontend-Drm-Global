@@ -135,14 +135,6 @@ export function OrderPaymentContent(props: Props) {
       renderCell: (params: GridRenderCellParams) => {
         return (
           <div className={"flex flex-row gap-3"}>
-             <button
-              onClick={() => approveOrder(params.row.id)}
-              className={
-                'py-2 px-3 rounded-lg cursor-pointer bg-red-100 hover:bg-red-200 text-danger'
-              }
-            >
-              Reject
-            </button>
             <button
               onClick={() => approveOrder(params.row.id)}
               className={
