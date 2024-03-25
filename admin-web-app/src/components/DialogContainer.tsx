@@ -1,7 +1,6 @@
 import { Fragment, PropsWithChildren, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { IconSpinner } from "./icons";
-import { CommonLoading } from "./CommonLoading";
+import { CommonLoading } from './CommonLoading';
 
 type Props = PropsWithChildren<
   Partial<{
@@ -9,6 +8,8 @@ type Props = PropsWithChildren<
     isTransparent: boolean;
     isAutoSize: boolean;
     loading?: boolean;
+    isFullSize: boolean;
+    panelClassName: string;
     handleClickOverlay: (shouldOpen: boolean) => void;
   }>
 >;
@@ -57,9 +58,11 @@ export function DialogContainer(props: Props) {
             >
               <Dialog.Panel
                 className={
-                  (props.isTransparent ? "" : "shadow-xl bg-white ") +
-                  (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ") +
-                  "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
+                  (props.isTransparent ? '' : 'shadow-xl bg-white ') +
+                  (props.isAutoSize ? '' : 'sm:w-full sm:max-w-lg ') +
+                  (props.isFullSize ? 'mx-8 w-full ' : '') +
+                  (props.panelClassName ? props.panelClassName + ' ' : '') +
+                  'relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8'
                 }
               >
                 <CommonLoading loading={Boolean(props?.loading)} />

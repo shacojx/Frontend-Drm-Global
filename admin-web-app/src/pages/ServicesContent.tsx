@@ -13,7 +13,12 @@ import { Service } from '../types/service';
 import { StatusBadge } from '../components/StatusBadge';
 import { DialogContainer } from '../components/DialogContainer';
 import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
-import { callApiGetServiceDetail } from '../api/serviceManagement';
+import {
+  callApiGetListService,
+  callApiGetServiceDetail,
+} from '../api/serviceManagement';
+import { callApiLViewUser } from '../api/userManagement';
+import { ApiViewUserParam, ViewedUser } from '../api/types';
 
 type Props = {};
 
@@ -30,12 +35,15 @@ export function ServicesContent(props: Props) {
   const [isShowServiceDetailDialog, setIsShowServiceDetailDialog] =
     useState(false);
   const [selectService, setSelectService] = useState<Service | null>(null);
+  const [users, setUsers] = useState<ViewedUser[]>([]);
+
+  const PAGE_SIZE = 10;
 
   // TODO: add i18n for columns
   const serviceColumns: GridColDef<Service>[] = [
     { field: 'id', headerName: 'ID', width: 50 },
     {
-      field: 'status',
+      field: 'statusService',
       headerName: 'Status',
       sortable: false,
       width: 140,
@@ -63,7 +71,7 @@ export function ServicesContent(props: Props) {
       },
     },
     {
-      field: 'payment',
+      field: 'statusPayment',
       headerName: 'Payment',
       sortable: false,
       type: 'string',
@@ -110,20 +118,31 @@ export function ServicesContent(props: Props) {
   ];
 
   useEffect(() => {
-    search();
+    getListUser({
+      size: 25,
+      page: 0,
+    }).then((res) => {
+      if (res?.content) {
+        setUsers(res?.content);
+      }
+    });
+    search({});
   }, []);
 
-  async function search(data?: ServiceSearchFilter) {
-    console.log('service search filter ==>', data);
-    // TODO: Implement API Search Service here
-    const output = await callApiGetServiceDetail(data);
-    setTableData(output);
+  async function getListUser(param: ApiViewUserParam) {
+    return await callApiLViewUser(param);
   }
 
-  function showServiceDetail(data: Service) {
+  async function search(data?: Partial<ServiceSearchFilter>) {
+    const response = await callApiGetListService(data);
+    setTableData(response.content);
+  }
+
+  async function showServiceDetail(data: Service) {
     console.log(data);
+    const response = await callApiGetServiceDetail(data.serviceId);
     setIsShowServiceDetailDialog(true);
-    setSelectService(data);
+    setSelectService(response);
   }
 
   return (
@@ -164,7 +183,7 @@ export function ServicesContent(props: Props) {
             isAutoSize
             panelClassName={'max-w-[1200px]'}
           >
-            <ServiceDetailDialog service={selectService} />
+            <ServiceDetailDialog service={selectService} users={users} />
           </DialogContainer>
         )}
       </div>

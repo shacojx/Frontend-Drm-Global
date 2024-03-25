@@ -3,4 +3,7 @@ export type Status =
   | 'IN_PROGRESS'
   | 'ISSUED'
   | 'APPROVED'
-  | 'CONFIRMED';
+  | 'CONFIRMED'
+  | 'Pending'
+  | 'Issued'
+  | 'In progress';

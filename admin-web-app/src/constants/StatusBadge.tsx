@@ -1,9 +1,9 @@
 export enum Status {
-  PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
+  PENDING = 'Pending',
+  IN_PROGRESS = 'In-Progress',
   APPROVED = 'APPROVED',
   CONFIRMED = 'CONFIRMED',
-  ISSUED = 'ISSUED',
+  ISSUED = 'Issued',
 }
 
 export const StatusBackgroundClassNameMap: Record<string, string> = {

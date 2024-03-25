@@ -1,5 +1,5 @@
-import { Status } from '../types/status';
 import {
+  Status,
   StatusBackgroundClassNameMap,
   StatusDotClassNameMap,
   StatusTextClassNameMap,

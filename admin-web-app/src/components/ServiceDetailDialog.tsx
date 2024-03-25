@@ -1,30 +1,64 @@
 import { IconCheckCircle, IconMyService, IconUser } from './icons';
 import { useTranslation } from 'react-i18next';
-import { StateFilling } from './StateFilling';
 import { FormFieldSelect } from './FormFieldSelect';
 import { useValidateCaller } from '../hooks-ui/useValidateCaller';
 import { OptionInfo } from '../types/common';
 import { StatusBadge } from './StatusBadge';
-import { Service } from '../types/service';
-import { Status } from '../types/status';
+import { Service, ServiceStep } from '../types/service';
 import { DialogContainer } from './DialogContainer';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CompanyDetailDialog } from './CompanyDetailDialog';
+import { ViewedUser } from '../api/types';
+import { callApiUpdatePic } from '../api/serviceManagement';
+import { ServiceStepContent } from './ServiceStepContent';
+import { Status } from '../constants/StatusBadge';
+import { uploadFile } from '../api/upload';
 
 type Props = {
+  users: ViewedUser[];
   service: Service | null;
 };
 
 export function ServiceDetailDialog(props: Props) {
   const translator = useTranslation();
   const { validateCaller, validateAll } = useValidateCaller();
-  let showCompanyDetailDialog: any, setShowCompanyDetailDialog: any;
-  [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
+  const [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
+  const [picId, setPicId] = useState<number>();
+  const [serviceStep, setServiceStep] = useState<ServiceStep | null>(null);
+
+  const uploadFileRef = useRef<HTMLInputElement | null>(null);
 
   const cycleOptions: OptionInfo<number>[] = [{ value: 1, label: '1' }];
-  const picOptions: OptionInfo<number>[] = [
-    { value: 1, label: 'Nguyễn văn A' },
-  ];
+  const userOptions = useMemo(() => {
+    return props.users.map((user) => ({
+      value: user.id,
+      label: user.email,
+    }));
+  }, [props.users]);
+
+  useEffect(() => {
+    const defaultServiceStep = props.service?.serviceStep[0] ?? null;
+    const serviceStep = props.service?.serviceStep.find(
+      (item) => item.statusStep === Status.IN_PROGRESS,
+    );
+    setServiceStep(serviceStep ?? defaultServiceStep);
+  }, [props.service]);
+
+  async function handleChangePic(id: number) {
+    const user = props.users?.find((item) => item.id === id);
+    await callApiUpdatePic({ id, email: user?.email ?? '' });
+    setPicId(id);
+  }
+
+  async function uploadContractFile(files: FileList | null) {
+    if (files && files?.length > 0) {
+      await uploadFile(
+        files[0],
+        { id: props.service?.id?.toString() ?? '' },
+        '/api/file/upload-final-contract',
+      );
+    }
+  }
 
   return (
     <div className={'p-6'}>
@@ -34,9 +68,9 @@ export function ServiceDetailDialog(props: Props) {
 
       <div className={'grid grid-cols-3 gap-4 mb-4' + ''}>
         <div className={'flex flex-col gap-3'}>
-          <div className={'font-bold'}>{props.service?.customerName}</div>
-          <span>Email: {props.service?.customerEmail}</span>
-          <span>Phone number: {props.service?.phoneNumber}</span>
+          <div className={'font-bold'}>Nguyễn Văn A</div>
+          <span>Email: </span>
+          <span>Phone number: </span>
         </div>
         <div className={'flex flex-col gap-3'}>
           <div className={'font-bold'}>Global Ecommerce</div>
@@ -52,17 +86,21 @@ export function ServiceDetailDialog(props: Props) {
               validateCaller={validateCaller}
               optionInfos={cycleOptions}
             ></FormFieldSelect>
-            <StatusBadge status={props.service?.status as Status} showDot />
+            <StatusBadge
+              status={props.service?.statusService as Status}
+              showDot
+            />
           </div>
           <div>
             <div className={'font-bold'}>
               {translator.t('Person in charge')} *
             </div>
             <FormFieldSelect
-              id={'picSelect'}
-              onChange={() => {}}
+              id={'userSelect'}
+              onChange={handleChangePic}
               validateCaller={validateCaller}
-              optionInfos={picOptions}
+              optionInfos={userOptions}
+              value={picId}
             ></FormFieldSelect>
           </div>
         </div>
@@ -82,9 +120,22 @@ export function ServiceDetailDialog(props: Props) {
             className={
               'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
             }
+            onClick={() => {
+              uploadFileRef?.current?.click();
+            }}
           >
             Click here to upload contract
           </div>
+          <input
+            ref={uploadFileRef}
+            id="contractFilePicker"
+            type="file"
+            className={'hidden'}
+            onChange={(e) => {
+              uploadContractFile(e.target.files);
+            }}
+            multiple={false}
+          />
         </div>
         <div
           className={
@@ -144,67 +195,30 @@ export function ServiceDetailDialog(props: Props) {
 
       <div className={'grid grid-cols-4 gap-4'}>
         <div className={'flex flex-col gap-4'}>
-          <div
-            className={
-              'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center'
-            }
-          >
-            <IconCheckCircle className={'w-[25px]'} />
-            <div>
-              <div className={'font-semibold'}>
-                {translator.t('State Fillings')}
+          {props.service?.serviceStep.map((serviceStep) => {
+            return (
+              <div
+                className={
+                  'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center'
+                }
+                key={serviceStep.id}
+                onClick={() => {
+                  setServiceStep(serviceStep);
+                }}
+              >
+                <IconCheckCircle className={'w-[25px]'} />
+                <div>
+                  <div className={'font-semibold'}>{serviceStep.stepName}</div>
+                  <div className={'text-gray-400'}>
+                    {serviceStep.estimatedCompletionTime}
+                  </div>
+                </div>
               </div>
-              <div className={'text-gray-400'}>
-                {translator.t('2 - 5 days')}
-              </div>
-            </div>
-          </div>
-          <div
-            className={
-              'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center'
-            }
-          >
-            <IconCheckCircle className={'w-[25px]'} />
-            <div>
-              <div className={'font-semibold'}>
-                {translator.t('Communication')}
-              </div>
-              <div className={'text-gray-400'}>
-                {translator.t('2 - 5 days')}
-              </div>
-            </div>
-          </div>
-          <div
-            className={
-              'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center'
-            }
-          >
-            <IconCheckCircle className={'w-[25px]'} />
-            <div>
-              <div className={'font-semibold'}>{translator.t('EIN')}</div>
-              <div className={'text-gray-400'}>
-                {translator.t('2 - 5 days')}
-              </div>
-            </div>
-          </div>
-          <div
-            className={
-              'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center'
-            }
-          >
-            <IconCheckCircle className={'w-[25px]'} />
-            <div>
-              <div className={'font-semibold'}>
-                {translator.t('Bank Account')}
-              </div>
-              <div className={'text-gray-400'}>
-                {translator.t('2 - 5 days')}
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
         <div className={'col-span-3'}>
-          <StateFilling service={props.service}></StateFilling>
+          <ServiceStepContent serviceStep={serviceStep} />
         </div>
         {showCompanyDetailDialog && (
           <DialogContainer

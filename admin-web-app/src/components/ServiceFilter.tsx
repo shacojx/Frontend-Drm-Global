@@ -23,16 +23,6 @@ export function ServiceFilter(props: Props) {
       <div className={'w-full flex gap-4 mb-4'}>
         <div className={''}>
           <div className={'font-bold mb-1'}>
-            {translation.t('Customer name')}
-          </div>
-          <input
-            className={'w-full h-[40px] border py-1 px-2 rounded-lg'}
-            value={customerName}
-            onChange={(event) => setCustomerName(event.target.value)}
-          />
-        </div>
-        <div className={''}>
-          <div className={'font-bold mb-1'}>
             {translation.t('Customer Email')}
           </div>
           <input
