@@ -31,9 +31,6 @@ export function UsersContent(props: Props) {
     page: 0,
   });
 
-  const codePhone = phone ? extractPhone(phone).nationPhone : '';
-  const phoneWithoutCode = phone ? extractPhone(phone).localPhone : ''
-
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
@@ -191,6 +188,7 @@ export function UsersContent(props: Props) {
             paginationModel={paginationModel}
             onPaginationModelChange={(model) => setPaginationModel(model)}
             onRowClick={handleRowClick}
+            loading={gettingUsers}
           />
         </div>
       </div>

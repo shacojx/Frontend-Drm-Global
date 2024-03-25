@@ -1,6 +1,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import './App.css';
 import { AuthContextProvider } from './contexts/AuthContextProvider';
 import AppRouter from './routers/AppRouter';

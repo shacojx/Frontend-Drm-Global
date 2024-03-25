@@ -207,5 +207,6 @@
   "Close": "Close",
   "InProgress": "InProgress",
   "Confirmed": "Confirmed",
-  "Yes": "Yes"
+  "Yes": "Yes",
+  "No Available Service": "No Available Service"
 }
