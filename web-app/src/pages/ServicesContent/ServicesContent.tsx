@@ -5,6 +5,7 @@ import { callCreateOrderPaypal } from 'src/api/payment'
 import { ApiCreateOrderParam, Currency, RawResulCreateOrder } from 'src/api/types'
 import { NATION_INFOS } from 'src/constants/SelectionOptions'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
+import { IconSpinner } from "../../components/icons";
 import { RoutePaths } from "../../constants/routerPaths";
 import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard'
@@ -29,7 +30,9 @@ export default function ServicesContent() {
     const { user } = useContext(AuthContext)
     const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<number[]>([])
     const [stepIndex, setStepIndex] = useState<number>(1)
+    const [isRequestingCreateOrder, setIsRequestingCreateOrder] = useState<boolean>(false)
     const [errorMessageConfirm, setErrorMessageConfirm] = useState<string | undefined>()
+
 
     const SelectServiceStepIndex = 1
     const PayServiceStepIndex = 2
@@ -54,6 +57,7 @@ export default function ServicesContent() {
         if (!user) {
             return
         }
+        setIsRequestingCreateOrder(true)
         const serviceSelected = bunchOfAvailableServices
           .filter(service => bunchOfServiceIdSelected.includes(service.id))
         const body: ApiCreateOrderParam = {
@@ -66,13 +70,14 @@ export default function ServicesContent() {
         }
         try {
             const rawResult = await callCreateOrderPaypal(body)
-            navigate(RoutePaths.services)
-            const paypalLink = rawResult.links.find(link => link.rel === 'approve')?.href
+            allServiceQuery.refetch().then(() => setStepIndex(SelectServiceStepIndex))
+            const paypalLink = rawResult.data.links.find(link => link.rel === 'approve')?.href
             window.open(paypalLink, '_blank', 'noopener,noreferrer');
         } catch (e: unknown) {
             setErrorMessageConfirm(e?.toString())
             console.error(e)
         }
+        setIsRequestingCreateOrder(false)
     }
 
     function handleClickCancelPayment() {
@@ -163,6 +168,7 @@ export default function ServicesContent() {
                     onClick={handleClickFinishPayment}
                 >
                     <span>{translation.t('Pay now')}</span>
+                    {isRequestingCreateOrder && <IconSpinner/>}
                 </button>
             </>}
         </div>

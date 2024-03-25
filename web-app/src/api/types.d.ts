@@ -112,16 +112,20 @@ export type ApiCreateOrderParam = {
 }
 
 export type RawResulCreateOrder = {
-  id:	string,
-  intent:	unknown,
-  status:	string,
-  createTime:	unknown,
-  links:	{
-    rel: string,
-    href: string,
-  }[],
-  purchase_units:	unknown,
-  payment_source:	unknown,
+  code:	string,
+  message: string,
+  data: {
+    id:	string,
+    intent:	unknown,
+    status:	string,
+    createTime:	unknown,
+    links:	{
+      rel: string,
+      href: string,
+    }[],
+    purchase_units:	unknown,
+    payment_source:	unknown,
+  }
 }
 
 // ====== LLC Service ======== //
