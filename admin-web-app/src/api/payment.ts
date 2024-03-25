@@ -25,7 +25,7 @@ export async function callApiGetOrders({ page }: ApiGetOrdersParam) {
 
 export async function callApiApproveOrder(id: string | number){
   const path = `/api/admin/approve-payment/${id}`
-  const rawResult = await callApi('POST', path, {}, true)
+  const rawResult = await callApi('GET', path, {}, true)
 
   return rawResult
 }

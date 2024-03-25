@@ -17,72 +17,41 @@ import {
   GridValueGetterParams
 } from '@mui/x-data-grid';
 import { generateFormatDate } from "../services-ui/date";
-import { useApiGetOrders } from "../hooks/api/order-payment";
+import { useApiApproveOrder, useApiGetOrders } from "../hooks/api/order-payment";
+import { DialogSuccessFullscreen } from "../components/DialogFormStatusFullscreen";
+import { toast } from "react-toastify";
 
 type Props = {}
 
 export function OrderPaymentContent(props: Props) {
   // TODO: update api
   const translation = useTranslation()
-  const {validateCaller, validateAll} = useValidateCaller()
-  const [email,setEmail] = useState<string>('')
-  const [phone, setPhone] = useState<RNPhoneValue | undefined>()
-  const [tableData, setTableData] = useState<ViewedUser[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
-  const [userCount, setUserCount] = useState<number>()
-  const [userClicked, setUserClicked] = useState<ViewedUser>();
-  const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
-  const { data } = useApiGetOrders({page: 0})
+  const { data } = useApiGetOrders({page: paginationModel.page})
   const { orders } = data ?? {}
 
-  console.log(orders)
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const param: ApiViewUserParam = {
-        page: paginationModel.page,
-        size: paginationModel.pageSize
-      }
-      const rawResult = await callApiLViewUser(param)
-      setTableData(rawResult?.content ?? []);
-      setUserCount(rawResult?.totalElements)
-    };
-
-    fetchData().catch(e=> console.log(e))
-  }, [paginationModel]);
-
-  async function handleClickSearch() {
-    const {localPhone, nationPhone} = phone
-      ? extractPhone(phone)
-      : {localPhone: '', nationPhone: ''}
-    const param: ApiSearchUserParam = {
-      phone: localPhone,
-      codePhone: nationPhone,
-      email,
+  const { mutateAsync: approveOrder } = useApiApproveOrder({
+    onSuccess: () => {
+      setShowSuccessDialog(true)
+    },
+    onError: error => {
+      toast.error(error.message)
     }
-    const rawResult = await callApiSearchUser(param)
-    if (rawResult) {
-      setTableData([rawResult]);
-      setUserCount(1)
-    }
+  })
+
+  async function handleClickSearch() {  
   }
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
-    setUserClicked(params.row)
   }
 
-  async function handleClickApproved() {
-  }
-
-  async function handleCreated() {
-
-  }
-// TODO: add i18n for columns
+  
+  // TODO: add i18n for columns
   const orderPaymentColumns: GridColDef<RawRegisterServicesResult['content'][number]>[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
@@ -91,13 +60,6 @@ export function OrderPaymentContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 80,
-      // valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Enable' : 'Disable'),
-      // cellClassName: (params: GridCellParams) => {
-      //   if (params.value === 'Enable') {
-      //     return 'text-success';
-      //   }
-      //   return 'text-danger';
-      // },
     },
     {
       field: 'name',
@@ -176,7 +138,7 @@ export function OrderPaymentContent(props: Props) {
         return (
           <div className={'flex flex-row gap-3'}>
             <button
-              // onClick={handleClickApproved.bind(undefined, params.row.id)}
+              onClick={() => approveOrder(params.row.id)}
               className={
                 'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
               }
@@ -189,38 +151,40 @@ export function OrderPaymentContent(props: Props) {
     },
   ];
 
-  return <div className={"w-full grow flex flex-col p-3"}>
-    <div
-      className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
-      <p className={"text-h4 w-full text-start mb-6"}>{translation.t('User Management')}</p>
-      <div className={"w-full flex flex-row justify-between items-center gap-10 mb-4"}>
-        <div className={"w-full flex flex-row justify-start items-end gap-10 mb-4"}>
+  return (
+    <>
+      <div className={'w-full grow flex flex-col p-3'}>
+        <div
+          className={
+            'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
+          }
+        >
+          <p className={'text-h4 w-full text-start mb-6'}>{translation.t('User Management')}</p>
+          <div className={'w-full flex flex-row justify-between items-center gap-10 mb-4'}>
+            {/* <div className={"w-full flex flex-row justify-start items-end gap-10 mb-4"}>
           <FormFieldEmail id={"email"} validateCaller={validateCaller} onChange={setEmail} value={email}/>
           <button onClick={handleClickSearch}
                   className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg">
             {translation.t('Search')}
           </button>
+        </div> */}
+          </div>
+          <div className={'w-full grow'}>
+            <DataGrid
+              paginationMode="server"
+              rows={orders ?? []}
+              columns={orderPaymentColumns}
+              pageSizeOptions={[25]}
+              rowCount={100}
+              paginationModel={paginationModel}
+              onPaginationModelChange={(model) => setPaginationModel(model)}
+              onRowClick={handleRowClick}
+            />
+          </div>
         </div>
       </div>
-      <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
-        <DataGrid
-          paginationMode="server"
-          rows={orders ?? []}
-          columns={orderPaymentColumns}
-          pageSizeOptions={[25]}
-          rowCount={userCount || 0}
-          paginationModel={paginationModel}
-          onPaginationModelChange={(model) => setPaginationModel(model)}
-          onRowClick={handleRowClick}
-        />
-      </div>
-    </div>
-    {shouldShowCreateUser && <DialogContainer isAutoSize handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setShouldShowCreateUser(false)}>
-      <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
-        <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
-          <FormCreateAdminAccount onCreated={handleCreated} />
-        </div>
-      </div>
-    </DialogContainer>}
-  </div>
+
+      {showSuccessDialog && <DialogSuccessFullscreen title="Order Approved" onClose={() => setShowSuccessDialog(false)} />}
+    </>
+  );
 }
