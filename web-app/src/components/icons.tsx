@@ -34,6 +34,10 @@ import { ReactComponent as NotificationUnreadLinesIcon } from '../assets/svgs/No
 import { ReactComponent as AltArrowRightIcon } from '../assets/svgs/AltArrowRightIcon.svg';
 import { ReactComponent as IconEssential } from "../assets/svgs/OutlineEssentination.svg";
 import { ReactComponent as IconSupport } from '../assets/svgs/SupportIcon.svg';
+import { ReactComponent as IconVisa } from '../assets/svgs/Visa.svg';
+import { ReactComponent as IconMasterCard } from '../assets/svgs/MasterCard.svg';
+import { ReactComponent as IconPaypal } from '../assets/svgs/Paypal.svg';
+import { ReactComponent as IconQR } from '../assets/svgs/QR.svg';
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -76,4 +80,8 @@ export {
   AltArrowRightIcon,
   IconEssential,
   IconSupport,
+  IconVisa,
+  IconMasterCard,
+  IconPaypal,
+  IconQR
 }
