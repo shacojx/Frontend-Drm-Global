@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
 import { callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
@@ -47,12 +47,18 @@ export default function ServicesContent() {
     const [activeTab, setActiveTab] = useState<'visa'|'paypal'|'bank'>('visa')
 
     const { data: bankAccounts } = useApiGetBanks()
-    const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(bankAccounts?.[0])
+    const [bankAccount, setBankAccount] = useState<BankAccount | undefined>()
 
     const myServiceQuery = useApiLLCService()
 
     const SelectServiceStepIndex = 1
     const PayServiceStepIndex = 2
+
+  useEffect(() => {
+    if (!bankAccount && bankAccounts) {
+      setBankAccount(bankAccounts[0])
+    }
+  }, [bankAccounts]);
 
     function handleSelectService(id: number) {
         if (!bunchOfServiceIdSelected.includes(id)) {
