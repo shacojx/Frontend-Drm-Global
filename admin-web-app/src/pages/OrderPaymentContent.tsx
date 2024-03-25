@@ -136,7 +136,10 @@ export function OrderPaymentContent(props: Props) {
         return (
           <div className={"flex flex-row gap-3"}>
             <button
-              onClick={() => approveOrder(params.row.id)}
+              onClick={async () => {
+                await approveOrder(params.row.id)
+                refetch()
+              }}
               className={
                 'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
               }

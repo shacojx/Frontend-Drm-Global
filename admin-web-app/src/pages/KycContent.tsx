@@ -27,7 +27,7 @@ export function KycContent(props: Props) {
 
   const [showSuccessDialog, setShowSuccessDialog] = useState<false | "approve" | "reject">(false)
 
-  const {data, isLoading: gettingKYCs} = useApiGetKYCs({
+  const {data, isLoading: gettingKYCs, refetch} = useApiGetKYCs({
     page: paginationModel.page,
     size: paginationModel.pageSize
   })
@@ -36,12 +36,8 @@ export function KycContent(props: Props) {
   const kycCount = data?.totalElements 
 
 
-  const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC({
-    onSuccess: () => setShowSuccessDialog("approve"),
-  })
-  const {mutateAsync: rejectKYC,  isPending: rejectingKYC } = useApiRejectKYC({
-    onSuccess: () => setShowSuccessDialog("reject"),
-  })
+  const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC()
+  const {mutateAsync: rejectKYC,  isPending: rejectingKYC } = useApiRejectKYC()
 
   const handleClickReject = (id: number) => {
     setIdSelected(id)
@@ -59,18 +55,19 @@ export function KycContent(props: Props) {
   }
 
   const handleConfirm = async () => {
-    console.log("handle confirm")
     if (!idSelected) return
 
     setShouldShowConfirmDialog(false)
 
     if (shouldShowConfirmDialog === "approve") {
-      return await approveKYC(idSelected)
+      await approveKYC(idSelected)
+      setShowSuccessDialog('approve')
+      return
     } {
-      return await rejectKYC(idSelected)
+      await rejectKYC(idSelected)
+      setShowSuccessDialog('reject')
+      return
     }
-
-    
   }
 
   function handleClickPhoto(id: number, type: 'passport' | 'holdPassport') {
@@ -197,7 +194,7 @@ export function KycContent(props: Props) {
           title={
             shouldShowConfirmDialog === 'approve' ? 'Approve KYC Request?' : 'Reject KYC Request?'
           }
-          content={'This action cannot be undone'}
+          content={'This action cannot be undone!'}
           onCancel={handleCancel}
           onConfirm={handleConfirm}
         />
@@ -205,7 +202,7 @@ export function KycContent(props: Props) {
 
       {shouldShowPictureDialog && (
         <DialogContainer
-          handleClickOverlay={setShouldShowPictureDialog.bind(undefined, false)}
+          handleClickOverlay={() => setShouldShowPictureDialog(false)}
           isAutoSize
           isCloseOnClickOverlay
         >
