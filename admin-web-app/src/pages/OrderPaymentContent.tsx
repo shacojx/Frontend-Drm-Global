@@ -13,19 +13,25 @@ import { RawRegisterServicesResult } from "../api/types";
 import { DialogSuccessFullscreen } from "../components/DialogFormStatusFullscreen";
 import { useApiApproveOrder, useApiGetOrders } from "../hooks/api/order-payment";
 import { generateFormatDate } from "../services-ui/date";
+import { FormFieldEmail } from "../components/FormFieldEmail";
+import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 
 type Props = {}
 
 export function OrderPaymentContent(props: Props) {
   // TODO: update api
   const translation = useTranslation()
+  const { validateCaller } = useValidateCaller()
+
+  const [email, setEmail] = useState<string>()
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
-  const { data } = useApiGetOrders({page: paginationModel.page})
+  const { data, refetch } = useApiGetOrders({page: paginationModel.page, pic: email})
   const { orders } = data ?? {}
 
   const { mutateAsync: approveOrder } = useApiApproveOrder({
@@ -37,8 +43,9 @@ export function OrderPaymentContent(props: Props) {
     }
   })
 
-  async function handleClickSearch() {  
-  }
+  const handleClickSearch = () => {  
+    refetch()
+  } 
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
   }
@@ -160,13 +167,15 @@ export function OrderPaymentContent(props: Props) {
         >
           <p className={'text-h4 w-full text-start mb-6'}>{translation.t('Orders Management')}</p>
           <div className={'w-full flex flex-row justify-between items-center gap-10 mb-4'}>
-            {/* <div className={"w-full flex flex-row justify-start items-end gap-10 mb-4"}>
-          <FormFieldEmail id={"email"} validateCaller={validateCaller} onChange={setEmail} value={email}/>
-          <button onClick={handleClickSearch}
-                  className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg">
-            {translation.t('Search')}
-          </button>
-        </div> */}
+            <div className={'w-full flex flex-row justify-start items-end gap-10 mb-4'}>
+              <FormFieldEmail id={'email'} validateCaller={validateCaller} onChange={setEmail} value={email} />
+              <button
+                onClick={handleClickSearch}
+                className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+              >
+                {translation.t('Search')}
+              </button>
+            </div>
           </div>
           <div className={'w-full grow'}>
             <DataGrid
@@ -183,7 +192,9 @@ export function OrderPaymentContent(props: Props) {
         </div>
       </div>
 
-      {showSuccessDialog && <DialogSuccessFullscreen title="Order Approved" onClose={() => setShowSuccessDialog(false)} />}
+      {showSuccessDialog && (
+        <DialogSuccessFullscreen title="Order Approved" onClose={() => setShowSuccessDialog(false)} />
+      )}
     </>
   );
 }

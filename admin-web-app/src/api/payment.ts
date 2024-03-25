@@ -8,10 +8,19 @@ export async function callCreateOrder(body: ApiCreateOrderParam) {
   return rawResult
 }
 
-export async function callApiGetOrders({ page }: ApiGetOrdersParam) {
-  const path = `/api/admin/get-paid-service?page=${page}&size=${100}`
-  const { content } = await callApi<RawRegisterServicesResult>('GET', path, {}, true)
+export async function callApiGetOrders({ page, pic }: ApiGetOrdersParam) {
+  const getAllPath = `/api/admin/get-paid-service?page=${page}&size=${100}`
+  const searchPath = `/api/admin/search-paid-service`
 
+  const isSearch = !!pic
+
+  
+  const response = isSearch 
+    ? await callApi<RawRegisterServicesResult['content']>('POST', searchPath, { pic, email: "" }, true)
+    : await callApi<RawRegisterServicesResult>('GET', getAllPath, {}, true)
+
+  const content = 'content' in response ? response.content : response
+  console.log(response)
   const groups = groupBy(content, item => item.transitionId)
 
   const orders = Object.values(groups).map(groupItems => {

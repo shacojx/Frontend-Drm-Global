@@ -113,6 +113,7 @@ export type ApiCreateOrderParam = {
 
 export type ApiGetOrdersParam = {
   page: number,
+  pic?: string
 }
 
 export type RawRegisterServicesResult = {
