@@ -51,19 +51,7 @@ export function OrderPaymentContent(props: Props) {
   }, [paginationModel]);
 
   async function handleClickSearch() {
-    const {localPhone, nationPhone} = phone
-      ? extractPhone(phone)
-      : {localPhone: '', nationPhone: ''}
-    const param: ApiSearchUserParam = {
-      phone: localPhone,
-      codePhone: nationPhone,
-      email,
-    }
-    const rawResult = await callApiSearchUser(param)
-    if (rawResult) {
-      setTableData([rawResult]);
-      setUserCount(1)
-    }
+   
   }
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
