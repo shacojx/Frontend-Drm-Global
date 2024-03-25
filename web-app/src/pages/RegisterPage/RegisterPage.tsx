@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { callApiCreateAccount, callApiSendEmailOTP } from "src/api/account";
@@ -9,7 +9,6 @@ import {
   DialogRequestingFullscreen,
   DialogSuccessFullscreen
 } from "src/components/DialogFormStatusFullscreen";
-import { FormFieldTextArea } from "src/components/FormFieldArea";
 import { FormFieldEmail } from "src/components/FormFieldEmail";
 import { FormFieldOtp } from "src/components/FormFieldOtp";
 import { FormFieldPassword } from "src/components/FormFieldPassword";
