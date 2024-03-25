@@ -1,4 +1,4 @@
-import { callApi, CONTENT_TYPE } from "../services-base/api";
+import { callApi } from "../services-base/api";
 import { ApiCreateOrderParam, RawResulCreateOrder } from "./types";
 
 export async function callCreateOrderPaypal(body: ApiCreateOrderParam) {

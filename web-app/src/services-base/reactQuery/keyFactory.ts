@@ -6,6 +6,7 @@ const QueryKey = {
   getMyCompany: 'myCompany/getDetail',
   getAvailableServices: 'services/availableServices',
   getServiceDetail: 'service/getServiceDetail',
+  getBankAccounts: 'bank/getBankAccounts',
 } as const
 
 const MutationKey = {
@@ -37,6 +38,7 @@ const KeyFactory = {
   getAvailableServices: () => generateKey(QueryKey.getAvailableServices),
   getServiceDetail: (id: KeyType) => generateKey(QueryKey.getServiceDetail, id),
   paymentService: () => generateKey(MutationKey.paymentService),
+  getBankAccounts: () => generateKey(QueryKey.getBankAccounts),
 }
 
 export default KeyFactory

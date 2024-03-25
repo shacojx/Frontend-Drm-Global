@@ -366,3 +366,16 @@ export type EditCompanyBody = {
     document: string,
   }>,
 };
+
+
+// === Bank ===
+type BankAccount = {
+  region: string;
+  bankName: string;
+  bankAccount: string;
+  accountName: string;
+  swiftCode: string;
+  bankCode: string;
+  rountingNo: string;
+  abaFedwire: string;
+};
