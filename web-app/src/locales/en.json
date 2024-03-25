@@ -145,7 +145,7 @@
   "Upload your picture holding the passport": "Upload your picture holding the passport",
   "All corners of the passport are visible against the backdrop": "All corners of the passport are visible against the backdrop",
   "All passport data is legible": "All passport data is legible",
-  "The photo is in color and should be a valid file (PDF)": "The photo is in color and should be a valid file (PDF)",
+  "The photo is in color and should be a valid file (PNG, JPG, JPEG)": "The photo is in color and should be a valid file (PNG, JPG, JPEG)",
   "Maximum allowed size is 10MB": "Maximum allowed size is 10MB",
   "Send": "Send",
   "Be at least 8 characters long": "Be at least 8 characters long",

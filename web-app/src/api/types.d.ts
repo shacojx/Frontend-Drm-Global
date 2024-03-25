@@ -26,7 +26,6 @@ export type RawResultLogin = {
 }
 export type TransformedResultLogin = RawResultLogin
 
-
 export type ApiSendRecoveryCode = {
   email: string
 }
@@ -96,17 +95,21 @@ export type ApiChangeUserPassword = {
   "reNewPass": string,
 }
 
-// ====== Payment ======== //
+export type ApiUploadKYC = {
+  passport: File
+  picture: File
+};
 
+// ====== Payment ======== //
 export type Currency = 'USD'
 export type OrderType = 'PAYPAL'
 
 export type ApiCreateOrderParam = {
-  "transactionId": string,
-  "currency": Currency,
-  "amount": number,
-  "orderType": OrderType,
-}
+  transactionId: string;
+  currency: Currency;
+  amount: number;
+  orderType: OrderType;
+};
 
 // ====== LLC Service ======== //
 
@@ -153,6 +156,91 @@ export type LLCServiceStatusType = {
   step: MyServiceStepType [];
 };
 
+// ====== Service ====== //
+
+export type RawService = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  appliedNation: Array<{
+    id: number;
+    nation: string;
+  }>;
+  appliedCompanyType: Array<{
+    id: number;
+    companyType: string;
+  }>;
+  serviceType: string;
+  serviceName: string;
+  serviceDescription: string;
+  enable: number;
+  serviceStep: Array<{
+    id: number;
+    stepNo: number;
+    name: string;
+    estimatedCompletionTime: string;
+    description: string;
+    documentRequired: Array<{
+      id: number;
+      documentRequired: string;
+    }>;
+    result: Array<{
+      id: number;
+      result: string;
+    }>;
+  }>;
+  serviceCycle: Array<{
+    id: number;
+    cycleNumber: number;
+    pricePerCycle: number;
+  }>;
+};
+
+export type RawServiceDetail = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  appliedNation: Array<{
+    id: number;
+    nation: string;
+  }>;
+  appliedCompanyType: Array<{
+    id: number;
+    companyType: string;
+  }>;
+  serviceType: string;
+  serviceName: string;
+  serviceDescription: string;
+  enable: number;
+  serviceStep: Array<{
+    id: number;
+    stepNo: number;
+    name: string;
+    estimatedCompletionTime: string;
+    description: string;
+    documentRequired: Array<{
+      id: number;
+      documentRequired: string;
+    }>;
+    result: Array<{
+      id: number;
+      result: string;
+    }>;
+  }>;
+  serviceCycle: Array<{
+    id: number;
+    cycleNumber: number;
+    pricePerCycle: number;
+  }>;
+};
+
+export type PaymentServiceBody = {
+  cashout: Array<{
+    serviceId: 4;
+    cycleNumber: 1;
+  }>;
+};
+
 // ====== My Company ====== //
 export type CompanyInformation = {
   companyName: string;
@@ -189,9 +277,7 @@ export type MailingAddress = {
 };
 
 export type Document = {
-  id: string;
   name: string;
-  url: string;
 };
 
 export type CompanyDetail = {
@@ -202,6 +288,60 @@ export type CompanyDetail = {
   documents: Document[];
 };
 
-export type RawCompanyDetail = never;
+export type RawCompanyDetail = {
+  id: number;
+  userId: number;
+  companyName: string;
+  entityEnding: string;
+  region: null | string;
+  industry: string;
+  website: string;
+  companyDescription: string;
+  owner: Array<{
+    companyName: string,
+    firstName: string,
+    lastName: string,
+    ownerShip: string,
+    document: string,
+    company: number, // INFO: 1 - true | 0 - false
+  }>;
+  responsiblePartyFirstName: null;
+  responsiblePartyLastName: null;
+  responsiblePartySSNOrITIN: null;
+  mailingState: null;
+  mailingCountry: null;
+  mailingCity: null;
+  mailingAddress: null;
+  mailingZipCode: null;
+  document: Array<{id: string, document: string}>;
+};
 
-
+export type EditCompanyBody = {
+  companyName: string,
+  entityEnding: string,
+  region: string,
+  industry: string,
+  website: string,
+  companyDescription: string,
+  owner: Array<{
+    companyName: string,
+    firstName: string,
+    lastName: string,
+    ownerShip: string,
+    document: string,
+    company: number, // INFO: 1 - true | 0 - false
+    individual: number, // INFO: 1 - true | 0 - false
+  }>,
+  responsiblePartyFirstName: string,
+  responsiblePartyLastName: string,
+  responsiblePartySSNOrITIN: string,
+  mailingState: string,
+  mailingCountry: string,
+  mailingCity: string,
+  mailingAddress: string,
+  mailingZipCode: string,
+  document: Array< {
+    id: string,
+    document: string,
+  }>,
+};

@@ -49,10 +49,13 @@ export function LoginPage() {
     }
     try {
       const result = await callApiLogin(param)
+      if (!result.roles.includes('ROLE_USER')) {
+        setStatus("failure")
+        return
+      }
       saveAuthInfo(result)
       setStatus('success')
       const user = await callApiGetUserProfile()
-      user.kycStatus = user.kycStatus || "Pending" // TODO: remove
       saveAuthUser(user)
       navigate(RoutePaths.home)
     } catch (e) {

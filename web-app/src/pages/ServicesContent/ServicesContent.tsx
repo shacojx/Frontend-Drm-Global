@@ -1,10 +1,13 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from "react-router-dom";
 import { callCreateOrder } from 'src/api/payment'
 import { ApiCreateOrderParam, Currency } from 'src/api/types'
 import { NATION_INFOS } from 'src/constants/SelectionOptions'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { generateTransactionId } from 'src/services-business/api/generate-api-param/payment'
+import { RoutePaths } from "../../constants/routerPaths";
+import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard'
 
 export type Service = {
@@ -19,40 +22,15 @@ export type Service = {
 
 
 export default function ServicesContent() {
-
-    // TODO: fetch from api
-    const Services: Service[] = [
-        {
-            id: '1',
-            label: "LLC Formation desk",
-            description: "Service Description",
-            agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
-            price: 5.99,
-            currency: 'USD'
-        },
-        {
-            id: '2',
-            label: "LLC Formation desk",
-            description: "Service Description",
-            agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
-            price: 6.99,
-            currency: 'USD'
-        },
-        {
-            id: '3',
-            label: "LLC Formation desk",
-            description: "Service Description",
-            agents: ['Registered Agent', 'Registered Agent', 'Registered Agent'],
-            price: 7.99,
-            currency: 'USD'
-        },
-    ]
-
+    const navigate = useNavigate()
+    const allServiceQuery = useApiGetAvailableServices()
+    const Services: Service[] = allServiceQuery.data || []
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
     const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<string[]>([])
     const [stepIndex, setStepIndex] = useState<number>(1)
     const [errorMessageConfirm, setErrorMessageConfirm] = useState<string | undefined>()
+    const [orderData, setOrderData] = useState<unknown>()
 
     const SelectServiceStepIndex = 1
     const PayServiceStepIndex = 2
@@ -74,7 +52,7 @@ export default function ServicesContent() {
             return
         }
         const body: ApiCreateOrderParam = {
-            transactionId: generateTransactionId(user.email),
+            transactionId: new Date().valueOf().toString(),
             currency: 'USD',
             amount: totalPrice,
             orderType: "PAYPAL",
@@ -82,6 +60,7 @@ export default function ServicesContent() {
         try {
             const rawResult = await callCreateOrder(body)
             console.log('handleClickPaypalConfirm: ', rawResult)
+            setOrderData(rawResult)
         } catch (e: unknown) {
             setErrorMessageConfirm(e?.toString())
             console.error(e)
@@ -89,7 +68,20 @@ export default function ServicesContent() {
     }
 
     function handleClickFinishPayment() {
-
+        try {
+            if (!orderData) {
+                return
+            }
+            // TODO: update code
+            const idService = orderData
+            navigate(`${RoutePaths.myServices}/${idService}`)
+            // @ts-ignore
+            const paypalLink = orderData.links.find(link => link.rel === 'approve')?.href
+            window.open(paypalLink, '_blank', 'noopener,noreferrer');
+        } catch (e: unknown) {
+            setErrorMessageConfirm(e?.toString())
+            console.error(e)
+        }
     }
 
     function handleClickCancelPayment() {
@@ -103,11 +95,11 @@ export default function ServicesContent() {
     Services.forEach(service => totalPrice += service.price)
 
     return <div className={"w-full grow flex flex-col"}>
-        <div className={"flex p-3 grow overflow-hidden"}>
+        <div className={"flex bg-white border-t border-l border-solid grow overflow-hidden"}>
             {stepIndex === SelectServiceStepIndex && <div className={"p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden space-y-8"}>
                 {user?.companyType && <div className={"text-cXl w-full text-start"}>{translation.t("Since you launch your new in", { companyType: user.companyType })}
                     <span
-                        className={"text-cLg font-bold text-primary"}>{nationName}</span> <span
+                        className={"text-cLg font-bold text-primary"}> {nationName}</span> <span
                             className={"text-h4"}>...</span>
                 </div>}
                 <div className={"flex flex-col gap-3"}>
@@ -146,7 +138,7 @@ export default function ServicesContent() {
                         </div>
                         <div className={"flex grow justify-center items-center"}>
                             <button
-                                disabled={!hasSelected}
+                                disabled={!hasSelected || !!orderData}
                                 className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary"}
                                 onClick={handleClickPaypalConfirm}
                             >
@@ -174,7 +166,7 @@ export default function ServicesContent() {
                     <span>{translation.t('Cancel')}</span>
                 </button>
                 <button
-                    disabled={!hasSelected}
+                    disabled={!hasSelected || !orderData}
                     className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary"}
                     onClick={handleClickFinishPayment}
                 >

@@ -13,7 +13,7 @@ export const validateCompanyInfo = (info: Partial<CompanyInformation>): info is 
 
 export const validateOwnersInfo = (owners: Partial<OwnerInformation>[]): owners is OwnerInformation[]  => {
   for (let owner of owners) {
-    if (owner.companyName === "") throw "Company name is required";
+    if (owner.type === "Company" && owner.companyName === "") throw "Company name is required";
     if (!owner.ownership) throw "Ownership is required";
     if (owner.document?.length && owner.document.length === 0) throw "Document is required";
   }

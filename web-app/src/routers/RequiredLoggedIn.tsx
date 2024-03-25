@@ -19,7 +19,6 @@ export function RequiredLoggedIn(props: PropsWithChildren) {
             if (!user) {
               navigate(RoutePaths.login)
             } else {
-              user.kycStatus = user.kycStatus || "Pending" // TODO: remove
               saveAuthUser(user)
               setIsRequesting(false)
             }
@@ -32,7 +31,7 @@ export function RequiredLoggedIn(props: PropsWithChildren) {
           })
       }
     }, [user]);
-  
+
     if (isRequesting) {
       return <DialogRequestingFullscreen />
     } else {

@@ -63,7 +63,8 @@ export function DialogConfirmFullScreen(props: ConfirmProps) {
     props.onCancel()
   }
 
-  function handleClickConfirm() {
+  const handleClickConfirm = () => {
+    console.log("Handle confirm")
     props.onConfirm()
   }
 

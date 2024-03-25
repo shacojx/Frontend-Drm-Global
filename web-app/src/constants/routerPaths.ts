@@ -4,7 +4,7 @@ export const RoutePaths = {
     resetPassword: '/reset-password',
     register: '/register',
     myAccount: '/my-account',
-    KYCUpload:'kyc-upload',
+    KYCUpload:'/kyc-upload',
     myCompany: '/my-company',
     myServices: '/my-services',
     myServicesItem: '/my-services/:id',
