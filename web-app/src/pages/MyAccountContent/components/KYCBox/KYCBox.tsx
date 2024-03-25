@@ -34,7 +34,7 @@ export default function KYCBox() {
           }
         })
       }
-    }, [])
+    }, [user?.kycImagePassport, user?.kycImagePictureHoldPassport])
 
     return (
       <>
