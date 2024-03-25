@@ -9,7 +9,9 @@ type TakeOrUploadPhotoProps = {
 export default function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
     const translation = useTranslation()
     const uploadFileRef = useRef<HTMLInputElement | null>(null)
-    const [fileName, setFileName] = useState<string>()
+    const [file, setFile] = useState<File>()
+
+    const src = file && URL.createObjectURL(file)
 
     function handleClickUpload() {
         if (uploadFileRef) {
@@ -20,19 +22,18 @@ export default function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
     function handleChange(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
-            setFileName(file.name)
+            setFile(file)
             props.onUpload(file)
         }
     }
 
     return <div className={"w-full flex flex-col items-center border border-primary_light rounded-xl px-2 py-6"}>
-        {!fileName
+        {!file
             ? <div className={"rounded-full bg-primary_light p-4"}>
                 <IconUploadFile />
             </div>
             : <div className={"flex flex-row gap-2 items-center"}>
-                <IconCheck className={"w-14 h-14 text-success"} />
-                <p className={"text-h4"}>{fileName}</p>
+                <img className='w-1/2 aspect-video mx-auto object-contain rounded-lg overflow-hidden' src={src}  />
             </div>
         }
         <div className={"flex flex-row gap-4 my-4"}>

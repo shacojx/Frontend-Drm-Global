@@ -5,14 +5,12 @@ import {
   GridRenderCellParams,
   GridValueGetterParams
 } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { callApiGetKyc } from "../api/kycManagement";
-import { ApiGetKycParam, KycDetail, RawResultGetKyc } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
 import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
-import { generateFormatDate } from "../services-ui/date";
 import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/kyc";
+import { generateFormatDate } from "../services-ui/date";
 
 type Props = {}
 
