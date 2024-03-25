@@ -64,8 +64,8 @@ export default function ServicesContent() {
         setStepIndex(PayServiceStepIndex)
     }
 
-    async function handleClickPaypalConfirm() { 
-        
+    async function handleClickPaypalConfirm() {
+
     }
 
     async function handleClickFinishPayment() {
@@ -215,43 +215,17 @@ export default function ServicesContent() {
 
                         <Tab.Panels className="flex grow">
                           <Tab.Panel className="w-full">
-                            <div className="w-3/4 m-auto flex flex-col gap-3 pt-4">
-                              <FormFieldText
-                                label="Cardholder Name"
-                                isRequired
-                                validateCaller={validateCaller}
-                                id="cardholder"
-                                onChange={() => {}}
-                              />
-                              <FormFieldNumber
-                                label="Card Number"
-                                isRequired
-                                validateCaller={validateCaller}
-                                id="card-number"
-                                onChange={() => {}}
-                              />
-                              <FormFieldText
-                                label="Expiration Date"
-                                isRequired
-                                validateCaller={validateCaller}
-                                id="expiration"
-                                onChange={() => {}}
-                              />
-                              <FormFieldText
-                                label="Security code (CVV/CVC)"
-                                isRequired
-                                validateCaller={validateCaller}
-                                id="cvv"
-                                onChange={() => {}}
-                              />
+                            <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">
+                              <div>Continue payment with Paypal ?</div>
+                              <img src={IMAGE.paypal}/>
                             </div>
                           </Tab.Panel>
 
-                          <Tab.Panel className="w-full flex justify-center items-center">
-                            <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">
+                          <Tab.Panel className="w-full">
+                            <div
+                              className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">
                               <div>Continue payment with Paypal ?</div>
                               <img src={IMAGE.paypal} />
-                              <button className="w-full bg-primary text-white rounded-lg py-2">Confirm</button>
                             </div>
                           </Tab.Panel>
 
