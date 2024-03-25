@@ -15,7 +15,7 @@ type Props = Partial<{
   title: string,
   subTitle: string,
   actionElement: JSX.Element,
-  onClose: () => void
+  onClose?: () => void
 }>
 
 export function DialogSuccessFullscreen(props: Props) {

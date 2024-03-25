@@ -69,7 +69,7 @@ export type ApiResetPasswordParam = {
 }
 export type RawResultResetPassword = ""
 
-export type KYCStatus = 'Pending' | 'In-progress' | 'Approved'
+export type KYCStatus = 'Pending' | 'In-progress' | 'Approved' | 'Rejected'
 
 export type RawResultGetUserProfile = {
   "llcInNation": NationValue,
@@ -81,6 +81,8 @@ export type RawResultGetUserProfile = {
   firstName: string,
   lastName: string,
   kycStatus: KYCStatus,
+  kycImagePassport: string,
+  kycImagePictureHoldPassport: string
 }
 
 export type ApiChangeUserProfile = {
