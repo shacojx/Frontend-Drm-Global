@@ -44,7 +44,7 @@ export default function ServicesContent() {
 
     const { validateCaller } = useValidateCaller()
 
-    const [activeTab, setActiveTab] = useState<'visa'|'paypal'|'bank'>('visa')
+    const [activeTab, setActiveTab] = useState<'visa'|'paypal'|'bank'>('paypal')
 
     const { data: bankAccounts } = useApiGetBanks()
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>()
@@ -94,7 +94,7 @@ export default function ServicesContent() {
         const rawResult = isUsingPaypal
           ? await callCreateOrderPaypal(body)
           : await callCreateOrderBankToBank(body)
-        allServiceQuery.refetch().then(() => setStepIndex(SelectServiceStepIndex));
+        allServiceQuery.refetch().then(() => {setStepIndex(SelectServiceStepIndex); setActiveTab('paypal')});
         myServiceQuery.refetch().catch(e => console.error(e))
         if (isUsingPaypal) {
           const paypalLink = rawResult.data.links.find((link) => link.rel === 'approve')?.href;
@@ -108,6 +108,7 @@ export default function ServicesContent() {
     }
 
     function handleClickCancelPayment() {
+      setActiveTab('paypal')
       setErrorMessageConfirm('');
       setStepIndex(SelectServiceStepIndex)
     }
