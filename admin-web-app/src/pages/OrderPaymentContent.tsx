@@ -58,7 +58,7 @@ export function OrderPaymentContent(props: Props) {
     };
     const rawResult = await callApiSearchUser(param);
     if (rawResult) {
-      setTableData([rawResult]);
+      setTableData(rawResult.content);
       setUserCount(1);
     }
   }
