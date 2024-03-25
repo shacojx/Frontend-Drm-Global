@@ -328,7 +328,7 @@ export type EditCompanyBody = {
     firstName: string,
     lastName: string,
     ownerShip: string,
-    document: string,
+    document: [string],
     company: number, // INFO: 1 - true | 0 - false
     individual: number, // INFO: 1 - true | 0 - false
   }>,

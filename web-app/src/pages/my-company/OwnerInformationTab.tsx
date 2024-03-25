@@ -120,7 +120,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
 
           <div
             className={cn(
-              "gap-x-4 gap-y-6 mb-8 grid grid-cols-1 xl:grid-cols-[repeat(4,1fr),20px]"
+              "gap-x-4 gap-y-6 mb-8 grid grid-cols-1 xl:grid-cols-[repeat(4,minmax(0,1fr)),20px]"
             )}
           >
             {owner.type === "Company" ? (
@@ -163,7 +163,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               </>
             )}
 
-            <div className="">
+            <div className="col-span-1">
               <FormFieldNumber
                 isFixedValue={readonly}
                 label={t("Ownership (%)")}
@@ -175,7 +175,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
               />
             </div>
 
-            <div className="">
+            <div className="col-span-1">
               <FormFieldMultipleUpload
                 maxFiles={3}
                 isFixedValue={readonly}

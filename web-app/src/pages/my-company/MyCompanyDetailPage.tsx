@@ -1,17 +1,8 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  CompanyInformation,
-  Document,
-  MailingAddress,
-  OwnerInformation,
-  ResponseParty,
-} from "../../api/types";
-import {
-  DialogFailureFullscreen,
-  DialogSuccessFullscreen,
-} from "../../components/DialogFormStatusFullscreen";
+import { CompanyInformation, Document, MailingAddress, OwnerInformation, ResponseParty } from "../../api/types";
+import { DialogFailureFullscreen, DialogSuccessFullscreen } from "../../components/DialogFormStatusFullscreen";
 import { useApiGetMyCompanyDetail, useApiUpdateMyCompanyDetail } from "../../hooks-api/useMyCompany";
 import {
   validateCompanyInfo,
@@ -25,13 +16,7 @@ import { MailingAddressTab } from "./MailingAddressTab";
 import { OwnerInformationTab } from "./OwnerInformationTab";
 import { ResponsePartyTab } from "./ResponsePartyTab";
 
-const TABS = [
-  "Company Information",
-  "Owner Information",
-  "Responsible Party",
-  "Mailing address",
-  "Document",
-] as const;
+const TABS = ["Company Information", "Owner Information", "Responsible Party", "Mailing address", "Document"] as const;
 
 export function MyCompanyDetailPage() {
   const { t } = useTranslation();
@@ -47,7 +32,7 @@ export function MyCompanyDetailPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
 
   const { mutateAsync: saveMyCompany, status: savingCompany } = useApiUpdateMyCompanyDetail({
-    onError: error => setError(String(error))
+    onError: (error) => setError(String(error)),
   });
 
   useEffect(() => {
@@ -73,30 +58,30 @@ export function MyCompanyDetailPage() {
           companyDescription: companyInfo.description,
           companyName: companyInfo.companyName,
           entityEnding: companyInfo.entityEnding,
-          industry: companyInfo.industry, 
+          industry: companyInfo.industry,
           mailingAddress: mailingAddress.address,
           mailingCity: mailingAddress.city,
           mailingCountry: mailingAddress.country,
-          mailingState: mailingAddress.state ?? '',
+          mailingState: mailingAddress.state ?? "",
           mailingZipCode: mailingAddress.zipCode,
           owner: owners.map((item) => ({
-            companyName: item.companyName ?? '',
-            firstName: item.firstName ?? '',
-            lastName: item.lastName ?? '',
+            companyName: item.companyName ?? "",
+            firstName: item.firstName ?? "",
+            lastName: item.lastName ?? "",
             ownerShip: item.ownership.toString(),
-            document: item.document[0],
-            company: item.type === 'Company' ? 1 : 0,
-            individual: item.type === 'Individual' ? 1 : 0
+            document: [item.document.join(",")],
+            company: item.type === "Company" ? 1 : 0,
+            individual: item.type === "Individual" ? 1 : 0,
           })),
-          region: companyInfo.region ?? '',
-          responsiblePartyFirstName: responseParty.firstName, 
-          responsiblePartyLastName: responseParty.lastName, 
-          responsiblePartySSNOrITIN: responseParty.SSNorITIN ?? '',
+          region: companyInfo.region ?? "",
+          responsiblePartyFirstName: responseParty.firstName,
+          responsiblePartyLastName: responseParty.lastName,
+          responsiblePartySSNOrITIN: responseParty.SSNorITIN ?? "",
           website: companyInfo.website,
-          document: documents.map((item) => ({id: item.name,  document: item.name})),
+          document: documents.map((item) => ({ id: item.name, document: item.name })),
         });
         setShowSuccessDialog(true);
-        refetch()
+        refetch();
       }
     } catch (error) {
       setError(error as string);
@@ -130,28 +115,16 @@ export function MyCompanyDetailPage() {
 
           <div className="border border-solid border-surface rounded-lg p-6">
             {activeTab === "Company Information" && (
-              <CompanyInformationTab
-                readonly={!isEditing}
-                companyInfo={companyInfo}
-                onChange={setCompanyInfo}
-              />
+              <CompanyInformationTab readonly={!isEditing} companyInfo={companyInfo} onChange={setCompanyInfo} />
             )}
             {activeTab === "Owner Information" && (
               <OwnerInformationTab readonly={!isEditing} owners={owners} onChange={setOwners} />
             )}
             {activeTab === "Responsible Party" && (
-              <ResponsePartyTab
-                readonly={!isEditing}
-                responseParty={responseParty}
-                onChange={setResponseParty}
-              />
+              <ResponsePartyTab readonly={!isEditing} responseParty={responseParty} onChange={setResponseParty} />
             )}
             {activeTab === "Mailing address" && (
-              <MailingAddressTab
-                readonly={!isEditing}
-                mailingAddress={mailingAddress}
-                onChange={setMailingAddress}
-              />
+              <MailingAddressTab readonly={!isEditing} mailingAddress={mailingAddress} onChange={setMailingAddress} />
             )}
             {activeTab === "Document" && (
               <DocumentTab readonly={!isEditing} documents={documents} onChange={setDocuments} />
