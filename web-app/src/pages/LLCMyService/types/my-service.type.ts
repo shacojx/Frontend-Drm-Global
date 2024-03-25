@@ -3,6 +3,9 @@ export enum ServiceStatusType {
   Pending = 'Pending',
   InProgress = 'In-Progress',
   Issued = 'Issued',
+  Confirmed = 'Confirmed',
+  Approved = 'Approved',
+  Yes = 'Yes',
 }
 
 export type TabType = {

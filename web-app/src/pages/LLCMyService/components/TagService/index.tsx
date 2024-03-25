@@ -26,6 +26,21 @@ export default function TagService({ status }: Props) {
       icon: <IconCheck />,
       label: t("Issued"),
     },
+    [ServiceStatusType.Confirmed]: {
+      color: "bg-success",
+      icon: <IconCheck />,
+      label: t("Confirmed"),
+    },
+    [ServiceStatusType.Approved]: {
+      color: "bg-success",
+      icon: <IconCheck />,
+      label: t("Approved"),
+    },
+    [ServiceStatusType.Yes]: {
+      color: "bg-success",
+      icon: <IconCheck />,
+      label: t("Yes"),
+    },
   };
 
   const dataTag = arrayTag[status];

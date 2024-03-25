@@ -46,7 +46,7 @@ export default function TabService({ item }: Props) {
               },
               {
                 "bg-[#1DD75B]/15 text-primary":
-                  item.status === ServiceStatusType.Issued,
+                  [ServiceStatusType.Issued, ServiceStatusType.Approved, ServiceStatusType.Yes, ServiceStatusType.Confirmed].includes(item.status),
               }
             )}
           >
