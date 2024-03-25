@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DialogContainer } from "../components/DialogContainer";
-import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
+import { DialogConfirmFullScreen, DialogSuccessFullscreen } from "../components/DialogFormStatusFullscreen";
 import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/kyc";
 import { generateFormatDate } from "../services-ui/date";
 
@@ -25,6 +25,8 @@ export function KycContent(props: Props) {
   const [idSelected, setIdSelected] = useState<number>()
   const [pictureIndexInit, setPictureIndexInit] = useState<number>(0)
 
+  const [showSuccessDialog, setShowSuccessDialog] = useState<false | "approve" | "reject">(false)
+
   const {data, isLoading: gettingKYCs} = useApiGetKYCs({
     page: paginationModel.page,
     size: paginationModel.pageSize
@@ -34,8 +36,12 @@ export function KycContent(props: Props) {
   const kycCount = data?.totalElements 
 
 
-  const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC()
-  const {mutateAsync: rejectKYC,  isPending: rejectingKYC } = useApiRejectKYC()
+  const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC({
+    onSuccess: () => setShowSuccessDialog("approve"),
+  })
+  const {mutateAsync: rejectKYC,  isPending: rejectingKYC } = useApiRejectKYC({
+    onSuccess: () => setShowSuccessDialog("reject"),
+  })
 
   const handleClickReject = (id: number) => {
     setIdSelected(id)
@@ -208,6 +214,8 @@ export function KycContent(props: Props) {
           </div>
         </DialogContainer>
       )}
+
+      {showSuccessDialog && <DialogSuccessFullscreen onClose={() => setShowSuccessDialog(false)} title={showSuccessDialog==='approve' ? 'Approved' : 'Rejected'} />}
     </div>
   );
 }

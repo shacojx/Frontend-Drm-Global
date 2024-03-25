@@ -1,6 +1,7 @@
-import React, { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { getFile } from 'src/api/upload'
 import { IconCheck, IconDangerCircle, IconRefreshCircle, IconXCircle } from 'src/components/icons'
 import { RoutePaths } from 'src/constants/routerPaths'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
@@ -10,6 +11,33 @@ import { AuthContext } from 'src/contexts/AuthContextProvider'
 export default function KYCBox() {
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
+    const [passportImage, setPassportImage] = useState()
+
+    const [passport, setPassport] = useState<string>()
+    const [holdPassport, setHoldPassport] = useState<string>()
+
+    useEffect(() => {
+      if (user?.kycImagePassport) {
+        getFile(user.kycImagePassport, { download: false }).then((data) => {
+          if (data instanceof Blob) {
+            const src = URL.createObjectURL(data)
+            setPassport(src)
+          }
+        })
+      }
+
+      if (user?.kycImagePictureHoldPassport) {
+        getFile(user.kycImagePictureHoldPassport, { download: false }).then((data) => {
+          if (data instanceof Blob) {
+            const src = URL.createObjectURL(data)
+            setHoldPassport(src)
+          }
+        })
+      }
+      
+      
+    }, [])
+    
   
     return (
       <>
@@ -47,14 +75,12 @@ export default function KYCBox() {
           </div>
         </div>
 
-        <div className={'space-y-6 grow'}>
           {(user?.kycStatus === 'Pending' || user?.kycStatus === 'Rejected') && (
             <div className={'flex flex-row gap-4 items-center p-2 bg-red-200 rounded-lg'}>
               <IconDangerCircle className={'shrink-0 text-danger'} />
               <p>{translation.t('You have not verified your account. Please verify for the best experience')}.</p>
             </div>
           )}
-        </div>
 
         {user?.kycStatus === 'Pending' && (
           <div className={'flex justify-end'}>
@@ -67,9 +93,12 @@ export default function KYCBox() {
           </div>
         )}
 
-        {
-          user?.kycStatus === 'Approved' && <div>image</div>
-        }
+        {user?.kycStatus === 'Approved' && (
+          <div className='grow flex justify-center items-center flex-col gap-4'>
+            <img className='aspect-video rounded object-contain' src={passport} />
+            <img className='aspect-video rounded object-contain' src={holdPassport} />
+          </div>
+        )}
       </>
     );
   }

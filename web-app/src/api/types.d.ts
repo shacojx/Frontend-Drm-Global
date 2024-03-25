@@ -81,6 +81,8 @@ export type RawResultGetUserProfile = {
   firstName: string,
   lastName: string,
   kycStatus: KYCStatus,
+  kycImagePassport: string,
+  kycImagePictureHoldPassport: string
 }
 
 export type ApiChangeUserProfile = {

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { UseMutationOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { callApiApproveKyc, callApiGetKyc, callApiRejectKyc } from "../../api/kycManagement";
 import { KeyFactory } from "../../services-base/key-factory";
 
@@ -14,17 +14,19 @@ export const useApiGetKYCs = ({page, size}: UseApiGetKyc) => {
   })
 }
 
-export const useApiApproveKYC = () => {
+export const useApiApproveKYC = (props?: Pick<UseMutationOptions<unknown, Error, number>, 'onSuccess' | 'onError'>) => {
   return useMutation({
     mutationKey: [],
     mutationFn: callApiApproveKyc,
+    ...props,
   })
 }
 
 
-export const useApiRejectKYC = () => {
+export const useApiRejectKYC = (props?: Pick<UseMutationOptions<unknown, Error, number>, 'onSuccess' | 'onError'>) => {
   return useMutation({
     mutationKey: [],
-    mutationFn: callApiRejectKyc
+    mutationFn: callApiRejectKyc,
+    ...props
   })
 }
