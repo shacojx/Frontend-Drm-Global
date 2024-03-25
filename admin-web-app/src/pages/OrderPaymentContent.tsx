@@ -18,20 +18,20 @@ import {
 } from "@mui/x-data-grid";
 import { generateFormatDate } from "../services-ui/date";
 
-type Props = {};
+type Props = {}
 
 export function OrderPaymentContent(props: Props) {
   // TODO: update api
-  const translation = useTranslation();
-  const { validateCaller, validateAll } = useValidateCaller();
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<RNPhoneValue | undefined>();
+  const translation = useTranslation()
+  const {validateCaller, validateAll} = useValidateCaller()
+  const [email,setEmail] = useState<string>('')
+  const [phone, setPhone] = useState<RNPhoneValue | undefined>()
   const [tableData, setTableData] = useState<ViewedUser[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
-  const [userCount, setUserCount] = useState<number>();
+  const [userCount, setUserCount] = useState<number>()
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
@@ -39,14 +39,14 @@ export function OrderPaymentContent(props: Props) {
     const fetchData = async () => {
       const param: ApiViewUserParam = {
         page: paginationModel.page,
-        size: paginationModel.pageSize,
-      };
-      const rawResult = await callApiLViewUser(param);
+        size: paginationModel.pageSize
+      }
+      const rawResult = await callApiLViewUser(param)
       setTableData(rawResult?.content ?? []);
-      setUserCount(rawResult?.totalElements);
+      setUserCount(rawResult?.totalElements)
     };
 
-    fetchData().catch((e) => console.log(e));
+    fetchData().catch(e=> console.log(e))
   }, [paginationModel]);
 
   async function handleClickSearch() {

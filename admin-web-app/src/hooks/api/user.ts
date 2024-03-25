@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { callApiCreateAdminAccount } from '../../api/account';
-import { callApiLViewUser } from '../../api/userManagement';
-import { KeyFactory } from '../../services-base/key-factory';
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { callApiCreateAdminAccount } from "../../api/account";
+import { callApiLViewUser, callApiSearchUser } from "../../api/userManagement";
+import { KeyFactory } from "../../services-base/key-factory";
 
 type UseGetUsersProps = {
   page: number;
@@ -11,27 +11,21 @@ type UseGetUsersProps = {
   email?: string;
 };
 
-export const useApiGetUsers = ({
-  page,
-  size,
-  codePhone = '',
-  phone = '',
-  email = '',
-}: UseGetUsersProps) => {
-  // if (codePhone || phone || email) {
-  //   return useQuery({
-  //     queryKey: KeyFactory.getAllUsers(page, size),
-  //     queryFn: () => callApiSearchUser({codePhone, email, phone}),
-  //   });
-  // }
+export const useApiGetUsers = ({ page, size, codePhone = "", phone = "", email = "" }: UseGetUsersProps) => {
+  if (codePhone || phone || email) {
+    console.log("Searching")
+    return useQuery({
+      queryKey: KeyFactory.searchUsers(codePhone, email, phone),
+      queryFn: () => callApiSearchUser({ codePhone, email, phone }),
+    });
+  }
 
+  console.log("Getting all")
   return useQuery({
     queryKey: KeyFactory.getAllUsers(page, size),
     queryFn: () => callApiLViewUser({ page, size }),
   });
 };
-
-
 
 export const useApiCreateUser = () => {
   return useMutation({
