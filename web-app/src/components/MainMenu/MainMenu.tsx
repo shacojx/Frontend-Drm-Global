@@ -57,7 +57,7 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
       let newMenu = menuDefault.map((item) => {
         if (item.id === RoutePaths.myServices) {
           const itemArr: MenuType[] = [];
-          resApiLLCService.data.map(
+          resApiLLCService.data.forEach(
             (itemService: { serviceId: number; serviceName: string }) => {
               itemArr.push({
                 id: `${RoutePaths.myServices}/${itemService.serviceId}`,
@@ -67,6 +67,14 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
               });
             }
           );
+          if (resApiLLCService.data.length === 0) {
+            itemArr.push({
+              id: `#`,
+              path: `#`,
+              iconElement: <></>,
+              label: "No Service",
+            });
+          }
           item.items = itemArr;
         }
         return item;
