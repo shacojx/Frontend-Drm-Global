@@ -1,62 +1,84 @@
 import {
   DataGrid,
-  GridCellParams,
   GridColDef,
   GridPaginationModel,
-  GridValueGetterParams
-} from "@mui/x-data-grid";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ViewedUser } from "../api/types";
+  GridRenderCellParams,
+  GridRowParams,
+} from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ServiceFilter } from '../components/ServiceFilter';
+import { ServiceSearchFilter } from '../types/serviceSearchFilter';
+import { Service } from '../types/service';
+import { StatusBadge } from '../components/StatusBadge';
+import { DialogContainer } from '../components/DialogContainer';
+import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
+import {
+  callApiGetListService,
+  callApiGetServiceDetail,
+} from '../api/serviceManagement';
+import { callApiLViewUser } from '../api/userManagement';
+import { ApiViewUserParam, ViewedUser } from '../api/types';
 
-type Props = {}
+type Props = {};
 
 export function ServicesContent(props: Props) {
-  const translation = useTranslation()
-  const [servicesCount, setServicesCount] = useState<number>()
-  const [tableData, setTableData] = useState<ViewedUser[]>([]);
+  const translation = useTranslation();
+
+  const [servicesCount, setServicesCount] = useState<number>();
+  const [tableData, setTableData] = useState<Service[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
 
+  const [isShowServiceDetailDialog, setIsShowServiceDetailDialog] =
+    useState(false);
+  const [selectService, setSelectService] = useState<Service | null>(null);
+  const [users, setUsers] = useState<ViewedUser[]>([]);
+
+  const PAGE_SIZE = 10;
+
   // TODO: add i18n for columns
-  const serviceColumns: GridColDef<ViewedUser>[] = [
-    { field: 'id', headerName: 'ID', width: 120 },
+  const serviceColumns: GridColDef<Service>[] = [
+    { field: 'id', headerName: 'ID', width: 50 },
     {
-      field: 'status',
+      field: 'statusService',
       headerName: 'Status',
       sortable: false,
-      type: 'string',
-      width: 120,
-      valueGetter: (params: GridValueGetterParams) =>
-        params.row.enable ? 'Active' : 'Inactive',
-      cellClassName: (params: GridCellParams) => {
-        if (params.value === 'Active') {
-          return 'text-success';
-        }
-        return 'text-danger';
+      width: 140,
+      renderCell: (params: GridRenderCellParams) => {
+        return <StatusBadge status={params.value}></StatusBadge>;
       },
     },
     {
-      field: 'kycStatus',
+      field: 'kyc',
       headerName: 'KYC',
       sortable: false,
-      width: 120,
+      width: 140,
+      renderCell: (params: GridRenderCellParams) => {
+        return <StatusBadge status={params.value}></StatusBadge>;
+      },
     },
     {
       field: 'corporationProfile',
       headerName: 'Corporation profile',
       sortable: false,
       type: 'string',
-      width: 150,
+      width: 160,
+      renderCell: (params: GridRenderCellParams) => {
+        return <StatusBadge status={params.value}></StatusBadge>;
+      },
     },
     {
-      field: 'payment',
+      field: 'statusPayment',
       headerName: 'Payment',
       sortable: false,
       type: 'string',
-      width: 120,
+      width: 140,
+      renderCell: (params: GridRenderCellParams) => {
+        return <StatusBadge status={params.value}></StatusBadge>;
+      },
     },
     {
       field: 'serviceName',
@@ -73,18 +95,18 @@ export function ServicesContent(props: Props) {
       width: 160,
     },
     {
-      field: 'phone',
+      field: 'phoneNumber',
       headerName: 'Phone number',
       sortable: false,
       type: 'string',
       width: 120,
     },
     {
-      field: 'email',
+      field: 'customerEmail',
       headerName: 'Email',
       sortable: false,
       type: 'string',
-      width: 120,
+      width: 200,
     },
     {
       field: 'pic',
@@ -95,22 +117,76 @@ export function ServicesContent(props: Props) {
     },
   ];
 
+  useEffect(() => {
+    getListUser({
+      size: 25,
+      page: 0,
+    }).then((res) => {
+      if (res?.content) {
+        setUsers(res?.content);
+      }
+    });
+    search({});
+  }, []);
 
-  return <div className={"w-full grow flex flex-col p-3"}>
-    <div
-      className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
-      <p className={"text-h4 w-full text-start mb-6"}>{translation.t('Services Management')}</p>
-      <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
-        <DataGrid
-          paginationMode="server"
-          rows={tableData}
-          columns={serviceColumns}
-          pageSizeOptions={[25]}
-          rowCount={servicesCount || 0}
-          paginationModel={paginationModel}
-          onPaginationModelChange={(model) => setPaginationModel(model)}
-        />
+  async function getListUser(param: ApiViewUserParam) {
+    return await callApiLViewUser(param);
+  }
+
+  async function search(data?: Partial<ServiceSearchFilter>) {
+    const response = await callApiGetListService(data);
+    setTableData(response.content);
+  }
+
+  async function showServiceDetail(data: Service) {
+    console.log(data);
+    const response = await callApiGetServiceDetail(data.serviceId);
+    setIsShowServiceDetailDialog(true);
+    setSelectService(response);
+  }
+
+  return (
+    <div className={'w-full grow flex flex-col p-3'}>
+      <div
+        className={
+          'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
+        }
+      >
+        <p className={'text-h4 w-full text-start mb-6'}>
+          {translation.t('Services Management')}
+        </p>
+        <ServiceFilter onSubmit={search} />
+        <div
+          className={'w-full grow'}
+          key={tableData.map((value) => value.id).join('_')}
+        >
+          <DataGrid
+            paginationMode="server"
+            rows={tableData}
+            columns={serviceColumns}
+            pageSizeOptions={[25]}
+            rowCount={servicesCount || 0}
+            paginationModel={paginationModel}
+            onPaginationModelChange={(model) => setPaginationModel(model)}
+            onRowClick={(param: GridRowParams<Service>) =>
+              showServiceDetail(param.row)
+            }
+          />
+        </div>
+        {isShowServiceDetailDialog && (
+          <DialogContainer
+            handleClickOverlay={() => {
+              setIsShowServiceDetailDialog(false);
+            }}
+            isCloseOnClickOverlay
+            isFullSize
+            isAutoSize
+            panelClassName={'max-w-[1200px]'}
+          >
+            <ServiceDetailDialog service={selectService} users={users} />
+          </DialogContainer>
+        )}
       </div>
     </div>
-  </div>;
+  );
 }

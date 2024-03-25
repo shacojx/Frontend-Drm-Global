@@ -52,18 +52,18 @@ export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: 
 }
 
 export async function getAccessTokenInfo() {
-  const accessTokenInfo = getToken('accessTokenAdmin')
+  const accessTokenInfo = getToken('accessToken')
   if (accessTokenInfo) {
     return accessTokenInfo
   }
-  const refreshTokenInfo = getToken('refreshTokenAdmin')
+  const refreshTokenInfo = getToken('refreshToken')
   if (refreshTokenInfo) {
     return await refreshToken(refreshTokenInfo.token)
   }
   return null
 }
 
-function getAuthorizationString(accessTokenInfo: TokenInfo) {
+export function getAuthorizationString(accessTokenInfo: TokenInfo) {
   if (accessTokenInfo.type === 'Bearer') {
     return `Bearer ${accessTokenInfo.token}`
   }
@@ -95,7 +95,7 @@ async function refreshToken(refreshToken: string) {
   return generateTokenInfo(result.accessToken, result.tokenType, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
 }
 
-type TokenName = 'accessTokenAdmin' | 'refreshTokenAdmin'
+type TokenName = 'accessToken' | 'refreshToken'
 
 type TokenInfo = {
   token: string,
@@ -115,19 +115,19 @@ function generateTokenInfo(token: string, type: string, expiredTime: number) {
 export function saveToken(accessToken: string, accessTokenType: string, refreshToken: string) {
   const accessTokenInfo = generateTokenInfo(accessToken, accessTokenType, EXPIRATION_TIME_FOR_ACCESS_TOKEN)
   const refreshTokenInfo = generateTokenInfo(refreshToken, '', EXPIRATION_TIME_FOR_REFRESH_TOKEN)
-  sessionStorage.setItem("accessTokenAdmin", JSON.stringify(accessTokenInfo))
-  localStorage.setItem("refreshTokenAdmin", JSON.stringify(refreshTokenInfo)) // should save refresh token to cookie
+  sessionStorage.setItem("accessToken", JSON.stringify(accessTokenInfo))
+  localStorage.setItem("refreshToken", JSON.stringify(refreshTokenInfo)) // should save refresh token to cookie
 }
 
 export function removeAuthToken() {
-  sessionStorage.removeItem("accessTokenAdmin")
-  localStorage.removeItem("refreshTokenAdmin")
+  sessionStorage.removeItem("accessToken")
+  localStorage.removeItem("refreshToken")
 }
 
 export function getToken(tokenName: TokenName) {
-  const tokenInfoString = tokenName === "accessTokenAdmin"
-    ? sessionStorage.getItem('accessTokenAdmin')
-    : localStorage.getItem('refreshTokenAdmin')
+  const tokenInfoString = tokenName === "accessToken"
+    ? sessionStorage.getItem('accessToken')
+    : localStorage.getItem('refreshToken')
   if (!tokenInfoString) {
     return null
   }

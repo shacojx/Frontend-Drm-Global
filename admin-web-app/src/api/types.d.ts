@@ -382,3 +382,11 @@ export type RawResultGetKyc = {
   totalPages: number,
   totalElements: number,
 }
+
+export type RawResult<T> = {
+  content: T;
+  totalPages: number;
+  totalElements: number;
+  message: string;
+  status: string;
+};

@@ -220,5 +220,20 @@
   "masterService.serviceStatusPlaceholder": "Enable",
   "masterService.priceCyclePlaceholder": "100",
   "masterService.documentRequiredPlaceholder": "EIN Document",
-  "masterService.resultRequiredPlaceholder": "EIN PDF rs"
+  "masterService.resultRequiredPlaceholder": "EIN PDF rs",
+  "This action cannot be undone":  "This action cannot be undone",
+  "Service Id": "Service Id",
+  "Service name": "Service name",
+  "Customer name": "Customer name",
+  "Customer Email": "Customer Email",
+  "Corporation profile": "Corporation profile",
+  "Payment": "Payment",
+  "PIC": "PIC",
+  "Contract": "Contract",
+  "State Fillings": "State Fillings",
+  "2 - 5 days": "2 - 5 days",
+  "Communication": "Communication",
+  "EIN": "EIN",
+  "Bank Account": "Bank Account",
+  "Admin's remark": "Admin's remark"
 }
