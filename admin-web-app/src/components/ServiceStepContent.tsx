@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import { StatusBadge } from './StatusBadge';
 import { ServiceStep } from '../types/service';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   callApiUpdateAdminRemark,
   callApiUploadStatusStep,
 } from '../api/serviceManagement';
 import { Status } from '../constants/StatusBadge';
-import { uploadFile } from '../api/upload';
+import { ResultDocument } from './service/ResultDocument';
+import { toast } from 'react-toastify';
 
 type Props = {
   serviceStep: ServiceStep | null;
+  serviceId: number | null;
 };
 
 export function ServiceStepContent(props: Props) {
@@ -41,17 +43,10 @@ export function ServiceStepContent(props: Props) {
           status,
         });
         setStatusStep(status);
-      } catch (e) {}
-    }
-  }
-
-  async function uploadServiceResult(files: FileList | null, resultId: number) {
-    if (files && files?.length > 0) {
-      await uploadFile(
-        files[0],
-        { id: resultId },
-        '/api/file/upload-service-result',
-      );
+        toast.success(translation.t('Update status step successfully'));
+      } catch (e) {
+        toast.error(translation.t('Update status step failed'));
+      }
     }
   }
 
@@ -125,76 +120,10 @@ export function ServiceStepContent(props: Props) {
         </div>
       </div>
       <div className={'mb-4'}>
-        <div className={'text-lg font-bold mb-2'}>
-          {translation.t('Result document')}
-        </div>
-        <div
-          className={
-            'grid grid-cols-2 border border-gray-300 bg-gray-100 rounded-xl'
-          }
-        >
-          <div
-            className={
-              'flex flex-col h-[100px] border-r border-gray-300 py-2 px-4'
-            }
-          >
-            <div className={'text-lg font-bold'}>
-              {translation.t('Required document')}
-            </div>
-            {props.serviceStep?.result?.map((result) => {
-              return (
-                <div
-                  className={
-                    'text-center mt-2 h-[40px] flex items-center justify-center'
-                  }
-                >
-                  {result.requiredDocument}
-                </div>
-              );
-            }) || (
-              <span className={'text-center mt-2'}>
-                {' '}
-                {translation.t('None')}
-              </span>
-            )}
-          </div>
-          <div className={'flex flex-col items-start h-[100px] py-2 px-4'}>
-            <div className={'text-lg font-bold'}>
-              {translation.t('Uploaded document')}
-            </div>
-            {props.serviceStep?.result?.map((result) => {
-              return result.fileDocument ? (
-                <span
-                  className={
-                    'text-center mt-2 h-[40px] flex items-center self-center cursor-pointer hover:underline'
-                  }
-                >
-                  {result.fileDocument}
-                </span>
-              ) : (
-                <Fragment>
-                  <button
-                    className="w-[85px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 self-center mt-2"
-                    onClick={() => {
-                      document.getElementById('resultPicker')?.click();
-                    }}
-                  >
-                    {translation.t('Upload')}
-                  </button>
-                  <input
-                    id="resultPicker"
-                    type="file"
-                    className={'hidden'}
-                    onChange={(e) => {
-                      void uploadServiceResult(e.target.files, result.id);
-                    }}
-                    multiple={false}
-                  />
-                </Fragment>
-              );
-            })}
-          </div>
-        </div>
+        <ResultDocument
+          serviceStep={props.serviceStep}
+          serviceId={props.serviceId}
+        />
       </div>
     </div>
   );

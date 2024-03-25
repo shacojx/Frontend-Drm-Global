@@ -132,7 +132,7 @@ export function ServiceDetailDialog(props: Props) {
             type="file"
             className={'hidden'}
             onChange={(e) => {
-              uploadContractFile(e.target.files);
+              void uploadContractFile(e.target.files);
             }}
             multiple={false}
           />
@@ -218,7 +218,10 @@ export function ServiceDetailDialog(props: Props) {
           })}
         </div>
         <div className={'col-span-3'}>
-          <ServiceStepContent serviceStep={serviceStep} />
+          <ServiceStepContent
+            serviceStep={serviceStep}
+            serviceId={props.service?.id ?? null}
+          />
         </div>
         {showCompanyDetailDialog && (
           <DialogContainer
