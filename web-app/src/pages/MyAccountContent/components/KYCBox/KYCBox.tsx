@@ -6,11 +6,11 @@ import { RoutePaths } from 'src/constants/routerPaths'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 
 
-  
+
 export default function KYCBox() {
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
-  
+
     return <>
       <div className={"flex flex-row justify-between mb-8"}>
         <div className={"space-y-1"}>

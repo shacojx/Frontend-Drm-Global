@@ -1,21 +1,19 @@
 import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { uploadFile } from 'src/api/upload'
 import { DialogFailureFullscreen, DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen'
 import { IconCheck, IconDangerCircle, IconRefreshCircle, IconSpinner } from 'src/components/icons'
 import { RoutePaths } from 'src/constants/routerPaths'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { useVerifyKYC } from 'src/hooks-api/useVerifyKYC'
 import TakeOrUploadPhoto from 'src/pages/KYCUploadContent/components/TakeOrUploadPhoto'
-import { FormStatus } from 'src/types/common'
 
 export default function KYCUploadContent() {
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
-    const [file, setFile] = useState<File | null>(null);
-    const [file2, setFile2] = useState<File | null>(null);
-    
+    const [passport, setPassport] = useState<File | null>(null);
+    const [pictureHoldPassport, setPictureHoldPassport] = useState<File | null>(null);
+
     const [showSuccessDialog, setShowSuccessDialog] = useState(false)
     const [showErrorDialog, setShowErrorDialog] = useState(false)
 
@@ -23,15 +21,15 @@ export default function KYCUploadContent() {
         onError: () => setShowErrorDialog(true),
         onSuccess: () => setShowSuccessDialog(true)
     })
-    
+
 
     const handleClickSend = async () => {
-        if (!file || !file2) return
+        if (!passport || !pictureHoldPassport) return
 
-        await uploadKYC({passport: file, picture: file2})
+        await uploadKYC({passport: passport, picture: pictureHoldPassport})
     }
 
-    const isDisableSend = !file || !file2
+    const isDisableSend = !passport || !pictureHoldPassport
 
     return <>
         <div className={"w-full grow flex flex-col p-3 bg-white border border-solid border-t border-l"}>
@@ -62,9 +60,9 @@ export default function KYCUploadContent() {
                         </div>
                     </div>
                     <p className={"font-bold"}>1. {translation.t('Upload your Passport')}</p>
-                    <TakeOrUploadPhoto onUpload={setFile} />
+                    <TakeOrUploadPhoto onUpload={setPassport} />
                     <p className={"font-bold"}>2. {translation.t('Upload your picture holding the passport')}</p>
-                    <TakeOrUploadPhoto onUpload={setFile2} />
+                    <TakeOrUploadPhoto onUpload={setPictureHoldPassport} />
                     <div className={"flex flex-row justify-end gap-4"}>
                         <Link to={RoutePaths.myAccount}
                             className={"flex justify-center items-center gap-2 font-semibold rounded-lg py-4 px-6 border text-gray-600"}
