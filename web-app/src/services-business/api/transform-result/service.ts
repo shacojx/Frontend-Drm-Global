@@ -1,9 +1,9 @@
-import { Currency, RawService } from "../../../api/types";
+import { Currency, MyServiceType, RawService } from "../../../api/types";
 import { Service } from "../../../pages/ServicesContent/ServicesContent";
 
 // TODO fix type
-export function filterServiceToDisplay(allServices: RawService[], allPaidService: any[]): Service[] {
-  const hasBaseService = !!allPaidService.find(service => service.serviceType === 'Based')
+export function filterServiceToDisplay(allServices: RawService[], allMyServices: MyServiceType[]): Service[] {
+  const hasBaseService = !!allMyServices.find(service => service.serviceType === 'Based')
   // Logic: 1 user - 1 base service
   const servicesAfterFilterType = hasBaseService
     ? allServices.filter(service => service.serviceType !== 'Based')
@@ -11,7 +11,7 @@ export function filterServiceToDisplay(allServices: RawService[], allPaidService
 
   // Logic: can register new service only when the before was Issued
   const pendingService: number[] = []
-  allPaidService.forEach(service => {
+  allMyServices.forEach(service => {
     if (service.statusService !== 'Issued') {
       pendingService.push(service.serviceId)
     }
@@ -20,14 +20,14 @@ export function filterServiceToDisplay(allServices: RawService[], allPaidService
     .filter(service => !pendingService.includes(service.id))
 
   // Logic: price of next or last cycle
-  const lastPaidCycleMap: Record<string, any> = {}
-  allPaidService.forEach(service => {
-    if (!lastPaidCycleMap[service.serviceId as string]) {
-      lastPaidCycleMap[service.serviceId as string] = service.cycleNumber
+  const lastPaidCycleMap: Record<MyServiceType['serviceId'], MyServiceType['cycleNumber']> = {}
+  allMyServices.forEach(myService => {
+    if (!lastPaidCycleMap[myService.serviceId]) {
+      lastPaidCycleMap[myService.serviceId] = myService.cycleNumber
     } else {
-      const oldCycle = lastPaidCycleMap[service.serviceId as string]['cycleNumber']
-      if (service.cycleNumber > oldCycle) {
-        lastPaidCycleMap[service.serviceId as string] = service.cycleNumber
+      const oldCycle: number = lastPaidCycleMap[myService.serviceId]
+      if (myService.cycleNumber > oldCycle) {
+        lastPaidCycleMap[myService.serviceId] = myService.cycleNumber
       }
     }
   })
@@ -55,7 +55,7 @@ export function filterServiceToDisplay(allServices: RawService[], allPaidService
   return serviceAfterFilterTypeAndStatus
     .map(service => {
       return {
-        id: service.id.toString(),
+        id: service.id,
         label: service.serviceName,
         description: service.serviceDescription,
         agents: service.serviceStep.map((step: any) => step.name),

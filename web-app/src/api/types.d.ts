@@ -111,6 +111,19 @@ export type ApiCreateOrderParam = {
   }[]
 }
 
+export type RawResulCreateOrder = {
+  id:	string,
+  intent:	unknown,
+  status:	string,
+  createTime:	unknown,
+  links:	{
+    rel: string,
+    href: string,
+  }[],
+  purchase_units:	unknown,
+  payment_source:	unknown,
+}
+
 // ====== LLC Service ======== //
 
 export type UploadedDocumentType ={
@@ -130,6 +143,7 @@ export type MyServiceStepType = {
   customerDocument: UploadedDocumentType[];
   result: UploadedDocumentType[];
 }
+export type ServiceType = 'Based' | 'Add-on';
 
 export type MyServiceType = {
   updatedAt: string;
@@ -138,6 +152,7 @@ export type MyServiceType = {
   userId: number;
   serviceId: number;
   ServiceStatusType: string;
+  serviceType: ServiceType;
   serviceName: string;
   serviceDescription: string;
   statusService: ServiceStatusType;
@@ -170,7 +185,7 @@ export type RawService = {
     id: number;
     companyType: string;
   }>;
-  serviceType: string;
+  serviceType: ServiceType;
   serviceName: string;
   serviceDescription: string;
   enable: number;

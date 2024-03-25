@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from "react-router-dom";
 import { callCreateOrderPaypal } from 'src/api/payment'
-import { ApiCreateOrderParam, Currency } from 'src/api/types'
+import { ApiCreateOrderParam, Currency, RawResulCreateOrder } from 'src/api/types'
 import { NATION_INFOS } from 'src/constants/SelectionOptions'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { RoutePaths } from "../../constants/routerPaths";
@@ -10,7 +10,7 @@ import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard'
 
 export type Service = {
-    id: string,
+    id: number,
     label: string,
     description: string,
     agents: string[],
@@ -27,15 +27,14 @@ export default function ServicesContent() {
     const bunchOfAvailableServices: Service[] = allServiceQuery.data || []
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
-    const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<string[]>([])
+    const [bunchOfServiceIdSelected, setBunchOfServiceIdSelected] = useState<number[]>([])
     const [stepIndex, setStepIndex] = useState<number>(1)
     const [errorMessageConfirm, setErrorMessageConfirm] = useState<string | undefined>()
-    const [orderData, setOrderData] = useState<unknown>()
 
     const SelectServiceStepIndex = 1
     const PayServiceStepIndex = 2
 
-    function handleSelectService(id: string) {
+    function handleSelectService(id: number) {
         if (!bunchOfServiceIdSelected.includes(id)) {
             setBunchOfServiceIdSelected(bunchOfServiceIdSelected.concat([id]))
         } else {
@@ -48,6 +47,10 @@ export default function ServicesContent() {
     }
 
     async function handleClickPaypalConfirm() {
+
+    }
+
+    async function handleClickFinishPayment() {
         if (!user) {
             return
         }
@@ -63,25 +66,8 @@ export default function ServicesContent() {
         }
         try {
             const rawResult = await callCreateOrderPaypal(body)
-            console.log('handleClickPaypalConfirm: ', rawResult)
-            setOrderData(rawResult)
-        } catch (e: unknown) {
-            setErrorMessageConfirm(e?.toString())
-            console.error(e)
-        }
-    }
-
-    async function handleClickFinishPayment() {
-        await handleClickPaypalConfirm()
-        try {
-            if (!orderData) {
-                return
-            }
-            // TODO: update code
-            const idService = orderData
-            navigate(RoutePaths.services, {replace: true})
-            // @ts-ignore
-            const paypalLink = orderData.links.find(link => link.rel === 'approve')?.href
+            navigate(RoutePaths.services)
+            const paypalLink = rawResult.links.find(link => link.rel === 'approve')?.href
             window.open(paypalLink, '_blank', 'noopener,noreferrer');
         } catch (e: unknown) {
             setErrorMessageConfirm(e?.toString())
@@ -97,7 +83,7 @@ export default function ServicesContent() {
     const selectedService = bunchOfAvailableServices.filter(service => bunchOfServiceIdSelected.includes(service.id))
     let totalPrice = 0
     const nationName = NATION_INFOS.find(nation => nation.value === user?.llcInNation)?.label
-    bunchOfAvailableServices.forEach(service => totalPrice += service.price)
+    selectedService.forEach(service => totalPrice += service.price)
 
     return <div className={"w-full grow flex flex-col"}>
         <div className={"flex bg-white border-t border-l border-solid grow overflow-hidden"}>
@@ -172,7 +158,7 @@ export default function ServicesContent() {
                     <span>{translation.t('Cancel')}</span>
                 </button>
                 <button
-                    disabled={!hasSelected || !orderData}
+                    disabled={!hasSelected}
                     className={"flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary"}
                     onClick={handleClickFinishPayment}
                 >

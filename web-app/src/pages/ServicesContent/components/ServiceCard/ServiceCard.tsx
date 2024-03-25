@@ -5,7 +5,7 @@ import { Service } from 'src/pages/ServicesContent/ServicesContent'
 type ServiceCardProps = {
     isSelected: boolean,
     service: Service,
-    onSelect: (id: string) => void
+    onSelect: (id: number) => void
 }
 
 
