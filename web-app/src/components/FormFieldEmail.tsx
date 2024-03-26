@@ -4,6 +4,8 @@ import { callApiVerifyEmail } from "../api/account";
 import { useValidate } from "../hooks-ui/useValidateCaller";
 import { validateApiEmail, validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormFieldProps, ValidateFunction } from "../types/common";
+import { IconCheck } from "./icons";
+import { cn } from "src/utils/cn.util";
 
 const validateEmail: ValidateFunction<string> = function (isRequired, pass) {
   if (!isRequired) {
@@ -27,6 +29,8 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
     wasRegister
   )
 
+  const [isValidEmail, setIsValidEmail] = useState(false)
+
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     setWasRegister(false)
     const email = event.target.value
@@ -36,11 +40,15 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
   function handleBlur() {
     const isValid = validateEmail(props.isRequired, props.value)
     setShouldShowError(!isValid)
+    setIsValidEmail(isValid)
+
     if (isValid && props.shouldLiveCheck) {
       callApiVerifyEmail(props.value!)
+      .then(() => setIsValidEmail(true))
         .catch(() => {
           setWasRegister(true)
           setShouldShowError(true)
+          setIsValidEmail(false)
         })
     }
   }
@@ -51,16 +59,21 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
       <span>{translation.t('Email address')}</span>
       {props.isRequired && <span className="text-danger">*</span>}
     </p>
+   <div className={
+    cn("flex gap-1 items-center w-full h-[40px] border py-1 px-2 rounded-lg", statusClassName, props.className)
+   }>
     <input
-      disabled={props.isFixedValue}
-      type="email"
-      value={props.value || ''}
-      onChange={handleChange}
-      onFocus={setShouldShowError.bind(undefined, false)}
-      onBlur={handleBlur}
-      placeholder="Example@hotmail.com"
-      className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
-    />
+        disabled={props.isFixedValue}
+        type="email"
+        value={props.value || ''}
+        onChange={handleChange}
+        onFocus={setShouldShowError.bind(undefined, false)}
+        onBlur={handleBlur}
+        placeholder="Example@hotmail.com"
+        className="grow bg-transparent outline-none"
+      />
+     {isValidEmail &&  <IconCheck className="text-success" />}
+   </div>
     {wasRegister && <p className={"text-xs text-danger"}>{translation.t('The email was registered')}</p>}
   </div>
 }

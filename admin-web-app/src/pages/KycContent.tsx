@@ -11,6 +11,8 @@ import { DialogContainer } from "../components/DialogContainer";
 import { DialogConfirmFullScreen, DialogSuccessFullscreen } from "../components/DialogFormStatusFullscreen";
 import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/kyc";
 import { generateFormatDate } from "../services-ui/date";
+import { getFile } from "../api/upload";
+import { KycDetail } from "../api/types";
 
 type Props = {}
 
@@ -24,6 +26,7 @@ export function KycContent(props: Props) {
   const [shouldShowPictureDialog, setShouldShowPictureDialog] = useState<boolean>()
   const [idSelected, setIdSelected] = useState<number>()
   const [pictureIndexInit, setPictureIndexInit] = useState<number>(0)
+  const [pictureSrc, setPictureSrc] = useState<string>()
 
   const [showSuccessDialog, setShowSuccessDialog] = useState<false | "approve" | "reject">(false)
 
@@ -70,12 +73,19 @@ export function KycContent(props: Props) {
     }
   }
 
-  function handleClickPhoto(id: number, type: 'passport' | 'holdPassport') {
-    if (type === 'passport') {
-      setPictureIndexInit(0)
-    } else {
-      setPictureIndexInit(1)
-    }
+  async function handleClickPhoto(kyc: KycDetail, type: 'passport' | 'holdPassport') {
+    console.log(kyc, type)
+
+    if (type === 'passport' && kyc?.passport) {
+      const blob = await getFile(kyc.passport, {download: false})
+      blob && setPictureSrc(URL.createObjectURL(blob))
+    } 
+
+    if (type === 'holdPassport' && kyc?.pictureHoldPassport) {
+      const blob = await getFile(kyc.pictureHoldPassport, {download: false})
+      blob && setPictureSrc(URL.createObjectURL(blob))
+    } 
+
     setShouldShowPictureDialog(true)
   }
 
@@ -140,8 +150,8 @@ export function KycContent(props: Props) {
       width: 120,
       renderCell: (params: GridRenderCellParams) => {
         return <div className={"flex flex-col gap-1"}>
-          <p className={"underline text-blue-500 cursor-pointer"} onClick={handleClickPhoto.bind(undefined, params.row.id, params.row)}>Passport</p>
-          <p className={"underline text-blue-500 cursor-pointer"} onClick={handleClickPhoto.bind(undefined, params.row.id, params.row)}>Hold Passport</p>
+          <p className={"underline text-blue-500 cursor-pointer"} onClick={() => handleClickPhoto(params.row, "passport")}>Passport</p>
+          <p className={"underline text-blue-500 cursor-pointer"} onClick={() => handleClickPhoto(params.row, "holdPassport")}>Hold Passport</p>
         </div>
       }
     },
@@ -200,14 +210,16 @@ export function KycContent(props: Props) {
         />
       )}
 
-      {shouldShowPictureDialog && (
+      {pictureSrc && (
         <DialogContainer
-          handleClickOverlay={() => setShouldShowPictureDialog(false)}
+          handleClickOverlay={() => setPictureSrc(undefined)}
           isAutoSize
           isCloseOnClickOverlay
         >
           <div className="w-full max-w-[400px] justify-center items-center py-8 px-4 flex flex-col">
-            <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8"></div>
+            <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
+              <img src={pictureSrc} />
+            </div>
           </div>
         </DialogContainer>
       )}

@@ -15,13 +15,14 @@ import { FormFieldPassword } from "src/components/FormFieldPassword";
 import { FormFieldPhoneNumber } from "src/components/FormFieldPhoneNumber";
 import { FormFieldSelect } from "src/components/FormFieldSelect";
 import { FormFieldText } from "src/components/FormFieldText";
-import { IconAddCircle, IconArrowLeft, IconSpinner } from "src/components/icons";
+import { IconArrowLeft, IconSpinner, IconArrowCircle } from "src/components/icons";
 import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "src/constants/SelectionOptions";
 import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "src/layouts/PageLayoutOneForm";
 import { generateRegisterParam, RNPhoneValue } from "src/services-business/api/generate-api-param/account";
 import { FormStatus } from "src/types/common";
 import { RoutePaths } from "src/constants/routerPaths";
+import { cn } from "src/utils/cn.util";
 
 export function RegisterPage() {
   const translation = useTranslation()
@@ -131,6 +132,9 @@ export function RegisterPage() {
       optionInfos={NATION_INFOS}
       onChange={handleChangeNation}
       validateCaller={validateNationStepCaller}
+      className={cn({
+        "font-semibold": stepIndex !== 1
+      })}
     />
     {stepIndex === SelectNationStepIndex && <button
       onClick={handleClickNextAtNation}
@@ -202,7 +206,7 @@ export function RegisterPage() {
             onClick={handleClickBackToLogin}
             className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
           >
-            <IconArrowLeft className={"text-white"}/>
+            <IconArrowCircle className={"text-white"}/>
             <span>{translation.t('Back to Log in')}</span>
           </button>
         }
@@ -215,16 +219,16 @@ export function RegisterPage() {
         actionElement={
           <div className={'flex flex-col gap-y-2 justify-center items-center'}>
             <button
-              onClick={handleClickCreateAccount}
+              onClick={() => setStatus('typing')}
               className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
-              <span>{translation.t('Try again')}</span>
+              <span>{translation.t('Close')}</span>
             </button>
-            <button onClick={setStatus.bind(undefined, "typing")}
+            {/* <button onClick={setStatus.bind(undefined, "typing")}
                     className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
               <IconArrowLeft/>
               <span>{translation.t('Previous step')}</span>
-            </button>
+            </button> */}
           </div>
         }
       />
@@ -259,8 +263,8 @@ function AccountInformationStep(props: AccountInformationStepProps) {
 
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
-      <p className="text-cLg font-bold">{translation.t('Account information')}</p>
-      <div className="w-1/2 border-2 border-primary"></div>
+      <p className="font-bold">{translation.t('Account information')}</p>
+      <div className="w-1/2 border border-primary"></div>
     </div>
     <FormFieldEmail
       id="accountEmail"
@@ -350,8 +354,8 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
   const hasAnyValue = !!(props.companyName || props.entityEnding || props.industry || props.website || props.companyDescription)
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
-      <p className="text-cLg font-bold">{translation.t('Company information')}</p>
-      <div className="w-1/2 border-2 border-primary"></div>
+      <p className="font-bold">{translation.t('Company information')}</p>
+      <div className="w-1/2 border border-primary"></div>
     </div>
     <FormFieldText
       id={"companyName"}
@@ -360,6 +364,8 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       onChange={value => props.setCompanyName(value.slice(0, 75))}
       placeholder="Input company name"
       validateCaller={validateCaller}
+      max={75}
+      tooltip="Please provide us 1 to 3 ideas for your Corporate name, we will check and notify you if there is any available to open"
     />
     <FormFieldSelect
       id={"entityEndingSelect"}
@@ -394,12 +400,13 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       onChange={value => props.setCompanyDescription(value.slice(0, 255))}
       placeholder="Describe your company"
       validateCaller={validateCaller}
+      max={255}
     />
     <button
       onClick={handleClickNext}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
     >
-      {!hasAnyValue ? `${translation.t('Skip')} & ` : ''}{translation.t('Create account')}
+      {!hasAnyValue ? `${translation.t('Skip')} & ` : ''}{translation.t('Create Account')}
     </button>
     <div className="flex w-full justify-center">
       <button onClick={props.onClickPreviousStep} className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
@@ -471,14 +478,13 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           onClick={handleClickNext}
           className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
         >
-          <IconAddCircle />
           {translation.t('Create account')}
         </button>
         <div className="flex w-full justify-center">
           <button onClick={props.onClickPreviousStep}
                   className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
             <IconArrowLeft />
-            <span>{translation.t('Previous step')}</span>
+            <span className="font-semibold">{translation.t('Previous step')}</span>
           </button>
         </div>
       </div>
@@ -533,8 +539,8 @@ export function EmailOtpStep(props: Props) {
         <p className={"flex flex-row justify-center gap-1"}>
           <span>{translation.t('Didn’t receive code')}?</span>
           {disableCountDown <= 0
-            ? <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer"}>{translation.t('Resend')}</span>
-            : <span className={"font-bold text-gray-400 cursor-not-allowed"}>{translation.t('Resend')}</span>
+            ? <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer text-primary"}>{translation.t('Resend')}</span>
+            : <span className={"font-bold text-primary cursor-not-allowed"}>{translation.t('Resend')}</span>
           }
           {isResending && <IconSpinner />}
         </p>
@@ -543,7 +549,6 @@ export function EmailOtpStep(props: Props) {
           onClick={props.onClickVerifyAccount}
           className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
         >
-          <IconAddCircle/>
           {translation.t('Verify account')}
         </button>
         <div className="flex w-full justify-center">

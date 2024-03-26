@@ -6,7 +6,7 @@ export function validateApiEmail(email: string) {
 
 export function validateApiPassword(pass: string) {
   if (!pass) return false
-  const regValidatePassword = /^[a-z0-9]{8,25}$/;
+  const regValidatePassword = /^[a-zA-Z0-9]{8,25}$/;
   return regValidatePassword.test(pass)
 }
 

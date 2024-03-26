@@ -72,14 +72,14 @@ export function LoginPage() {
       <p className="text-cXl text-gray-400">{translation.t('Welcome back')}! 👋</p>
       <p className="text-h4">{translation.t('Sign in to your account')}</p>
     </div>
-    <FormFieldEmail id="email" isRequired value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
+    <FormFieldEmail id="email" value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
     <FormFieldPassword
       id={"password"}
-      isRequired
       value={password}
       onChange={handleChangePassword}
       onEnter={handleClickLogin}
       validateCaller={validateCaller}
+      hideTooltip
     />
     <div className="flex justify-end">
       <button onClick={handleClickForgotPassword} className="text-primary">

@@ -18,6 +18,7 @@ const validatePassword: ValidateFunction<string> = function (isRequired, pass) {
 
 type Props = FormFieldProps<string> & Partial<{
   onEnter: () => void
+  hideTooltip?: boolean
 }>
 
 export function FormFieldPassword(props: Props) {
@@ -58,7 +59,7 @@ export function FormFieldPassword(props: Props) {
       <span>{translation.t(props.label || 'Password')}</span>
       {props.isRequired && <span className="text-danger">*</span>}
       <div className={"relative flex items-center"}>
-        <IconInfoCircle onClick={setShowRules.bind(undefined, true)} onBlur={setShowRules.bind(undefined, false)} />
+        {!props.hideTooltip && <IconInfoCircle onClick={setShowRules.bind(undefined, true)} onBlur={setShowRules.bind(undefined, false)} />}
         {showRules && <div
           ref={ref}
           className={"absolute z-10 top-5 -left-8 w-[330px]"}

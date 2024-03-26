@@ -119,9 +119,10 @@ export type ApiCreateOrderParam = {
 };
 
 export type ApiGetOrdersParam = {
-  page: number;
-  pic?: string;
-};
+  page: number,
+  pic?: string
+  email?: string
+}
 
 export type RawRegisterServicesResult = {
   content: Array<{
