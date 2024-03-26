@@ -145,7 +145,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                     validateCaller={validateCaller}
                     id="firstName"
                     value={owner.firstName}
-                    onChange={(value) => handleFormChange(owner.id, "companyName", value)}
+                    onChange={(value) => handleFormChange(owner.id, "firstName", value)}
                   />
                 </div>
 
@@ -157,7 +157,7 @@ export function OwnerInformationTab({ readonly, owners = [], onChange }: OwnerIn
                     validateCaller={validateCaller}
                     id="lastName"
                     value={owner.lastName}
-                    onChange={(value) => handleFormChange(owner.id, "companyName", value)}
+                    onChange={(value) => handleFormChange(owner.id, "lastName", value)}
                   />
                 </div>
               </>
