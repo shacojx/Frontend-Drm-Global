@@ -158,7 +158,6 @@ export function OrderPaymentContent(props: Props) {
           <div className="flex flex-row gap-3">
             <button
               onClick={async () => {
-                console.log(params.row)
                 await approveOrder(params.row.transitionId)
                 refetch()
               }}
