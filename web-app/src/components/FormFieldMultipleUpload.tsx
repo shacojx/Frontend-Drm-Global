@@ -34,7 +34,6 @@ export function FormFieldMultipleUpload({
 
     if (maxFiles && files.length >= maxFiles) return;
 
-    console.log(file.size)
     if (file.size > 10_000_000) {
       setShouldShowError(true)
       setError("File size must be less than 10MB")
