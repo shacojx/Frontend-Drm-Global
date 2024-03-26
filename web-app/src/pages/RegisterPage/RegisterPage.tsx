@@ -477,7 +477,7 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           <button onClick={props.onClickPreviousStep}
                   className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
             <IconArrowLeft />
-            <span>{translation.t('Previous step')}</span>
+            <span className="font-semibold">{translation.t('Previous step')}</span>
           </button>
         </div>
       </div>
