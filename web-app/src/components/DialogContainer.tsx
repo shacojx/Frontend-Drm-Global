@@ -47,7 +47,7 @@ export function DialogContainer(props: Props) {
               <Dialog.Panel className={
                 (props.isTransparent ? "" : "shadow-xl bg-white ")
                 + (props.isAutoSize ? "" : "sm:w-full sm:max-w-lg ")
-                + "relative transform overflow-hidden rounded-lg text-left transition-all sm:my-8"
+                + "relative transform overflow-hidden rounded-3xl text-left transition-all sm:my-8"
               }>
                 {props.children}
               </Dialog.Panel>

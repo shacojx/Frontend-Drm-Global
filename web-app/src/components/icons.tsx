@@ -38,6 +38,8 @@ import { ReactComponent as IconVisa } from '../assets/svgs/Visa.svg';
 import { ReactComponent as IconMasterCard } from '../assets/svgs/MasterCard.svg';
 import { ReactComponent as IconPaypal } from '../assets/svgs/Paypal.svg';
 import { ReactComponent as IconQR } from '../assets/svgs/QR.svg';
+import { ReactComponent as IconArrowCircle } from '../assets/svgs/ArrowCircle.svg';
+
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -83,5 +85,6 @@ export {
   IconVisa,
   IconMasterCard,
   IconPaypal,
-  IconQR
+  IconQR,
+  IconArrowCircle
 }

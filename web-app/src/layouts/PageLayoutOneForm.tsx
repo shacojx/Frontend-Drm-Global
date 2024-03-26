@@ -10,7 +10,7 @@ export function PageLayoutOneForm(props: PropsWithChildren<{}>) {
     navigate(RoutePaths.home)
   }
   return <div
-    className="w-screen h-screen p-4 bg-cover flex flex-col"
+    className="w-screen min-h-screen p-4 bg-cover flex flex-col"
     style={{backgroundImage: `url(${IMAGE.backGround})`}}
   >
     <div className="flex flex-col items-center justify-center grow my-4">
