@@ -67,7 +67,7 @@ export function KycContent(props: Props) {
       setShowSuccessDialog('approve')
       await refetch()
       return
-    } {
+    } else {
       await rejectKYC(idSelected)
       setShowSuccessDialog('reject')
       await refetch()
