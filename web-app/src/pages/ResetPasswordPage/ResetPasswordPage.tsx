@@ -26,11 +26,14 @@ export function ResetPasswordPage() {
   const [status, setStatus] = useState<FormStatus>('typing')
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
 
+  const [isSentCode, setIsSentCode] = useState(false)
+
   const emailAndRecoveryCodeStepIndex = 1
   const newPasswordStepIndex = 2
 
   const handleSendRecoveryCode = useCallback((email: string) => {
     setEmail(email)
+    setIsSentCode(true)
   }, [])
 
   function handleReceiveSignature(signature: string) {
@@ -81,7 +84,7 @@ export function ResetPasswordPage() {
     {stepIndex === emailAndRecoveryCodeStepIndex &&
       <>
         <FormSendRecoveryCode onSendRecoveryCode={handleSendRecoveryCode} />
-        <FormValidateRecoveryCode email={email} onReceiveSignature={handleReceiveSignature} />
+        <FormValidateRecoveryCode disabled={!isSentCode} email={email} onReceiveSignature={handleReceiveSignature} />
       </>
     }
     {stepIndex === newPasswordStepIndex &&

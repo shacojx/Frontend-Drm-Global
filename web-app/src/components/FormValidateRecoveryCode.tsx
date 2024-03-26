@@ -5,10 +5,12 @@ import { ApiCheckRecoveryCode } from "../api/types";
 import { FormStatus } from "../types/common";
 import { FormFieldText } from "./FormFieldText";
 import { IconSpinner } from "./icons";
+import { cn } from "src/utils/cn.util";
 
 type Props = {
   email: string,
   onReceiveSignature: (signature: string) => void
+  disabled?: boolean
 }
 
 export function FormValidateRecoveryCode(props: Props) {
@@ -51,8 +53,13 @@ export function FormValidateRecoveryCode(props: Props) {
     />
     <div className="w-full flex flex-col gap-y-1">
       <button
-        className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+        className={
+          cn("h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg", {
+            "bg-disable cursor-not-allowed": props.disabled
+          })
+        }
         onClick={handleClickChangePassword}
+        disabled={props.disabled}
       >
         <span>{translation.t('Change Password')}</span>
         {recoveryFormStatus === 'requesting' && <IconSpinner/>}

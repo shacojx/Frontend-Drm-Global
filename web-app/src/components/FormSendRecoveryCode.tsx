@@ -49,7 +49,7 @@ export function FormSendRecoveryCode(props: Props) {
 
   return <>
     <div className="relative">
-      <FormFieldEmail id="email" isRequired value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
+      <FormFieldEmail id="email" value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
       {emailFormStatus === "success" && <IconCheck className="h-[18px] absolute top-[42px] right-[11px] text-success" />}
     </div>
     <div className="w-full flex flex-col gap-y-1">
