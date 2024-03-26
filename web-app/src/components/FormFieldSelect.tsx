@@ -105,7 +105,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
                           <span
                             className={classNames(
                               selected ? "font-semibold" : "font-normal",
-                              "ml-3 block truncate"
+                              "ml-3 block"
                             )}
                           >
                               {translation.t(option.label)}
