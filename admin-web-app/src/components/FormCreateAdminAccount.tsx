@@ -22,13 +22,13 @@ export function FormCreateAdminAccount({ onCreated }: Props) {
   const translation = useTranslation();
   const [email, setEmail] = useState<string>();
   const [phone, setPhone] = useState<RNPhoneValue>();
-  const [role, setRole] = useState<AdminRoleValue>();
+  const [role, setRole] = useState<AdminRoleValue>('mod');
   const [password, setPassword] = useState<string>();
   const { validateCaller, validateAll } = useValidateCaller();
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
-  
-  
+
+
 
   const { mutateAsync: createUser, isPending, isSuccess } = useApiCreateUser();
 
@@ -41,7 +41,7 @@ export function FormCreateAdminAccount({ onCreated }: Props) {
       return;
     }
 
-    
+
     try {
       const { nationPhone, localPhone } = extractPhone(phone);
       await createUser({
@@ -59,16 +59,16 @@ export function FormCreateAdminAccount({ onCreated }: Props) {
     }
   }
 
-  const ROLES: OptionInfo<AdminRoleValue>[] = [
-    {
-      value: 'admin',
-      label: 'ADMIN',
-    },
-    {
-      value: 'mod',
-      label: 'MODERATOR',
-    },
-  ];
+  // const ROLES: OptionInfo<AdminRoleValue>[] = [
+  //   {
+  //     value: 'admin',
+  //     label: 'ADMIN',
+  //   },
+  //   {
+  //     value: 'mod',
+  //     label: 'MODERATOR',
+  //   },
+  // ];
 
 
   return (
@@ -89,15 +89,15 @@ export function FormCreateAdminAccount({ onCreated }: Props) {
         onChange={setPhone}
         validateCaller={validateCaller}
       />
-      <FormFieldSelect
-        id={'companySelect'}
-        isRequired
-        label={'Role'}
-        value={role}
-        optionInfos={ROLES}
-        onChange={setRole}
-        validateCaller={validateCaller}
-      />
+      {/*<FormFieldSelect*/}
+      {/*  id={'companySelect'}*/}
+      {/*  isRequired*/}
+      {/*  label={'Role'}*/}
+      {/*  value={role}*/}
+      {/*  optionInfos={ROLES}*/}
+      {/*  onChange={setRole}*/}
+      {/*  validateCaller={validateCaller}*/}
+      {/*/>*/}
       <FormFieldPassword
         id={'password'}
         isRequired
