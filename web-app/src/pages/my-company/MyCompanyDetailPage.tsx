@@ -96,8 +96,8 @@ export function MyCompanyDetailPage() {
             {t("Company Detail")}
           </h2>
 
-          <div className="rounded-lg p-1 border border-solid border-surface mb-12 overflow-x-scroll relative h-14">
-            <div className="min-w-full whitespace-nowrap absolute flex">
+          <div className="rounded-lg py-1 border border-solid border-surface mb-12 overflow-x-auto overflow-y-hidden relative h-14">
+            <div className="min-w-full whitespace-nowrap absolute flex px-1">
               {TABS.map((tab) => (
                 <div
                   key={tab}
