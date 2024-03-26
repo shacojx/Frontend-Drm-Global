@@ -7,12 +7,12 @@ import { StatusBadge } from './StatusBadge';
 import { Service, ServiceStep } from '../types/service';
 import { DialogContainer } from './DialogContainer';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CompanyDetailDialog } from './CompanyDetailDialog';
 import { ViewedUser } from '../api/types';
 import { callApiUpdatePic } from '../api/serviceManagement';
 import { ServiceStepContent } from './ServiceStepContent';
 import { Status } from '../constants/StatusBadge';
 import { uploadFile } from '../api/upload';
+import { MyCompanyDetailPage } from './service/my-company/MyCompanyDetailPage';
 
 type Props = {
   users: ViewedUser[];
@@ -243,7 +243,8 @@ export function ServiceDetailDialog(props: Props) {
             isAutoSize
             panelClassName={'max-w-[1200px]'}
           >
-            <CompanyDetailDialog />
+            {/*<CompanyDetailDialog />*/}
+            <MyCompanyDetailPage />
           </DialogContainer>
         )}
       </div>

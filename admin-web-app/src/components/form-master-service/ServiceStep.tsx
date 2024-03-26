@@ -1,26 +1,25 @@
-import { Box } from "@mui/system";
-import { DocumentRequired, Result, ServiceStep } from "../../api/types";
-import { FormFieldText } from "../../components/FormFieldText";
+import { Box, styled } from '@mui/system';
+import { DocumentRequired, Result, ServiceStep } from '../../api/types';
+import { FormFieldText } from '../FormFieldText';
 import {
   IconAddSquare,
   IconAddSquareOutLine,
   IconCopy,
   IconTrash,
   IconX,
-} from "../../components/icons";
-import React from "react";
-import { Grid, Paper, Tooltip } from "@mui/material";
-import { styled } from "@mui/system";
-import { useTranslation } from "react-i18next";
-import { ErrorMessage } from "../ErrorMessage";
-import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
+} from '../icons';
+import React from 'react';
+import { Grid, Paper, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { ErrorMessage } from '../ErrorMessage';
+import { useValidateCaller } from '../../hooks-ui/useValidateCaller';
 
-export const ContentInfoContainer = styled("div")(() => ({
+export const ContentInfoContainer = styled('div')(() => ({
   paddingRight: 10,
   paddingY: 10,
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
   paddingBottom: 10,
   gap: 10,
   fontWeight: 500,
@@ -40,15 +39,15 @@ export function ContentInfoItem(props: ContentInfoProps) {
   const onChangeItem = (value: string) =>
     props.onChangeItem(props.stepIndex, props.index, value);
 
-  const translation = useTranslation()
+  const translation = useTranslation();
   return (
     <ContentInfoContainer>
       <label>{`${props.index + 1}. `}</label>
-      <div className={"mr-6"}>
+      <div className={'mr-6'}>
         <FormFieldText
           value={props.content}
           onChange={onChangeItem}
-          id={"result"}
+          id={'result'}
           placeholder={props.placeholder}
           validateCaller={{}}
         />
@@ -56,7 +55,7 @@ export function ContentInfoItem(props: ContentInfoProps) {
       <div className="absolute right-0 top-3 pr-2 justify-right">
         <button onClick={onRemoveItem}>
           <Tooltip
-            title={translation.t("masterService.delete")}
+            title={translation.t('masterService.delete')}
             placement="top"
           >
             <IconX />
@@ -80,11 +79,11 @@ export function ContentHeader(props: ContentHeaderProps) {
   return (
     <Box>
       <div className="relative">
-        <label className={"font-bold"}>{props?.content}</label>
+        <label className={'font-bold'}>{props?.content}</label>
         <div className="absolute right-0 top-0">
           <button onClick={() => props.onAdd(props?.stepIndex, props?.index)}>
             <Tooltip
-              title={translation.t("masterService.addMore")}
+              title={translation.t('masterService.addMore')}
               placement="top"
             >
               <IconAddSquare />
@@ -101,7 +100,7 @@ export type ContentInfoListProps = {
   index: number;
   infos: ContentInfoProps[];
   stepIndex: number;
-  placeholder: string
+  placeholder: string;
   onAddItem: (stepIndex: number, id: number) => void;
   onRemoveItem: (stepIndex: number, id: number) => void;
   onChangeItem: (stepIndex: number, id: number, value: string) => void;
@@ -110,7 +109,7 @@ export type ContentInfoListProps = {
 export function ContentInfoList(props: ContentInfoListProps) {
   return (
     <Paper>
-      <Box className={"px-2 min-w-[300px] relative py-2"}>
+      <Box className={'px-2 min-w-[300px] relative py-2'}>
         <ContentHeader
           index={props?.index}
           content={props?.title}
@@ -148,17 +147,17 @@ export type ServiceStepItemProps = {
   onChangeDocumentItem: (
     stepIndex: number,
     documentId: number,
-    value: string
+    value: string,
   ) => void;
   onChangeResultItem: (
     stepIndex: number,
     documentId: number,
-    value: string
+    value: string,
   ) => void;
   onChangeStepContent: (
     stepIndex: number,
     name: keyof ServiceStep,
-    value: string
+    value: string,
   ) => void;
   onAddNewItem: () => void;
   onDeleteItem: (id: number) => void;
@@ -183,25 +182,25 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
   return (
     <div
       className={
-        "flex space-x-10 items-center justify-right bg-zinc-50 mb-2 py-10"
+        'flex space-x-10 items-center justify-right bg-zinc-50 mb-2 py-10'
       }
     >
       <p className="font-bold text-2xl pl-2">{props?.index + 1}</p>
       <Grid container spacing={2}>
         <Grid item md={6}>
           <FormFieldText
-            id={"name"}
-            label={"name"}
+            id={'name'}
+            label={'name'}
             isRequired={true}
             value={props?.step?.name}
-            onChange={(v) => onChangeStepValue(v, "name")}
+            onChange={(v) => onChangeStepValue(v, 'name')}
             validateCaller={validateCaller}
             placeholder={translation.t(
-              "masterService.step.stepNamePlaceholder"
+              'masterService.step.stepNamePlaceholder',
             )}
             errorComponent={
               <ErrorMessage
-                message={translation.t("masterService.nameError")}
+                message={translation.t('masterService.nameError')}
                 isError={!props?.step?.name}
                 showErrorMessage={props.isSubmitted}
               />
@@ -210,18 +209,18 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
         </Grid>
         <Grid item md={6}>
           <FormFieldText
-            id={"estimatedCompletionTime"}
+            id={'estimatedCompletionTime'}
             isRequired={true}
             validateCaller={validateCaller}
-            label={"estimatedCompletionTime"}
+            label={'estimatedCompletionTime'}
             value={props?.step.estimatedCompletionTime}
-            onChange={(v) => onChangeStepValue(v, "estimatedCompletionTime")}
+            onChange={(v) => onChangeStepValue(v, 'estimatedCompletionTime')}
             placeholder={translation.t(
-              "masterService.step.estimatedCompletionTimePlaceholder"
+              'masterService.step.estimatedCompletionTimePlaceholder',
             )}
             errorComponent={
               <ErrorMessage
-                message={translation.t("masterService.estimatedCompletionTime")}
+                message={translation.t('masterService.estimatedCompletionTime')}
                 isError={!props?.step?.estimatedCompletionTime}
                 showErrorMessage={props.isSubmitted}
               />
@@ -230,18 +229,18 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
         </Grid>
         <Grid item md={12}>
           <FormFieldText
-            id={"description"}
-            label={"description"}
+            id={'description'}
+            label={'description'}
             validateCaller={validateCaller}
             value={props?.step.description}
             isRequired={true}
-            onChange={(v) => onChangeStepValue(v, "description")}
+            onChange={(v) => onChangeStepValue(v, 'description')}
             placeholder={translation.t(
-              "masterService.step.descriptionPlaceholder"
+              'masterService.step.descriptionPlaceholder',
             )}
             errorComponent={
               <ErrorMessage
-                message={translation.t("masterService.descriptionError")}
+                message={translation.t('masterService.descriptionError')}
                 isError={!props?.step?.description}
                 showErrorMessage={props.isSubmitted}
               />
@@ -254,8 +253,9 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
           stepIndex={props?.index}
           index={0}
           title="Document Required"
-        placeholder={translation.t('masterService.documentRequiredPlaceholder')}
-
+          placeholder={translation.t(
+            'masterService.documentRequiredPlaceholder',
+          )}
           infos={
             props?.step?.documentRequired.map((doc, docIndex) => ({
               content: doc.documentRequired,
@@ -288,7 +288,7 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
       <Box>
         <button onClick={props.onAddNewItem} className="mb-4">
           <Tooltip
-            title={translation.t("masterService.addMore")}
+            title={translation.t('masterService.addMore')}
             placement="top"
           >
             <IconAddSquareOutLine />
@@ -296,7 +296,7 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
         </button>
         <button onClick={onDuplicateItem} className="mb-4">
           <Tooltip
-            title={translation.t("masterService.duplicate")}
+            title={translation.t('masterService.duplicate')}
             placement="top"
           >
             <IconCopy />
@@ -304,10 +304,10 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
         </button>
         <button
           onClick={onDeleteItem}
-          className={`mb-4 ${props.disableDelete ? "disabled" : ""}`}
+          className={`mb-4 ${props.disableDelete ? 'disabled' : ''}`}
         >
           <Tooltip
-            title={translation.t("masterService.delete")}
+            title={translation.t('masterService.delete')}
             placement="top"
           >
             <IconTrash />
@@ -320,7 +320,7 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
 
 export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
   const [stepDataList, setStepDateList] = React.useState(
-    (props?.serviceStep ?? []) as ServiceStep[]
+    (props?.serviceStep ?? []) as ServiceStep[],
   );
 
   const onAddDocumentRequire = React.useCallback(
@@ -334,16 +334,16 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
                 ...step.documentRequired,
                 {
                   id: step.documentRequired.length,
-                  documentRequired: "document",
+                  documentRequired: 'document',
                 },
               ],
             };
           }
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onAddResultRequired = React.useCallback(
@@ -355,15 +355,15 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
               ...step,
               result: [
                 ...step.result,
-                { id: step.result.length, result: "result" },
+                { id: step.result.length, result: 'result' },
               ],
             };
           }
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onRemoveDocumentRequire = React.useCallback(
@@ -374,15 +374,15 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
             return {
               ...step,
               documentRequired: step.documentRequired?.filter(
-                (doc, docId) => docId !== documentId
+                (doc, docId) => docId !== documentId,
               ),
             };
           }
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onRemoveResultRequire = React.useCallback(
@@ -396,10 +396,10 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
             };
           }
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onChangeResultItem = React.useCallback(
@@ -418,10 +418,10 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
             };
           }
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onChangeDocumentItem = React.useCallback(
@@ -440,10 +440,10 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
             };
           }
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onChangeStepContent = React.useCallback(
@@ -458,10 +458,10 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
           }
 
           return step;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onAddNewItem = React.useCallback(() => {
@@ -469,10 +469,10 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
       ...stepDataList,
       {
         id: stepDataList.length,
-        stepNo: "",
-        name: "",
-        estimatedCompletionTime: "",
-        description: "",
+        stepNo: '',
+        name: '',
+        estimatedCompletionTime: '',
+        description: '',
         result: [] as Result[],
         documentRequired: [] as DocumentRequired[],
       } as unknown as ServiceStep,
@@ -484,10 +484,10 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
       setStepDateList((stepDataList) =>
         stepDataList?.filter((item, sid) => {
           return sid !== id;
-        })
+        }),
       );
     },
-    [stepDataList]
+    [stepDataList],
   );
 
   const onDuplicateItem = React.useCallback(
@@ -498,7 +498,7 @@ export function ServiceStepDisplay(props: ServiceStepDisplayProps) {
         setStepDateList([...stepDataList, newItem]);
       }
     },
-    [stepDataList]
+    [stepDataList],
   );
   React.useEffect(() => {
     props.onUpdateServiceStep(stepDataList);

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { ReactComponent as IconCheck } from '../assets/svgs/Check.svg';
 import { ReactComponent as IconEyesClosed } from '../assets/svgs/EyesClosed.svg';
 import { ReactComponent as IconEyesOpen } from '../assets/svgs/EyesOpen.svg';
@@ -36,11 +36,13 @@ import { ReactComponent as IconReload } from '../assets/svgs/Restart.svg';
 import { ReactComponent as IconFilter } from '../assets/svgs/Filter.svg';
 import { ReactComponent as IconEdit } from '../assets/svgs/Document Add.svg';
 import { ReactComponent as IconPen } from '../assets/svgs/Pen.svg';
+import { ReactComponent as IconEssential } from '../assets/svgs/OutlineEssentination.svg';
 
-
-type Props = React.SVGProps<SVGSVGElement>
+type Props = React.SVGProps<SVGSVGElement>;
 function IconSpinner(props: Props) {
-  return <SvgSpinner {...props} className={`animate-spin ${props.className}`} />
+  return (
+    <SvgSpinner {...props} className={`animate-spin ${props.className}`} />
+  );
 }
 
 export {
@@ -80,5 +82,6 @@ export {
   IconReload,
   IconFilter,
   IconEdit,
-  IconPen
-}
+  IconPen,
+  IconEssential,
+};

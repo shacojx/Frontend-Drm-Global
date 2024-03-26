@@ -1,14 +1,11 @@
-import { Grid, Tooltip } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { ServiceCycle } from "../../../src/api/types";
-// import { OptionInfo } from "../../../src/types/common";
-// import { DAY_IN_MONTH_SELECT } from "../../../src/utils/date";
-// import { FormFieldSelect } from "../../../src/components/FormFieldSelect";
-import { FormFieldText } from "../../../src/components/FormFieldText";
-import { IconTrash } from "../../../src/components/icons";
-import { useValidateCaller } from "../../hooks-ui/useValidateCaller";
+import { Grid, Tooltip } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { ServiceCycle } from '../../api/types';
+import { FormFieldText } from '../FormFieldText';
+import { IconTrash } from '../icons';
+import { useValidateCaller } from '../../hooks-ui/useValidateCaller';
 
 export type ServiceCycleTableProps = {
   serviceCycle: ServiceCycle[];
@@ -23,28 +20,28 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
     (cycleId: number, value: string) => {
       props.onUpdateServiceCycleFee(cycleId, value);
     },
-    [props.onUpdateServiceCycleFee]
+    [props.onUpdateServiceCycleFee],
   );
   const onRemoveItem = React.useCallback(
     (id: number) => {
       props.onRemoveServiceCycleFee(id);
     },
-    [props.onRemoveServiceCycleFee]
+    [props.onRemoveServiceCycleFee],
   );
   const translation = useTranslation();
   const { validateCaller } = useValidateCaller();
   const masterServiceColumns: GridColDef<ServiceCycle>[] = [
     {
-      field: "cycleNumber",
-      headerName: translation.t("masterService.cycleNumber"),
+      field: 'cycleNumber',
+      headerName: translation.t('masterService.cycleNumber'),
       sortable: false,
-      type: "string",
+      type: 'string',
       width: 450,
       renderCell: (row) => {
         if (isNaN(Number(row.id))) {
           return (
             <button className="font-bold">
-              {translation.t("masterService.addMoreCycle")}
+              {translation.t('masterService.addMoreCycle')}
             </button>
           );
         }
@@ -53,14 +50,14 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
       },
     },
     {
-      field: "pricePerCycle",
+      field: 'pricePerCycle',
       sortable: false,
-      type: "string",
+      type: 'string',
       width: 450,
       renderHeader: () => {
         return (
           <>
-            {translation.t("masterService.pricePerCycle")}{" "}
+            {translation.t('masterService.pricePerCycle')}{' '}
             <span className="text-danger ml-2">*</span>
           </>
         );
@@ -72,7 +69,7 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
               className="bg-gray-200 px-4 py-2 rounded-2xl font-bold"
               onClick={() => props.onAddMoreServiceSCycleFee(Number(row.id))}
             >
-              + {translation.t("masterService.nextCycle")}
+              + {translation.t('masterService.nextCycle')}
             </button>
           );
         }
@@ -82,7 +79,7 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
             id={String(row.id)}
             value={row.value}
             validateCaller={validateCaller}
-            placeholder={translation.t("masterService.priceCyclePlaceholder")}
+            placeholder={translation.t('masterService.priceCyclePlaceholder')}
             isRequired={true}
             isError={!row.value && props.isSubmitted}
             onChange={(v) => onChangeItem(Number(row?.id), v)}
@@ -91,10 +88,10 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
       },
     },
     {
-      field: "index",
-      headerName: translation.t("masterService.option"),
+      field: 'index',
+      headerName: translation.t('masterService.option'),
       sortable: false,
-      type: "string",
+      type: 'string',
       width: 100,
       renderCell: (row) => {
         if (isNaN(Number(row.id)) || !props?.serviceCycle?.length) {
@@ -105,12 +102,12 @@ export function ServiceCycleTable(props: ServiceCycleTableProps) {
             onClick={() => onRemoveItem(Number(row.id))}
             {...(props?.serviceCycle?.length < 2 && {
               disabled: true,
-              className: "disabled",
+              className: 'disabled',
             })}
           >
             <Tooltip
               placement="top"
-              title={translation.t("masterService.delete")}
+              title={translation.t('masterService.delete')}
             >
               <IconTrash />
             </Tooltip>
