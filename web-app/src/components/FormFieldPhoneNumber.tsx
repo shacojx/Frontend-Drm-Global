@@ -22,7 +22,12 @@ function validateRNPhone(isRequired: boolean | undefined, phone: RNPhoneValue | 
   return !!nationPhone && !!localPhone && validateApiLocalPhone(localPhone)
 }
 
-export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shouldLiveCheck?: boolean}) {
+type FormFieldPhoneNumberProps = FormFieldProps<RNPhoneValue> & {
+  shouldLiveCheck?: boolean;
+  ignoreValues?: string[]
+}
+
+export function FormFieldPhoneNumber(props: FormFieldPhoneNumberProps) {
   const translation = useTranslation()
   const [wasRegister, setWasRegister] = useState<boolean>(false)
   const [shouldShowError, setShouldShowError] = useValidate<RNPhoneValue>(
@@ -62,6 +67,11 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shou
   }
 
   function handleBlur() {
+    console.log(props.value)
+    if (props.ignoreValues?.includes(props.value as RNPhoneValue)) {
+      return
+    }
+
     const isValid = validateRNPhone(props.isRequired, props.value)
     setShouldShowError(!isValid)
     setIsValidPhone(isValid)

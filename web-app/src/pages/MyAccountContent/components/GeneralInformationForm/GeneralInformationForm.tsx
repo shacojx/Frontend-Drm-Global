@@ -15,7 +15,9 @@ export default function GeneralInformationForm() {
     const translation = useTranslation()
     const { user } = useContext(AuthContext)
     const { validateCaller, validateAll } = useValidateCaller()
-    const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || ''))
+
+    const initialPhone = generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || '')
+    const [phone, setPhone] = useState<RNPhoneValue | undefined>(initialPhone)
     const [firstName, setFirstName] = useState<string>(user?.firstName || '')
     const [lastName, setLastName] = useState<string>(user?.lastName || '')
     const [status, setStatus] = useState<FormStatus>('typing')
@@ -71,6 +73,7 @@ export default function GeneralInformationForm() {
                 value={phone}
                 onChange={handleChangePhone}
                 validateCaller={validateCaller}
+                ignoreValues={[initialPhone]}
             />
             <div className={"w-full flex gap-4"}>
                 <FormFieldText
