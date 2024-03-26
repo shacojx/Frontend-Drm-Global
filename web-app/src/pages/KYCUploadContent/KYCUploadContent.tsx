@@ -101,7 +101,7 @@ export default function KYCUploadContent() {
                 onClose={handleCloseSuccessKyc} 
                 title='Submitted Successfully!' 
                 subTitle='Please wait for reviewing'
-                actionElement={<button onClick={handleCloseSuccessKyc}>{translation.t('Close')}</button>}
+                actionElement={<button className='bg-primary w-full rounded-lg py-3 text-white' onClick={handleCloseSuccessKyc}>{translation.t('Close')}</button>}
             /> }
     </>
 }
