@@ -24,16 +24,21 @@ export function ServiceDetailDialog(props: Props) {
   const { validateCaller, validateAll } = useValidateCaller();
   const [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
   const [picId, setPicId] = useState<number>();
+  const [cycle, setCycle] = useState<number>();
   const [serviceStep, setServiceStep] = useState<ServiceStep | null>(null);
+  const [user, setUser] = useState<ViewedUser>();
 
   const uploadFileRef = useRef<HTMLInputElement | null>(null);
 
   const cycleOptions: OptionInfo<number>[] = [{ value: 1, label: '1' }];
+
   const userOptions = useMemo(() => {
-    return props.users.map((user) => ({
-      value: user.id,
-      label: user.email,
-    }));
+    return props.users.reduce((accumulator, item) => {
+      if (item.roles.find((role) => role.name === 'ROLE_MODERATOR')) {
+        return [...accumulator, { value: item.id, label: item.email }];
+      }
+      return accumulator;
+    }, [] as OptionInfo<number>[]);
   }, [props.users]);
 
   useEffect(() => {
@@ -41,8 +46,22 @@ export function ServiceDetailDialog(props: Props) {
     const serviceStep = props.service?.serviceStep.find(
       (item) => item.statusStep === Status.IN_PROGRESS,
     );
+    setCycle(props.service?.cycleNumber);
     setServiceStep(serviceStep ?? defaultServiceStep);
   }, [props.service]);
+
+  useEffect(() => {
+    if (props.service && props.users) {
+      const user = props.users.find(
+        (item) => item.id === props.service?.userId,
+      );
+      setUser(user);
+      const picUser = props.users.find(
+        (item) => item.email === props.service?.pic,
+      );
+      setPicId(picUser?.id);
+    }
+  }, [props.service, props.users]);
 
   async function handleChangePic(id: number) {
     const user = props.users?.find((item) => item.id === id);
@@ -68,23 +87,28 @@ export function ServiceDetailDialog(props: Props) {
 
       <div className={'grid grid-cols-3 gap-4 mb-4' + ''}>
         <div className={'flex flex-col gap-3'}>
-          <div className={'font-bold'}>Nguyễn Văn A</div>
-          <span>Email: </span>
-          <span>Phone number: </span>
+          <span className={'font-bold'}>
+            {user?.lastName} {user?.firstName}
+          </span>
+          <span>Email: {user?.email}</span>
+          <span>
+            Phone number: {user?.codePhone} {user?.phone}
+          </span>
         </div>
         <div className={'flex flex-col gap-3'}>
-          <div className={'font-bold'}>Global Ecommerce</div>
-          <span>Nation: United States</span>
-          <span>Industry: Ecommerce</span>
+          <div className={'font-bold'}>{user?.companyName}</div>
+          <span>Nation: {user?.llcInNation}</span>
+          <span>Industry: {user?.industry}</span>
         </div>
         <div className={'flex flex-col gap-3 ml-auto'}>
           <div className={'grid grid-cols-2 gap-2'}>
             <FormFieldSelect
               placeholder={'Cycle'}
               id={'cycleSelect'}
-              onChange={() => {}}
+              onChange={setCycle}
               validateCaller={validateCaller}
               optionInfos={cycleOptions}
+              value={cycle}
             ></FormFieldSelect>
             <StatusBadge
               status={props.service?.statusService as Status}
@@ -146,13 +170,6 @@ export function ServiceDetailDialog(props: Props) {
             <IconMyService></IconMyService>
             <span>{translator.t('KYC')}</span>
           </div>
-          <div
-            className={
-              'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
-            }
-          >
-            View KYC Status
-          </div>
         </div>
         <div
           className={
@@ -162,13 +179,6 @@ export function ServiceDetailDialog(props: Props) {
           <div className={'flex font-bold text-lg items-center gap-2'}>
             <IconMyService></IconMyService>
             <span>{translator.t('Payment')}</span>
-          </div>
-          <div
-            className={
-              'text-xs font-bold text-right text-cyan-500 underline cursor-pointer'
-            }
-          >
-            Click here to upload contract
           </div>
         </div>
         <div
@@ -199,7 +209,7 @@ export function ServiceDetailDialog(props: Props) {
             return (
               <div
                 className={
-                  'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center'
+                  'w-full flex gap-6 p-4 bg-gray-100 border rounded-md items-center cursor-pointer'
                 }
                 key={serviceStep.id}
                 onClick={() => {
