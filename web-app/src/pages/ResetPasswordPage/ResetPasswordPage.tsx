@@ -7,7 +7,7 @@ import { DialogFailureFullscreen, DialogRequestingFullscreen } from "src/compone
 import { FormFieldPassword } from "src/components/FormFieldPassword";
 import { FormSendRecoveryCode } from "src/components/FormSendRecoveryCode";
 import { FormValidateRecoveryCode } from "src/components/FormValidateRecoveryCode";
-import { IconArrowLeft, IconCheckCircle } from "src/components/icons";
+import { IconArrowCircle, IconArrowLeft, IconCheckCircle } from "src/components/icons";
 import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "src/layouts/PageLayoutOneForm";
 import { FormStatus } from "src/types/common";
@@ -26,11 +26,14 @@ export function ResetPasswordPage() {
   const [status, setStatus] = useState<FormStatus>('typing')
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
 
+  const [isSentCode, setIsSentCode] = useState(false)
+
   const emailAndRecoveryCodeStepIndex = 1
   const newPasswordStepIndex = 2
 
   const handleSendRecoveryCode = useCallback((email: string) => {
     setEmail(email)
+    setIsSentCode(true)
   }, [])
 
   function handleReceiveSignature(signature: string) {
@@ -40,7 +43,7 @@ export function ResetPasswordPage() {
 
   function handleChangeRePassword(rePass: string) {
     setRePassword(rePass)
-    setIsPasswordMatch(true)
+    setIsPasswordMatch(password === rePass)
   }
 
   async function handleClickSubmit() {
@@ -75,77 +78,83 @@ export function ResetPasswordPage() {
     navigate(RoutePaths.login)
   }
 
-  return <PageLayoutOneForm>
-    <p className="text-h4">{translation.t('Reset your password')}</p>
-    <p className="text-cSm">{translation.t('Enter the email address associated with your account')}</p>
-    {stepIndex === emailAndRecoveryCodeStepIndex &&
-      <>
-        <FormSendRecoveryCode onSendRecoveryCode={handleSendRecoveryCode} />
-        <FormValidateRecoveryCode email={email} onReceiveSignature={handleReceiveSignature} />
-      </>
-    }
-    {stepIndex === newPasswordStepIndex &&
-      <>
-        <FormFieldPassword
-          id={"password"}
-          label={"New password"}
-          isRequired
-          value={password}
-          onChange={setPassword}
-          validateCaller={validateCaller}
-        />
-        <div className={"space-y-2"}>
+  return (
+    <PageLayoutOneForm>
+      {status !== 'success' && (
+        <>
+          <p className="text-h4">{translation.t('Reset your password')}</p>
+          <p className="text-cSm">{translation.t('Enter the email address associated with your account')}</p>
+        </>
+      )}
+      {stepIndex === emailAndRecoveryCodeStepIndex && (
+        <>
+          <FormSendRecoveryCode onSendRecoveryCode={handleSendRecoveryCode} />
+          <FormValidateRecoveryCode disabled={!isSentCode} email={email} onReceiveSignature={handleReceiveSignature} />
+        </>
+      )}
+      {stepIndex === newPasswordStepIndex && (
+        <>
           <FormFieldPassword
-            id={"rePassword"}
-            label={"Re-enter password"}
+            id={'password'}
+            label={'New password'}
             isRequired
-            value={rePassword}
-            onChange={handleChangeRePassword}
-            onEnter={handleClickSubmit}
+            value={password}
+            onChange={setPassword}
             validateCaller={validateCaller}
           />
-          {!isPasswordMatch && <p className={"text-danger"}>{translation.t("The entered passwords do not match")}!</p>}
-        </div>
-        <button
-          onClick={handleClickSubmit}
-          className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-        >
-          {translation.t('Change Password')}
-        </button>
-      </>
-    }
-    {status === 'requesting' &&
-      <DialogRequestingFullscreen />
-    }
-    {status === "success" &&
-      <div className={"w-full flex flex-col items-center gap-y-8"}>
-        <IconCheckCircle className={"text-success"}/>
-        <div className={"w-full flex flex-col items-center gap-y-2"}>
-          <p className={"text-h4"}>{translation.t('Password Changed')} !</p>
-          <p className={"text-cSm"}>{translation.t('Your password has been changed successfully')}.</p>
-        </div>
-        <button
-          onClick={handleClickBackToLogin}
-          className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-        >
-          <IconArrowLeft className={"text-white"}/>
-          <span>{translation.t('Back to Log in')}</span>
-        </button>
-      </div>
-    }
-    {status === 'failure' &&
-      <DialogFailureFullscreen
-        title="Failure!"
-        subTitle={errorMessage || "Could not change password"}
-        actionElement={
+          <div className={'space-y-2'}>
+            <FormFieldPassword
+              id={'rePassword'}
+              label={'Re-enter password'}
+              isRequired
+              value={rePassword}
+              onChange={handleChangeRePassword}
+              onEnter={handleClickSubmit}
+              validateCaller={validateCaller}
+            />
+            {!isPasswordMatch && (
+              <p className={'text-danger'}>{translation.t('The entered passwords do not match')}!</p>
+            )}
+          </div>
           <button
             onClick={handleClickSubmit}
-            className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
           >
-            <span>{translation.t('Try again')}</span>
+            {translation.t('Change Password')}
           </button>
-        }
-      />
-    }
-  </PageLayoutOneForm>
+        </>
+      )}
+      {status === 'requesting' && <DialogRequestingFullscreen />}
+      {status === 'success' && (
+        <div className={'w-full flex flex-col items-center gap-y-8'}>
+          <IconCheckCircle className={'text-success'} />
+          <div className={'w-full flex flex-col items-center gap-y-2'}>
+            <p className={'text-h4'}>{translation.t('Password Changed')} !</p>
+            <p className={'text-cSm'}>{translation.t('Your password has been changed successfully')}.</p>
+          </div>
+          <button
+            onClick={handleClickBackToLogin}
+            className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+          >
+            <IconArrowCircle className={'text-white'} />
+            <span>{translation.t('Back to Log in')}</span>
+          </button>
+        </div>
+      )}
+      {status === 'failure' && (
+        <DialogFailureFullscreen
+          title="Failure!"
+          subTitle={errorMessage || 'Could not change password'}
+          actionElement={
+            <button
+              onClick={() => setStatus('typing')}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{translation.t('Close')}</span>
+            </button>
+          }
+        />
+      )}
+    </PageLayoutOneForm>
+  );
 }

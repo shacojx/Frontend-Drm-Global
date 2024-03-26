@@ -60,7 +60,7 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
       {props.isRequired && <span className="text-danger">*</span>}
     </p>
    <div className={
-    cn("flex gap-1 items-center w-full h-[40px] border py-1 px-2 rounded-lg", statusClassName)
+    cn("flex gap-1 items-center w-full h-[40px] border py-1 px-2 rounded-lg", statusClassName, props.className)
    }>
     <input
         disabled={props.isFixedValue}
