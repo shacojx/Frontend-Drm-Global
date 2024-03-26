@@ -213,10 +213,10 @@ export type ViewedUser = {
   firstName:	string,
   lastName:	string,
   roles: {
-    id: number,
-    name: AccountRole
-  }
-}
+    id: number;
+    name: AccountRole;
+  }[];
+};
 
 export type ApiSearchUserParam = {
   "email": string,
