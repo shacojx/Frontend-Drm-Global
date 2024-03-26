@@ -1,6 +1,9 @@
 export interface Service {
   id: number;
   userId: number;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   serviceId: number;
   serviceType: string;
   serviceName: string;
