@@ -471,7 +471,6 @@ function CreateAccountStep(props: CreateAccountStepProps) {
           onClick={handleClickNext}
           className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
         >
-          <IconAddCircle />
           {translation.t('Create account')}
         </button>
         <div className="flex w-full justify-center">
