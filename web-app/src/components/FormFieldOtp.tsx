@@ -97,7 +97,7 @@ export function OtpCharacter(props: OtpCharacterProps) {
       onChange={handleKeyDown}
       placeholder="-"
       className={
-        'w-12 h-12 text-center caret-transparent cursor-pointer font-bold text-xl bg-[#ffffff] rounded-xl flex items-center justify-center border focus:outline-none focus:bg-primary/5 focus:border-primary focus:placeholder:text-primary placeholder:text-transparent'
+        'w-12 h-12 text-center caret-transparent cursor-pointer font-bold text-xl bg-[#ffffff] rounded-[14px] flex items-center justify-center border focus:outline-none focus:bg-primary/5 focus:border-primary focus:placeholder:text-primary placeholder:text-transparent'
       }
     />
   );
