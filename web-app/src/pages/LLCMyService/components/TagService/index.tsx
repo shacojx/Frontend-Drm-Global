@@ -1,30 +1,45 @@
-import { ServiceType } from "../../types/my-service.type";
+import { ServiceStatusType } from "../../types/my-service.type";
 import { useTranslation } from "react-i18next";
 import { IconCheck, IconInfoCircle, IconRefreshCircle } from "../../../../components/icons";
 import { cn } from "../../../../utils/cn.util";
 
-type Props = { status: ServiceType };
+type Props = { status: ServiceStatusType };
 
 type TagItemType = { color: string; icon: JSX.Element; label: string };
 
 export default function TagService({ status }: Props) {
   const { t } = useTranslation();
 
-  const arrayTag: Record<ServiceType, TagItemType> = {
-    [ServiceType.Pending]: {
+  const arrayTag: Record<ServiceStatusType, TagItemType> = {
+    [ServiceStatusType.Pending]: {
       color: "bg-[#5D50C6]/15",
       icon: <IconInfoCircle />,
       label: t("Pending"),
     },
-    [ServiceType.InProgress]: {
+    [ServiceStatusType.InProgress]: {
       color: "bg-[#FF5722]/25",
       icon: <IconRefreshCircle />,
       label: t("InProgress"),
     },
-    [ServiceType.Issued]: {
+    [ServiceStatusType.Issued]: {
       color: "bg-success",
       icon: <IconCheck />,
       label: t("Issued"),
+    },
+    [ServiceStatusType.Confirmed]: {
+      color: "bg-success",
+      icon: <IconCheck />,
+      label: t("Confirmed"),
+    },
+    [ServiceStatusType.Approved]: {
+      color: "bg-success",
+      icon: <IconCheck />,
+      label: t("Approved"),
+    },
+    [ServiceStatusType.Yes]: {
+      color: "bg-success",
+      icon: <IconCheck />,
+      label: t("Yes"),
     },
   };
 

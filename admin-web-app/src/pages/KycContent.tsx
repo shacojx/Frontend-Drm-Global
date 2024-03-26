@@ -5,14 +5,12 @@ import {
   GridRenderCellParams,
   GridValueGetterParams
 } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { callApiGetKyc } from "../api/kycManagement";
-import { ApiGetKycParam, KycDetail, RawResultGetKyc } from "../api/types";
 import { DialogContainer } from "../components/DialogContainer";
-import { DialogConfirmFullScreen } from "../components/DialogFormStatusFullscreen";
-import { generateFormatDate } from "../services-ui/date";
+import { DialogConfirmFullScreen, DialogSuccessFullscreen } from "../components/DialogFormStatusFullscreen";
 import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/kyc";
+import { generateFormatDate } from "../services-ui/date";
 
 type Props = {}
 
@@ -27,7 +25,9 @@ export function KycContent(props: Props) {
   const [idSelected, setIdSelected] = useState<number>()
   const [pictureIndexInit, setPictureIndexInit] = useState<number>(0)
 
-  const {data, isLoading: gettingKYCs} = useApiGetKYCs({
+  const [showSuccessDialog, setShowSuccessDialog] = useState<false | "approve" | "reject">(false)
+
+  const {data, isLoading: gettingKYCs, refetch} = useApiGetKYCs({
     page: paginationModel.page,
     size: paginationModel.pageSize
   })
@@ -55,18 +55,19 @@ export function KycContent(props: Props) {
   }
 
   const handleConfirm = async () => {
-    console.log("handle confirm")
     if (!idSelected) return
 
     setShouldShowConfirmDialog(false)
 
     if (shouldShowConfirmDialog === "approve") {
-      return await approveKYC(idSelected)
+      await approveKYC(idSelected)
+      setShowSuccessDialog('approve')
+      return
     } {
-      return await rejectKYC(idSelected)
+      await rejectKYC(idSelected)
+      setShowSuccessDialog('reject')
+      return
     }
-
-    
   }
 
   function handleClickPhoto(id: number, type: 'passport' | 'holdPassport') {
@@ -193,7 +194,7 @@ export function KycContent(props: Props) {
           title={
             shouldShowConfirmDialog === 'approve' ? 'Approve KYC Request?' : 'Reject KYC Request?'
           }
-          content={'This action cannot be undone'}
+          content={'This action cannot be undone!'}
           onCancel={handleCancel}
           onConfirm={handleConfirm}
         />
@@ -201,7 +202,7 @@ export function KycContent(props: Props) {
 
       {shouldShowPictureDialog && (
         <DialogContainer
-          handleClickOverlay={setShouldShowPictureDialog.bind(undefined, false)}
+          handleClickOverlay={() => setShouldShowPictureDialog(false)}
           isAutoSize
           isCloseOnClickOverlay
         >
@@ -210,6 +211,8 @@ export function KycContent(props: Props) {
           </div>
         </DialogContainer>
       )}
+
+      {showSuccessDialog && <DialogSuccessFullscreen onClose={() => setShowSuccessDialog(false)} title={showSuccessDialog==='approve' ? 'Approved' : 'Rejected'} />}
     </div>
   );
 }

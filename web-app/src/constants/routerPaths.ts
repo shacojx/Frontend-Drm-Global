@@ -7,7 +7,7 @@ export const RoutePaths = {
     KYCUpload:'/kyc-upload',
     myCompany: '/my-company',
     myServices: '/my-services',
-    myServicesItem: '/my-services/1',
+    myServicesItem: '/my-services/:id',
     services:'/services',
     support:'/support',
 } as const

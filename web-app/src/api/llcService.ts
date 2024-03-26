@@ -1,158 +1,37 @@
-import { LLCServiceType } from "./types";
+import { callApi, getAccessTokenInfo, getAuthorizationString } from "src/services-base/api";
+import { MyServiceType } from "./types";
+import { UploadResponse } from "src/api/upload";
 
-// TODO: remove sample data
-const sampleLlcService: LLCServiceType = {
-  status: 2,
-  step: [
-    {
-      name: "State Filings",
-      issuingDuration: "2 - 5 days",
-      status: 1,
-      id: 1,
-      detail: {
-        step_description:
-          "State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State.",
-        remark:
-          "You don't have to upload any paper, we will do all the paper work of this step",
-        customer_document: {
-          required_document: "12",
-          uploaded_document: [
-            {
-              name: "file a.pdf",
-              link: "download",
-            },
-          ],
-        },
-        service_document: {
-          required_document: "State Filling Information",
-          uploaded_document: [
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-          ],
-        },
-      },
-    },
-    {
-      name: "Communication",
-      issuingDuration: "2 - 5 days",
-      status: 2,
-      id: 2,
-      detail: {
-        step_description:
-          "State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State.",
-        remark:
-          "You don't have to upload any paper, we will do all the paper work of this step",
-        customer_document: {
-          required_document: "12",
-          uploaded_document: [
-            {
-              name: "file a.pdf",
-              link: "download",
-            },
-          ],
-        },
-        service_document: {
-          required_document: "State Filling Information",
-          uploaded_document: [
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-          ],
-        },
-      },
-    },
-    {
-      name: "EIN",
-      issuingDuration: "2 - 5 days",
-      status: 3,
-      id: 3,
-      detail: {
-        step_description:
-          "State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State.",
-        remark:
-          "You don't have to upload any paper, we will do all the paper work of this step",
-        customer_document: {
-          required_document: "none",
-          uploaded_document: [
-            {
-              name: "file a.pdf",
-              link: "download",
-            },
-          ],
-        },
-        service_document: {
-          required_document: "State Filling Information",
-          uploaded_document: [
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-          ],
-        },
-      },
-    },
-    {
-      name: "Bank account",
-      issuingDuration: "2 - 5 days",
-      status: 1,
-      id: 4,
-      detail: {
-        step_description:
-          "State filings are done in the state you picked for your formation. We take care of registered agents in the state and all necessary filings with the Secretary of State.",
-        remark:
-          "You don't have to upload any paper, we will do all the paper work of this step",
-        customer_document: {
-          required_document: "none",
-          uploaded_document: [
-            {
-              name: "file a.pdf",
-              link: "download",
-            },
-          ],
-        },
-        service_document: {
-          required_document: "State Filling Information",
-          uploaded_document: [
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-            {
-              name: "EEE Company_State Filling Information.pdf",
-              link: "download",
-            },
-          ],
-        },
-      },
-    },
-  ],
-}
-const sampleBunchOfLlcService = [sampleLlcService]
+const URL = 'api/user/get-paid-service'
+const URL_UPLOAD = 'api/file/upload-customer-document'
+
 
 export async function callApiGetListLlcServices() {
-  // TODO: implement call api
-  // return await callApi<any>("GET", `api/user/get-service`, {});
-  return sampleBunchOfLlcService
+  return await callApi<MyServiceType[]>("GET", `${URL}`, {}, true);
 }
 
 // @ts-ignore
 export async function callApiGetLlcServiceById(id: number) {
-  // TODO: implement call api
-  // return await callApi<any>("GET", `api/user/detail-service/${id}`, {});
-  return sampleLlcService
+  return await callApi<MyServiceType>("GET", `${URL}/${id}`, {}, true);
 }
+
+// @ts-ignore
+export async function callApiUploadCustomerDocument(body: FormData) {
+  const headers = new Headers();
+  headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
+
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: body,
+  };
+
+  const endpoint = `${process.env.REACT_APP_URL}/${URL_UPLOAD}`;
+
+  const data = (await fetch(endpoint, options).then((response) =>
+    response.json()
+  )) as UploadResponse;
+
+  return data;
+}
+

@@ -15,11 +15,12 @@ type Props = Partial<{
   title: string,
   subTitle: string,
   actionElement: JSX.Element,
+  onClose?: () => void
 }>
 
 export function DialogSuccessFullscreen(props: Props) {
   const translation = useTranslation()
-  return <DialogContainer isAutoSize isCloseOnClickOverlay>
+  return <DialogContainer isAutoSize isCloseOnClickOverlay handleClickOverlay={props.onClose}>
     <div className="w-full max-w-[400px] justify-center items-center py-8 px-4 flex flex-col">
       <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
         <IconSuccess className={"w-40 h-40"}/>

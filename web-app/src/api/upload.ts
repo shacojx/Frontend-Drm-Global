@@ -1,4 +1,4 @@
-import { getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
+import { callApi, getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
 
 export type UploadResponse = {
   message: string;
@@ -28,7 +28,7 @@ export const uploadFile = async (file: File) => {
   return data;
 };
 
-export const getFile = async (name: string) => {
+export const getFile = async (name: string, opts: { download?: boolean } = {download: true}) => {
   const headers = new Headers();
   headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
 
@@ -42,6 +42,8 @@ export const getFile = async (name: string) => {
   const blob = await fetch(endpoint, options)
     .then((response) => response.blob())
     .then((blob) => {
+      if (!opts?.download) return blob
+
       const a = document.createElement("a");
       const url = URL.createObjectURL(blob);
       a.href = url;
@@ -50,4 +52,9 @@ export const getFile = async (name: string) => {
       URL.revokeObjectURL(url);
     })
     .catch((error) => console.log("error", error));
+
+  return blob
 };
+
+
+const URL_DOWNLOAD = 'api/file/files'

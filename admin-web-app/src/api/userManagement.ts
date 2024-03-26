@@ -11,8 +11,9 @@ import {
 
 export async function callApiSearchUser(body: ApiSearchUserParam) {
   const path = 'api/admin/search-user'
-  const rawResult = await callApi<RawResultSearchUser>('POST', path, body, true)
-  return rawResult
+  const rawResult = await callApi<RawResultSearchUser[]>('POST', path, body, true)
+  
+  return {content: rawResult, totalElements: rawResult.length}
 }
 
 export async function callApiLViewUser(param: ApiViewUserParam) {

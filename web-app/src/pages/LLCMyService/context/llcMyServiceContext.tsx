@@ -1,10 +1,10 @@
 import { createContext } from "react";
 import React, { useState } from "react";
-import { StepType } from "../../../api/types";
+import { MyServiceStepType } from "../../../api/types";
 
 interface AppContextInterface {
-  detailFilling: StepType | null;
-  setDetailFilling: React.Dispatch<React.SetStateAction<StepType>>;
+  detailFilling: MyServiceStepType | null;
+  setDetailFilling: React.Dispatch<React.SetStateAction<MyServiceStepType>>;
 }
 
 const initialAppContext: AppContextInterface = {
@@ -19,8 +19,8 @@ export const LLCMyServiceProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [detailFilling, setDetailFilling] = useState<StepType>(
-    initialAppContext.detailFilling as StepType
+  const [detailFilling, setDetailFilling] = useState<MyServiceStepType>(
+    initialAppContext.detailFilling as MyServiceStepType
   );
 
   return (

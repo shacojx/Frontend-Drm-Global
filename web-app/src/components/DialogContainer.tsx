@@ -6,12 +6,17 @@ type Props = PropsWithChildren<Partial<{
   isCloseOnClickOverlay: boolean,
   isTransparent: boolean,
   isAutoSize: boolean,
+  onClose: (isOpen: boolean) => void,
 }>>
 export function DialogContainer(props: Props) {
   const [open, setOpen] = useState(true)
 
   const cancelButtonRef = useRef(null)
-  const handleClickOverlay = props.isCloseOnClickOverlay ? setOpen : () => {}
+  const handleClickOverlay = props.isCloseOnClickOverlay
+    ? props.onClose
+      ? (isOpen: boolean) => {setOpen(isOpen); props.onClose?.(isOpen);}
+      : setOpen
+    : () => {}
 
   return (
     <Transition.Root show={open} as={Fragment}>

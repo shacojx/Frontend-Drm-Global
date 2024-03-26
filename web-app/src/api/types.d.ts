@@ -1,4 +1,4 @@
-import { ServiceType } from "../pages/LLCMyService/types/my-service.type";
+import { ServiceStatusType } from "../pages/LLCMyService/types/my-service.type";
 
 export type NationValue = string
 export type CompanyTypeValue = 'LLC' | 'PLC'
@@ -69,7 +69,7 @@ export type ApiResetPasswordParam = {
 }
 export type RawResultResetPassword = ""
 
-export type KYCStatus = 'Pending' | 'In-progress' | 'Approved'
+export type KYCStatus = 'Pending' | 'In-progress' | 'Approved' | 'Rejected'
 
 export type RawResultGetUserProfile = {
   "llcInNation": NationValue,
@@ -81,6 +81,8 @@ export type RawResultGetUserProfile = {
   firstName: string,
   lastName: string,
   kycStatus: KYCStatus,
+  kycImagePassport: string,
+  kycImagePictureHoldPassport: string
 }
 
 export type ApiChangeUserProfile = {
@@ -102,44 +104,162 @@ export type ApiUploadKYC = {
 
 // ====== Payment ======== //
 export type Currency = 'USD'
-export type OrderType = 'PAYPAL'
+export type OrderType = 'PAYPAL' | 'BankToBank'
 
 export type ApiCreateOrderParam = {
-  transactionId: string;
-  currency: Currency;
-  amount: number;
-  orderType: OrderType;
-};
+  "cashout": {
+    "serviceId": number,
+    "cycleNumber": number
+  }[]
+}
+
+export type RawResulCreateOrder = {
+  code:	string,
+  message: string,
+  data: {
+    id:	string,
+    intent:	unknown,
+    status:	string,
+    createTime:	unknown,
+    links:	{
+      rel: string,
+      href: string,
+    }[],
+    purchase_units:	unknown,
+    payment_source:	unknown,
+  }
+}
 
 // ====== LLC Service ======== //
 
-export type UploadedDocumentType = {
-  name: string;
-  link: string;
-};
-
-export type StepType = {
+export type UploadedDocumentType ={
   id: number;
-  name: string;
-  status: ServiceType;
-  issuingDuration: string;
-  detail?: {
-    step_description: string;
-    remark: string;
-    customer_document: {
-      required_document: string;
-      uploaded_document: UploadedDocumentType[];
-    };
-    service_document: {
-      required_document: string;
-      uploaded_document: UploadedDocumentType[];
-    };
-  };
+  requiredDocument: string;
+  fileDocument: string | null;
+}
+
+export type MyServiceStepType = {
+  id: number;
+  stepNo: number|null;
+  stepName: string;
+  statusStep: string;
+  estimatedCompletionTime: string;
+  description: string;
+  adminRemark: null;
+  customerDocument: UploadedDocumentType[];
+  result: UploadedDocumentType[];
+}
+export type ServiceType = 'Based' | 'Add-on';
+
+export type MyServiceType = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  userId: number;
+  serviceId: number;
+  ServiceStatusType: string;
+  serviceType: ServiceType;
+  serviceName: string;
+  serviceDescription: string;
+  statusService: ServiceStatusType;
+  cycleNumber: number;
+  pricePerCycle: number;
+  transitionId: number;
+  statusPayment: ServiceStatusType;
+  statusContract: ServiceStatusType;
+  contractFile: string| null;
+  pic: null;
+  serviceStep: MyServiceStepType[];
+}
+
+export type LLCServiceStatusType = {
+  status: number;
+  step: MyServiceStepType [];
 };
 
-export type LLCServiceType = {
-  status: number;
-  step: StepType[];
+// ====== Service ====== //
+
+export type RawService = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  appliedNation: Array<{
+    id: number;
+    nation: string;
+  }>;
+  appliedCompanyType: Array<{
+    id: number;
+    companyType: string;
+  }>;
+  serviceType: ServiceType;
+  serviceName: string;
+  serviceDescription: string;
+  enable: number;
+  serviceStep: Array<{
+    id: number;
+    stepNo: number;
+    name: string;
+    estimatedCompletionTime: string;
+    description: string;
+    documentRequired: Array<{
+      id: number;
+      documentRequired: string;
+    }>;
+    result: Array<{
+      id: number;
+      result: string;
+    }>;
+  }>;
+  serviceCycle: Array<{
+    id: number;
+    cycleNumber: number;
+    pricePerCycle: number;
+  }>;
+};
+
+export type RawServiceDetail = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  appliedNation: Array<{
+    id: number;
+    nation: string;
+  }>;
+  appliedCompanyType: Array<{
+    id: number;
+    companyType: string;
+  }>;
+  serviceType: string;
+  serviceName: string;
+  serviceDescription: string;
+  enable: number;
+  serviceStep: Array<{
+    id: number;
+    stepNo: number;
+    name: string;
+    estimatedCompletionTime: string;
+    description: string;
+    documentRequired: Array<{
+      id: number;
+      documentRequired: string;
+    }>;
+    result: Array<{
+      id: number;
+      result: string;
+    }>;
+  }>;
+  serviceCycle: Array<{
+    id: number;
+    cycleNumber: number;
+    pricePerCycle: number;
+  }>;
+};
+
+export type PaymentServiceBody = {
+  cashout: Array<{
+    serviceId: 4;
+    cycleNumber: 1;
+  }>;
 };
 
 // ====== My Company ====== //
@@ -229,10 +349,10 @@ export type EditCompanyBody = {
     firstName: string,
     lastName: string,
     ownerShip: string,
-    document: string,
+    document: [string],
     company: number, // INFO: 1 - true | 0 - false
     individual: number, // INFO: 1 - true | 0 - false
-  },>,
+  }>,
   responsiblePartyFirstName: string,
   responsiblePartyLastName: string,
   responsiblePartySSNOrITIN: string,
@@ -242,7 +362,20 @@ export type EditCompanyBody = {
   mailingAddress: string,
   mailingZipCode: string,
   document: Array< {
-    id: string, 
+    id: string,
     document: string,
   }>,
+};
+
+
+// === Bank ===
+type BankAccount = {
+  region: string;
+  bankName: string;
+  bankAccount: string;
+  accountName: string;
+  swiftCode: string;
+  bankCode: string;
+  rountingNo: string;
+  abaFedwire: string;
 };
