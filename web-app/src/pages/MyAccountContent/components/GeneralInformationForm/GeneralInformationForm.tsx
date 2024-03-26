@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { callApiChangeUserProfile } from 'src/api/account'
 import { ApiChangeUserProfile } from 'src/api/types'
+import { DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen'
 import { FormFieldEmail } from 'src/components/FormFieldEmail'
 import { FormFieldPhoneNumber } from 'src/components/FormFieldPhoneNumber'
 import { FormFieldText } from 'src/components/FormFieldText'
@@ -10,16 +11,21 @@ import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { useValidateCaller } from 'src/hooks-ui/useValidateCaller'
 import { RNPhoneValue, extractPhone, generatePhone } from 'src/services-business/api/generate-api-param/account'
 import { FormStatus } from 'src/types/common'
+import { cn } from 'src/utils/cn.util'
 
 export default function GeneralInformationForm() {
     const translation = useTranslation()
-    const { user } = useContext(AuthContext)
+    const { user, saveAuthUser } = useContext(AuthContext)
     const { validateCaller, validateAll } = useValidateCaller()
-    const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || ''))
+
+    const initialPhone = generatePhone(user?.codePhone || '+84', user?.phone?.slice(user?.codePhone?.length) || '')
+    const [phone, setPhone] = useState<RNPhoneValue | undefined>(initialPhone)
     const [firstName, setFirstName] = useState<string>(user?.firstName || '')
     const [lastName, setLastName] = useState<string>(user?.lastName || '')
     const [status, setStatus] = useState<FormStatus>('typing')
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
+
+    const disabledSaveButton = user?.firstName === firstName && user?.lastName === lastName  && initialPhone === phone
 
     function handleChangePhone(phone: RNPhoneValue) {
         setPhone(phone)
@@ -47,8 +53,8 @@ export default function GeneralInformationForm() {
             lastName: lastName
         }
         try {
-            // TODO: update API
-            await callApiChangeUserProfile(param)
+            const updatedUser = await callApiChangeUserProfile(param)
+            saveAuthUser(updatedUser)
             setStatus('success')
         } catch (e: unknown) {
             setStatus("failure")
@@ -71,6 +77,7 @@ export default function GeneralInformationForm() {
                 value={phone}
                 onChange={handleChangePhone}
                 validateCaller={validateCaller}
+                ignoreValues={[initialPhone]}
             />
             <div className={"w-full flex gap-4"}>
                 <FormFieldText
@@ -98,13 +105,21 @@ export default function GeneralInformationForm() {
         <div className={"flex justify-end"}>
             <button
                 onClick={handleClickSave}
-                className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+                className={cn(
+                    "py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg",
+                    {
+                        'bg-disable': disabledSaveButton
+                    }
+                )}
+                disabled={disabledSaveButton}
             >
                 {translation.t('Save')}
                 {status === "requesting" && <IconSpinner />}
             </button>
         </div>
         {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
+
+        {status === 'success' && <DialogSuccessFullscreen onClose={() => setStatus('typing')} title='Update profile successfully!' />}
     </>
 }
 

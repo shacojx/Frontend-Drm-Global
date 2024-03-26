@@ -13,12 +13,18 @@ type DocumentTabProps = {
 export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabProps) {
   const { t } = useTranslation();
   const [downloadingName, setDownloadingName] = useState<string>();
-
-  console.log(documents)
+  const [error, setError] = useState<string>()
 
   const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
+
+    console.log(file.size)
+    if (file.size > 1_000_000) {
+      setError("File size must be less than 10MB")
+      return
+    }
+
     const { data } = await uploadFile(file);
     const savedFile = data[0];
 
@@ -32,12 +38,15 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
         <label
           htmlFor="upload"
           className="flex justify-center gap-3 text-primary rounded-lg w-full border border-solid border-primary py-4 font-bold mb-6 cursor-pointer"
+          onMouseDown={() => setError(undefined)}
         >
           <IconUpload />
           {t("Upload")}
           <input className="hidden" type="file" id="upload" onChange={handleFormChange} />
         </label>
       )}
+
+      {error && <p className="mb-6 text-danger">{error}</p>}
 
       {documents.map((document) => (
         <div
@@ -55,10 +64,6 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
               setDownloadingName(undefined);
             }}
           >
-            {(() => {
-              console.log(downloadingName, document.name)
-              return ''
-            })()}
             {downloadingName === document.name && <IconSpinner />}
             {t("Download")}
           </button>

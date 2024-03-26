@@ -299,7 +299,7 @@ function TabOptionItem(props: MenuType) {
             }
           >
             <div className={"hidden lg:block"}>{props.iconElement}</div>
-            <span>{translation.t(props.label)}</span>
+            <span className="line-clamp-1">{translation.t(props.label)}</span>
           </NavLink>
         </Menu.Button>
       )}

@@ -37,7 +37,7 @@ export default function KYCUploadContent() {
     }
 
 
-    function handleCloseSuccessKyc(isOpen: boolean) {
+    function handleCloseSuccessKyc() {
         setShowSuccessDialog(false)
         navigate(RoutePaths.myAccount)
     }
@@ -96,6 +96,12 @@ export default function KYCUploadContent() {
         </div>
 
         {showErrorDialog  && <DialogFailureFullscreen onClose={() => setShowErrorDialog(false)} title='Upload Failed' subTitle={error?.message} />}
-        {showSuccessDialog && <DialogSuccessFullscreen onClose={handleCloseSuccessKyc} title='Upload Successfully' /> }
+        {showSuccessDialog && 
+            <DialogSuccessFullscreen 
+                onClose={handleCloseSuccessKyc} 
+                title='Submitted Successfully!' 
+                subTitle='Please wait for reviewing'
+                actionElement={<button className='bg-primary w-full rounded-lg py-3 text-white' onClick={handleCloseSuccessKyc}>{translation.t('Close')}</button>}
+            /> }
     </>
 }

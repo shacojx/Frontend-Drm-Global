@@ -65,11 +65,14 @@ export function KycContent(props: Props) {
     if (shouldShowConfirmDialog === "approve") {
       await approveKYC(idSelected)
       setShowSuccessDialog('approve')
-    } {
+      await refetch()
+      return
+    } else {
       await rejectKYC(idSelected)
       setShowSuccessDialog('reject')
+      await refetch()
+      return
     }
-    await refetch()
   }
 
   async function handleClickPhoto(kyc: KycDetail, type: 'passport' | 'holdPassport') {
