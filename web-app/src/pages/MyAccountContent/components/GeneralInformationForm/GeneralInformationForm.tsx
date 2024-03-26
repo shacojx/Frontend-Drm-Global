@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { callApiChangeUserProfile } from 'src/api/account'
 import { ApiChangeUserProfile } from 'src/api/types'
+import { DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen'
 import { FormFieldEmail } from 'src/components/FormFieldEmail'
 import { FormFieldPhoneNumber } from 'src/components/FormFieldPhoneNumber'
 import { FormFieldText } from 'src/components/FormFieldText'
@@ -14,10 +15,10 @@ import { cn } from 'src/utils/cn.util'
 
 export default function GeneralInformationForm() {
     const translation = useTranslation()
-    const { user } = useContext(AuthContext)
+    const { user, saveAuthUser } = useContext(AuthContext)
     const { validateCaller, validateAll } = useValidateCaller()
 
-    const initialPhone = generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || '')
+    const initialPhone = generatePhone(user?.codePhone || '+84', user?.phone?.slice(user?.codePhone?.length) || '')
     const [phone, setPhone] = useState<RNPhoneValue | undefined>(initialPhone)
     const [firstName, setFirstName] = useState<string>(user?.firstName || '')
     const [lastName, setLastName] = useState<string>(user?.lastName || '')
@@ -52,8 +53,8 @@ export default function GeneralInformationForm() {
             lastName: lastName
         }
         try {
-            // TODO: update API
-            await callApiChangeUserProfile(param)
+            const updatedUser = await callApiChangeUserProfile(param)
+            saveAuthUser(updatedUser)
             setStatus('success')
         } catch (e: unknown) {
             setStatus("failure")
@@ -117,6 +118,8 @@ export default function GeneralInformationForm() {
             </button>
         </div>
         {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
+
+        {status === 'success' && <DialogSuccessFullscreen onClose={() => setStatus('typing')} title='Update profile successfully!' />}
     </>
 }
 
