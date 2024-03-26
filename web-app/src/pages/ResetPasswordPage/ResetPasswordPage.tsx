@@ -43,7 +43,7 @@ export function ResetPasswordPage() {
 
   function handleChangeRePassword(rePass: string) {
     setRePassword(rePass)
-    setIsPasswordMatch(true)
+    setIsPasswordMatch(password === rePass)
   }
 
   async function handleClickSubmit() {
