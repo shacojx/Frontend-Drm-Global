@@ -10,19 +10,18 @@ import { useTranslation } from 'react-i18next';
 import { ServiceFilter } from '../components/ServiceFilter';
 import { ServiceSearchFilter } from '../types/serviceSearchFilter';
 import { Service } from '../types/service';
-import { StatusBadge } from '../components/StatusBadge';
 import { DialogContainer } from '../components/DialogContainer';
 import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
 import {
   callApiGetListService,
+  callApiGetListServiceByCondition,
   callApiGetServiceDetail,
 } from '../api/serviceManagement';
 import { callApiLViewUser } from '../api/userManagement';
 import { ApiViewUserParam, ViewedUser } from '../api/types';
+import { StatusBadge } from '../components/StatusBadge';
 
-type Props = {};
-
-export function ServicesContent(props: Props) {
+export function ServicesContent() {
   const translation = useTranslation();
 
   const [servicesCount, setServicesCount] = useState<number>();
@@ -52,25 +51,6 @@ export function ServicesContent(props: Props) {
       },
     },
     {
-      field: 'kyc',
-      headerName: 'KYC',
-      sortable: false,
-      width: 140,
-      renderCell: (params: GridRenderCellParams) => {
-        return <StatusBadge status={params.value}></StatusBadge>;
-      },
-    },
-    {
-      field: 'corporationProfile',
-      headerName: 'Corporation profile',
-      sortable: false,
-      type: 'string',
-      width: 160,
-      renderCell: (params: GridRenderCellParams) => {
-        return <StatusBadge status={params.value}></StatusBadge>;
-      },
-    },
-    {
       field: 'statusPayment',
       headerName: 'Payment',
       sortable: false,
@@ -91,22 +71,22 @@ export function ServicesContent(props: Props) {
       field: 'customerName',
       headerName: 'Customer Name',
       sortable: false,
-      type: 'string',
       width: 160,
+      type: 'string',
     },
     {
-      field: 'phoneNumber',
+      field: 'customerPhone',
       headerName: 'Phone number',
       sortable: false,
-      type: 'string',
       width: 120,
+      type: 'string',
     },
     {
       field: 'customerEmail',
       headerName: 'Email',
       sortable: false,
-      type: 'string',
       width: 200,
+      type: 'string',
     },
     {
       field: 'pic',
@@ -134,8 +114,29 @@ export function ServicesContent(props: Props) {
   }
 
   async function search(data?: Partial<ServiceSearchFilter>) {
-    const response = await callApiGetListService(data);
-    setTableData(response.content);
+    let services = [];
+    if (data?.customerName || data?.customerEmail) {
+      const response = await callApiGetListServiceByCondition({
+        pic: data?.customerName ?? '',
+        email: data?.customerEmail ?? '',
+      });
+      services = response ?? [];
+    } else {
+      const response = await callApiGetListService(data);
+      services = response?.content ?? [];
+    }
+
+    services = services?.map((service) => {
+      const customer = users.find((user) => user.id === service.userId);
+      return {
+        ...service,
+        customerName: `${customer?.lastName} ${customer?.firstName}`,
+        customerEmail: customer?.email,
+        customerPhone: `${customer?.codePhone} ${customer?.phone}`,
+      };
+    });
+
+    setTableData(services);
   }
 
   async function showServiceDetail(data: Service) {
@@ -158,11 +159,11 @@ export function ServicesContent(props: Props) {
         <ServiceFilter onSubmit={search} />
         <div
           className={'w-full grow'}
-          key={tableData.map((value) => value.id).join('_')}
+          key={tableData?.map((value) => value.id).join('_')}
         >
           <DataGrid
             paginationMode="server"
-            rows={tableData}
+            rows={tableData ?? []}
             columns={serviceColumns}
             pageSizeOptions={[25]}
             rowCount={servicesCount || 0}

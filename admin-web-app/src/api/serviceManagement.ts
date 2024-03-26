@@ -1,7 +1,7 @@
-import {ServiceSearchFilter} from '../types/serviceSearchFilter';
-import {callApi} from '../services-base/api';
-import {RawResult, ViewedUser} from './types';
-import {Service} from '../types/service';
+import { ServiceSearchFilter } from '../types/serviceSearchFilter';
+import { callApi } from '../services-base/api';
+import { RawResult, ViewedUser } from './types';
+import { Service } from '../types/service';
 
 export async function callApiGetListService(
   param?: Partial<ServiceSearchFilter>,
@@ -13,111 +13,14 @@ export async function callApiGetListService(
     param as Partial<ServiceSearchFilter>,
     true,
   );
-  // const mockOutput: Service[] = [
-  //   {
-  //     updatedAt: '2024-03-24T16:14:15.000+00:00',
-  //     createdAt: '2024-03-24T16:14:15.000+00:00',
-  //     id: 1,
-  //     userId: 2,
-  //     serviceId: 1,
-  //     serviceType: 'Based',
-  //     serviceName: 'Dev MS 1',
-  //     serviceDescription: 'Dev create for dev',
-  //     statusService: 'Pending',
-  //     cycleNumber: 1,
-  //     pricePerCycle: 1000,
-  //     transitionId: 1711296855259,
-  //     statusPayment: 'Pending',
-  //     statusContract: 'Pending',
-  //     contractFile: null,
-  //     pic: null,
-  //     serviceStep: [
-  //       {
-  //         id: 1,
-  //         stepNo: 1,
-  //         stepName: 'Step 1',
-  //         statusStep: 'Pending',
-  //         estimatedCompletionTime: '2 to 4 days',
-  //         description: 'Step 1 des',
-  //         adminRemark: null,
-  //         customerDocument: [
-  //           {
-  //             id: 1,
-  //             requiredDocument: 'Doc 1',
-  //             fileDocument: null,
-  //           },
-  //         ],
-  //         result: [
-  //           {
-  //             id: 1,
-  //             requiredDocument: 'Doc 1 Result',
-  //             fileDocument: null,
-  //           },
-  //         ],
-  //       },
-  //       {
-  //         id: 2,
-  //         stepNo: null,
-  //         stepName: 'Step 2',
-  //         statusStep: 'Pending',
-  //         estimatedCompletionTime: '1 to 2 days',
-  //         description: 'Last step without doc required',
-  //         adminRemark: null,
-  //         customerDocument: [],
-  //         result: [
-  //           {
-  //             id: 2,
-  //             requiredDocument: 'Step 2 Result',
-  //             fileDocument: null,
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     updatedAt: '2024-03-24T16:14:15.000+00:00',
-  //     createdAt: '2024-03-24T16:14:15.000+00:00',
-  //     id: 2,
-  //     userId: 2,
-  //     serviceId: 2,
-  //     serviceType: 'Add-on',
-  //     serviceName: 'Dev Add-on 1',
-  //     serviceDescription: '',
-  //     statusService: 'Pending',
-  //     cycleNumber: 1,
-  //     pricePerCycle: 300,
-  //     transitionId: 1711296855259,
-  //     statusPayment: 'Pending',
-  //     statusContract: 'Pending',
-  //     contractFile: null,
-  //     pic: null,
-  //     serviceStep: [
-  //       {
-  //         id: 3,
-  //         stepNo: 1,
-  //         stepName: 'Step 1',
-  //         statusStep: 'Pending',
-  //         estimatedCompletionTime: '3-4 days',
-  //         description: 'Add-on des',
-  //         adminRemark: null,
-  //         customerDocument: [],
-  //         result: [],
-  //       },
-  //       {
-  //         id: 4,
-  //         stepNo: null,
-  //         stepName: 'Step 2',
-  //         statusStep: 'Pending',
-  //         estimatedCompletionTime: '1-2 days',
-  //         description: 'Des step 2',
-  //         adminRemark: null,
-  //         customerDocument: [],
-  //         result: [],
-  //       },
-  //     ],
-  //   },
-  // ];
-  // return Promise.resolve(mockOutput);
+}
+
+export async function callApiGetListServiceByCondition(param: {
+  pic?: string;
+  email?: string;
+}) {
+  const path = '/api/admin/search-paid-service';
+  return await callApi<Service[]>('POST', path, param, true);
 }
 
 export async function callApiGetServiceDetail(serviceId: number) {

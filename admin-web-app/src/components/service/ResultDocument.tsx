@@ -92,6 +92,7 @@ export function ResultDocument(props: Props) {
                 className={
                   'text-center mt-2 h-[40px] flex items-center justify-center'
                 }
+                key={result.id}
               >
                 {result.requiredDocument}
               </div>
