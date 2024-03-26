@@ -364,6 +364,8 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       onChange={value => props.setCompanyName(value.slice(0, 75))}
       placeholder="Input company name"
       validateCaller={validateCaller}
+      max={75}
+      tooltip="Please provide us 1 to 3 ideas for your Corporate name, we will check and notify you if there is any available to open"
     />
     <FormFieldSelect
       id={"entityEndingSelect"}
@@ -398,6 +400,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       onChange={value => props.setCompanyDescription(value.slice(0, 255))}
       placeholder="Describe your company"
       validateCaller={validateCaller}
+      max={255}
     />
     <button
       onClick={handleClickNext}
