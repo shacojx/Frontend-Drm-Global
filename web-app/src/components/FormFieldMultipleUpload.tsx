@@ -23,6 +23,7 @@ export function FormFieldMultipleUpload({
   maxFiles,
 }: FormFieldProps<File[]> & { maxFiles?: number }) {
   const [shouldShowError, setShouldShowError] = useValidate(id, isRequired, value, validateCaller);
+  const [error, setError] = useState<string>()
 
   const [files, setFiles] = useState<File[]>(value);
   const selectedFile = files[files.length - 1];
@@ -32,6 +33,13 @@ export function FormFieldMultipleUpload({
     if (!file) return;
 
     if (maxFiles && files.length >= maxFiles) return;
+
+    console.log(file.size)
+    if (file.size > 10_000_000) {
+      setShouldShowError(true)
+      setError("File size must be less than 10MB")
+      return
+    }
 
     await uploadFile(file);
 
@@ -63,7 +71,10 @@ export function FormFieldMultipleUpload({
         })}
       >
         <Listbox disabled={isFixedValue}>
-          <div className="flex items-center h-full gap-1 w-full">
+          <div className="flex items-center h-full gap-1 w-full" onMouseDown={() => {
+            setError(undefined);
+            setShouldShowError(false)
+          }}>
             <Listbox.Button className="grow text-left flex items-center line-clamp-1">
               {!isFixedValue && <IconAltArrowDown className="mx-2 shrink-0" />}
               {selectedFile?.name}
@@ -99,6 +110,7 @@ export function FormFieldMultipleUpload({
             ))}
           </Listbox.Options>
         </Listbox>
+        {error && <p className="mt-1 text-danger">{error}</p>}
       </div>
     </div>
   );
