@@ -8,15 +8,15 @@ export async function callCreateOrder(body: ApiCreateOrderParam) {
   return rawResult
 }
 
-export async function callApiGetOrders({ page, pic }: ApiGetOrdersParam) {
+export async function callApiGetOrders({ page, pic, email }: ApiGetOrdersParam) {
   const getAllPath = `/api/admin/get-paid-service?page=${page}&size=${100}`
   const searchPath = `/api/admin/search-paid-service`
 
-  const isSearch = !!pic
+  const isSearch = !!pic || !!email
 
   
   const response = isSearch 
-    ? await callApi<RawRegisterServicesResult['content']>('POST', searchPath, { pic, email: "" }, true)
+    ? await callApi<RawRegisterServicesResult['content']>('POST', searchPath, { pic, email }, true)
     : await callApi<RawRegisterServicesResult>('GET', getAllPath, {}, true)
 
   const content = 'content' in response ? response.content : response

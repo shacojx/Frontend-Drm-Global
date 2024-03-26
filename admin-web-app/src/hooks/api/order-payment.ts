@@ -5,12 +5,13 @@ import { KeyFactory } from "../../services-base/key-factory"
 type UseApiGetOrdersProps = {
   page: number
   pic?: string
+  email?: string
 }
 
-export const useApiGetOrders = ({ page, pic }: UseApiGetOrdersProps) => {
+export const useApiGetOrders = ({ page, pic, email }: UseApiGetOrdersProps) => {
     return useQuery({
       queryKey: KeyFactory.getOrders(page),
-      queryFn: () => callApiGetOrders({ page, pic })
+      queryFn: () => callApiGetOrders({ page, pic, email })
     })
 }
 

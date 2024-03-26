@@ -15,6 +15,7 @@ import { useApiApproveOrder, useApiGetOrders } from "../hooks/api/order-payment"
 import { generateFormatDate } from "../services-ui/date";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
+import { FormFieldText } from "../components/FormFieldText";
 
 type Props = {}
 
@@ -24,6 +25,7 @@ export function OrderPaymentContent(props: Props) {
   const { validateCaller } = useValidateCaller()
 
   const [email, setEmail] = useState<string>()
+  const [pic, setPic] = useState<string>()
 
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
@@ -31,7 +33,7 @@ export function OrderPaymentContent(props: Props) {
   });
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
-  const { data, refetch } = useApiGetOrders({page: paginationModel.page, pic: email})
+  const { data, refetch } = useApiGetOrders({page: paginationModel.page, pic, email})
   const { orders } = data ?? {}
 
   const { mutateAsync: approveOrder } = useApiApproveOrder({
@@ -163,7 +165,8 @@ export function OrderPaymentContent(props: Props) {
           <p className={'text-h4 w-full text-start mb-6'}>{translation.t('Orders Management')}</p>
           <div className={'w-full flex flex-row justify-between items-center gap-10 mb-4'}>
             <div className={'w-full flex flex-row justify-start items-end gap-10 mb-4'}>
-              <FormFieldEmail id={'email'} validateCaller={validateCaller} onChange={setEmail} value={email} />
+              <FormFieldEmail id='email' validateCaller={validateCaller} onChange={setEmail} value={email} />
+              <FormFieldText label="PIC" id='pic' validateCaller={validateCaller} onChange={setPic} value={pic} placeholder="Enter PIC" />
               <button
                 onClick={handleClickSearch}
                 className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
