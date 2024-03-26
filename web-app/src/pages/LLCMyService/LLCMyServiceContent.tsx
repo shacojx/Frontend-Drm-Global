@@ -36,116 +36,6 @@ export default function LLCMyServiceContent() {
 
   const dataService = resLLCService?.data;
 
-  // const dataService: MyServiceType = {
-  //   updatedAt: "2024-03-24T16:14:15.000+00:00",
-  //   createdAt: "2024-03-24T16:14:15.000+00:00",
-  //   id: 1,
-  //   userId: 2,
-  //   serviceId: 1,
-  //   ServiceStatusType: "Based",
-  //   serviceName: "Dev MS 1",
-  //   serviceDescription: "Dev create for dev",
-  //   statusService: "Pending" as ServiceStatusType,
-  //   cycleNumber: 1,
-  //   pricePerCycle: 1000,
-  //   transitionId: 1711296855259,
-  //   statusPayment: "Pending" as ServiceStatusType,
-  //   statusContract: "Pending" as ServiceStatusType,
-  //   contractFile: "avt-default.jpg",
-  //   pic: null,
-  //   serviceStep: [
-  //     {
-  //       id: 1,
-  //       stepNo: 1,
-  //       stepName: "Step 1",
-  //       statusStep: "Pending",
-  //       estimatedCompletionTime: "2 to 4 days",
-  //       description: "Step 1 des",
-  //       adminRemark: null,
-  //       customerDocument: [
-  //         {
-  //           id: 1,
-  //           requiredDocument: "Doc 1",
-  //           fileDocument: null,
-  //         },
-  //       ],
-  //       result: [
-  //         {
-  //           id: 1,
-  //           requiredDocument: "Doc 1 Result",
-  //           fileDocument: null,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 2,
-  //       stepNo: null,
-  //       stepName: "Step 2",
-  //       statusStep: "In-Progress",
-  //       estimatedCompletionTime: "1 to 2 days",
-  //       description: "Last step without doc required",
-  //       adminRemark: null,
-  //       customerDocument: [
-  //         {
-  //           id: 1,
-  //           requiredDocument: "Step 2 Result",
-  //           fileDocument: null,
-  //         },
-  //         {
-  //           id: 2,
-  //           requiredDocument: "none",
-  //           fileDocument: null,
-  //         },
-  //         {
-  //           id: 3,
-  //           requiredDocument: "Step 2 Result",
-  //           fileDocument: null,
-  //         },
-  //       ],
-  //       result: [
-  //         {
-  //           id: 1,
-  //           requiredDocument: "Step 2 Result",
-  //           fileDocument: "avt-default.jpg",
-  //         },
-  //         {
-  //           id: 2,
-  //           requiredDocument: "none",
-  //           fileDocument: "avt-default.jpg",
-  //         },
-  //         {
-  //           id: 3,
-  //           requiredDocument: "Step 2 Result",
-  //           fileDocument: null,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       id: 1,
-  //       stepNo: 1,
-  //       stepName: "Step 1",
-  //       statusStep: "Issued",
-  //       estimatedCompletionTime: "2 to 4 days",
-  //       description: "Step 1 des",
-  //       adminRemark: null,
-  //       customerDocument: [
-  //         {
-  //           id: 1,
-  //           requiredDocument: "Doc 1",
-  //           fileDocument: null,
-  //         },
-  //       ],
-  //       result: [
-  //         {
-  //           id: 1,
-  //           requiredDocument: "Doc 1 Result",
-  //           fileDocument: null,
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // };
-
   // set step mặc định 1
   useEffect(() => {
     if (dataService) {
@@ -255,7 +145,7 @@ export default function LLCMyServiceContent() {
           }
         />
       ) : (
-        <div className="w-full flex grow relative overflow-y-scroll">
+        <div className="w-full flex grow relative overflow-y-scroll border border-l border-stroke">
           <div className="w-full grow flex flex-col p-3">
             {dataService && (
               <div className="p-5 md:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
