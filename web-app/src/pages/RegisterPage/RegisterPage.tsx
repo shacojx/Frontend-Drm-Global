@@ -259,8 +259,8 @@ function AccountInformationStep(props: AccountInformationStepProps) {
 
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
-      <p className="text-cLg font-bold">{translation.t('Account information')}</p>
-      <div className="w-1/2 border-2 border-primary"></div>
+      <p className="font-bold">{translation.t('Account information')}</p>
+      <div className="w-1/2 border border-primary"></div>
     </div>
     <FormFieldEmail
       id="accountEmail"
@@ -350,8 +350,8 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
   const hasAnyValue = !!(props.companyName || props.entityEnding || props.industry || props.website || props.companyDescription)
   return <div className="flex flex-col gap-y-8">
     <div className="flex flex-col w-fit gap-y-2">
-      <p className="text-cLg font-bold">{translation.t('Company information')}</p>
-      <div className="w-1/2 border-2 border-primary"></div>
+      <p className="font-bold">{translation.t('Company information')}</p>
+      <div className="w-1/2 border border-primary"></div>
     </div>
     <FormFieldText
       id={"companyName"}
