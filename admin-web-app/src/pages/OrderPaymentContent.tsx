@@ -70,7 +70,7 @@ export function OrderPaymentContent(props: Props) {
         }
 
         if (status === "Pending") {
-          return "text-violet-500"
+          return "text-purple-500"
         }
 
         return ""
@@ -148,8 +148,14 @@ export function OrderPaymentContent(props: Props) {
       type: "string",
       width: 200,
       renderCell: (params: GridRenderCellParams) => {
+        const status = params.row.statusPayment
+
+        if (status === "Confirmed")  {
+          return ""
+        }
+
         return (
-          <div className={"flex flex-row gap-3"}>
+          <div className="flex flex-row gap-3">
             <button
               onClick={async () => {
                 console.log(params.row)
