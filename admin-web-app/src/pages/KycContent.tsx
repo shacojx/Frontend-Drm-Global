@@ -36,7 +36,7 @@ export function KycContent(props: Props) {
   })
 
   const tableData = data?.content ?? []
-  const kycCount = data?.totalElements 
+  const kycCount = data?.totalElements
 
 
   const {mutateAsync: approveKYC, isPending: approvingKYC} = useApiApproveKYC()
@@ -65,12 +65,11 @@ export function KycContent(props: Props) {
     if (shouldShowConfirmDialog === "approve") {
       await approveKYC(idSelected)
       setShowSuccessDialog('approve')
-      return
     } {
       await rejectKYC(idSelected)
       setShowSuccessDialog('reject')
-      return
     }
+    await refetch()
   }
 
   async function handleClickPhoto(kyc: KycDetail, type: 'passport' | 'holdPassport') {
@@ -79,12 +78,12 @@ export function KycContent(props: Props) {
     if (type === 'passport' && kyc?.passport) {
       const blob = await getFile(kyc.passport, {download: false})
       blob && setPictureSrc(URL.createObjectURL(blob))
-    } 
+    }
 
     if (type === 'holdPassport' && kyc?.pictureHoldPassport) {
       const blob = await getFile(kyc.pictureHoldPassport, {download: false})
       blob && setPictureSrc(URL.createObjectURL(blob))
-    } 
+    }
 
     setShouldShowPictureDialog(true)
   }
