@@ -50,6 +50,9 @@ export function FormValidateRecoveryCode(props: Props) {
       value={recoveryCode}
       onChange={handleChangeRecoveryCode}
       validateCaller={{}}
+      inputClassName={cn({
+        "border-danger bg-danger/5": true
+      })}
     />
     <div className="w-full flex flex-col gap-y-1">
       <button

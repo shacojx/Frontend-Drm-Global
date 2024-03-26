@@ -9,6 +9,7 @@ type FormFieldTextProps = FormFieldProps<string> & {
   min?: number
   max?: number
   tooltip?: ReactNode
+  inputClassName?: string
 }
 
 export function FormFieldText(props: FormFieldTextProps) {
@@ -54,7 +55,8 @@ export function FormFieldText(props: FormFieldTextProps) {
       className={clsx(
         "w-full h-[40px] rounded-lg",
         statusClassName,
-        props.isFixedValue ? "border-none outline-none" : "border py-1 px-2"
+        props.isFixedValue ? "border-none outline-none" : "border py-1 px-2",
+        props.inputClassName
       )}
       readOnly={props.isFixedValue}
       minLength={props.min}
