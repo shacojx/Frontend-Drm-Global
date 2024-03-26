@@ -15,17 +15,12 @@ export async function callApiGetListService(
   );
 }
 
-export async function callApiGetListServiceByCondition(param?: {
+export async function callApiGetListServiceByCondition(param: {
   pic?: string;
   email?: string;
 }): Promise<RawResult<Service[]>> {
   const path = '/api/admin/search-paid-service';
-  return await callApi<RawResult<Service[]>>(
-    'GET',
-    path,
-    param as Partial<ServiceSearchFilter>,
-    true,
-  );
+  return await callApi<RawResult<Service[]>>('GET', path, param, true);
 }
 
 export async function callApiGetServiceDetail(serviceId: number) {
