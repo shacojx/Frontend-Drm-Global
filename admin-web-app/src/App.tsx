@@ -6,9 +6,18 @@ import './App.css';
 import { AuthContextProvider } from './contexts/AuthContextProvider';
 import { router } from "./pages/router";
 import 'react-toastify/dist/ReactToastify.min.css';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 0,
+      staleTime: 1 * 60 * 1000
+    }
+  },
+})
 
-export const queryClient = new QueryClient()
 
 function App() {
   return <QueryClientProvider client={queryClient}>
@@ -16,6 +25,7 @@ function App() {
       <RouterProvider router={router} />
     </AuthContextProvider>
     <ToastContainer />
+    <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 }
 

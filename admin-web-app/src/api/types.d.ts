@@ -124,6 +124,12 @@ export type ApiGetOrdersParam = {
   email?: string
 }
 
+export type UploadedDocumentType ={
+  id: number;
+  requiredDocument: string;
+  fileDocument: string | null;
+}
+
 export type RawRegisterServicesResult = {
   content: Array<{
     updatedAt: string;
@@ -151,16 +157,8 @@ export type RawRegisterServicesResult = {
       estimatedCompletionTime: string;
       description: string;
       adminRemark: string;
-      customerDocument: Array<{
-        id: number;
-        requiredDocument: string;
-        fileDocument: string;
-      }>;
-      result: Array<{
-        id: number;
-        requiredDocument: string;
-        fileDocument: null;
-      }>;
+      customerDocument: Array<UploadedDocumentType>;
+      result: Array<UploadedDocumentType>;
     }>;
   }>;
   pageable: {
@@ -466,6 +464,12 @@ export type RawResult<T> = {
   status: string;
 };
 
+export type RawResultPOST = {
+  data: string;
+  message: string;
+  status: string;
+};
+
 // ====== My Company ====== //
 export type CompanyInformation = {
   companyName: string;
@@ -570,3 +574,14 @@ export type EditCompanyBody = {
     document: string;
   }>;
 };
+
+export type ApiSearchPaidServiceType = {
+  pic?: string
+  email?: string
+}
+
+
+export type PaginationType = {
+  page?: number,
+  size?: number
+}

@@ -13,14 +13,12 @@ type UseGetUsersProps = {
 
 export const useApiGetUsers = ({ page, size, codePhone = "", phone = "", email = "" }: UseGetUsersProps) => {
   if (codePhone || phone || email) {
-    console.log("Searching")
     return useQuery({
       queryKey: KeyFactory.searchUsers(codePhone, email, phone),
       queryFn: () => callApiSearchUser({ codePhone, email, phone }),
     });
   }
 
-  console.log("Getting all")
   return useQuery({
     queryKey: KeyFactory.getAllUsers(page, size),
     queryFn: () => callApiLViewUser({ page, size }),

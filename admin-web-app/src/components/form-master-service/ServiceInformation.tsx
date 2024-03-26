@@ -119,8 +119,9 @@ export function ServiceInformation(props: ServiceInformationProps) {
                 label={translation.t('masterService.serviceCompanyType')}
                 onChange={onUpdateAppliedCompanyType}
                 value={props.applyCompanyType}
-                defaultValue={APPLY_COMPANY_TYPE?.at(0)?.value}
-                optionInfos={APPLY_COMPANY_TYPE}
+                optionInfos={[]}
+                // optionInfos={APPLY_COMPANY_TYPE}
+                // defaultValue={APPLY_COMPANY_TYPE?.at(0)?.value}
                 placeholder={translation.t(
                   'masterService.appliedCompanyTypePlaceholder',
                 )}
@@ -143,7 +144,8 @@ export function ServiceInformation(props: ServiceInformationProps) {
                 validateCaller={validateCaller}
                 onChange={onUpdateServiceType}
                 value={props.serviceType}
-                optionInfos={SERVICE_TYPE}
+                optionInfos={[]}
+                // optionInfos={SERVICE_TYPE}
                 placeholder={translation.t(
                   'masterService.serviceTypePlaceholder',
                 )}
