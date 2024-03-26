@@ -80,5 +80,5 @@ export {
   IconReload,
   IconFilter,
   IconEdit,
-  IconPen
+  IconPen,
 }

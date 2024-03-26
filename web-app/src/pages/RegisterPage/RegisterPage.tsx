@@ -15,7 +15,7 @@ import { FormFieldPassword } from "src/components/FormFieldPassword";
 import { FormFieldPhoneNumber } from "src/components/FormFieldPhoneNumber";
 import { FormFieldSelect } from "src/components/FormFieldSelect";
 import { FormFieldText } from "src/components/FormFieldText";
-import { IconAddCircle, IconArrowLeft, IconSpinner } from "src/components/icons";
+import { IconArrowLeft, IconSpinner, IconArrowCircle } from "src/components/icons";
 import { COMPANY_TYPE_INFOS, ENTITY_ENDING_INFOS, INDUSTRY_INFOS, NATION_INFOS } from "src/constants/SelectionOptions";
 import { useValidateCaller } from "src/hooks-ui/useValidateCaller";
 import { PageLayoutOneForm } from "src/layouts/PageLayoutOneForm";
@@ -202,7 +202,7 @@ export function RegisterPage() {
             onClick={handleClickBackToLogin}
             className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
           >
-            <IconArrowLeft className={"text-white"}/>
+            <IconArrowCircle className={"text-white"}/>
             <span>{translation.t('Back to Log in')}</span>
           </button>
         }
