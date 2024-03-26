@@ -10,6 +10,7 @@ import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { useValidateCaller } from 'src/hooks-ui/useValidateCaller'
 import { RNPhoneValue, extractPhone, generatePhone } from 'src/services-business/api/generate-api-param/account'
 import { FormStatus } from 'src/types/common'
+import { cn } from 'src/utils/cn.util'
 
 export default function GeneralInformationForm() {
     const translation = useTranslation()
@@ -22,6 +23,8 @@ export default function GeneralInformationForm() {
     const [lastName, setLastName] = useState<string>(user?.lastName || '')
     const [status, setStatus] = useState<FormStatus>('typing')
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
+
+    const disabledSaveButton = user?.firstName === firstName && user?.lastName === lastName  && initialPhone === phone
 
     function handleChangePhone(phone: RNPhoneValue) {
         setPhone(phone)
@@ -101,7 +104,13 @@ export default function GeneralInformationForm() {
         <div className={"flex justify-end"}>
             <button
                 onClick={handleClickSave}
-                className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+                className={cn(
+                    "py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg",
+                    {
+                        'bg-disable': disabledSaveButton
+                    }
+                )}
+                disabled={disabledSaveButton}
             >
                 {translation.t('Save')}
                 {status === "requesting" && <IconSpinner />}
