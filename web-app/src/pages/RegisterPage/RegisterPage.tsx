@@ -215,16 +215,16 @@ export function RegisterPage() {
         actionElement={
           <div className={'flex flex-col gap-y-2 justify-center items-center'}>
             <button
-              onClick={handleClickCreateAccount}
+              onClick={() => setStatus('typing')}
               className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
-              <span>{translation.t('Try again')}</span>
+              <span>{translation.t('Close')}</span>
             </button>
-            <button onClick={setStatus.bind(undefined, "typing")}
+            {/* <button onClick={setStatus.bind(undefined, "typing")}
                     className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
               <IconArrowLeft/>
               <span>{translation.t('Previous step')}</span>
-            </button>
+            </button> */}
           </div>
         }
       />
@@ -532,7 +532,7 @@ export function EmailOtpStep(props: Props) {
         <p className={"flex flex-row justify-center gap-1"}>
           <span>{translation.t('Didn’t receive code')}?</span>
           {disableCountDown <= 0
-            ? <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer"}>{translation.t('Resend')}</span>
+            ? <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer text-primary"}>{translation.t('Resend')}</span>
             : <span className={"font-bold text-primary cursor-not-allowed"}>{translation.t('Resend')}</span>
           }
           {isResending && <IconSpinner />}

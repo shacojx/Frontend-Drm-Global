@@ -89,11 +89,16 @@ export function OtpCharacter(props: OtpCharacterProps) {
     return '';
   }
 
-  return <input
+  return (
+    <input
       onClick={props.onClick}
       ref={props.inputRef}
       value={props.value}
       onChange={handleKeyDown}
-      className={"w-12 h-12 text-center caret-transparent cursor-pointer font-bold text-xl bg-[#ffffff] rounded-xl flex items-center justify-center border focus:outline-none focus:bg-primary_25"}
+      placeholder="-"
+      className={
+        'w-12 h-12 text-center caret-transparent cursor-pointer font-bold text-xl bg-[#ffffff] rounded-xl flex items-center justify-center border focus:outline-none focus:bg-primary/5 focus:border-primary focus:placeholder:text-primary placeholder:text-transparent'
+      }
     />
+  );
 }
