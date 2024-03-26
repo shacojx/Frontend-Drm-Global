@@ -70,7 +70,7 @@ export function FormFieldPassword(props: Props) {
             <ul className={"list-disc pl-3 font-normal"}>
               <li>{translation.t('Be at least 8 characters long')}.</li>
               <li>{translation.t('Contain at least one letter and one number')}.</li>
-              <li>{translation.t('Not contain any uppercase letters, spaces, or special characters')}.</li>
+              <li>{translation.t('Not contain any spaces, or special characters')}.</li>
             </ul>
           </div>
         </div>}

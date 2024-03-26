@@ -533,7 +533,7 @@ export function EmailOtpStep(props: Props) {
           <span>{translation.t('Didn’t receive code')}?</span>
           {disableCountDown <= 0
             ? <span onClick={handleClickResendOtp} className={"font-bold cursor-pointer"}>{translation.t('Resend')}</span>
-            : <span className={"font-bold text-gray-400 cursor-not-allowed"}>{translation.t('Resend')}</span>
+            : <span className={"font-bold text-primary cursor-not-allowed"}>{translation.t('Resend')}</span>
           }
           {isResending && <IconSpinner />}
         </p>
