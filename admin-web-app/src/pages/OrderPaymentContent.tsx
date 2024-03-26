@@ -1,5 +1,6 @@
 import {
   DataGrid,
+  GridCellParams,
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
@@ -61,7 +62,19 @@ export function OrderPaymentContent(props: Props) {
       headerName: 'Status',
       sortable: false,
       type: "string",
-      width: 80,
+      width: 100,
+      cellClassName: (params: GridCellParams) => {
+        const status = params.row.statusPayment
+        if (status === "Confirmed") {
+          return "text-green-500"
+        }
+
+        if (status === "Pending") {
+          return "text-violet-500"
+        }
+
+        return ""
+      }
     },
     {
       field: "name",
@@ -139,7 +152,8 @@ export function OrderPaymentContent(props: Props) {
           <div className={"flex flex-row gap-3"}>
             <button
               onClick={async () => {
-                await approveOrder(params.row.id)
+                console.log(params.row)
+                await approveOrder(params.row.transitionId)
                 refetch()
               }}
               className={

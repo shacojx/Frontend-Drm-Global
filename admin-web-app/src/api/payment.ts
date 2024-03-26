@@ -8,7 +8,7 @@ export async function callCreateOrder(body: ApiCreateOrderParam) {
   return rawResult
 }
 
-export async function callApiGetOrders({ page, pic, email }: ApiGetOrdersParam) {
+export async function callApiGetOrders({ page, pic = "", email = "" }: ApiGetOrdersParam) {
   const getAllPath = `/api/admin/get-paid-service?page=${page}&size=${100}`
   const searchPath = `/api/admin/search-paid-service`
 
