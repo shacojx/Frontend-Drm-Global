@@ -10,15 +10,16 @@ import { useTranslation } from 'react-i18next';
 import { ServiceFilter } from '../components/ServiceFilter';
 import { ServiceSearchFilter } from '../types/serviceSearchFilter';
 import { Service } from '../types/service';
-import { StatusBadge } from '../components/StatusBadge';
 import { DialogContainer } from '../components/DialogContainer';
 import { ServiceDetailDialog } from '../components/ServiceDetailDialog';
 import {
   callApiGetListService,
+  callApiGetListServiceByCondition,
   callApiGetServiceDetail,
 } from '../api/serviceManagement';
 import { callApiLViewUser } from '../api/userManagement';
 import { ApiViewUserParam, ViewedUser } from '../api/types';
+import { StatusBadge } from '../components/StatusBadge';
 
 type Props = {};
 
@@ -134,8 +135,16 @@ export function ServicesContent(props: Props) {
   }
 
   async function search(data?: Partial<ServiceSearchFilter>) {
-    const response = await callApiGetListService(data);
-    setTableData(response.content);
+    if (data?.customerName || data?.customerEmail) {
+      const response = await callApiGetListServiceByCondition({
+        pic: data?.customerName ?? '',
+        email: data?.customerEmail ?? '',
+      });
+      setTableData(response ?? []);
+    } else {
+      const response = await callApiGetListService(data);
+      setTableData(response?.content ?? []);
+    }
   }
 
   async function showServiceDetail(data: Service) {
@@ -158,11 +167,11 @@ export function ServicesContent(props: Props) {
         <ServiceFilter onSubmit={search} />
         <div
           className={'w-full grow'}
-          key={tableData.map((value) => value.id).join('_')}
+          key={tableData?.map((value) => value.id).join('_')}
         >
           <DataGrid
             paginationMode="server"
-            rows={tableData}
+            rows={tableData ?? []}
             columns={serviceColumns}
             pageSizeOptions={[25]}
             rowCount={servicesCount || 0}
