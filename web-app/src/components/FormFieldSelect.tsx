@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { Fragment } from "react";
+import { cn } from "src/utils/cn.util";
 
 type Props<T extends React.Key> = FormFieldProps<T> & {
   optionInfos: OptionInfo<T>[],
@@ -57,8 +58,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
                   {findOptionInfo(props.value)?.iconElement}
                   <span
                     className={
-                      "block truncate " +
-                      (!props.value ? "text-gray-400" : "text-cBase")
+                      cn("block truncate", !props.value ? "text-gray-400" : "text-cBase", props.className)
                     }
                   >
                     {translation.t(

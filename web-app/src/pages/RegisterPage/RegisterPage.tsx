@@ -22,6 +22,7 @@ import { PageLayoutOneForm } from "src/layouts/PageLayoutOneForm";
 import { generateRegisterParam, RNPhoneValue } from "src/services-business/api/generate-api-param/account";
 import { FormStatus } from "src/types/common";
 import { RoutePaths } from "src/constants/routerPaths";
+import { cn } from "src/utils/cn.util";
 
 export function RegisterPage() {
   const translation = useTranslation()
@@ -131,6 +132,9 @@ export function RegisterPage() {
       optionInfos={NATION_INFOS}
       onChange={handleChangeNation}
       validateCaller={validateNationStepCaller}
+      className={cn({
+        "font-semibold": stepIndex !== 1
+      })}
     />
     {stepIndex === SelectNationStepIndex && <button
       onClick={handleClickNextAtNation}
@@ -399,7 +403,7 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
       onClick={handleClickNext}
       className="h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
     >
-      {!hasAnyValue ? `${translation.t('Skip')} & ` : ''}{translation.t('Create account')}
+      {!hasAnyValue ? `${translation.t('Skip')} & ` : ''}{translation.t('Create Account')}
     </button>
     <div className="flex w-full justify-center">
       <button onClick={props.onClickPreviousStep} className="flex items-center w-fit text-gray-400 text-sm gap-1 px-1">
