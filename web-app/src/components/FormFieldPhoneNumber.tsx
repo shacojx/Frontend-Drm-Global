@@ -73,7 +73,10 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shou
         phone: extracted.localPhone
       }
       callApiVerifyPhone(body)
-        .then(() => setIsValidPhone(true))
+        .then(() => {
+          setIsValidPhone(true)
+          setWasRegister(false)
+        })
         .catch(() => {
           setWasRegister(true)
           setShouldShowError(true)
