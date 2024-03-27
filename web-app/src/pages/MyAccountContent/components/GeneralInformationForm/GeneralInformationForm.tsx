@@ -67,74 +67,95 @@ export default function GeneralInformationForm() {
         }
     }
 
-    return <>
-        <div className={"mb-8 space-y-1"}>
-            <p className={"font-bold"}>{translation.t('General information')}</p>
-            <div className={"h-[2px] w-[70px] bg-primary"}></div>
+    return (
+      <>
+        <div className={'mb-8 space-y-1'}>
+          <p className={'font-bold'}>{translation.t('General information')}</p>
+          <div className={'h-[2px] w-[70px] bg-primary'}></div>
         </div>
-        <div className={"space-y-6 grow"}>
-            
-            <div className='flex gap-2'>
-                <div className='grow'>
-                    <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => { }} isFixedValue />
-                </div>
-                <button className='w-10 h-10 shrink-0 cursor-pointer' onClick={() => setShowEditEmailDialog(true)}>
-                    <IconEdit className='text-2xl mt-10' />
-                </button>
-            </div>
-
-            <FormFieldPhoneNumber
-                id={"phoneNumber"}
-                placeholder={"Input number"}
+        <div className={'space-y-6 grow'}>
+          <div className="flex gap-2">
+            <div className="grow">
+              <FormFieldEmail
+                value={user?.email}
+                id={'email'}
                 isRequired
-                value={phone}
-                onChange={handleChangePhone}
                 validateCaller={validateCaller}
-                ignoreValues={[initialPhone]}
-            />
-            <div className={"w-full flex gap-4"}>
-                <FormFieldText
-                    id={"FirstName"}
-                    isRequired
-                    label="First Name"
-                    value={firstName}
-                    onChange={handleChangeFirstName}
-                    placeholder="Enter first name"
-                    validateCaller={validateCaller}
-                    isFixedValue={user?.kycStatus !== 'Pending'}
-                />
-                <FormFieldText
-                    id={"LastName"}
-                    isRequired
-                    label="Last Name"
-                    value={lastName}
-                    onChange={handleChangeLastName}
-                    placeholder="Enter last name"
-                    validateCaller={validateCaller}
-                    isFixedValue={user?.kycStatus !== 'Pending'}
-                />
+                onChange={() => {}}
+                isFixedValue
+              />
             </div>
-        </div>
-        <div className={"flex justify-end"}>
-            <button
-                onClick={handleClickSave}
-                className={cn(
-                    "py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg",
-                    {
-                        'bg-disable': disabledSaveButton
-                    }
-                )}
-                disabled={disabledSaveButton}
-            >
-                {translation.t('Save')}
-                {status === "requesting" && <IconSpinner />}
+            <button className="w-10 h-10 shrink-0 cursor-pointer" onClick={() => setShowEditEmailDialog(true)}>
+              <IconEdit className="text-2xl mt-10" />
             </button>
-        </div>
-        {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
+          </div>
 
-        {status === 'success' && <DialogSuccessFullscreen onClose={() => setStatus('typing')} title='Update profile successfully!' />}
+          <FormFieldPhoneNumber
+            id={'phoneNumber'}
+            placeholder={'Input number'}
+            isRequired
+            value={phone}
+            onChange={handleChangePhone}
+            validateCaller={validateCaller}
+            ignoreValues={[initialPhone]}
+          />
+          <div className={'w-full flex gap-4'}>
+            <FormFieldText
+              id={'FirstName'}
+              isRequired
+              label="First Name"
+              value={firstName}
+              onChange={handleChangeFirstName}
+              placeholder="Enter first name"
+              validateCaller={validateCaller}
+              isFixedValue={user?.kycStatus !== 'Pending'}
+            />
+            <FormFieldText
+              id={'LastName'}
+              isRequired
+              label="Last Name"
+              value={lastName}
+              onChange={handleChangeLastName}
+              placeholder="Enter last name"
+              validateCaller={validateCaller}
+              isFixedValue={user?.kycStatus !== 'Pending'}
+            />
+          </div>
+        </div>
+        <div className={'flex justify-end'}>
+          <button
+            onClick={handleClickSave}
+            className={cn(
+              'py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg',
+              {
+                'bg-disable': disabledSaveButton,
+              }
+            )}
+            disabled={disabledSaveButton}
+          >
+            {translation.t('Save')}
+            {status === 'requesting' && <IconSpinner />}
+          </button>
+        </div>
+        {status === 'failure' && <p className={'text-danger'}>{errorMessage}</p>}
+
+        {status === 'success' && (
+          <DialogSuccessFullscreen
+            onClose={() => setStatus('typing')}
+            title="Update profile successfully!"
+            actionElement={
+              <button
+                className="flex gap-2 items-center justify-center rounded-lg bg-primary text-white font-semibold h-13 w-full mt-10"
+                onClick={() => setStatus('typing')}
+              >
+                {t('Close')}
+              </button>
+            }
+          />
+        )}
 
         <DialogEditEmail open={showEditEmailDialog} onClose={() => setShowEditEmailDialog(false)} />
-    </>
+      </>
+    );
 }
 

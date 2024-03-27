@@ -201,6 +201,7 @@ export function RegisterPage() {
       <DialogSuccessFullscreen
         title={"Account successfully created"}
         subTitle={"Start your journey with us!"}
+        onClose={handleClickBackToLogin}
         actionElement={
           <button
             onClick={handleClickBackToLogin}
