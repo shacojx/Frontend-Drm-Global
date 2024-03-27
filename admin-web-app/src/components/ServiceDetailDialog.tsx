@@ -21,7 +21,10 @@ import { uploadFile } from '../api/upload';
 import { MyCompanyDetailPage } from './service/my-company/MyCompanyDetailPage';
 import { cn } from '../utils/cn.util';
 import { UseQueryResult } from '@tanstack/react-query';
-import { useApiServiceUpdatePic } from '../hooks-api/useServiceApi';
+import {
+  useApiServiceStatusUpdate,
+  useApiServiceUpdatePic,
+} from '../hooks-api/useServiceApi';
 import { toast } from 'react-toastify';
 import {
   validateCompanyInfo,
@@ -50,6 +53,25 @@ type TabType = {
   clickable?: boolean;
   onClick?: () => void;
 };
+
+export const SERVICE_STEP_STATUS = [
+  {
+    value: Status.PENDING,
+    label: Status.PENDING,
+  },
+  {
+    value: Status.IN_PROGRESS,
+    label: Status.IN_PROGRESS,
+  },
+  {
+    value: Status.ISSUED,
+    label: Status.ISSUED,
+  },
+  {
+    value: Status.READY,
+    label: Status.READY,
+  },
+];
 
 export function ServiceDetailDialog({
   service,
@@ -139,7 +161,6 @@ export function ServiceDetailDialog({
       console.error('error: ', error);
     }
     return Status.PENDING;
-
   }, [companyDetail]);
 
   const dataTab: TabType[] = [
@@ -183,6 +204,31 @@ export function ServiceDetailDialog({
     },
   ];
 
+  const mutateUploadStatusStep = useApiServiceStatusUpdate();
+
+  const uploadStatusService = (status: Status) => {
+    if (service) {
+      mutateUploadStatusStep.mutate(
+        {
+          id: service?.id,
+          status,
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(t('Update status step successfully'));
+          },
+          onError: (error) => {
+            // toast.error(t('Update status step failed'));
+            toast.error(String(error));
+          },
+          onSettled: () => {
+            resGetServiceId?.refetch();
+          },
+        },
+      );
+    }
+  };
+
   return (
     <div className={'p-6'}>
       <div className={'font-bold text-xl mb-4'}>{service?.serviceName}</div>
@@ -214,7 +260,13 @@ export function ServiceDetailDialog({
               optionInfos={cycleOptions}
               value={cycle}
             ></FormFieldSelect>
-            <StatusBadge status={service?.statusService as Status} showIcon />
+            <FormFieldSelect
+              id={'serviceStatus'}
+              onChange={uploadStatusService}
+              validateCaller={validateCaller}
+              optionInfos={SERVICE_STEP_STATUS}
+              value={service?.statusService as Status}
+            ></FormFieldSelect>
           </div>
           <div>
             <div className={'font-bold'}>{t('Person in charge')} *</div>

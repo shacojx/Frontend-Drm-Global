@@ -19,6 +19,7 @@ import { IconAltArrowDown } from './icons';
 
 import { Menu, Transition } from '@headlessui/react';
 import ButtonCs from './ButtonCs';
+import { SERVICE_STEP_STATUS } from './ServiceDetailDialog';
 
 type Props = {
   serviceStep: ServiceStep | null;
@@ -155,24 +156,6 @@ export function ServiceStepContent({
     }
   };
 
-  const SERVICE_STEP_STATUS = [
-    {
-      value: Status.PENDING,
-      label: Status.PENDING,
-    },
-    {
-      value: Status.IN_PROGRESS,
-      label: Status.IN_PROGRESS,
-    },
-    {
-      value: Status.ISSUED,
-      label: Status.ISSUED,
-    },
-    {
-      value: Status.READY,
-      label: Status.READY,
-    },
-  ];
 
   const handleMenuItemClick = (option: any) => {
     option.click && option.click();
