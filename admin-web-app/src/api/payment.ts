@@ -20,13 +20,13 @@ export async function callApiGetOrders({ page, pic = "", email = "" }: ApiGetOrd
     : await callApi<RawRegisterServicesResult>('GET', getAllPath, {}, true)
 
   const content = 'content' in response ? response.content : response
-  console.log(response)
   const groups = groupBy(content, item => item.transitionId)
 
   const orders = Object.values(groups).map(groupItems => {
     const totalPricePerCycle = groupItems.reduce((acc, cur) => acc + cur.pricePerCycle, 0)
+    const services = groupItems.map(item => ({ id: item.id, name: item.serviceName }))
 
-    return {...groupItems[0], pricePerCycle: totalPricePerCycle}
+    return {...groupItems[0], pricePerCycle: totalPricePerCycle, services}
   })
 
   return { orders }

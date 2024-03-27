@@ -10,13 +10,19 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import { RawRegisterServicesResult } from "../api/types";
 import { DialogSuccessFullscreen } from "../components/DialogFormStatusFullscreen";
 import { useApiApproveOrder, useApiGetOrders } from "../hooks/api/order-payment";
 import { generateFormatDate } from "../services-ui/date";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { useValidateCaller } from "../hooks-ui/useValidateCaller";
 import { FormFieldText } from "../components/FormFieldText";
+import styled from "@emotion/styled";
+
+const Table = styled(DataGrid)`
+  .MuiDataGrid-cell {
+    overflow: visible !important;
+  }
+` as (typeof DataGrid)
 
 type Props = {}
 
@@ -55,7 +61,7 @@ export function OrderPaymentContent(props: Props) {
 
   
   // TODO: add i18n for columns
-  const orderPaymentColumns: GridColDef<RawRegisterServicesResult['content'][number]>[] = [
+  const orderPaymentColumns: GridColDef<NonNullable<(typeof orders)>[number]>[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
       field: 'statusPayment',
@@ -96,7 +102,34 @@ export function OrderPaymentContent(props: Props) {
       headerName: "Service Id",
       sortable: false,
       type: "string",
-      width: 160,
+      width: 160,      
+      renderCell: (params) => {
+        const { serviceId } = params.row
+
+        return (
+          <div className="w-full relative group">
+            <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+              <table className="table-auto border-collapse border border-slate-500 rounded">
+                <thead>
+                  <tr>
+                    <th className="border border-slate-300 p-2">Service ID</th>
+                    <th className="border border-slate-300 p-2">Service Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {params.row.services.map(({ id, name }) => (
+                    <tr key={id}>
+                      <td className="border border-slate-300 p-2">{id}</td>
+                      <td className="border border-slate-300 p-2">{name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {serviceId}
+          </div>
+        );
+      }
     },
     {
       field: "serviceName",
@@ -104,6 +137,33 @@ export function OrderPaymentContent(props: Props) {
       sortable: false,
       type: "string",
       width: 200,
+      renderCell: (params) => {
+        const { serviceName } = params.row
+
+        return (
+          <div className="w-full relative group">
+            <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+              <table className="table-auto border-collapse border border-slate-500 rounded">
+                <thead>
+                  <tr>
+                    <th className="border border-slate-300 p-2">Service ID</th>
+                    <th className="border border-slate-300 p-2">Service Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {params.row.services.map(({ id, name }) => (
+                    <tr key={id}>
+                      <td className="border border-slate-300 p-2">{id}</td>
+                      <td className="border border-slate-300 p-2">{name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {serviceName}
+          </div>
+        );
+      }
     },
     {
       field: "paymentMethod",
@@ -202,7 +262,7 @@ export function OrderPaymentContent(props: Props) {
             </div>
           </div>
           <div className={'w-full grow'}>
-            <DataGrid
+            <Table
               paginationMode="server"
               rows={orders ?? []}
               columns={orderPaymentColumns}
