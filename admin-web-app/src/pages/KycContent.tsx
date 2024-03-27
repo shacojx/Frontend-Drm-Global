@@ -76,8 +76,6 @@ export function KycContent(props: Props) {
   }
 
   async function handleClickPhoto(kyc: KycDetail, type: 'passport' | 'holdPassport') {
-    console.log(kyc, type)
-
     if (type === 'passport' && kyc?.passport) {
       const blob = await getFile(kyc.passport, {download: false})
       blob && setPictureSrc(URL.createObjectURL(blob))
@@ -101,11 +99,31 @@ export function KycContent(props: Props) {
       width: 120,
       renderCell: (params: GridRenderCellParams) => {
         if (params.value === 'In-progress') {
-          return <div><div className={"text-yellow-700 bg-yellow-100 py-2 px-3 rounded-xl"}>{params.value}</div></div>
+          return (
+            <div>
+              <div
+                className={'text-yellow-700 bg-yellow-100 py-2 px-3 rounded-xl'}
+              >
+                {params.value}
+              </div>
+            </div>
+          );
         } else if (params.value === 'Approved') {
-          return <div><div className={"text-green-500 bg-green-100 py-2 px-3 rounded-xl"}>{params.value}</div></div>
+          return (
+            <div>
+              <div
+                className={'text-green-500 bg-green-100 py-2 px-3 rounded-xl'}
+              >
+                {params.value}
+              </div>
+            </div>
+          );
         } else {
-          return <div><div>{params.value}</div></div>
+          return (
+            <div>
+              <div>{params.value}</div>
+            </div>
+          );
         }
       },
     },
@@ -151,11 +169,23 @@ export function KycContent(props: Props) {
       type: 'string',
       width: 120,
       renderCell: (params: GridRenderCellParams) => {
-        return <div className={"flex flex-col gap-1"}>
-          <p className={"underline text-blue-500 cursor-pointer"} onClick={() => handleClickPhoto(params.row, "passport")}>Passport</p>
-          <p className={"underline text-blue-500 cursor-pointer"} onClick={() => handleClickPhoto(params.row, "holdPassport")}>Hold Passport</p>
-        </div>
-      }
+        return (
+          <div className={'flex flex-col gap-1'}>
+            <p
+              className={'underline text-blue-500 cursor-pointer'}
+              onClick={() => handleClickPhoto(params.row, 'passport')}
+            >
+              Passport
+            </p>
+            <p
+              className={'underline text-blue-500 cursor-pointer'}
+              onClick={() => handleClickPhoto(params.row, 'holdPassport')}
+            >
+              Hold Passport
+            </p>
+          </div>
+        );
+      },
     },
     {
       field: 'actions',
@@ -164,19 +194,31 @@ export function KycContent(props: Props) {
       type: 'string',
       width: 200,
       renderCell: (params: GridRenderCellParams) => {
-        return <div className={"flex flex-row gap-3"}>
-          <button onClick={() => handleClickReject(params.row.id)}
-               className={"py-2 px-3 rounded-lg cursor-pointer bg-red-100 hover:bg-red-200 text-danger"}
-          >
-            Reject
-          </button>
-          <button onClick={() => handleClickApproved(params.row.id)}
-               className={"py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success"}
-          >
-            Approved
-          </button>
-        </div>
-      }
+        const status = params.row?.kycStatus
+        
+        if (status !== 'In-progress') return
+
+        return (
+          <div className={'flex flex-row gap-3'}>
+            <button
+              onClick={() => handleClickReject(params.row.id)}
+              className={
+                'py-2 px-3 rounded-lg cursor-pointer bg-red-100 hover:bg-red-200 text-danger'
+              }
+            >
+              Reject
+            </button>
+            <button
+              onClick={() => handleClickApproved(params.row.id)}
+              className={
+                'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
+              }
+            >
+              Approved
+            </button>
+          </div>
+        );
+      },
     },
   ];
 

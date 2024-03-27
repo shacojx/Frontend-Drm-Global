@@ -76,7 +76,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
                         <div className="flex items-center">
                           {option.iconElement}
                           <span
-                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
+                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block')}
                           >
                             {translation.t(option.label)}
                           </span>
