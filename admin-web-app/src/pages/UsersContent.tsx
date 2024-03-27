@@ -104,7 +104,8 @@ export function UsersContent(props: Props) {
       headerName: 'Full Name',
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      width: 160,
+      // width: 160,
+      flex: 1, 
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
@@ -113,7 +114,8 @@ export function UsersContent(props: Props) {
       headerName: 'Email',
       sortable: false,
       type: 'string',
-      width: 200,
+      // width: 200,
+      flex: 1
     },
     {
       field: 'phone',
