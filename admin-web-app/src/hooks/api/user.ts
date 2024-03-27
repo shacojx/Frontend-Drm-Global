@@ -14,7 +14,7 @@ type UseGetUsersProps = {
 export const useApiGetUsers = ({ page, size, codePhone = "", phone = "", email = "" }: UseGetUsersProps) => {
   if (codePhone || phone || email) {
     return useQuery({
-      queryKey: KeyFactory.searchUsers(),
+      queryKey: KeyFactory.getAllUsers(page, size),
       queryFn: () => callApiSearchUser({ codePhone, email, phone }),
     });
   }
