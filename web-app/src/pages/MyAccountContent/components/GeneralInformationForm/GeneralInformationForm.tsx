@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { callApiChangeUserProfile } from 'src/api/account'
 import { ApiChangeUserProfile } from 'src/api/types'
@@ -6,15 +6,17 @@ import { DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscre
 import { FormFieldEmail } from 'src/components/FormFieldEmail'
 import { FormFieldPhoneNumber } from 'src/components/FormFieldPhoneNumber'
 import { FormFieldText } from 'src/components/FormFieldText'
-import { IconSpinner } from 'src/components/icons'
+import { IconEdit, IconSpinner } from 'src/components/icons'
 import { AuthContext } from 'src/contexts/AuthContextProvider'
 import { useValidateCaller } from 'src/hooks-ui/useValidateCaller'
 import { RNPhoneValue, extractPhone, generatePhone } from 'src/services-business/api/generate-api-param/account'
 import { FormStatus } from 'src/types/common'
 import { cn } from 'src/utils/cn.util'
+import { DialogEditEmail } from './DialogEditEmail'
 
 export default function GeneralInformationForm() {
     const translation = useTranslation()
+    const { t } = translation
     const { user, saveAuthUser } = useContext(AuthContext)
     const { validateCaller, validateAll } = useValidateCaller()
 
@@ -24,6 +26,8 @@ export default function GeneralInformationForm() {
     const [lastName, setLastName] = useState<string>(user?.lastName || '')
     const [status, setStatus] = useState<FormStatus>('typing')
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
+
+    const [showEditEmailDialog, setShowEditEmailDialog] = useState(false)
 
     const disabledSaveButton = user?.firstName === firstName && user?.lastName === lastName  && initialPhone === phone
 
@@ -69,7 +73,16 @@ export default function GeneralInformationForm() {
             <div className={"h-[2px] w-[70px] bg-primary"}></div>
         </div>
         <div className={"space-y-6 grow"}>
-            <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => { }} isFixedValue />
+            
+            <div className='flex gap-2'>
+                <div className='grow'>
+                    <FormFieldEmail value={user?.email} id={'email'} isRequired validateCaller={validateCaller} onChange={() => { }} isFixedValue />
+                </div>
+                <button className='w-10 h-10 shrink-0 cursor-pointer' onClick={() => setShowEditEmailDialog(true)}>
+                    <IconEdit className='text-2xl mt-10' />
+                </button>
+            </div>
+
             <FormFieldPhoneNumber
                 id={"phoneNumber"}
                 placeholder={"Input number"}
@@ -120,6 +133,8 @@ export default function GeneralInformationForm() {
         {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
 
         {status === 'success' && <DialogSuccessFullscreen onClose={() => setStatus('typing')} title='Update profile successfully!' />}
+
+        <DialogEditEmail open={showEditEmailDialog} onClose={() => setShowEditEmailDialog(false)} />
     </>
 }
 
