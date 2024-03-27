@@ -77,7 +77,9 @@ module.exports = {
       },
     }
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-debug-screens'),
+  ],
   mode: 'jit',
   darkMode: 'class',
   variants: {

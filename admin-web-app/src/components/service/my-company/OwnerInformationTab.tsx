@@ -8,6 +8,7 @@ import { IconEssential, IconXCircle } from '../../icons';
 import { FormFieldNumber } from '../../FormFieldNumber';
 import { FormFieldMultipleUpload } from '../../FormFieldMultipleUpload';
 import React from 'react';
+import ButtonCs from '../../ButtonCs';
 
 type OwnerInformationTabProps = {
   readonly: boolean;
@@ -231,18 +232,19 @@ export function OwnerInformationTab({
       ))}
 
       {!readonly && (
-        <button
+        <ButtonCs
           className={cn(
-            'rounded-lg bg-primary h-13 px-6 text-white font-semibold flex items-center gap-3',
+            '',
             {
               'bg-disable cursor-not-allowed': totalShare >= 100,
             },
           )}
           onClick={handleAddOwner}
           disabled={totalShare >= 100}
+          icon={ <IconEssential />}
         >
-          <IconEssential /> {t('Add Owner')}
-        </button>
+          {t('Add Owner')}
+        </ButtonCs>
       )}
     </div>
   );

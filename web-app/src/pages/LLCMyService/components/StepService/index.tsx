@@ -13,7 +13,6 @@ export default function StepService({ item }: Props) {
   const { detailFilling, setDetailFilling } = useContext(LLCMyServiceContext);
 
   const onClickStep = (item: MyServiceStepType) => {
-    console.log('item: ', item);
     // lấy api thông tin step mới nhất trả ra content
     setDetailFilling(item);
   };
@@ -21,7 +20,7 @@ export default function StepService({ item }: Props) {
     <div className=" " key={item.id}>
       <div
         className={cn(
-          'border relative hover:shadow cursor-pointer border-primary_25 rounded-xl flex items-center gap-6 pl-xl px-md py-sm ',
+          'border relative hover:shadow cursor-pointer border-primary_25 rounded-xl flex items-center gap-4 pl-lg px-md py-sm ',
           { 'shadow-lg border-primary': item.id === detailFilling?.id }
         )}
         onClick={() => onClickStep(item)}

@@ -12,7 +12,7 @@ export type TabType = {
   id: number;
   icon: JSX.Element;
   header: string;
-  deatail: string;
+  detail: string;
   status: ServiceStatusType;
   color: string;
   clickable?: boolean;

@@ -27,7 +27,8 @@ import {
 } from '../hooks-api/useServiceApi';
 import { DialogFailureFullscreen } from '../components/DialogFormStatusFullscreen';
 import { Status } from '../constants/StatusBadge';
-import { useApiGetUsers } from '../hooks/api/user';
+import { useApiGetUsers, useApiUserSearchByRole } from '../hooks/api/user';
+import { toast } from 'react-toastify';
 
 export function ServicesContent() {
   const { t } = useTranslation();
@@ -49,16 +50,9 @@ export function ServicesContent() {
   const [serviceDetail, setServiceDetail] = useState<Service | null>(null);
   const [listUser, setListUser] = useState<ViewedUser[]>([]);
 
-  const resUser = useApiGetUsers({
-    page: paginationModel.page,
-    size: paginationModel.pageSize,
-  });
-
+  // todo call api
   const resSearchService = useApiSearchPaidService(dataSearch, {
     enabled: Boolean(dataSearch.email) || Boolean(dataSearch.pic),
-  });
-  const resGetListService = useApicalGetListService(paginationModel, {
-    enabled: !(Boolean(dataSearch.email) || Boolean(dataSearch.pic)),
   });
 
   useEffect(() => {
@@ -67,6 +61,10 @@ export function ServicesContent() {
     }
   }, [resSearchService.data, resSearchService.isFetching]);
 
+  const resGetListService = useApicalGetListService(paginationModel, {
+    enabled: !(Boolean(dataSearch.email) || Boolean(dataSearch.pic)),
+  });
+
   useEffect(() => {
     if (resGetListService.data) {
       setTableData(resGetListService.data?.content);
@@ -74,6 +72,10 @@ export function ServicesContent() {
     }
   }, [resGetListService.data, resGetListService.isFetching]);
 
+  const resUser = useApiGetUsers({
+    page: paginationModel.page,
+    size: paginationModel.pageSize,
+  });
   useEffect(() => {
     // @ts-ignore
     if (resUser.data) {
@@ -81,13 +83,31 @@ export function ServicesContent() {
     }
   }, [resUser.data, resUser.isFetching]);
 
+  const [listUserPIC, setListUserPIC] = useState<ViewedUser[]>([]);
+
+  const resUserByRole = useApiUserSearchByRole({ role: 'mod' });
+  useEffect(() => {
+    // @ts-ignore
+    if (resUserByRole?.data) {
+      setListUserPIC(resUserByRole?.data);
+    }
+  }, [resUserByRole.data, resUserByRole.isFetching]);
+
   // TODO: add i18n for columns
   const serviceColumns: GridColDef<Service>[] = [
     {
       field: 'id',
-      headerName: t('Id'),
-      width: 100,
+      headerName: t('Paid service Id'),
+      width: 130,
       align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'serviceId',
+      headerName: t('Master Service Id'),
+      width: 130,
+      align: 'center',
+      headerAlign: 'center',
     },
     {
       field: 'statusService',
@@ -95,7 +115,7 @@ export function ServicesContent() {
       sortable: false,
       width: 140,
       renderCell: (params: GridRenderCellParams) => {
-        return <StatusBadge status={Status.IN_PROGRESS}></StatusBadge>;
+        return <StatusBadge status={params.value as Status}></StatusBadge>;
       },
     },
     {
@@ -113,13 +133,13 @@ export function ServicesContent() {
       headerName: t('Service Name'),
       sortable: false,
       type: 'string',
-      width: 160,
+      width: 300,
     },
     {
       field: 'customerName',
       headerName: t('Customer Name'),
       sortable: false,
-      width: 160,
+      width: 200,
       type: 'string',
       renderCell: (params: GridRenderCellParams) => {
         const user = listUser.find((u) => u.id === params.row.userId);
@@ -154,7 +174,7 @@ export function ServicesContent() {
       headerName: t('PIC'),
       sortable: false,
       type: 'string',
-      width: 120,
+      width: 200,
     },
   ];
 
@@ -200,6 +220,10 @@ export function ServicesContent() {
 
   const handleClickSubmitGetServiceId = () => {
     resGetServiceId.refetch();
+  };
+
+  const handleClickSubmitGetUserByRole = () => {
+    resUserByRole.refetch();
   };
 
   return (
@@ -260,6 +284,21 @@ export function ServicesContent() {
           }
         />
       )}
+
+      {resUserByRole.isError && (
+        <DialogFailureFullscreen
+          title="Failure!"
+          subTitle={resUserByRole?.error?.message}
+          actionElement={
+            <button
+              onClick={handleClickSubmitGetUserByRole}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{t('Try again')}</span>
+            </button>
+          }
+        />
+      )}
       <div
         className={
           'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
@@ -294,7 +333,12 @@ export function ServicesContent() {
             isAutoSize
             panelClassName={'max-w-[1200px]'}
           >
-            <ServiceDetailDialog service={serviceDetail} listUser={listUser} />
+            <ServiceDetailDialog
+              service={serviceDetail}
+              listUser={listUser}
+              resGetServiceId={resGetServiceId}
+              listUserPIC={listUserPIC}
+            />
           </DialogContainer>
         )}
       </div>
