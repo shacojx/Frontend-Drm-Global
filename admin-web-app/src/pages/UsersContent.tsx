@@ -18,6 +18,7 @@ import {
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useApiGetUsers } from '../hooks/api/user';
+import { capitalize } from 'lodash-es';
 
 type Props = {};
 
@@ -34,7 +35,7 @@ export function UsersContent(props: Props) {
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
-  const { data, isLoading: gettingUsers } = useApiGetUsers({
+  const { data, isLoading: gettingUsers, refetch } = useApiGetUsers({
     page: paginationModel.page,
     size: paginationModel.pageSize,
     phone: phone ? extractPhone(phone).localPhone : '',
@@ -45,7 +46,7 @@ export function UsersContent(props: Props) {
   const userCount = data?.totalElements;
 
   const handleClickSearch = async () => {
-    // TODO: should handle search trigger or bouncing
+    await refetch()
   }
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
@@ -57,9 +58,8 @@ export function UsersContent(props: Props) {
       page: paginationModel.page,
       size: paginationModel.pageSize,
     };
-    const rawResult = await callApiLViewUser(param);
-    // setTableData(rawResult.content);
-    const updatedUserClicked = rawResult?.content.find((user) => user.id === userClicked?.id);
+    const { data } = await refetch()
+    const updatedUserClicked = data?.content.find((user) => user.id === userClicked?.id);
     if (updatedUserClicked) {
       setUserClicked(updatedUserClicked);
     }
@@ -70,8 +70,13 @@ export function UsersContent(props: Props) {
       page: paginationModel.page,
       size: paginationModel.pageSize,
     };
-    const rawResult = await callApiLViewUser(param);
-    // setTableData(rawResult.content);
+    await refetch()
+  }
+
+  const handleClear = async () => {
+    setPhone(undefined)
+    setEmail('')
+    setTimeout(refetch)
   }
 
   // TODO: add i18n for columns
@@ -83,8 +88,11 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 200,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.roles[params.rowNode.depth].name || ''}`,
+      valueGetter: (params: GridValueGetterParams) =>{
+        const role = (params.row.roles[params.rowNode.depth].name || '') as string;
+        
+        return capitalize(role.split('_')[1])
+      },
     },
     {
       field: 'enable',
@@ -92,9 +100,9 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 80,
-      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Enable' : 'Disable'),
+      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Active' : 'Inactive'),
       cellClassName: (params: GridCellParams) => {
-        if (params.value === 'Enable') {
+        if (params.value === 'Active') {
           return 'text-success';
         }
         return 'text-danger';
@@ -105,7 +113,8 @@ export function UsersContent(props: Props) {
       headerName: 'Full Name',
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      width: 160,
+      // width: 160,
+      flex: 1, 
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
@@ -114,7 +123,8 @@ export function UsersContent(props: Props) {
       headerName: 'Email',
       sortable: false,
       type: 'string',
-      width: 200,
+      // width: 200,
+      flex: 1
     },
     {
       field: 'phone',
@@ -150,7 +160,7 @@ export function UsersContent(props: Props) {
       >
         <p className={'text-h4 w-full text-start mb-6'}>{translation.t('User Management')}</p>
         <div className={'w-full flex flex-row justify-between items-center gap-10 mb-4'}>
-          <div className={'w-full flex flex-row justify-start items-end gap-10 mb-4'}>
+          <div className={'flex flex-row justify-start items-end gap-4 mb-4'}>
             <FormFieldEmail
               id={'email'}
               validateCaller={validateCaller}
@@ -166,14 +176,20 @@ export function UsersContent(props: Props) {
             />
             <button
               onClick={handleClickSearch}
-              className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+              className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg shrink-0"
             >
               {translation.t('Search')}
+            </button>
+            <button
+              onClick={handleClear}
+              className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg shrink-0"
+            >
+              {translation.t('Clear')}
             </button>
           </div>
           <button
             onClick={setShouldShowCreateUser.bind(undefined, true)}
-            className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg w-max line-clamp-1"
           >
             {translation.t('Create new')}
           </button>
@@ -197,7 +213,7 @@ export function UsersContent(props: Props) {
           isAutoSize
           handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setUserClicked(undefined)}
         >
-          <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
+          <div className="w-full max-w-[1000px] justify-center items-center py-8 px-4 flex flex-col">
             <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
               <UserDetailAndEdit
                 userInfo={userClicked}
