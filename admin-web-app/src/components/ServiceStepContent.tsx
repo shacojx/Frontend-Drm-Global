@@ -15,6 +15,8 @@ import { getFile } from '../api/upload';
 import InputFile from './InputFile';
 import { NONE_REQUIRED } from '../constants/global';
 import { useApiServiceUploadFinalContract } from '../hooks-api/useServiceApi';
+import { QueryClient } from '@tanstack/react-query';
+import KeyFactory from '../services-base/reactQuery/keyFactory';
 
 type Props = {
   serviceStep: ServiceStep | null;
@@ -34,14 +36,23 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
   useEffect(() => {
     setAdminRemark(serviceStep?.adminRemark ?? '');
     setStatusStep(serviceStep?.statusStep ?? '');
+    // @ts-ignore
+    setFile(serviceStep?.result as File[])
+    console.log('serviceStep?.result: ', serviceStep?.result);
   }, [serviceStep]);
 
+  const queryClient = new QueryClient()
+  
   async function updateAdminRemark() {
     if (serviceStep) {
-      await callApiUpdateAdminRemark({
+     const res = await callApiUpdateAdminRemark({
         id: serviceStep?.id,
         adminRemark,
+      }).then((data) => {
+        queryClient.invalidateQueries({ queryKey: [KeyFactory.getServiceDetail(), {serviceId}] })
       });
+
+
     }
   }
 
@@ -187,13 +198,15 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
                   {index + 1}. {item.requiredDocument}
                 </div>
                 <div className="px-md text-center">
-                  <a
-                    href="#"
-                    className="text-primary font-bold hover:underline"
-                    onClick={() => onDownloadServiceUpload(item)}
-                  >
-                    {index + 1}. {item.fileDocument}
-                  </a>
+                  {item.fileDocument && (
+                    <a
+                      href="#"
+                      className="text-primary font-bold hover:underline"
+                      onClick={() => onDownloadServiceUpload(item)}
+                    >
+                      {index + 1}. {item.fileDocument}
+                    </a>
+                  )}
                 </div>
               </Fragment>
             ))}
@@ -220,7 +233,7 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
                     key={`file${item.id}`}
                     label={t('Upload')}
                     onChange={(file) => handleChangeFile(file, item.id)}
-                    file={file[item.id]}
+                    file={file?.[item.id]}
                     maxSize={10}
                     accept=".pdf,.png,.jpeg,.jpg,.xls,.docx,.ppt"
                     disabled={item.requiredDocument === NONE_REQUIRED}

@@ -1,17 +1,17 @@
-import { Disclosure, Menu } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
-import { DialogFailureFullscreen } from "src/components/DialogFormStatusFullscreen";
+import { Disclosure, Menu } from '@headlessui/react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
+import { DialogFailureFullscreen } from 'src/components/DialogFormStatusFullscreen';
 import {
   AltArrowRightIcon,
   IconMyCompany,
   IconMyService,
   IconService,
-} from "src/components/icons";
-import { RoutePaths } from "src/constants/routerPaths";
-import { useApiLLCService } from "src/hooks-api/useLlcService";
-import { cn } from "src/utils/cn.util";
+} from 'src/components/icons';
+import { RoutePaths } from 'src/constants/routerPaths';
+import { useApiLLCService } from 'src/hooks-api/useLlcService';
+import { cn } from 'src/utils/cn.util';
 
 type Props = {
   isOpenOnSmallScreen: boolean;
@@ -34,19 +34,19 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
       id: RoutePaths.services,
       iconElement: <IconService />,
       path: RoutePaths.services,
-      label: "Services",
+      label: 'Services',
     },
     {
       id: RoutePaths.myServices,
       iconElement: <IconMyService />,
-      label: "My Services",
+      label: 'My Services',
       items: [],
     },
     {
       id: RoutePaths.myCompany,
       path: RoutePaths.myCompany,
       iconElement: <IconMyCompany />,
-      label: "My Company",
+      label: 'My Company',
     },
   ];
 
@@ -72,7 +72,7 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
               id: `#`,
               path: `#`,
               iconElement: <></>,
-              label: "No Service",
+              label: 'No Service',
             });
           }
           item.items = itemArr;
@@ -98,7 +98,7 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
               onClick={handleClickSubmit}
               className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
-              <span>{t("Try again")}</span>
+              <span>{t('Try again')}</span>
             </button>
           }
         />
@@ -139,12 +139,15 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
                       absolute w-[260px] -right-[250px] top-[50px] lg:top-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10
                       `}
                             style={{
-                              height: tabOption.items.length * 65 + "px",
+                              height: tabOption.items.length * 65 + 'px',
                             }}
                           >
                             <div className="flex flex-col">
                               {tabOption.items?.map((itemChildren) => (
-                                <TabOptionItem key={itemChildren.id} {...itemChildren} />
+                                <TabOptionItem
+                                  key={itemChildren.id}
+                                  {...itemChildren}
+                                />
                               ))}
                             </div>
                           </Menu.Items>
@@ -171,16 +174,16 @@ function TabOptionDisclosure(props: TabOptionDisclosureProps) {
     <>
       {Boolean(props.items) ? (
         <>
-          <Disclosure.Button className={"h-[50px] w-full px-4 py-2 "}>
+          <Disclosure.Button className={'h-[50px] w-full px-4 py-2 '}>
             <div
               className={cn(
-                "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 "
+                'w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 '
               )}
             >
-              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <div className={'hidden lg:block'}>{props.iconElement}</div>
               <span>{props.label}</span>
               {Boolean(props.items) && (
-                <div className={`${props.open ? "rotate-90 " : ""} ml-auto`}>
+                <div className={`${props.open ? 'rotate-90 ' : ''} ml-auto`}>
                   <AltArrowRightIcon />
                 </div>
               )}
@@ -189,19 +192,19 @@ function TabOptionDisclosure(props: TabOptionDisclosureProps) {
         </>
       ) : (
         <>
-          <Disclosure.Button className={"h-[50px] w-full px-4 py-2 "}>
+          <Disclosure.Button className={'h-[50px] w-full px-4 py-2 '}>
             <NavLink
               to={props.path as string}
               className={({ isActive }) =>
                 cn(
-                  "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ",
+                  'w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ',
                   {
-                    "bg-gray-300": isActive,
+                    'bg-gray-300': isActive,
                   }
                 )
               }
             >
-              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <div className={'hidden lg:block'}>{props.iconElement}</div>
               <span>{translation.t(props.label)}</span>
             </NavLink>
           </Disclosure.Button>
@@ -215,21 +218,21 @@ function TabOptionDisclosureItem(props: MenuType) {
   const translation = useTranslation();
   return (
     <Disclosure.Panel
-      className={"h-[50px] w-full px-4 py-2"}
+      className={'h-[50px] w-full px-4 py-2'}
       key={`menu-panel${props.id}`}
     >
       <NavLink
         to={props.path as string}
         className={({ isActive }) =>
           cn(
-            "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ",
+            'w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ',
             {
-              "bg-gray-300": isActive,
+              'bg-gray-300': isActive,
             }
           )
         }
       >
-        <div className={"hidden lg:block"}>{props.iconElement}</div>
+        <div className={'hidden lg:block'}>{props.iconElement}</div>
         <span>{translation.t(props.label)}</span>
       </NavLink>
     </Disclosure.Panel>
@@ -242,13 +245,13 @@ function TabOption(props: MenuType) {
     <>
       {Boolean(props.items) ? (
         <>
-          <Menu.Button className={"h-[50px] w-full px-4 py-2"}>
+          <Menu.Button className={'h-[50px] w-full px-4 py-2'}>
             <div
               className={cn(
-                "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 "
+                'w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 '
               )}
             >
-              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <div className={'hidden lg:block'}>{props.iconElement}</div>
               <span>{translation.t(props.label)}</span>
             </div>
             <div className="absolute top-1/2 -translate-y-2/4 right-5">
@@ -258,19 +261,19 @@ function TabOption(props: MenuType) {
         </>
       ) : (
         <>
-          <Menu.Button className={"h-[50px] w-full px-4 py-2"}>
+          <Menu.Button className={'h-[50px] w-full px-4 py-2'}>
             <NavLink
               to={props.path as string}
               className={({ isActive }) =>
                 cn(
-                  "w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ",
+                  'w-full h-full flex flex-row gap-3 px-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ',
                   {
-                    "bg-gray-300": isActive,
+                    'bg-gray-300': isActive,
                   }
                 )
               }
             >
-              <div className={"hidden lg:block"}>{props.iconElement}</div>
+              <div className={'hidden lg:block'}>{props.iconElement}</div>
               <span>{translation.t(props.label)}</span>
             </NavLink>
           </Menu.Button>
@@ -285,21 +288,23 @@ function TabOptionItem(props: MenuType) {
   return (
     <Menu.Item key={`menu${props.id}`}>
       {({ active, close }) => (
-        <Menu.Button className={"h-full p-2 inline-block"}>
+        <Menu.Button className={'h-full p-2 inline-block'}>
           <NavLink
             to={props.path as string}
             onClick={close}
             className={({ isActive }) =>
               cn(
-                "w-full h-full flex flex-row gap-3 p-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ",
+                'w-full h-full flex flex-row gap-3 p-3 items-center rounded-md cursor-pointer hover:bg-gray-300 ',
                 {
-                  "bg-gray-300": isActive || active,
+                  'bg-gray-300': isActive || active,
                 }
               )
             }
           >
-            <div className={"hidden lg:block"}>{props.iconElement}</div>
-            <span className="line-clamp-1">{translation.t(props.label)}</span>
+            <div className={'hidden lg:block'}>{props.iconElement}</div>
+            <span className="line-clamp-1" title={translation.t(props.label)}>
+              {translation.t(props.label)}
+            </span>
           </NavLink>
         </Menu.Button>
       )}

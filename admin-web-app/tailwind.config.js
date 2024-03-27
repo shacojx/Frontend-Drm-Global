@@ -78,5 +78,8 @@ module.exports = {
   },
   plugins: [],
   mode: 'jit',
+  variants: {
+    lineClamp: ['responsive', 'hover']
+  }
 }
 
