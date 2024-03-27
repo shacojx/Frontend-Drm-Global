@@ -81,6 +81,7 @@ export function MyCompanyDetailPage() {
           document: documents.map((item) => ({ id: item.name, document: item.name })),
         });
         setShowSuccessDialog(true);
+        setIsEditing(false)
         refetch();
       }
     } catch (error) {
