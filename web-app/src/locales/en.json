@@ -208,5 +208,7 @@
   "InProgress": "InProgress",
   "Confirmed": "Confirmed",
   "Yes": "Yes",
-  "No Available Service": "No Available Service"
+  "No Available Service": "No Available Service",
+  "Enter the email you want to edit !": "Enter the email you want to edit !",
+  "Edit Email": "Edit Email"
 }

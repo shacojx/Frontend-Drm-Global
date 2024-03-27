@@ -52,8 +52,15 @@ export async function callApiVerifyPhone(body: ApiVerifyPhone) {
 
 export async function callApiSendEmailOTP(email: string) {
   const path = 'api/user/verifyemail'
-  const rawResult = await callApi<RawResultEmpty>('POST', path, {email})
+  const rawResult = await callApi<RawResultEmpty>('POST', path, {email}, true)
   return rawResult
+}
+
+export async function callApiChangeEmail(email: string, otp: string) {
+  const path = '/api/user/update-email'
+  const rawResult = await callApi('POST', path, { email, otp }, true)
+
+  return rawResult;
 }
 
 export async function callApiCreateAccount(body: ApiRegisterAccountParam) {
