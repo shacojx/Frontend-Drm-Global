@@ -2,3 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .bg-gradient-primary {
+    @apply bg-gradient-to-r from-primary to-secondary;
+  }
+
+  .text-gradient-secondary {
+    color: #070921;
+    background-image: -webkit-linear-gradient(270deg, #070921 50%, #1d2035 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-primary {
+    color: #5ed4f9;
+    background-image: -webkit-linear-gradient(0deg, #5ed4f9 0%, #8771e9 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
