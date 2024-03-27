@@ -20,7 +20,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
     if (!file) return;
 
     console.log(file.size)
-    if (file.size > 1_000_000) {
+    if (file.size > 10_000_000) {
       setError("File size must be less than 10MB")
       return
     }
