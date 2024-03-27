@@ -546,6 +546,7 @@ export type RawCompanyDetail = {
 };
 
 export type EditCompanyBody = {
+  id: number;
   companyName: string;
   entityEnding: string;
   region: string;

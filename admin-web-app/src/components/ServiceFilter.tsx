@@ -7,9 +7,10 @@ import ButtonCs from './ButtonCs';
 type Props = {
   onSubmit: (data: any) => void;
   onReset: () => void;
+  loading?: boolean;
 };
 
-export function ServiceFilter({ onSubmit, onReset }: Props) {
+export function ServiceFilter({ onSubmit, onReset, loading }: Props) {
   const { t } = useTranslation();
 
   const [dataFilter, setDataFilter] =
@@ -59,13 +60,16 @@ export function ServiceFilter({ onSubmit, onReset }: Props) {
             type="button"
             className="bg-transparent border border-surface text-primary"
             onClick={reset}
+            isLoading={loading}
           >
             {t('Reset')}
           </ButtonCs>
         </div>
         <div>
           <div className={'font-bold mb-1 invisible'}>{t('PIC')}</div>
-          <ButtonCs type="submit">{t('Apply')}</ButtonCs>
+          <ButtonCs isLoading={loading} type="submit">
+            {t('Apply')}
+          </ButtonCs>
         </div>
       </form>
     </>

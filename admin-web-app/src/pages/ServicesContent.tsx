@@ -17,6 +17,8 @@ import { callApiLViewUser } from '../api/userManagement';
 import {
   ApiSearchPaidServiceType,
   ApiViewUserParam,
+  CompanyDetail,
+  RawCompanyDetail,
   ViewedUser,
 } from '../api/types';
 import { StatusBadge } from '../components/StatusBadge';
@@ -25,10 +27,14 @@ import {
   useApiSearchPaidService,
   useApicalGetListService,
 } from '../hooks-api/useServiceApi';
-import { DialogFailureFullscreen } from '../components/DialogFormStatusFullscreen';
+import {
+  DialogFailureFullscreen,
+  DialogRequestingFullscreen,
+} from '../components/DialogFormStatusFullscreen';
 import { Status } from '../constants/StatusBadge';
 import { useApiGetUsers, useApiUserSearchByRole } from '../hooks/api/user';
 import { toast } from 'react-toastify';
+import { useApiGetMyCompanyDetail } from '../hooks-api/useMyCompany';
 
 export function ServicesContent() {
   const { t } = useTranslation();
@@ -47,10 +53,8 @@ export function ServicesContent() {
   const [isShowServiceDetailDialog, setIsShowServiceDetailDialog] =
     useState(false);
   const [selectService, setSelectService] = useState<Service | null>(null);
-  const [serviceDetail, setServiceDetail] = useState<Service | null>(null);
-  const [listUser, setListUser] = useState<ViewedUser[]>([]);
 
-  // todo call api
+  // todo call danh sách user tìm kiếm
   const resSearchService = useApiSearchPaidService(dataSearch, {
     enabled: Boolean(dataSearch.email) || Boolean(dataSearch.pic),
   });
@@ -61,6 +65,7 @@ export function ServicesContent() {
     }
   }, [resSearchService.data, resSearchService.isFetching]);
 
+  // todo danh sách service phân trang
   const resGetListService = useApicalGetListService(paginationModel, {
     enabled: !(Boolean(dataSearch.email) || Boolean(dataSearch.pic)),
   });
@@ -72,6 +77,8 @@ export function ServicesContent() {
     }
   }, [resGetListService.data, resGetListService.isFetching]);
 
+  // todo danh sách user
+  const [listUser, setListUser] = useState<ViewedUser[]>([]);
   const resUser = useApiGetUsers({
     page: paginationModel.page,
     size: paginationModel.pageSize,
@@ -83,6 +90,7 @@ export function ServicesContent() {
     }
   }, [resUser.data, resUser.isFetching]);
 
+  // todo danh sách pic theo role
   const [listUserPIC, setListUserPIC] = useState<ViewedUser[]>([]);
 
   const resUserByRole = useApiUserSearchByRole({ role: 'mod' });
@@ -188,6 +196,8 @@ export function ServicesContent() {
   };
 
   //TODO: api service by id
+  const [serviceDetail, setServiceDetail] = useState<Service | null>(null);
+
   // @ts-ignore
   const resGetServiceId = useApiGetServiceDetail(selectService?.id, {
     enabled: Boolean(selectService?.id),
@@ -195,11 +205,26 @@ export function ServicesContent() {
 
   useEffect(() => {
     if (resGetServiceId.data) {
-      const dataServiceId = resGetServiceId.data;
-      setServiceDetail(dataServiceId);
+      setServiceDetail(resGetServiceId.data);
       setIsShowServiceDetailDialog(true);
     }
   }, [resGetServiceId.data, resGetServiceId.isFetching]);
+
+  //TODO: api công ty theo user
+  const [companyDetail, setCompanyDetail] = useState<CompanyDetail | null>(
+    null,
+  );
+
+  // @ts-ignore
+  const resCompanyId = useApiGetMyCompanyDetail(serviceDetail?.userId, {
+    enabled: Boolean(serviceDetail?.userId),
+  });
+
+  useEffect(() => {
+    if (resCompanyId.data) {
+      setCompanyDetail(resCompanyId.data);
+    }
+  }, [resCompanyId.data, resCompanyId.isFetching]);
 
   async function onClickDetail(data: Service) {
     setSelectService(data);
@@ -222,12 +247,21 @@ export function ServicesContent() {
     resGetServiceId.refetch();
   };
 
-  const handleClickSubmitGetUserByRole = () => {
+  const handleClickSubmitGetMyCompanyDetail = () => {
     resUserByRole.refetch();
+  };
+
+  const handleClickSubmitGetUserByRole = () => {
+    resCompanyId.refetch();
   };
 
   return (
     <div className={'w-full grow flex flex-col p-3'}>
+      {(resUser.isFetching ||
+        resGetServiceId.isFetching ||
+        resUserByRole.isFetching ||
+        resCompanyId.isFetching) && <DialogRequestingFullscreen />}
+
       {resSearchService.isError && (
         <DialogFailureFullscreen
           title="Failure!"
@@ -299,6 +333,22 @@ export function ServicesContent() {
           }
         />
       )}
+
+      {resCompanyId.isError && (
+        <DialogFailureFullscreen
+          title="Failure!"
+          subTitle={resCompanyId?.error?.message}
+          actionElement={
+            <button
+              onClick={handleClickSubmitGetUserByRole}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{t('Try again')}</span>
+            </button>
+          }
+        />
+      )}
+
       <div
         className={
           'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
@@ -307,7 +357,11 @@ export function ServicesContent() {
         <p className={'text-h4 w-full text-start mb-6'}>
           {t('Services Management')}
         </p>
-        <ServiceFilter onSubmit={search} onReset={onResetFilter} />
+        <ServiceFilter
+          onSubmit={search}
+          onReset={onResetFilter}
+          loading={resSearchService.isFetching}
+        />
         <div className={'w-full grow'}>
           <DataGrid
             paginationMode="server"
@@ -319,6 +373,9 @@ export function ServicesContent() {
             onPaginationModelChange={(model) => setPaginationModel(model)}
             onRowClick={(param: GridRowParams<Service>) =>
               onClickDetail(param.row)
+            }
+            loading={
+              resSearchService.isFetching || resGetListService.isFetching
             }
           />
         </div>
@@ -338,6 +395,9 @@ export function ServicesContent() {
               listUser={listUser}
               resGetServiceId={resGetServiceId}
               listUserPIC={listUserPIC}
+              companyDetail={companyDetail}
+              resSearchService={resSearchService}
+              resGetListService={resGetListService}
             />
           </DialogContainer>
         )}

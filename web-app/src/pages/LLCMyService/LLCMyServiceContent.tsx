@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { RoutePaths } from "src/constants/routerPaths";
@@ -19,10 +19,17 @@ import {
 } from "../../components/icons";
 import TitleContent from "../../components/TitleContent";
 import { FormFieldSelect } from "../../components/FormFieldSelect";
-import { MyServiceType, MyServiceStepType } from "src/api/types";
+import { MyServiceType, MyServiceStepType, CompanyDetail } from "src/api/types";
 import { getFile } from "src/api/upload";
 import { AuthContext } from "src/contexts/AuthContextProvider";
-import { DialogFailureFullscreen } from "src/components/DialogFormStatusFullscreen";
+import { DialogFailureFullscreen, DialogRequestingFullscreen } from "src/components/DialogFormStatusFullscreen";
+import { useApiGetMyCompanyDetail } from "src/hooks-api/useMyCompany";
+import {
+  validateCompanyInfo,
+  validateMailingAddress,
+  validateOwnersInfo,
+  validateResponseParty,
+} from "src/services-business/myCompany";
 
 export default function LLCMyServiceContent() {
   const { t } = useTranslation();
@@ -44,6 +51,29 @@ export default function LLCMyServiceContent() {
   }, [id, dataService]);
 
   const navigator = useNavigate();
+
+  //TODO: api công ty theo user
+  // @ts-ignore
+  const resCompanyId = useApiGetMyCompanyDetail();
+
+  const companyDetail = resCompanyId.data;
+
+  const statusCorporationProfile = useMemo(() => {
+    try {
+      if (
+        companyDetail &&
+        validateCompanyInfo(companyDetail.companyInfo) &&
+        validateOwnersInfo(companyDetail.owners) &&
+        validateResponseParty(companyDetail.responseParty) &&
+        validateMailingAddress(companyDetail.mailingAddress)
+      ) {
+        return ServiceStatusType.Confirmed;
+      }
+    } catch (error) {
+      console.error('error: ', error);
+    }
+    return ServiceStatusType.Pending;
+  }, [companyDetail]);
 
   const dataTab: TabType[] = [
     {
@@ -87,7 +117,7 @@ export default function LLCMyServiceContent() {
       icon: <BuildingIcon className="w-6 h-6" />,
       header: t("Corporation profile"),
       detail: t("Click to view >"),
-      status: ServiceStatusType.InProgress as ServiceStatusType,
+      status: statusCorporationProfile as ServiceStatusType,
       color: "#5D50C6",
       id: 4,
       clickable: true,
@@ -121,81 +151,99 @@ export default function LLCMyServiceContent() {
     }
   }, [id, dataService]);
 
-  if (resLLCService.isFetching) {
-    return <>loading...</>;
-  }
-
-  const handleClickSubmit = () => {
+  const handleClickSubmitLLCService = () => {
     resLLCService.refetch();
+  };
+
+  const handleClickSubmitCompanyId = () => {
+    resCompanyId.refetch();
   };
 
   return (
     <>
-      {resLLCService.isError ? (
+      {(resLLCService.isFetching || resCompanyId.isFetching) && (
+        <DialogRequestingFullscreen />
+      )}
+      {resLLCService.isError && (
         <DialogFailureFullscreen
           title="Failure!"
           subTitle={resLLCService?.error?.message}
           actionElement={
             <button
-              onClick={handleClickSubmit}
+              onClick={handleClickSubmitLLCService}
               className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
               <span>{t("Try again")}</span>
             </button>
           }
         />
-      ) : (
-        <div className="w-full flex grow relative overflow-y-scroll border border-l border-stroke">
-          <div className="w-full grow flex flex-col p-3">
-            {dataService && (
-              <div className="p-5 lg:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
-                <div className="flex gap-4 flex-col lg:flex-row justify-between">
-                  <TitleContent label={dataService.serviceName} />
-                  <div className="flex justify-between lg:justify-normal gap-md">
-                    <div className="flex gap-md items-center">
-                      <div>{t("Cycle")}:</div>
-                      <FormFieldSelect
-                        id={"cycleSelect"}
-                        isRequired
-                        placeholder={"--"}
-                        value={cycle}
-                        optionInfos={cycleList}
-                        onChange={onChangeCycle}
-                        validateCaller={validateCaller}
-                      />
-                    </div>
-                    <TagService
-                      status={dataService.statusService as ServiceStatusType}
+      )}
+
+      {resCompanyId.isError && (
+        <DialogFailureFullscreen
+          title="Failure!"
+          subTitle={resCompanyId?.error?.message}
+          actionElement={
+            <button
+              onClick={handleClickSubmitCompanyId}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{t("Try again")}</span>
+            </button>
+          }
+        />
+      )}
+
+      <div className="w-full flex grow relative overflow-y-scroll border border-l border-stroke">
+        <div className="w-full grow flex flex-col p-3">
+          {dataService && (
+            <div className="p-5 lg:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
+              <div className="flex gap-4 flex-col lg:flex-row justify-between">
+                <TitleContent label={dataService.serviceName} />
+                <div className="flex justify-between lg:justify-normal gap-md">
+                  <div className="flex gap-md items-center">
+                    <div>{t("Cycle")}:</div>
+                    <FormFieldSelect
+                      id={"cycleSelect"}
+                      isRequired
+                      placeholder={"--"}
+                      value={cycle}
+                      optionInfos={cycleList}
+                      onChange={onChangeCycle}
+                      validateCaller={validateCaller}
                     />
                   </div>
+                  <TagService
+                    status={dataService.statusService as ServiceStatusType}
+                  />
                 </div>
-                <div className="hidden bg-[#5D50C6]/25 bg-[#094B72]/25  bg-[#FFC327]/25  bg-[#FF5722]/25 "></div>
-                {/* tab */}
-                <div className="mt-xl">
-                  <div className="grid gap-md grid-cols-12">
-                    {dataTab.map((item, index) => (
-                      <TabService key={item.id} item={item} />
+              </div>
+              <div className="hidden bg-[#5D50C6]/25 bg-[#094B72]/25  bg-[#FFC327]/25  bg-[#FF5722]/25 "></div>
+              {/* tab */}
+              <div className="mt-xl">
+                <div className="grid gap-md grid-cols-12">
+                  {dataTab.map((item, index) => (
+                    <TabService key={item.id} item={item} />
+                  ))}
+                </div>
+              </div>
+
+              {/* content */}
+              <>
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-3 mt-6">
+                  {/* step */}
+                  <div className="flex flex-col gap-md">
+                    {dataService?.serviceStep?.map((item: any) => (
+                      <StepService key={item.id} item={item} />
                     ))}
                   </div>
+                  <ContentFillingService />
                 </div>
-
-                {/* content */}
-                <>
-                  <div className="flex flex-col lg:flex-row gap-8 lg:gap-3 mt-6">
-                    {/* step */}
-                    <div className="flex flex-col gap-md">
-                      {dataService?.serviceStep?.map((item: any) => (
-                        <StepService key={item.id} item={item} />
-                      ))}
-                    </div>
-                    <ContentFillingService />
-                  </div>
-                </>
-              </div>
-            )}
-          </div>
+              </>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }

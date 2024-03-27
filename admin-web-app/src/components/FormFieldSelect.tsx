@@ -6,6 +6,7 @@ import { useValidate } from "../hooks-ui/useValidateCaller";
 import { classNames } from "../services-ui/tailwindcss";
 import { FormFieldProps, OptionInfo } from "../types/common";
 import { IconCheck, IconAltArrowDown } from "./icons";
+import { cn } from "../utils/cn.util";
 
 type Props<T extends React.Key> = FormFieldProps<T> & {
   optionInfos: OptionInfo<T>[],

@@ -7,7 +7,13 @@ import { StatusBadge } from './StatusBadge';
 import { Service, ServiceStep } from '../types/service';
 import { DialogContainer } from './DialogContainer';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { KycDetail, ViewedUser } from '../api/types';
+import {
+  CompanyDetail,
+  KycDetail,
+  RawCompanyDetail,
+  RawResult,
+  ViewedUser,
+} from '../api/types';
 import { callApiUpdatePic } from '../api/serviceManagement';
 import { ServiceStepContent } from './ServiceStepContent';
 import { Status } from '../constants/StatusBadge';
@@ -17,12 +23,21 @@ import { cn } from '../utils/cn.util';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useApiServiceUpdatePic } from '../hooks-api/useServiceApi';
 import { toast } from 'react-toastify';
+import {
+  validateCompanyInfo,
+  validateMailingAddress,
+  validateOwnersInfo,
+  validateResponseParty,
+} from '../services-business/myCompany';
 
 type Props = {
   listUser: ViewedUser[];
   service: Service | null;
   resGetServiceId?: UseQueryResult<Service, Error>;
   listUserPIC: ViewedUser[];
+  companyDetail: CompanyDetail | null;
+  resSearchService: UseQueryResult<Service[], Error>;
+  resGetListService: UseQueryResult<RawResult<Service[]>, Error>;
 };
 
 type TabType = {
@@ -41,7 +56,11 @@ export function ServiceDetailDialog({
   listUser,
   resGetServiceId,
   listUserPIC,
+  companyDetail,
+  resSearchService,
+  resGetListService,
 }: Props) {
+  console.log('companyDetail: ', companyDetail);
   const { t } = useTranslation();
   const { validateCaller, validateAll } = useValidateCaller();
   const [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
@@ -88,6 +107,8 @@ export function ServiceDetailDialog({
         },
         onSettled: () => {
           resGetServiceId?.refetch();
+          resGetListService?.refetch();
+          resSearchService?.refetch();
         },
       },
     );
@@ -102,6 +123,24 @@ export function ServiceDetailDialog({
       );
     }
   }
+
+  const statusCorporationProfile = useMemo(() => {
+    try {
+      if (
+        companyDetail &&
+        validateCompanyInfo(companyDetail.companyInfo) &&
+        validateOwnersInfo(companyDetail.owners) &&
+        validateResponseParty(companyDetail.responseParty) &&
+        validateMailingAddress(companyDetail.mailingAddress)
+      ) {
+        return Status.CONFIRMED;
+      }
+    } catch (error) {
+      console.error('error: ', error);
+    }
+    return Status.PENDING;
+
+  }, [companyDetail]);
 
   const dataTab: TabType[] = [
     {
@@ -134,7 +173,7 @@ export function ServiceDetailDialog({
       icon: <IconUser className="w-6 h-6" />,
       header: t('Corporation Profile'),
       detail: t('Click here to edit'),
-      status: Status.PENDING as Status,
+      status: statusCorporationProfile as Status,
       color: '#5D50C6',
       id: 4,
       clickable: true,
@@ -159,8 +198,11 @@ export function ServiceDetailDialog({
           </span>
         </div>
         <div className={'flex flex-col gap-3'}>
-          <div className={'font-bold'}>{user?.companyName}&#160;</div>
+          <div className={'font-bold'}>
+            {companyDetail?.companyInfo.companyName}&#160;
+          </div>
           <span>Nation: {user?.llcInNation}</span>
+          <span>Industry: {companyDetail?.companyInfo.industry}</span>
         </div>
         <div className={'flex flex-col gap-3 ml-auto'}>
           <div className={'grid grid-cols-2 gap-2'}>
@@ -197,7 +239,9 @@ export function ServiceDetailDialog({
         }}
         multiple={false}
       />
-      <div className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4'}>
+      <div
+        className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4'}
+      >
         {dataTab.map((item) => (
           <Fragment key={item.id}>
             <div
@@ -288,8 +332,13 @@ export function ServiceDetailDialog({
                   </div>
                 </div>
                 <div className="flex-1 ">
-                  <div className="line-clamp-1" title={item.stepName}>{item.stepName}</div>
-                  <div className="text-sm text-[#A0AEC0] line-clamp-1" title={item.estimatedCompletionTime}>
+                  <div className="line-clamp-1" title={item.stepName}>
+                    {item.stepName}
+                  </div>
+                  <div
+                    className="text-sm text-[#A0AEC0] line-clamp-1"
+                    title={item.estimatedCompletionTime}
+                  >
                     {item.estimatedCompletionTime}
                   </div>
                 </div>
@@ -314,7 +363,7 @@ export function ServiceDetailDialog({
             isAutoSize
             panelClassName={'max-w-[1200px] min-h-[70vh]'}
           >
-            <MyCompanyDetailPage />
+            <MyCompanyDetailPage id={service?.userId as number} />
           </DialogContainer>
         )}
       </div>

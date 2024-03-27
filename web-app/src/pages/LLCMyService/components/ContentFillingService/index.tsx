@@ -62,7 +62,6 @@ export default function ContentFillingService() {
     try {
       const res = await mutateUploadFile.mutateAsync(formData);
       if (res) {
-        console.log("res: ", res);
         toast.success(t("Update file successfully"));
         setFile((pre) => {
           let newArr: File[] = [...pre];
