@@ -2,7 +2,7 @@ import useRouteElements from './useRouteElements';
 
 export default function AppRouter() {
     const routerElements = useRouteElements()
-    return <>
+    return <div className='debug-screens'>
         {routerElements}
-    </>
+    </div>
 }

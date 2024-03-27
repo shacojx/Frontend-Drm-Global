@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiSearchPaidServiceType } from '../api/types';
 import { EMPTY_SEARCH } from '../types/service';
+import ButtonCs from './ButtonCs';
 
 type Props = {
   onSubmit: (data: any) => void;
@@ -9,64 +10,63 @@ type Props = {
 };
 
 export function ServiceFilter({ onSubmit, onReset }: Props) {
-  const translation = useTranslation();
+  const { t } = useTranslation();
 
   const [dataFilter, setDataFilter] =
-  useState<ApiSearchPaidServiceType>(EMPTY_SEARCH);
+    useState<ApiSearchPaidServiceType>(EMPTY_SEARCH);
 
   const updateField = (field: string, data: any) => {
-    setDataFilter(pre=>({
+    setDataFilter((pre) => ({
       ...pre,
-      [field]: data.trim()
-    }))
+      [field]: data.trim(),
+    }));
   };
 
   function reset(): void {
     setDataFilter(EMPTY_SEARCH);
-    onReset && onReset()
+    onReset && onReset();
   }
 
-  const onSubmitForm = (event: React.FormEvent)=>{
+  const onSubmitForm = (event: React.FormEvent) => {
     event.preventDefault();
     onSubmit && onSubmit(dataFilter);
-  }
+  };
 
   return (
     <>
       <form className={'w-full flex gap-4 mb-4'} onSubmit={onSubmitForm}>
         <div className={''}>
-          <div className={'font-bold mb-1'}>
-            {translation.t('Customer Email')}
-          </div>
+          <div className={'font-bold mb-1'}>{t('Customer Email')}</div>
           <input
             className={'w-full h-[40px] border py-1 px-2 rounded-lg'}
             value={dataFilter.email}
-            name='email'
-            onChange={(event) => updateField('email',event.target.value)}
+            name="email"
+            onChange={(event) => updateField('email', event.target.value)}
           />
         </div>
         <div className={''}>
-          <div className={'font-bold mb-1'}>{translation.t('PIC')}</div>
+          <div className={'font-bold mb-1'}>{t('PIC')}</div>
           <input
             className={'w-full h-[40px] border py-1 px-2 rounded-lg'}
             value={dataFilter.pic}
-            name='pic'
-            onChange={(event) => updateField('pic',event.target.value)}
+            name="pic"
+            onChange={(event) => updateField('pic', event.target.value)}
           />
         </div>
-        <button
-          className="w-[100px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 self-end"
-          onClick={reset}
-          type='button'
-        >
-          Reset
-        </button>
-        <button
-          className="w-[100px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2 self-end"
-          type='submit'
-        >
-          Apply
-        </button>
+        <div>
+          <div className={'font-bold mb-1 invisible'}>{t('PIC')}</div>
+          <ButtonCs
+            type="button"
+            className="bg-transparent border border-surface text-primary"
+            onClick={reset}
+          >
+            {t('Reset')}
+          </ButtonCs>
+        </div>
+        <div>
+          <div className={'font-bold mb-1 invisible'}>{t('PIC')}</div>
+          <ButtonCs type="submit">{t('Apply')}</ButtonCs>
+        </div>
       </form>
     </>
   );

@@ -49,7 +49,7 @@ export default function LLCMyServiceContent() {
     {
       icon: <DocumentIcon className="w-6 h-6" />,
       header: t("Contract"),
-      deatail: t("Click here to start KYC >"),
+      detail: t("Click here to start KYC >"),
       status: dataService?.statusContract as ServiceStatusType,
       color: "#094B72",
       id: 1,
@@ -64,7 +64,7 @@ export default function LLCMyServiceContent() {
     {
       icon: <IdentityIcon className="w-6 h-6" />,
       header: t("KYC"),
-      deatail: t("Click here to start KYC >"),
+      detail: t("Click here to start KYC >"),
       status: user?.kycStatus as ServiceStatusType,
       color: "#FF5722",
       id: 2,
@@ -77,7 +77,7 @@ export default function LLCMyServiceContent() {
     {
       icon: <MoneyIcon className="w-6 h-6" />,
       header: t("Payment"),
-      deatail: t("Click here to view payment >"),
+      detail: t("Click here to view payment >"),
       status: dataService?.statusPayment as ServiceStatusType,
       color: "#FFC327",
       id: 3,
@@ -86,7 +86,7 @@ export default function LLCMyServiceContent() {
     {
       icon: <BuildingIcon className="w-6 h-6" />,
       header: t("Corporation profile"),
-      deatail: t("Click to view >"),
+      detail: t("Click to view >"),
       status: ServiceStatusType.InProgress as ServiceStatusType,
       color: "#5D50C6",
       id: 4,
@@ -112,14 +112,14 @@ export default function LLCMyServiceContent() {
     if (dataService) {
       let arrCycle: CycleListType[] = [
         {
-          value: dataService.cycleNumber.toString(),
-          label: dataService.cycleNumber.toString(),
+          value: dataService?.cycleNumber?.toString(),
+          label: dataService?.cycleNumber?.toString(),
         },
       ];
       setCycleList(arrCycle);
-      setCycle(dataService.cycleNumber.toString());
+      setCycle(dataService?.cycleNumber?.toString());
     }
-  }, [id]);
+  }, [id, dataService]);
 
   if (resLLCService.isFetching) {
     return <>loading...</>;
@@ -148,10 +148,10 @@ export default function LLCMyServiceContent() {
         <div className="w-full flex grow relative overflow-y-scroll border border-l border-stroke">
           <div className="w-full grow flex flex-col p-3">
             {dataService && (
-              <div className="p-5 md:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
-                <div className="flex gap-4 flex-col md:flex-row justify-between">
+              <div className="p-5 lg:p-6 bg-white rounded grow overflow-y-scroll overflow-x-hidden ">
+                <div className="flex gap-4 flex-col lg:flex-row justify-between">
                   <TitleContent label={dataService.serviceName} />
-                  <div className="flex justify-between md:justify-normal gap-md">
+                  <div className="flex justify-between lg:justify-normal gap-md">
                     <div className="flex gap-md items-center">
                       <div>{t("Cycle")}:</div>
                       <FormFieldSelect
@@ -181,7 +181,7 @@ export default function LLCMyServiceContent() {
 
                 {/* content */}
                 <>
-                  <div className="flex flex-col md:flex-row gap-8 md:gap-3 mt-6">
+                  <div className="flex flex-col lg:flex-row gap-8 lg:gap-3 mt-6">
                     {/* step */}
                     <div className="flex flex-col gap-md">
                       {dataService?.serviceStep?.map((item: any) => (

@@ -9,10 +9,10 @@ type Props = {
 
 export default function TabService({ item }: Props) {
   return (
-    <div className="col-span-6 md:col-span-3 " key={item.id}>
+    <div className="col-span-6 lg:col-span-3" key={item.id}>
       <div
         className={cn(
-          "md:border relative hover:shadow  bg-[#F3F5F7] md:border-primary_25 rounded-xl flex flex-col md:flex-row justify-center md:justify-normal gap-6 pl-xl py-[1.375rem] text-center md:text-left",
+          "lg:border relative group hover:shadow  bg-[#F3F5F7] lg:border-primary_25 rounded-xl flex flex-col lg:flex-row items-center justify-center lg:justify-normal gap-4 min-h-[98px] 2xl:gap-6 px-4 py-4 2xl:px-6 2xl:py-6 text-center lg:text-left overflow-hidden",
           {"cursor-pointer": item.clickable}
         )}
         onClick={item.onClick}
@@ -29,7 +29,7 @@ export default function TabService({ item }: Props) {
         </div>
         <div className="flex-1">
           <div className="font-bold uppercase">{item.header}</div>
-          <div className="text-sm text-[#A0AEC0]">{item.deatail}</div>
+          <div className="text-xs text-[#A0AEC0] group-hover:underline line-clamp-2" title={item.detail}>{item.detail}</div>
         </div>
         <div className="absolute top-0 right-0">
           <div

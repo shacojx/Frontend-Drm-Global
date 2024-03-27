@@ -1,6 +1,6 @@
 import { isNotNullish } from '../../utils/typeCheck';
 
-const QueryKey = {
+export const QueryKeyApi = {
   getLlcServiceList: 'llcService/getList',
   getLlcServiceDetail: 'llcService/getDetail',
   getMyCompany: 'myCompany/getDetail',
@@ -25,22 +25,22 @@ function generateKey(...keys: KeyType[]): string[] {
 
 const KeyFactory = {
   getLlcServiceList() {
-    return generateKey(QueryKey.getLlcServiceList);
+    return generateKey(QueryKeyApi.getLlcServiceList);
   },
   getLlcServiceDetail(id: KeyType) {
-    return generateKey(QueryKey.getLlcServiceDetail, id);
+    return generateKey(QueryKeyApi.getLlcServiceDetail, id);
   },
   getMyCompanyDetail() {
-    return generateKey(QueryKey.getMyCompany);
+    return generateKey(QueryKeyApi.getMyCompany);
   },
   postCompanyDetail: () => generateKey(MutationKey.postMyCompany),
   uploadKYC: () => generateKey(MutationKey.uploadKYC),
-  getAvailableServices: () => generateKey(QueryKey.getAvailableServices),
-  getServiceDetail: () => generateKey(QueryKey.getServiceDetail),
+  getAvailableServices: () => generateKey(QueryKeyApi.getAvailableServices),
+  getServiceDetail: (...args: unknown[]) => [QueryKeyApi.getServiceDetail, ...args],
   paymentService: () => generateKey(MutationKey.paymentService),
-  getBankAccounts: () => generateKey(QueryKey.getBankAccounts),
-  searchPaidService: () => generateKey(QueryKey.searchPaidService),
-  getPaidService: () => generateKey(QueryKey.getPaidService),
+  getBankAccounts: () => generateKey(QueryKeyApi.getBankAccounts),
+  searchPaidService: () => generateKey(QueryKeyApi.searchPaidService),
+  getPaidService: () => generateKey(QueryKeyApi.getPaidService),
 };
 
 export default KeyFactory;

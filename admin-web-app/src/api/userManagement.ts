@@ -3,10 +3,12 @@ import { callApi } from "../services-base/api";
 import {
   ApiDeactiveParam,
   ApiEditUserParam,
+  ApiSearchUserByRole,
   ApiSearchUserParam,
   ApiViewUserParam,
   RawResultSearchUser,
-  RawResultViewUser
+  RawResultViewUser,
+  ViewedUser
 } from "./types";
 
 export async function callApiSearchUser(body: ApiSearchUserParam) {
@@ -37,3 +39,10 @@ export async function callApiDeactiveAccount(body: ApiDeactiveParam) {
   const rawResult = await callApi<unknown>('POST', path, body, true)
   return rawResult
 }
+
+export async function callApiSearchUserByRole(body: ApiSearchUserByRole) {
+  const path = 'api/admin/search-user-by-role'
+  const rawResult = await callApi<ViewedUser[]>('POST', path, body, true)
+  return rawResult
+}
+

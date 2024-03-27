@@ -1,78 +1,112 @@
-import { useTranslation } from 'react-i18next';
-import { StatusBadge } from './StatusBadge';
-import { ServiceStep } from '../types/service';
+import { QueryClient, UseQueryResult } from '@tanstack/react-query';
 import { Fragment, useEffect, useState } from 'react';
-import {
-  callApiUpdateAdminRemark,
-  callApiUploadStatusStep,
-} from '../api/serviceManagement';
-import { Status } from '../constants/StatusBadge';
-import { ResultDocument } from './service/ResultDocument';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { UploadedDocumentType } from '../api/types';
-import { DialogFailureFullscreen } from './DialogFormStatusFullscreen';
 import { getFile } from '../api/upload';
-import InputFile from './InputFile';
+import { Status } from '../constants/StatusBadge';
 import { NONE_REQUIRED } from '../constants/global';
-import { useApiServiceUploadFinalContract } from '../hooks-api/useServiceApi';
-import { QueryClient } from '@tanstack/react-query';
-import KeyFactory from '../services-base/reactQuery/keyFactory';
+import {
+  useApiServiceUpdateAdminRemark,
+  useApiServiceUploadFinalContract,
+  useApiServiceUploadStatusStep,
+} from '../hooks-api/useServiceApi';
+import { useValidateCaller } from '../hooks-ui/useValidateCaller';
+import { Service, ServiceStep } from '../types/service';
+import { FormFieldSelect } from './FormFieldSelect';
+import InputFile from './InputFile';
+import { IconAltArrowDown } from './icons';
+
+import { Menu, Transition } from '@headlessui/react';
+import ButtonCs from './ButtonCs';
 
 type Props = {
   serviceStep: ServiceStep | null;
-  serviceId: number | null;
+  serviceId?: number | null;
+  resGetServiceId?: UseQueryResult<Service, Error>;
 };
 
-export function ServiceStepContent({ serviceStep, serviceId }: Props) {
+export function ServiceStepContent({
+  serviceStep,
+  serviceId,
+  resGetServiceId,
+}: Props) {
   const { t } = useTranslation();
 
   const [file, setFile] = useState<File[]>([]);
 
   const [adminRemark, setAdminRemark] = useState('');
   const [statusStep, setStatusStep] = useState('');
-  const [visibleError, setVisibleError] = useState(false);
-  const [contentError, setContentError] = useState<any>('');
+
+  const { validateCaller, validateAll } = useValidateCaller();
 
   useEffect(() => {
     setAdminRemark(serviceStep?.adminRemark ?? '');
     setStatusStep(serviceStep?.statusStep ?? '');
     // @ts-ignore
-    setFile(serviceStep?.result as File[])
-    console.log('serviceStep?.result: ', serviceStep?.result);
+
+    serviceStep?.result?.forEach((fileRes) => {
+      if (fileRes.fileDocument) {
+        let file = {
+          ...fileRes,
+          name: fileRes.fileDocument,
+        };
+        setFile((pre) => {
+          let newArr: File[] = [...pre];
+          // @ts-ignore
+          newArr[fileRes.id] = file;
+          return newArr;
+        });
+      }
+    });
   }, [serviceStep]);
 
-  const queryClient = new QueryClient()
-  
-  async function updateAdminRemark() {
+  const mutateUpdateAdminRemark = useApiServiceUpdateAdminRemark();
+  const mutateUploadStatusStep = useApiServiceUploadStatusStep();
+
+  const updateAdminRemark = () => {
     if (serviceStep) {
-     const res = await callApiUpdateAdminRemark({
-        id: serviceStep?.id,
-        adminRemark,
-      }).then((data) => {
-        queryClient.invalidateQueries({ queryKey: [KeyFactory.getServiceDetail(), {serviceId}] })
-      });
-
-
+      mutateUpdateAdminRemark.mutate(
+        {
+          id: serviceStep?.id,
+          adminRemark,
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(t('Update status remark successfully'));
+          },
+          onError: (error) => {
+            toast.error(String(error));
+          },
+          onSettled: () => {
+            resGetServiceId?.refetch();
+          },
+        },
+      );
     }
-  }
+  };
 
-  async function uploadStatusStep(status: Status) {
+  const uploadStatusStep = (status: Status) => {
     if (serviceStep) {
-      try {
-        await callApiUploadStatusStep({
+      mutateUploadStatusStep.mutate(
+        {
           id: serviceStep?.id,
           status,
-        });
-        setStatusStep(status);
-        toast.success(t('Update status step successfully'));
-      } catch (e) {
-        toast.error(t('Update status step failed'));
-      }
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(t('Update status step successfully'));
+          },
+          onError: (error) => {
+            // toast.error(t('Update status step failed'));
+            toast.error(String(error));
+          },
+          onSettled: () => {
+            resGetServiceId?.refetch();
+          },
+        },
+      );
     }
-  }
-
-  const toggle = () => {
-    setVisibleError(!visibleError);
   };
 
   const onDownloadServiceUpload = (item: UploadedDocumentType) => {
@@ -81,8 +115,7 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
         getFile(item.fileDocument);
       }
     } catch (error) {
-      toggle();
-      setContentError(error);
+      toast.error(String(error));
       console.error('error: ', error);
     }
   };
@@ -108,69 +141,134 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
     try {
       const res = await mutateUploadFile.mutateAsync(formData);
       if (res) {
-        toast.success(res.message);
         setFile((pre) => {
           let newArr: File[] = [...pre];
           // @ts-ignore
-          newArr[id] = file;
+          newArr[id] = { name: res.data?.[0] };
           return newArr;
         });
+        toast.success(t('Update file successfully'));
       }
     } catch (error) {
-      toggle();
-      setContentError(error);
+      toast.error(String(error));
       console.error('error: ', error);
     }
   };
 
+  const SERVICE_STEP_STATUS = [
+    {
+      value: Status.PENDING,
+      label: Status.PENDING,
+    },
+    {
+      value: Status.IN_PROGRESS,
+      label: Status.IN_PROGRESS,
+    },
+    {
+      value: Status.ISSUED,
+      label: Status.ISSUED,
+    },
+    {
+      value: Status.READY,
+      label: Status.READY,
+    },
+  ];
+
+  const handleMenuItemClick = (option: any) => {
+    option.click && option.click();
+  };
+
+  const handleSendPaymentReminder = () => {
+    console.log('handleSendPaymentReminder');
+  };
+
+  const handleSendRequiredDocumentReminder = () => {
+    console.log('handleSendRequiredDocumentReminder');
+  };
+
+  type OptionType = {
+    label?: string;
+    click?: () => void;
+  };
+
+  const OPTIONS: OptionType[] = [
+    {
+      label: t('Send Payment Reminder'),
+      click: () => {
+        handleSendPaymentReminder();
+      },
+    },
+    {
+      label: t('Send Required Document Reminder'),
+      click: () => {
+        handleSendRequiredDocumentReminder();
+      },
+    },
+  ];
+
   return (
     <div className={'w-full border border-primary_25 rounded-xl py-lg px-xl'}>
-      {visibleError && (
-        <DialogFailureFullscreen
-          title="Failure!"
-          subTitle={contentError}
-          actionElement={
-            <button
-              onClick={toggle}
-              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-            >
-              <span>{t('Close')}</span>
-            </button>
-          }
-        />
-      )}
-      <div className={'flex gap-4 mb-4 items-center'}>
-        <div className={'font-bold text-xl mr-auto'}>
+      <div className={'flex gap-4 mb-4 items-center '}>
+        <div className={'font-bold text-xl w-full lg:w-[60%] mr-auto'}>
           {serviceStep?.stepName}
         </div>
-        <StatusBadge status={statusStep as Status} showDot />
-        {statusStep === Status.PENDING && (
-          <button
-            className="w-[130px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2"
-            onClick={() => {
-              void uploadStatusStep(Status.IN_PROGRESS);
-            }}
-          >
-            {t('Set In Progress')}
-          </button>
-        )}
-        {statusStep === Status.IN_PROGRESS && (
-          <button
-            className="w-[85px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2"
-            onClick={() => {
-              void uploadStatusStep(Status.ISSUED);
-            }}
-          >
-            {t('Set Issued')}
-          </button>
-        )}
+        <div className="flex gap-4 items-center">
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+                {t('Send Reminder')}
+                <IconAltArrowDown
+                  className="-mr-1 ml-2 h-5 w-5 text-violet-200 hover:text-violet-100"
+                  aria-hidden="true"
+                />
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <div className="px-1 py-1 ">
+                  {OPTIONS.map((option, index) => (
+                    <Menu.Item key={index}>
+                      {({ active }) => (
+                        <ButtonCs
+                          onClick={() => handleMenuItemClick(option)}
+                          className={`w-full justify-start rounded-none ${
+                            active
+                              ? 'bg-primary '
+                              : 'bg-transparent text-primary'
+                          }`}
+                        >
+                          {option.label}
+                        </ButtonCs>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+          <FormFieldSelect
+            id={'serviceStepStatus'}
+            onChange={uploadStatusStep}
+            validateCaller={validateCaller}
+            optionInfos={SERVICE_STEP_STATUS}
+            value={statusStep as Status}
+          ></FormFieldSelect>
+        </div>
       </div>
       <div className={'mb-4'}>
         <div className={'flex gap-4 mb-2 items-center'}>
           <span className={'text-lg font-bold'}>{t("Admin's remark")}</span>
           <button
             className="w-[100px] h-[35px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2"
-            onClick={() => updateAdminRemark()}
+            onClick={updateAdminRemark}
           >
             {t('Save')}
           </button>

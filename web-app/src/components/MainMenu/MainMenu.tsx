@@ -58,10 +58,10 @@ export default function MainMenu({ isOpenOnSmallScreen }: Props) {
         if (item.id === RoutePaths.myServices) {
           const itemArr: MenuType[] = [];
           resApiLLCService.data.forEach(
-            (itemService: { serviceId: number; serviceName: string }) => {
+            (itemService: { id: number; serviceName: string }) => {
               itemArr.push({
-                id: `${RoutePaths.myServices}/${itemService.serviceId}`,
-                path: `${RoutePaths.myServices}/${itemService.serviceId}`,
+                id: `${RoutePaths.myServices}/${itemService.id}`,
+                path: `${RoutePaths.myServices}/${itemService.id}`,
                 iconElement: <IconMyService />,
                 label: itemService.serviceName,
               });

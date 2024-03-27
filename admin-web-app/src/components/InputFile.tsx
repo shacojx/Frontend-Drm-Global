@@ -49,7 +49,7 @@ export default function InputFile({onChange, accept = "*", label = "Upload", fil
         <button
           type="button"
           onClick={handleUpload}
-          className={"flex gap-md bg-primary/50 px-6 py-4 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"}
+          className={"flex gap-md bg-primary px-6 py-4 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"}
           disabled={disabled}
         >
           <div>{<IconUpload />}</div>
