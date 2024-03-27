@@ -160,7 +160,10 @@ export function OrderPaymentContent(props: Props) {
                 </tbody>
               </table>
             </div>
-            {serviceName}
+            
+            <div className="bg-red-200 line-clamp-1 overflow-hidden">
+              {serviceName}
+            </div>
           </div>
         );
       }
