@@ -68,7 +68,10 @@ export function ServiceInformation(props: ServiceInformationProps) {
 
   const onUpdateServiceDescription = React.useCallback(
     (v: string) => {
-      props.onUpdateBody('serviceDescription', v);
+      const isValid = /[\d\w\s]*/.test(v);
+      if (!isValid) return;
+
+      props.onUpdateBody('serviceDescription', v.slice(0, 100));
     },
     [props.onUpdateBody],
   );
@@ -81,7 +84,10 @@ export function ServiceInformation(props: ServiceInformationProps) {
 
   const onUpdateServiceName = React.useCallback(
     (v: string) => {
-      props.onUpdateBody('serviceName', v);
+      const isValid = /[\d\w\s]*/.test(v);
+      if (!isValid) return;
+
+      props.onUpdateBody('serviceName', v.slice(0, 100));
     },
     [props.onUpdateBody],
   );

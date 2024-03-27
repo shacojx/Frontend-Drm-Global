@@ -13,6 +13,7 @@ import { OrderPaymentContent } from "./OrderPaymentContent";
 import { ServicesContent } from "./ServicesContent";
 import { UsersContent } from "./UsersContent";
 import { MasterServiceContent } from "./MasterServicesContent";
+import { useSearchParams } from "react-router-dom";
 
 export type HomeContent = 'services' | 'orderPayment' | 'KYCRequest' | 'support' | 'user' | 'configuration' | 'myAccount'
 const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
@@ -54,11 +55,14 @@ const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
 }
 
 export function HomePage() {
-  const [homeContent, setHomeContent] = useState<HomeContent>('KYCRequest')
   const openCallerRef = useRef<()=>void>(()=>{})
+  const [searchParams, setSearchParams] = useSearchParams()
+  const homeContent = (searchParams.get('tab') ?? 'KYCRequest') as HomeContent || TabOptionGroup.services.id
 
   function handleChangeTab(tabId: HomeContent) {
-    setHomeContent(tabId)
+    setSearchParams({
+      tab: tabId
+    })
   }
 
   return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
