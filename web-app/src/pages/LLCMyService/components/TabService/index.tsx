@@ -2,7 +2,6 @@ import { ServiceStatusType, TabType } from "../../types/my-service.type";
 import { Link } from "react-router-dom";
 import { IconCheck } from "../../../../components/icons";
 import { cn } from "../../../../utils/cn.util";
-import clsx from "clsx";
 
 type Props = {
   item: TabType;
@@ -12,7 +11,7 @@ export default function TabService({ item }: Props) {
   return (
     <div className="col-span-6 md:col-span-3 " key={item.id}>
       <div
-        className={clsx(
+        className={cn(
           "md:border relative hover:shadow  bg-[#F3F5F7] md:border-primary_25 rounded-xl flex flex-col md:flex-row justify-center md:justify-normal gap-6 pl-xl py-[1.375rem] text-center md:text-left",
           {"cursor-pointer": item.clickable}
         )}

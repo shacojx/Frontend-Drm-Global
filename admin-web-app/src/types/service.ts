@@ -1,23 +1,23 @@
+import { ApiSearchPaidServiceType } from '../api/types';
+
 export interface Service {
+  updatedAt: string;
+  createdAt: string;
   id: number;
   userId: number;
-  customerName?: string;
-  customerEmail?: string;
-  customerPhone?: string;
   serviceId: number;
   serviceType: string;
   serviceName: string;
   serviceDescription: string;
   statusService: string;
-  statusPayment: string;
-  statusContract: string;
   cycleNumber: number;
   pricePerCycle: number;
   transitionId: number;
-  contractFile: File | null;
+  statusPayment: string;
+  paymentMethod: string;
+  statusContract: string;
+  contractFile: string | null;
   pic: string | null;
-  updatedAt: string;
-  createdAt: string;
   serviceStep: ServiceStep[];
 }
 
@@ -40,3 +40,8 @@ export interface ServiceStep {
     fileDocument: string | null;
   }[];
 }
+
+export const EMPTY_SEARCH: ApiSearchPaidServiceType = {
+  pic: '',
+  email: '',
+};

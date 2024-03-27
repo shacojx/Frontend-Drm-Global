@@ -11,8 +11,8 @@ export type UploadResponse = {
 
 export const uploadFile = async (
   file: File,
-  payload: Record<string, string | number>,
-  path: string,
+  payload?: Record<string, string | number>,
+  path?: string,
 ) => {
   const headers = new Headers();
   headers.append(
@@ -22,9 +22,10 @@ export const uploadFile = async (
 
   const formData = new FormData();
   formData.append('files', file);
-  Object.entries(payload).forEach(([key, value]) => {
-    formData.append(key, value.toString());
-  });
+  payload &&
+    Object.entries(payload).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
 
   const options = {
     method: 'POST',
@@ -43,7 +44,10 @@ export const uploadFile = async (
   return data;
 };
 
-export const getFile = async (name: string, opts: { download?: boolean } = {download: true}) => {
+export const getFile = async (
+  name: string,
+  opts: { download?: boolean } = { download: true },
+) => {
   const headers = new Headers();
   headers.append(
     'Authorization',
@@ -60,16 +64,18 @@ export const getFile = async (name: string, opts: { download?: boolean } = {down
   const blob = await fetch(endpoint, options)
     .then((response) => response.blob())
     .then((blob) => {
-      if (!opts?.download) return blob
+      if (!opts?.download) return blob;
 
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       const url = URL.createObjectURL(blob);
       a.href = url;
       a.download = name;
       a.click();
       URL.revokeObjectURL(url);
     })
-    .catch((error) => console.log("error", error));
+    .catch((error) => console.log('error', error));
 
-  return blob
+  return blob;
 };
+
+const URL_DOWNLOAD = 'api/file/files';

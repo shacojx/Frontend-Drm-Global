@@ -1,6 +1,7 @@
 import { Fragment, PropsWithChildren, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CommonLoading } from './CommonLoading';
+import { IconXCircle } from './icons';
 
 type Props = PropsWithChildren<
   Partial<{

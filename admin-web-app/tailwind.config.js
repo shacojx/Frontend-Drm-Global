@@ -8,6 +8,9 @@ module.exports = {
       colors: {
         'primary': '#094B72',
         'primary_25': '#094B7240',
+        'pending_bg':'#DFE1F2',
+        'pending_text':'#2d2d40',
+        'in_progress_bg':'#F8D1C4',
         'primary_light': '#BAE0E2',
         'violet': '#5D50C6',
         'orange': '#FF5722',
@@ -74,5 +77,6 @@ module.exports = {
     }
   },
   plugins: [],
+  mode: 'jit',
 }
 
