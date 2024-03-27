@@ -39,6 +39,7 @@ import { ReactComponent as IconMasterCard } from '../assets/svgs/MasterCard.svg'
 import { ReactComponent as IconPaypal } from '../assets/svgs/Paypal.svg';
 import { ReactComponent as IconQR } from '../assets/svgs/QR.svg';
 import { ReactComponent as IconArrowCircle } from '../assets/svgs/ArrowCircle.svg';
+import { ReactComponent as IconEdit } from '../assets/svgs/Edit.svg';
 
 
 type Props = React.SVGProps<SVGSVGElement>
@@ -86,5 +87,6 @@ export {
   IconMasterCard,
   IconPaypal,
   IconQR,
-  IconArrowCircle
+  IconArrowCircle,
+  IconEdit
 }
