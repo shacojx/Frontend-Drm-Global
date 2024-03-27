@@ -18,6 +18,7 @@ import {
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useApiGetUsers } from '../hooks/api/user';
+import { capitalize } from 'lodash-es';
 
 type Props = {};
 
@@ -45,7 +46,7 @@ export function UsersContent(props: Props) {
   const userCount = data?.totalElements;
 
   const handleClickSearch = async () => {
-    // TODO: should handle search trigger or bouncing
+    await refetch()
   }
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
@@ -82,8 +83,11 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 200,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.roles[params.rowNode.depth].name || ''}`,
+      valueGetter: (params: GridValueGetterParams) =>{
+        const role = (params.row.roles[params.rowNode.depth].name || '') as string;
+        
+        return capitalize(role.split('_')[1])
+      },
     },
     {
       field: 'enable',
