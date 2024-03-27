@@ -34,7 +34,7 @@ export function UsersContent(props: Props) {
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
-  const { data, isLoading: gettingUsers } = useApiGetUsers({
+  const { data, isLoading: gettingUsers, refetch } = useApiGetUsers({
     page: paginationModel.page,
     size: paginationModel.pageSize,
     phone: phone ? extractPhone(phone).localPhone : '',
@@ -57,9 +57,8 @@ export function UsersContent(props: Props) {
       page: paginationModel.page,
       size: paginationModel.pageSize,
     };
-    const rawResult = await callApiLViewUser(param);
-    // setTableData(rawResult.content);
-    const updatedUserClicked = rawResult?.content.find((user) => user.id === userClicked?.id);
+    const { data } = await refetch()
+    const updatedUserClicked = data?.content.find((user) => user.id === userClicked?.id);
     if (updatedUserClicked) {
       setUserClicked(updatedUserClicked);
     }
@@ -92,9 +91,9 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 80,
-      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Enable' : 'Disable'),
+      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Active' : 'Inactive'),
       cellClassName: (params: GridCellParams) => {
-        if (params.value === 'Enable') {
+        if (params.value === 'Active') {
           return 'text-success';
         }
         return 'text-danger';
@@ -197,7 +196,7 @@ export function UsersContent(props: Props) {
           isAutoSize
           handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setUserClicked(undefined)}
         >
-          <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
+          <div className="w-full max-w-[1000px] justify-center items-center py-8 px-4 flex flex-col">
             <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
               <UserDetailAndEdit
                 userInfo={userClicked}

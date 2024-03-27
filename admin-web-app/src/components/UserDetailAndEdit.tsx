@@ -101,7 +101,7 @@ export function UserDetailAndEdit(props: Props) {
     }
   }
 
-  return <div className={"flex flex-col gap-y-8 px-8"}>
+  return <div className={"flex flex-col gap-y-8"}>
     <div className={"flex flex-row justify-between items-end"}>
       <div className={"flex flex-row gap-3 items-end"}>
         <p className="text-h4 text-center">{translation.t('User Detail')}</p>
@@ -126,14 +126,14 @@ export function UserDetailAndEdit(props: Props) {
           onClick={changeEnableUser.bind(undefined, false)}
           className="px-4 py-2 flex justify-center items-center gap-2 bg-danger text-white font-semibold rounded-lg"
         >
-          {translation.t('Disable')}
+          {translation.t('Inactive')}
           {isRequestingEnableOrDisable && <IconSpinner/>}
         </button>
         : <button
           onClick={changeEnableUser.bind(undefined, true)}
-          className="px-4 py-2 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+          className="px-4 py-2 flex justify-center items-center gap-2 bg-success text-white font-semibold rounded-lg"
         >
-          {translation.t('Enable')}
+          {translation.t('Active')}
           {isRequestingEnableOrDisable && <IconSpinner/>}
         </button>
       }
