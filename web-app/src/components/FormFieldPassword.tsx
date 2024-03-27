@@ -14,7 +14,9 @@ const validatePassword: ValidateFunction<string> = function (isRequired, pass) {
   if (!pass) {
     return false
   }
-  return validateApiPassword(pass)
+
+  const isValid = validateApiPassword(pass)
+  return isValid
 }
 
 type Props = FormFieldProps<string> & Partial<{
