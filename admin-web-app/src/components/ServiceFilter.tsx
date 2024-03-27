@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiSearchPaidServiceType } from '../api/types';
 import { EMPTY_SEARCH } from '../types/service';
-import Button from './Button';
+import ButtonCs from './ButtonCs';
 
 type Props = {
   onSubmit: (data: any) => void;
@@ -55,17 +55,17 @@ export function ServiceFilter({ onSubmit, onReset }: Props) {
         </div>
         <div>
           <div className={'font-bold mb-1 invisible'}>{t('PIC')}</div>
-          <Button
+          <ButtonCs
             type="button"
             className="bg-transparent border border-primary text-primary"
             onClick={reset}
           >
             {t('Reset')}
-          </Button>
+          </ButtonCs>
         </div>
         <div>
           <div className={'font-bold mb-1 invisible'}>{t('PIC')}</div>
-          <Button type="submit">{t('Apply')}</Button>
+          <ButtonCs type="submit">{t('Apply')}</ButtonCs>
         </div>
       </form>
     </>

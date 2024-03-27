@@ -37,10 +37,10 @@ export const StatusDotClassNameMap: Record<string, string> = {
 };
 
 export const StatusIconMap: Record<string, React.ReactNode> = {
-  [Status.PENDING]: <IconInfoCircle />,
-  [Status.READY]: <IconRefreshCircle />,
-  [Status.IN_PROGRESS]: <IconRefreshCircle />,
-  [Status.APPROVED]: <IconCheck />,
-  [Status.CONFIRMED]: <IconCheck />,
-  [Status.ISSUED]: <IconCheck />,
+  [Status.PENDING]: <IconInfoCircle width={20} height={20}/>,
+  [Status.READY]: <IconRefreshCircle width={20} height={20}/>,
+  [Status.IN_PROGRESS]: <IconRefreshCircle width={20} height={20}/>,
+  [Status.APPROVED]: <IconCheck width={20} height={20}/>,
+  [Status.CONFIRMED]: <IconCheck width={20} height={20}/>,
+  [Status.ISSUED]: <IconCheck width={20} height={20}/>,
 };

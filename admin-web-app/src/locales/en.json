@@ -236,6 +236,7 @@
   "EIN": "EIN",
   "Bank Account": "Bank Account",
   "Admin's remark": "Admin's remark",
-  "Click here to upload contract": "Click here to upload contract"
-
+  "Click here to upload contract": "Click here to upload contract",
+  "Send Payment Reminder": "Send Payment Reminder",
+  "Send Required Document Reminder": "Send Required Document Reminder"
 }
