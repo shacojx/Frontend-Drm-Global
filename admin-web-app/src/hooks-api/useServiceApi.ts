@@ -17,6 +17,7 @@ import {
   callApiGetServiceDetail,
   callApiSearchPaidService,
   callApiUpdateAdminRemark,
+  callApiUpdatePic,
   callApiUploadCustomerDocument,
   callApiUploadStatusStep,
 } from '../api/serviceManagement';
@@ -85,5 +86,11 @@ export function useApiServiceUpdateAdminRemark() {
 export function useApiServiceUploadStatusStep() {
   return useMutation({
     mutationFn: callApiUploadStatusStep,
+  });
+}
+
+export function useApiServiceUpdatePic() {
+  return useMutation({
+    mutationFn: callApiUpdatePic,
   });
 }

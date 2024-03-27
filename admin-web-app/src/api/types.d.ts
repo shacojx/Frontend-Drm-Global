@@ -119,16 +119,16 @@ export type ApiCreateOrderParam = {
 };
 
 export type ApiGetOrdersParam = {
-  page: number,
-  pic?: string
-  email?: string
-}
+  page: number;
+  pic?: string;
+  email?: string;
+};
 
-export type UploadedDocumentType ={
+export type UploadedDocumentType = {
   id: number;
   requiredDocument: string;
   fileDocument: string | null;
-}
+};
 
 export type RawRegisterServicesResult = {
   content: Array<{
@@ -576,12 +576,15 @@ export type EditCompanyBody = {
 };
 
 export type ApiSearchPaidServiceType = {
-  pic?: string
-  email?: string
-}
-
+  pic?: string;
+  email?: string;
+};
 
 export type PaginationType = {
-  page?: number,
-  size?: number
-}
+  page?: number;
+  size?: number;
+};
+
+export type ApiSearchUserByRole = {
+  role: string;
+};

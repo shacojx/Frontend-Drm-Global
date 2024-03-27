@@ -238,5 +238,8 @@
   "Admin's remark": "Admin's remark",
   "Click here to upload contract": "Click here to upload contract",
   "Send Payment Reminder": "Send Payment Reminder",
-  "Send Required Document Reminder": "Send Required Document Reminder"
+  "Send Required Document Reminder": "Send Required Document Reminder",
+  "Master Service Id": "Master Service Id",
+  "Paid service Id": "Paid service Id"
+
 }

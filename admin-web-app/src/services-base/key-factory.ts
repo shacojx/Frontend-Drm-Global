@@ -5,6 +5,7 @@ export const QueryKeyApi = {
   getKYCs: 'get-KYCs',
   searchUsers: 'search-users',
   getOrders: 'get-orders',
+  searchUserByRole:'search-user-by-role'
 };
 
 const MutationKey = {
@@ -17,4 +18,5 @@ export const KeyFactory = {
   getKYCs: (...args: unknown[]) => [QueryKeyApi.getKYCs, ...args],
   searchUsers: (...args: unknown[]) => [QueryKeyApi.searchUsers, ...args],
   getOrders: (...args: unknown[]) => [QueryKeyApi.getOrders, ...args],
+  searchUserByRole: (...args: unknown[]) => [QueryKeyApi.searchUserByRole, ...args],
 } as const;

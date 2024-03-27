@@ -3,6 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ApiMasterServiceParam,
+  CompanyTypeValue,
   ServiceCycle,
   ServiceStep,
 } from '../../api/types';
@@ -12,6 +13,7 @@ import { useValidateCaller } from '../../hooks-ui/useValidateCaller';
 import { ErrorMessage } from '../ErrorMessage';
 import { FormFieldMultiSelect } from '../FormFieldMultiSelect';
 import { FormFieldSelect } from '../FormFieldSelect';
+import { OptionInfo } from '../../types/common';
 
 export type ServiceInformationProps = {
   appliedNation: string[];
@@ -36,6 +38,16 @@ export type ServiceInformationProps = {
   };
   isSubmitted: boolean;
 };
+
+export const APPLY_COMPANY_TYPE: OptionInfo<CompanyTypeValue>[] = [
+  { label: 'LLC', value: 'LLC' },
+  { label: 'PLC', value: 'PLC' },
+]
+
+export const SERVICE_TYPE: OptionInfo<string>[] = [
+  { label: 'Based', value: 'Based' },
+  { label: 'Add-on', value: 'Add-on' },
+]
 
 export function ServiceInformation(props: ServiceInformationProps) {
   const translation = useTranslation();
@@ -119,9 +131,8 @@ export function ServiceInformation(props: ServiceInformationProps) {
                 label={translation.t('masterService.serviceCompanyType')}
                 onChange={onUpdateAppliedCompanyType}
                 value={props.applyCompanyType}
-                optionInfos={[]}
-                // optionInfos={APPLY_COMPANY_TYPE}
-                // defaultValue={APPLY_COMPANY_TYPE?.at(0)?.value}
+                optionInfos={APPLY_COMPANY_TYPE}
+                defaultValue={APPLY_COMPANY_TYPE?.at(0)?.value}
                 placeholder={translation.t(
                   'masterService.appliedCompanyTypePlaceholder',
                 )}
@@ -144,8 +155,7 @@ export function ServiceInformation(props: ServiceInformationProps) {
                 validateCaller={validateCaller}
                 onChange={onUpdateServiceType}
                 value={props.serviceType}
-                optionInfos={[]}
-                // optionInfos={SERVICE_TYPE}
+                optionInfos={SERVICE_TYPE}
                 placeholder={translation.t(
                   'masterService.serviceTypePlaceholder',
                 )}

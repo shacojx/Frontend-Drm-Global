@@ -1,34 +1,24 @@
+import { QueryClient, UseQueryResult } from '@tanstack/react-query';
+import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatusBadge } from './StatusBadge';
-import { Service, ServiceStep } from '../types/service';
-import { Fragment, useEffect, useId, useRef, useState } from 'react';
-import {
-  callApiUpdateAdminRemark,
-  callApiUploadStatusStep,
-} from '../api/serviceManagement';
-import { Status } from '../constants/StatusBadge';
-import { ResultDocument } from './service/ResultDocument';
 import { toast } from 'react-toastify';
 import { UploadedDocumentType } from '../api/types';
-import { DialogFailureFullscreen } from './DialogFormStatusFullscreen';
 import { getFile } from '../api/upload';
-import InputFile from './InputFile';
+import { Status } from '../constants/StatusBadge';
 import { NONE_REQUIRED } from '../constants/global';
 import {
   useApiServiceUpdateAdminRemark,
   useApiServiceUploadFinalContract,
   useApiServiceUploadStatusStep,
 } from '../hooks-api/useServiceApi';
-import { QueryClient, UseQueryResult } from '@tanstack/react-query';
-import KeyFactory, {
-  QueryKeyApi,
-} from '../services-base/reactQuery/keyFactory';
-import { FormFieldSelect } from './FormFieldSelect';
 import { useValidateCaller } from '../hooks-ui/useValidateCaller';
+import { Service, ServiceStep } from '../types/service';
+import { FormFieldSelect } from './FormFieldSelect';
+import InputFile from './InputFile';
 import { IconAltArrowDown } from './icons';
-import { Button, ButtonGroup, Grow, MenuItem, MenuList, Paper, Popover, Popper } from '@mui/material';
+
+import { Menu, Transition } from '@headlessui/react';
 import ButtonCs from './ButtonCs';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 type Props = {
   serviceStep: ServiceStep | null;
@@ -56,8 +46,6 @@ export function ServiceStepContent({
     // @ts-ignore
     setFile(serviceStep?.result as File[]);
   }, [serviceStep]);
-
-  const queryClient = new QueryClient();
 
   const mutateUpdateAdminRemark = useApiServiceUpdateAdminRemark();
   const mutateUploadStatusStep = useApiServiceUploadStatusStep();
@@ -164,36 +152,46 @@ export function ServiceStepContent({
       label: Status.IN_PROGRESS,
     },
     {
-      value: Status.READY,
-      label: Status.READY,
-    },
-    {
-      value: Status.CONFIRMED,
-      label: Status.CONFIRMED,
-    },
-    {
-      value: Status.APPROVED,
-      label: Status.APPROVED,
-    },
-    {
       value: Status.ISSUED,
       label: Status.ISSUED,
     },
+    {
+      value: Status.READY,
+      label: Status.READY,
+    },
   ];
 
-  const id = useId();
-
-  const handleClickSendRemind = () => {};
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef<HTMLDivElement>(null);
-
-  const handleClick = () => {};
-
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const handleMenuItemClick = (option: any) => {
+    option.click && option.click();
   };
 
-  const options = [t('Send Payment Reminder'), t('Send Required Document Reminder')];
+  const handleSendPaymentReminder = () => {
+    console.log('handleSendPaymentReminder');
+  };
+
+  const handleSendRequiredDocumentReminder = () => {
+    console.log('handleSendRequiredDocumentReminder');
+  };
+
+  type OptionType = {
+    label?: string;
+    click?: () => void;
+  };
+
+  const OPTIONS: OptionType[] = [
+    {
+      label: t('Send Payment Reminder'),
+      click: () => {
+        handleSendPaymentReminder();
+      },
+    },
+    {
+      label: t('Send Required Document Reminder'),
+      click: () => {
+        handleSendRequiredDocumentReminder();
+      },
+    },
+  ];
 
   return (
     <div className={'w-full border border-primary_25 rounded-xl py-lg px-xl'}>
@@ -202,91 +200,9 @@ export function ServiceStepContent({
           {serviceStep?.stepName}
         </div>
 
-        <ButtonGroup
-          variant="contained"
-          ref={anchorRef}
-          aria-label="Button group with a nested menu"
-        >
-          <Button onClick={handleClick}>{t('Send Reminder')}</Button>
-          <Button
-            size="small"
-            aria-controls={open ? 'split-button-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-label="select merge strategy"
-            aria-haspopup="menu"
-            onClick={handleToggle}
-          >
-            <AltArrowDown />
-          </Button>
-        </ButtonGroup>
-        <Popper
-          sx={{
-            zIndex: 1,
-          }}
-          open={open}
-          anchorEl={anchorRef.current}
-          role={undefined}
-          transition
-          disablePortal
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === 'bottom' ? 'center top' : 'center bottom',
-              }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList id="split-button-menu" autoFocusItem>
-                    {options.map((option, index) => (
-                      <MenuItem
-                        key={option}
-                        disabled={index === 2}
-                        onClick={(event) => handleMenuItemClick(event, index)}
-                      >
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-
-        <PopupState variant="popover" popupId="demo-popup-popover">
-          {(popupState) => (
-            <div>
-              <Button variant="contained" {...bindTrigger(popupState)}>
-                {t('Send Reminder')}
-              </Button>
-              <Popover
-                {...bindPopover(popupState)}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-              >
-                <ButtonCs>
-                  <div>{t('Send Payment Reminder')}</div>
-                </ButtonCs>
-                <ButtonCs>
-                  <div>{t('Send Required Document Reminder')}</div>
-                </ButtonCs>
-              </Popover>
-            </div>
-          )}
-        </PopupState>
-
-        {/* <Menu as="div" className="relative inline-block text-left">
+        <Menu as="div" className="relative inline-block text-left">
           <div>
-            <Menu.Button className="inline-flex w-full justify-center rounded-md bg-sky-400 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+            <Menu.Button className="inline-flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
               {t('Send Reminder')}
               <IconAltArrowDown
                 className="-mr-1 ml-2 h-5 w-5 text-violet-200 hover:text-violet-100"
@@ -303,34 +219,26 @@ export function ServiceStepContent({
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+            <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
               <div className="px-1 py-1 ">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? 'bg-primary text-white' : 'text-primary'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      {t('Send Payment Reminder')}
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? 'bg-primary text-white' : 'text-primary'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      {t('Send Required Document Reminder')}
-                    </button>
-                  )}
-                </Menu.Item>
+                {OPTIONS.map((option, index) => (
+                  <Menu.Item key={index}>
+                    {({ active }) => (
+                      <ButtonCs
+                        onClick={() => handleMenuItemClick(option)}
+                        className={`w-full justify-start rounded-none ${
+                          active ? 'bg-primary ' : 'bg-transparent text-primary'
+                        }`}
+                      >
+                        {option.label}
+                      </ButtonCs>
+                    )}
+                  </Menu.Item>
+                ))}
               </div>
             </Menu.Items>
           </Transition>
-        </Menu> */}
+        </Menu>
         <FormFieldSelect
           id={'serviceStepStatus'}
           onChange={uploadStatusStep}

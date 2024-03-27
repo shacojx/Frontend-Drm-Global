@@ -27,7 +27,7 @@ import {
 } from '../hooks-api/useServiceApi';
 import { DialogFailureFullscreen } from '../components/DialogFormStatusFullscreen';
 import { Status } from '../constants/StatusBadge';
-import { useApiGetUsers } from '../hooks/api/user';
+import { useApiGetUsers, useApiUserSearchByRole } from '../hooks/api/user';
 
 export function ServicesContent() {
   const { t } = useTranslation();
@@ -49,16 +49,8 @@ export function ServicesContent() {
   const [serviceDetail, setServiceDetail] = useState<Service | null>(null);
   const [listUser, setListUser] = useState<ViewedUser[]>([]);
 
-  const resUser = useApiGetUsers({
-    page: paginationModel.page,
-    size: paginationModel.pageSize,
-  });
-
   const resSearchService = useApiSearchPaidService(dataSearch, {
     enabled: Boolean(dataSearch.email) || Boolean(dataSearch.pic),
-  });
-  const resGetListService = useApicalGetListService(paginationModel, {
-    enabled: !(Boolean(dataSearch.email) || Boolean(dataSearch.pic)),
   });
 
   useEffect(() => {
@@ -67,6 +59,10 @@ export function ServicesContent() {
     }
   }, [resSearchService.data, resSearchService.isFetching]);
 
+  const resGetListService = useApicalGetListService(paginationModel, {
+    enabled: !(Boolean(dataSearch.email) || Boolean(dataSearch.pic)),
+  });
+
   useEffect(() => {
     if (resGetListService.data) {
       setTableData(resGetListService.data?.content);
@@ -74,6 +70,10 @@ export function ServicesContent() {
     }
   }, [resGetListService.data, resGetListService.isFetching]);
 
+  const resUser = useApiGetUsers({
+    page: paginationModel.page,
+    size: paginationModel.pageSize,
+  });
   useEffect(() => {
     // @ts-ignore
     if (resUser.data) {
@@ -81,12 +81,29 @@ export function ServicesContent() {
     }
   }, [resUser.data, resUser.isFetching]);
 
+  const [listUserPIC, setListUserPIC] = useState<ViewedUser[]>([]);
+
+  const resUserByRole = useApiUserSearchByRole({ role: 'mod' });
+  useEffect(() => {
+    // @ts-ignore
+    if (resUserByRole?.data) {
+      setListUserPIC(resUserByRole?.data)
+    }
+  }, [resUserByRole.data, resUserByRole.isFetching]);
+
   // TODO: add i18n for columns
   const serviceColumns: GridColDef<Service>[] = [
     {
       field: 'id',
-      headerName: t('Id'),
-      width: 100,
+      headerName: t('Paid service Id'),
+      width: 130,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'serviceId',
+      headerName: t('Master Service Id'),
+      width: 130,
       align: 'center',
       headerAlign: 'center',
     },
@@ -299,6 +316,7 @@ export function ServicesContent() {
               service={serviceDetail}
               listUser={listUser}
               resGetServiceId={resGetServiceId}
+              listUserPIC={listUserPIC}
             />
           </DialogContainer>
         )}
