@@ -175,7 +175,7 @@ export function UsersContent(props: Props) {
             onClick={setShouldShowCreateUser.bind(undefined, true)}
             className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
           >
-            {translation.t('Create new Admin')}
+            {translation.t('Create new')}
           </button>
         </div>
         <div className={'w-full grow'} key={tableData.map((value) => value.id).join('_')}>

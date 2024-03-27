@@ -21,7 +21,7 @@ function MainLayoutInner() {
                                 setIsOpenOnSmallScreen={setIsOpenOnSmallScreen}
                             />
                         </div>
-                        <div className={"flex-grow bg-surface flex flex-row overflow-auto"}>
+                        <div className={"flex-grow bg-white flex flex-row overflow-auto"}>
                             <Outlet />
                         </div>
                     </div>

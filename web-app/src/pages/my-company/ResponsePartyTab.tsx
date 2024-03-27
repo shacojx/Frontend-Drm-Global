@@ -53,7 +53,7 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
             "pointer-events-none": readonly,
           })}
         >
-          <div className="flex gap-4 mb-4">
+          <div className="flex gap-4 mt-0.5">
             <label htmlFor="yes" className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"

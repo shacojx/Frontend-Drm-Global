@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { callApiChangeUserPassword } from 'src/api/account'
 import { ApiChangeUserPassword } from 'src/api/types'
+import { DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen'
 import { FormFieldPassword } from 'src/components/FormFieldPassword'
 import { IconSpinner } from 'src/components/icons'
 import { useValidateCaller } from 'src/hooks-ui/useValidateCaller'
 import { FormStatus } from 'src/types/common'
+import { cn } from 'src/utils/cn.util'
 
 export default function ChangePasswordForm() {
   const translation = useTranslation()
@@ -38,13 +40,14 @@ export default function ChangePasswordForm() {
       setStatus('success')
       setPassword('')
       setRePassword('')
-      setStatus('typing')
     } catch (e: unknown) {
       setStatus("failure")
       setErrorMessage(e?.toString())
       console.error(e)
     }
   }
+
+  const disableSaveButton = status === 'requesting' || password === '' || rePassword === '' || password !== rePassword
 
   return <>
     <div className={"mb-8 space-y-1"}>
@@ -76,15 +79,23 @@ export default function ChangePasswordForm() {
     </div>
     <div className={"flex justify-end"}>
       <button
-        disabled={status === 'requesting'}
+        disabled={disableSaveButton}
         onClick={handleClickSave}
-        className="py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+        className={
+          cn(
+            "py-4 px-6 mt-8 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg",
+            {
+              "bg-disable": disableSaveButton
+            }
+          )
+        }
       >
         {translation.t('Save')}
         {status === "requesting" && <IconSpinner />}
       </button>
     </div>
     {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
+    {status === 'success' && <DialogSuccessFullscreen title='Update password successfully!' onClose={() => setStatus('typing')} />}
   </>
 }
 
