@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StatusBadge } from './StatusBadge';
-import { ServiceStep } from '../types/service';
+import { Service, ServiceStep } from '../types/service';
 import { Fragment, useEffect, useState } from 'react';
 import {
   callApiUpdateAdminRemark,
@@ -14,65 +14,89 @@ import { DialogFailureFullscreen } from './DialogFormStatusFullscreen';
 import { getFile } from '../api/upload';
 import InputFile from './InputFile';
 import { NONE_REQUIRED } from '../constants/global';
-import { useApiServiceUploadFinalContract } from '../hooks-api/useServiceApi';
-import { QueryClient } from '@tanstack/react-query';
-import KeyFactory from '../services-base/reactQuery/keyFactory';
+import {
+  useApiServiceUpdateAdminRemark,
+  useApiServiceUploadFinalContract,
+  useApiServiceUploadStatusStep,
+} from '../hooks-api/useServiceApi';
+import { QueryClient, UseQueryResult } from '@tanstack/react-query';
+import KeyFactory, {
+  QueryKeyApi,
+} from '../services-base/reactQuery/keyFactory';
 
 type Props = {
   serviceStep: ServiceStep | null;
-  serviceId: number | null;
+  serviceId?: number | null;
+  resGetServiceId?: UseQueryResult<Service, Error>;
 };
 
-export function ServiceStepContent({ serviceStep, serviceId }: Props) {
+export function ServiceStepContent({
+  serviceStep,
+  serviceId,
+  resGetServiceId,
+}: Props) {
   const { t } = useTranslation();
 
   const [file, setFile] = useState<File[]>([]);
 
   const [adminRemark, setAdminRemark] = useState('');
   const [statusStep, setStatusStep] = useState('');
-  const [visibleError, setVisibleError] = useState(false);
-  const [contentError, setContentError] = useState<any>('');
 
   useEffect(() => {
     setAdminRemark(serviceStep?.adminRemark ?? '');
     setStatusStep(serviceStep?.statusStep ?? '');
     // @ts-ignore
-    setFile(serviceStep?.result as File[])
-    console.log('serviceStep?.result: ', serviceStep?.result);
+    setFile(serviceStep?.result as File[]);
   }, [serviceStep]);
 
-  const queryClient = new QueryClient()
-  
-  async function updateAdminRemark() {
+  const queryClient = new QueryClient();
+
+  const mutateUpdateAdminRemark = useApiServiceUpdateAdminRemark();
+  const mutateUploadStatusStep = useApiServiceUploadStatusStep();
+
+  const updateAdminRemark = () => {
     if (serviceStep) {
-     const res = await callApiUpdateAdminRemark({
-        id: serviceStep?.id,
-        adminRemark,
-      }).then((data) => {
-        queryClient.invalidateQueries({ queryKey: [KeyFactory.getServiceDetail(), {serviceId}] })
-      });
-
-
+      mutateUpdateAdminRemark.mutate(
+        {
+          id: serviceStep?.id,
+          adminRemark,
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(t('Update status remark successfully'));
+          },
+          onError: (error) => {
+            toast.error(String(error));
+          },
+          onSettled: () => {
+            resGetServiceId?.refetch();
+          },
+        },
+      );
     }
-  }
+  };
 
-  async function uploadStatusStep(status: Status) {
+  const uploadStatusStep = (status: Status) => {
     if (serviceStep) {
-      try {
-        await callApiUploadStatusStep({
+      mutateUploadStatusStep.mutate(
+        {
           id: serviceStep?.id,
           status,
-        });
-        setStatusStep(status);
-        toast.success(t('Update status step successfully'));
-      } catch (e) {
-        toast.error(t('Update status step failed'));
-      }
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(t('Update status step successfully'));
+          },
+          onError: (error) => {
+            // toast.error(t('Update status step failed'));
+            toast.error(String(error));
+          },
+          onSettled: () => {
+            resGetServiceId?.refetch();
+          },
+        },
+      );
     }
-  }
-
-  const toggle = () => {
-    setVisibleError(!visibleError);
   };
 
   const onDownloadServiceUpload = (item: UploadedDocumentType) => {
@@ -81,8 +105,7 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
         getFile(item.fileDocument);
       }
     } catch (error) {
-      toggle();
-      setContentError(error);
+      toast.error(String(error));
       console.error('error: ', error);
     }
   };
@@ -115,35 +138,22 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
           newArr[id] = file;
           return newArr;
         });
+        toast.success(t('Update file successfully'));
       }
     } catch (error) {
-      toggle();
-      setContentError(error);
+      toast.error(String(error));
       console.error('error: ', error);
     }
   };
 
   return (
     <div className={'w-full border border-primary_25 rounded-xl py-lg px-xl'}>
-      {visibleError && (
-        <DialogFailureFullscreen
-          title="Failure!"
-          subTitle={contentError}
-          actionElement={
-            <button
-              onClick={toggle}
-              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-            >
-              <span>{t('Close')}</span>
-            </button>
-          }
-        />
-      )}
       <div className={'flex gap-4 mb-4 items-center'}>
         <div className={'font-bold text-xl mr-auto'}>
           {serviceStep?.stepName}
         </div>
-        <StatusBadge status={statusStep as Status} showDot />
+        <StatusBadge status={statusStep as Status} showIcon />
+        
         {statusStep === Status.PENDING && (
           <button
             className="w-[130px] h-[40px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2"
@@ -170,7 +180,7 @@ export function ServiceStepContent({ serviceStep, serviceId }: Props) {
           <span className={'text-lg font-bold'}>{t("Admin's remark")}</span>
           <button
             className="w-[100px] h-[35px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg py-2"
-            onClick={() => updateAdminRemark()}
+            onClick={updateAdminRemark}
           >
             {t('Save')}
           </button>

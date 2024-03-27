@@ -16,7 +16,9 @@ import {
   callApiGetListService,
   callApiGetServiceDetail,
   callApiSearchPaidService,
+  callApiUpdateAdminRemark,
   callApiUploadCustomerDocument,
+  callApiUploadStatusStep,
 } from '../api/serviceManagement';
 import { ApiSearchPaidServiceType, PaginationType } from '../api/types';
 
@@ -59,7 +61,7 @@ export function useApiGetServiceDetail(
   return useQuery(
     mergeQueryOptions(
       {
-        queryKey: [KeyFactory.getServiceDetail(), {id}],
+        queryKey: KeyFactory.getServiceDetail(id),
         queryFn: () => callApiGetServiceDetail(id),
         enabled: !!extraOption?.enabled,
       },
@@ -70,7 +72,18 @@ export function useApiGetServiceDetail(
 
 export function useApiServiceUploadFinalContract() {
   return useMutation({
-    mutationFn: callApiUploadCustomerDocument
-  })
+    mutationFn: callApiUploadCustomerDocument,
+  });
 }
 
+export function useApiServiceUpdateAdminRemark() {
+  return useMutation({
+    mutationFn: callApiUpdateAdminRemark,
+  });
+}
+
+export function useApiServiceUploadStatusStep() {
+  return useMutation({
+    mutationFn: callApiUploadStatusStep,
+  });
+}

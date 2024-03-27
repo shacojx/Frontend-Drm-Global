@@ -14,10 +14,12 @@ import { Status } from '../constants/StatusBadge';
 import { uploadFile } from '../api/upload';
 import { MyCompanyDetailPage } from './service/my-company/MyCompanyDetailPage';
 import { cn } from '../utils/cn.util';
+import { UseQueryResult } from '@tanstack/react-query';
 
 type Props = {
   listUser: ViewedUser[];
   service: Service | null;
+  resGetServiceId?: UseQueryResult<Service, Error>;
 };
 
 type TabType = {
@@ -31,7 +33,7 @@ type TabType = {
   onClick?: () => void;
 };
 
-export function ServiceDetailDialog({ service, listUser }: Props) {
+export function ServiceDetailDialog({ service, listUser, resGetServiceId }: Props) {
   const { t } = useTranslation();
   const { validateCaller, validateAll } = useValidateCaller();
   const [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
@@ -157,7 +159,7 @@ export function ServiceDetailDialog({ service, listUser }: Props) {
               optionInfos={cycleOptions}
               value={cycle}
             ></FormFieldSelect>
-            <StatusBadge status={service?.statusService as Status} showDot />
+            <StatusBadge status={service?.statusService as Status} showIcon />
           </div>
           <div>
             <div className={'font-bold'}>{t('Person in charge')} *</div>
@@ -286,6 +288,7 @@ export function ServiceDetailDialog({ service, listUser }: Props) {
           <ServiceStepContent
             serviceStep={serviceStep}
             serviceId={service?.id ?? null}
+            resGetServiceId={resGetServiceId}
           />
         </div>
         {showCompanyDetailDialog && (

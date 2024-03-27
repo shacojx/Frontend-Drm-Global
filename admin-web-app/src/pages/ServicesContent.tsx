@@ -88,6 +88,7 @@ export function ServicesContent() {
       headerName: t('Id'),
       width: 100,
       align: 'center',
+      headerAlign: 'center',
     },
     {
       field: 'statusService',
@@ -95,7 +96,7 @@ export function ServicesContent() {
       sortable: false,
       width: 140,
       renderCell: (params: GridRenderCellParams) => {
-        return <StatusBadge status={Status.IN_PROGRESS}></StatusBadge>;
+        return <StatusBadge status={params.value as Status}></StatusBadge>;
       },
     },
     {
@@ -113,13 +114,13 @@ export function ServicesContent() {
       headerName: t('Service Name'),
       sortable: false,
       type: 'string',
-      width: 160,
+      width: 300,
     },
     {
       field: 'customerName',
       headerName: t('Customer Name'),
       sortable: false,
-      width: 160,
+      width: 200,
       type: 'string',
       renderCell: (params: GridRenderCellParams) => {
         const user = listUser.find((u) => u.id === params.row.userId);
@@ -154,7 +155,7 @@ export function ServicesContent() {
       headerName: t('PIC'),
       sortable: false,
       type: 'string',
-      width: 120,
+      width: 200,
     },
   ];
 
@@ -294,7 +295,11 @@ export function ServicesContent() {
             isAutoSize
             panelClassName={'max-w-[1200px]'}
           >
-            <ServiceDetailDialog service={serviceDetail} listUser={listUser} />
+            <ServiceDetailDialog
+              service={serviceDetail}
+              listUser={listUser}
+              resGetServiceId={resGetServiceId}
+            />
           </DialogContainer>
         )}
       </div>

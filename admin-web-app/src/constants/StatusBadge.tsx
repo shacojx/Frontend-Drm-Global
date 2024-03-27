@@ -1,3 +1,5 @@
+import { IconCheck, IconInfoCircle, IconRefreshCircle } from "../components/icons";
+
 export enum Status {
   PENDING = 'Pending',
   IN_PROGRESS = 'In-Progress',
@@ -13,7 +15,7 @@ export const StatusBackgroundClassNameMap: Record<string, string> = {
   [Status.IN_PROGRESS]: 'bg-in_progress_bg',
   [Status.APPROVED]: 'bg-green-100',
   [Status.CONFIRMED]: 'bg-green-100',
-  [Status.ISSUED]: "bg-green-100',",
+  [Status.ISSUED]: "bg-green-100",
 };
 
 export const StatusTextClassNameMap: Record<string, string> = {
@@ -31,5 +33,14 @@ export const StatusDotClassNameMap: Record<string, string> = {
   [Status.IN_PROGRESS]: 'bg-pending_text',
   [Status.APPROVED]: 'bg-green-400',
   [Status.CONFIRMED]: 'bg-green-400',
-  [Status.ISSUED]: "bg-green-400',",
+  [Status.ISSUED]: "bg-green-400",
+};
+
+export const StatusIconMap: Record<string, React.ReactNode> = {
+  [Status.PENDING]: <IconInfoCircle />,
+  [Status.READY]: <IconRefreshCircle />,
+  [Status.IN_PROGRESS]: <IconRefreshCircle />,
+  [Status.APPROVED]: <IconCheck />,
+  [Status.CONFIRMED]: <IconCheck />,
+  [Status.ISSUED]: <IconCheck />,
 };
