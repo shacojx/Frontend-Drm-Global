@@ -170,8 +170,11 @@ export type ServiceStepItemProps = {
 
 export function ServiceStepItem(props: ServiceStepItemProps) {
   const onChangeStepValue = (value: string, name: keyof ServiceStep) => {
+    const isValid = /[\d\w\s]*/.test(value);
+      if (!isValid) return;
+
     if (props?.onChangeStepContent) {
-      props?.onChangeStepContent(props?.index, name, value);
+      props?.onChangeStepContent(props?.index, name, value.slice(0, 100));
     }
   };
   const onDeleteItem = () => props.onDeleteItem(props.index);
@@ -190,7 +193,7 @@ export function ServiceStepItem(props: ServiceStepItemProps) {
         <Grid item md={6}>
           <FormFieldText
             id={'name'}
-            label={'name'}
+            label={'Name'}
             isRequired={true}
             value={props?.step?.name}
             onChange={(v) => onChangeStepValue(v, 'name')}
