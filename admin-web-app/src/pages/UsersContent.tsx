@@ -70,13 +70,13 @@ export function UsersContent(props: Props) {
       page: paginationModel.page,
       size: paginationModel.pageSize,
     };
-    const rawResult = await callApiLViewUser(param);
-    // setTableData(rawResult.content);
+    await refetch()
   }
 
-  const handleClear = () => {
+  const handleClear = async () => {
     setPhone(undefined)
     setEmail('')
+    setTimeout(refetch)
   }
 
   // TODO: add i18n for columns
