@@ -13,6 +13,7 @@ import { saveAuthInfo } from "src/services-business/api/authentication";
 import { validateApiPassword } from "src/services-business/api/validateApiParam";
 import { FormStatus } from "src/types/common";
 import { RoutePaths } from "src/constants/routerPaths";
+import { cn } from "src/utils/cn.util";
 
 export function LoginPage() {
   const translation = useTranslation()
@@ -67,13 +68,22 @@ export function LoginPage() {
     navigate(RoutePaths.register)
   }
 
+
   return <PageLayoutOneForm>
     <div className="flex flex-col gap-1">
       <p className="text-cXl text-gray-400">{translation.t('Welcome back')}! 👋</p>
       <p className="text-h4">{translation.t('Sign in to your account')}</p>
     </div>
-    <FormFieldEmail id="email" value={email} onChange={handleChangeEmail} validateCaller={validateCaller} />
+    <FormFieldEmail 
+      className={cn({
+        "border-danger bg-red-50": status === 'failure'
+      })} 
+      hideSuffix id="email" value={email} onChange={handleChangeEmail} validateCaller={validateCaller} 
+    />
     <FormFieldPassword
+      className={cn({
+        "border-danger bg-red-50": status === 'failure'
+      })} 
       id={"password"}
       value={password}
       onChange={handleChangePassword}

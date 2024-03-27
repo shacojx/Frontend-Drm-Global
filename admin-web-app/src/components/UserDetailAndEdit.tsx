@@ -15,6 +15,8 @@ import {
   RNPhoneValue
 } from "../services-business/api/generate-api-param/account";
 import { generateEditUserParam } from "../services-business/api/generate-api-param/userManagement";
+import { DialogSuccessFullscreen } from "./DialogFormStatusFullscreen";
+import ButtonCs from "./ButtonCs";
 
 type Props = {
   userInfo: ViewedUser,
@@ -44,6 +46,8 @@ export function UserDetailAndEdit(props: Props) {
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [isRequestingEnableOrDisable, setIsRequestingEnableOrDisable] = useState<boolean>(false)
   const [isViewMode, setIsViewMode] = useState<boolean>(true)
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   function handleChangeNation(nation: NationValue) {
     setNation(nation)
@@ -93,6 +97,7 @@ export function UserDetailAndEdit(props: Props) {
       }
       await callApiDeactiveAccount(body)
       setIsRequestingEnableOrDisable(false)
+      setShowSuccessModal(true)
       props.onEdit()
     } catch (e: unknown) {
       setIsRequestingEnableOrDisable(false)
@@ -257,5 +262,11 @@ export function UserDetailAndEdit(props: Props) {
         isFixedValue={isViewMode}
       />
     </div>
+
+    {showSuccessModal && <DialogSuccessFullscreen 
+      onClose={() => setShowSuccessModal(false)} 
+      title="Update user status successfully!" 
+      actionElement={<ButtonCs onClick={() => setShowSuccessModal(false)}>Close</ButtonCs>}
+    />}
   </div>
 }

@@ -67,7 +67,6 @@ export function FormFieldPhoneNumber(props: FormFieldPhoneNumberProps) {
   }
 
   function handleBlur() {
-    console.log(props.value)
     if (props.ignoreValues?.includes(props.value as RNPhoneValue)) {
       return
     }

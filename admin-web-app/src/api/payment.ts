@@ -24,7 +24,7 @@ export async function callApiGetOrders({ page, pic = "", email = "" }: ApiGetOrd
 
   const orders = Object.values(groups).map(groupItems => {
     const totalPricePerCycle = groupItems.reduce((acc, cur) => acc + cur.pricePerCycle, 0)
-    const services = groupItems.map(item => ({ id: item.id, name: item.serviceName }))
+    const services = groupItems.map(item => ({ id: item.serviceId, name: item.serviceName }))
 
     return {...groupItems[0], pricePerCycle: totalPricePerCycle, services}
   })

@@ -63,7 +63,7 @@ export function OrderPaymentContent(props: Props) {
   // TODO: add i18n for columns
   const orderPaymentColumns: GridColDef<NonNullable<typeof orders>[number]>[] =
     [
-      { field: 'id', headerName: 'ID', width: 70 },
+      { field: 'transitionId', headerName: 'Transaction ID', width: 150 },
       {
         field: 'statusPayment',
         headerName: 'Status',
@@ -106,7 +106,6 @@ export function OrderPaymentContent(props: Props) {
         type: 'string',
         width: 160,
         renderCell: (params) => {
-          const { serviceId } = params.row;
 
           return (
             <div className="w-full relative group">
@@ -132,7 +131,9 @@ export function OrderPaymentContent(props: Props) {
                   </tbody>
                 </table>
               </div>
-              {serviceId}
+              <div className="line-clamp-1 overflow-hidden">
+                {params.row.services.map(item => item.id).join(', ')}
+              </div>
             </div>
           );
         },
@@ -144,7 +145,6 @@ export function OrderPaymentContent(props: Props) {
         type: 'string',
         width: 200,
         renderCell: (params) => {
-          const { serviceName } = params.row;
 
           return (
             <div className="w-full relative group">
@@ -171,7 +171,9 @@ export function OrderPaymentContent(props: Props) {
                 </table>
               </div>
 
-              <div className="line-clamp-1 overflow-hidden">{serviceName}</div>
+              <div className="line-clamp-1 overflow-hidden">{
+                params.row.services.map(item => item.name).join(', ')
+              }</div>
             </div>
           );
         },

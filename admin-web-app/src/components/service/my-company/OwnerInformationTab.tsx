@@ -21,7 +21,6 @@ export function OwnerInformationTab({
   owners = [],
   onChange,
 }: OwnerInformationTabProps) {
-  console.log(owners);
   const { t } = useTranslation();
   const totalShare = owners?.reduce(
     (acc, cur) => acc + (cur.ownership ?? 0),

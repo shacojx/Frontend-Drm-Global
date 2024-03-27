@@ -18,7 +18,6 @@ export function DocumentTab({
   const { t } = useTranslation();
   const [downloadingName, setDownloadingName] = useState<string>();
 
-  console.log(documents);
 
   const handleFormChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.item(0);

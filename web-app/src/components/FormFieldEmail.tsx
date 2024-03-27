@@ -17,7 +17,7 @@ const validateEmail: ValidateFunction<string> = function (isRequired, pass) {
   return validateApiEmail(pass)
 }
 
-export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?: boolean}) {
+export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?: boolean; hideSuffix?: boolean}) {
   const translation = useTranslation()
   const [wasRegister, setWasRegister] = useState<boolean>(false)
   const [shouldShowError, setShouldShowError] = useValidate(
@@ -40,7 +40,6 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
   function handleBlur() {
     const isValid = validateEmail(props.isRequired, props.value)
     setShouldShowError(!isValid)
-    setIsValidEmail(isValid)
 
     if (isValid && props.shouldLiveCheck) {
       callApiVerifyEmail(props.value!)
@@ -53,7 +52,9 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
     }
   }
 
+  
   const statusClassName = (shouldShowError ? 'border-danger bg-red-50' : 'bg-white') + (props.isFixedValue ? ' bg-gray-200' : '')
+
   return <div className="flex flex-col gap-2">
     <p className="flex text-cBase font-bold gap-1">
       <span>{translation.t('Email address')}</span>
@@ -72,7 +73,7 @@ export function FormFieldEmail(props: FormFieldProps<string> & {shouldLiveCheck?
         placeholder="Example@hotmail.com"
         className="grow bg-transparent outline-none"
       />
-     {isValidEmail &&  <IconCheck className="text-success" />}
+     {isValidEmail && !props.hideSuffix &&  <IconCheck className="text-success" />}
    </div>
     {wasRegister && <p className={"text-xs text-danger"}>{translation.t('The email was registered')}</p>}
   </div>

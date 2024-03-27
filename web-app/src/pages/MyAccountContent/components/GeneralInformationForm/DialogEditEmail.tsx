@@ -40,7 +40,6 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
     };
   }, [countdown]);
 
-  console.log(countdown)
 
   const handleSendOtp = async () => {
     try {
