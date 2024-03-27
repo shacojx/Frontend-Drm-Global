@@ -81,7 +81,7 @@ export function UsersContent(props: Props) {
 
   // TODO: add i18n for columns
   const userColumns: GridColDef<ViewedUser>[] = [
-    { field: 'userId', headerName: 'ID', width: 70 },
+    { field: 'userId', headerName: 'User ID', width: 70 },
     {
       field: 'roles',
       headerName: 'Role',
