@@ -259,7 +259,7 @@ export function ServiceDetailDialog({
             return (
               <div
                 className={cn(
-                  'w-full border relative hover:shadow cursor-pointer border-primary_25 rounded-xl flex items-center gap-6 pl-xl px-md py-sm',
+                  'w-full border relative hover:shadow cursor-pointer border-primary_25 rounded-xl flex items-center gap-4 pl-lg px-md py-sm',
                   { 'shadow-lg border-primary': item.id === serviceStep?.id },
                 )}
                 key={item.id}
@@ -287,9 +287,9 @@ export function ServiceDetailDialog({
                     <IconCheck className="w-3 h-3" />
                   </div>
                 </div>
-                <div className="flex-1">
-                  <div className="">{item.stepName}</div>
-                  <div className="text-sm text-[#A0AEC0]">
+                <div className="flex-1 ">
+                  <div className="line-clamp-1" title={item.stepName}>{item.stepName}</div>
+                  <div className="text-sm text-[#A0AEC0] line-clamp-1" title={item.estimatedCompletionTime}>
                     {item.estimatedCompletionTime}
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export function ServiceDetailDialog({
             isCloseOnClickOverlay
             isFullSize
             isAutoSize
-            panelClassName={'max-w-[1200px]'}
+            panelClassName={'max-w-[1200px] min-h-[70vh]'}
           >
             <MyCompanyDetailPage />
           </DialogContainer>

@@ -27,6 +27,7 @@ import {
   OwnerInformation,
   ResponseParty,
 } from '../../../api/types';
+import ButtonCs from '../../ButtonCs';
 
 const TABS = [
   'Company Information',
@@ -118,13 +119,13 @@ export function MyCompanyDetailPage() {
 
   return (
     <>
-      <div className="bg-white w-full flex flex-col border border-l border-stroke">
-        <div className="grow p-10 overflow-y-auto">
+      <div className="bg-white w-full flex flex-col border border-l border-stroke min-h-[70vh]">
+        <div className="grow p-10 overflow-y-auto flex flex-col">
           <h2 className="mb-12 text-lg font-semibold relative after:absolute after:w-16 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1">
             {t('Company Detail')}
           </h2>
 
-          <div className="rounded-lg p-1 border border-solid border-surface mb-12 overflow-x-scroll relative h-14">
+          <div className="rounded-lg p-1 border border-solid border-surface mb-12 overflow-auto relative h-14">
             <div className="min-w-full whitespace-nowrap absolute flex">
               {TABS.map((tab) => (
                 <div
@@ -143,7 +144,7 @@ export function MyCompanyDetailPage() {
             </div>
           </div>
 
-          <div className="border border-solid border-surface rounded-lg p-6">
+          <div className="grow border border-solid border-surface rounded-lg p-6">
             {activeTab === 'Company Information' && (
               <CompanyInformationTab
                 readonly={!isEditing}
@@ -184,8 +185,8 @@ export function MyCompanyDetailPage() {
 
         <div className="h-20 shrink-0 border-t border-solid border-stroke flex justify-end gap-2 items-center px-8">
           {isEditing && (
-            <button
-              className="border border-solid border-surface h-13 px-6 rounded-lg font-semibold"
+            <ButtonCs
+              className="border border-surface text-primary bg-transparent"
               onClick={() => {
                 if (!data) return;
 
@@ -199,10 +200,9 @@ export function MyCompanyDetailPage() {
               }}
             >
               {t('Cancel')}
-            </button>
+            </ButtonCs>
           )}
-          <button
-            className="rounded-lg bg-primary h-13 px-6 text-white font-semibold"
+          <ButtonCs
             onClick={() => {
               if (isEditing) {
                 handleSave();
@@ -212,7 +212,7 @@ export function MyCompanyDetailPage() {
             }}
           >
             {isEditing ? t('Save') : t('Edit')}
-          </button>
+          </ButtonCs>
         </div>
       </div>
 
@@ -221,12 +221,11 @@ export function MyCompanyDetailPage() {
           onClose={() => setShowSuccessDialog(false)}
           title="Company information updated"
           actionElement={
-            <button
+            <ButtonCs
               onClick={() => setShowSuccessDialog(false)}
-              className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
               Close
-            </button>
+            </ButtonCs>
           }
         />
       )}
@@ -236,12 +235,11 @@ export function MyCompanyDetailPage() {
           title={error}
           onClose={() => setError(false)}
           actionElement={
-            <button
+            <ButtonCs
               onClick={() => setError(false)}
-              className="w-full h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
               Close
-            </button>
+            </ButtonCs>
           }
         />
       )}

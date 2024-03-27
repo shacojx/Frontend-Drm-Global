@@ -28,6 +28,7 @@ import {
 import { DialogFailureFullscreen } from '../components/DialogFormStatusFullscreen';
 import { Status } from '../constants/StatusBadge';
 import { useApiGetUsers, useApiUserSearchByRole } from '../hooks/api/user';
+import { toast } from 'react-toastify';
 
 export function ServicesContent() {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ export function ServicesContent() {
   const [serviceDetail, setServiceDetail] = useState<Service | null>(null);
   const [listUser, setListUser] = useState<ViewedUser[]>([]);
 
+  // todo call api
   const resSearchService = useApiSearchPaidService(dataSearch, {
     enabled: Boolean(dataSearch.email) || Boolean(dataSearch.pic),
   });
@@ -87,7 +89,7 @@ export function ServicesContent() {
   useEffect(() => {
     // @ts-ignore
     if (resUserByRole?.data) {
-      setListUserPIC(resUserByRole?.data)
+      setListUserPIC(resUserByRole?.data);
     }
   }, [resUserByRole.data, resUserByRole.isFetching]);
 
@@ -220,6 +222,10 @@ export function ServicesContent() {
     resGetServiceId.refetch();
   };
 
+  const handleClickSubmitGetUserByRole = () => {
+    resUserByRole.refetch();
+  };
+
   return (
     <div className={'w-full grow flex flex-col p-3'}>
       {resSearchService.isError && (
@@ -271,6 +277,21 @@ export function ServicesContent() {
           actionElement={
             <button
               onClick={handleClickSubmitGetServiceId}
+              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+            >
+              <span>{t('Try again')}</span>
+            </button>
+          }
+        />
+      )}
+
+      {resUserByRole.isError && (
+        <DialogFailureFullscreen
+          title="Failure!"
+          subTitle={resUserByRole?.error?.message}
+          actionElement={
+            <button
+              onClick={handleClickSubmitGetUserByRole}
               className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
               <span>{t('Try again')}</span>

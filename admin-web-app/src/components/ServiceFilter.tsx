@@ -57,7 +57,7 @@ export function ServiceFilter({ onSubmit, onReset }: Props) {
           <div className={'font-bold mb-1 invisible'}>{t('PIC')}</div>
           <ButtonCs
             type="button"
-            className="bg-transparent border border-primary text-primary"
+            className="bg-transparent border border-surface text-primary"
             onClick={reset}
           >
             {t('Reset')}

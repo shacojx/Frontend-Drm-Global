@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getFile, uploadFile } from "src/api/upload";
 import { UploadedDocumentType } from "../../../../api/types";
@@ -14,6 +14,7 @@ import NotFoundService from "../NotFoundService";
 import TagService from "../TagService";
 import { useApiLLCServiceUploadDocument } from "src/hooks-api/useLlcService";
 import { DialogFailureFullscreen } from "src/components/DialogFormStatusFullscreen";
+import { toast } from "react-toastify";
 
 export default function ContentFillingService() {
   const { t } = useTranslation();
@@ -21,12 +22,38 @@ export default function ContentFillingService() {
 
   const { detailFilling } = useContext(LLCMyServiceContext);
 
+  useEffect(() => {
+    detailFilling?.customerDocument?.forEach((fileRes) => {
+      if (fileRes.fileDocument){
+        let file = {
+          ...fileRes,
+          name: fileRes.fileDocument,
+        };
+        setFile((pre) => {
+          let newArr: File[] = [...pre];
+          // @ts-ignore
+          newArr[fileRes.id] = file;
+          return newArr;
+        });
+      }
+    });
+  }, [detailFilling]);
+
   const mutateUploadFile = useApiLLCServiceUploadDocument();
   const [visibleError, setVisibleError] = useState(false);
   const [contentError, setContentError] = useState<any>("");
 
   // @ts-ignore
   const handleChangeFile = async (file?: File, id: number) => {
+    if (!file) {
+      setFile((pre) => {
+        let newArr: File[] = [...pre];
+        // @ts-ignore
+        newArr[id] = file;
+        return newArr;
+      });
+      return;
+    }
     const formData = new FormData();
     // @ts-ignore
     formData.append("files", file);
@@ -36,15 +63,16 @@ export default function ContentFillingService() {
       const res = await mutateUploadFile.mutateAsync(formData);
       if (res) {
         console.log("res: ", res);
+        toast.success(t("Update file successfully"));
         setFile((pre) => {
           let newArr: File[] = [...pre];
           // @ts-ignore
-          newArr[id] = file;
+          newArr[id] = { name: res?.data?.[0] };
           return newArr;
         });
       }
     } catch (error) {
-      toggle()
+      toggle();
       setContentError(error);
       console.error("error: ", error);
     }
@@ -56,17 +84,15 @@ export default function ContentFillingService() {
         getFile(item.fileDocument);
       }
     } catch (error) {
-      toggle()
+      toggle();
       setContentError(error);
-      console.error('error: ', error);
-      
+      console.error("error: ", error);
     }
-   
   };
 
-  const toggle = ()=>{
-    setVisibleError(!visibleError)
-  }
+  const toggle = () => {
+    setVisibleError(!visibleError);
+  };
 
   return (
     <>

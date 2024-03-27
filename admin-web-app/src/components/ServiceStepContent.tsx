@@ -44,7 +44,21 @@ export function ServiceStepContent({
     setAdminRemark(serviceStep?.adminRemark ?? '');
     setStatusStep(serviceStep?.statusStep ?? '');
     // @ts-ignore
-    setFile(serviceStep?.result as File[]);
+
+    serviceStep?.result?.forEach((fileRes) => {
+      if (fileRes.fileDocument) {
+        let file = {
+          ...fileRes,
+          name: fileRes.fileDocument,
+        };
+        setFile((pre) => {
+          let newArr: File[] = [...pre];
+          // @ts-ignore
+          newArr[fileRes.id] = file;
+          return newArr;
+        });
+      }
+    });
   }, [serviceStep]);
 
   const mutateUpdateAdminRemark = useApiServiceUpdateAdminRemark();
@@ -127,11 +141,10 @@ export function ServiceStepContent({
     try {
       const res = await mutateUploadFile.mutateAsync(formData);
       if (res) {
-        toast.success(res.message);
         setFile((pre) => {
           let newArr: File[] = [...pre];
           // @ts-ignore
-          newArr[id] = file;
+          newArr[id] = { name: res.data?.[0] };
           return newArr;
         });
         toast.success(t('Update file successfully'));
@@ -195,57 +208,60 @@ export function ServiceStepContent({
 
   return (
     <div className={'w-full border border-primary_25 rounded-xl py-lg px-xl'}>
-      <div className={'flex gap-4 mb-4 items-center'}>
-        <div className={'font-bold text-xl mr-auto'}>
+      <div className={'flex gap-4 mb-4 items-center '}>
+        <div className={'font-bold text-xl w-full lg:w-[60%] mr-auto'}>
           {serviceStep?.stepName}
         </div>
-
-        <Menu as="div" className="relative inline-block text-left">
-          <div>
-            <Menu.Button className="inline-flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-              {t('Send Reminder')}
-              <IconAltArrowDown
-                className="-mr-1 ml-2 h-5 w-5 text-violet-200 hover:text-violet-100"
-                aria-hidden="true"
-              />
-            </Menu.Button>
-          </div>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-              <div className="px-1 py-1 ">
-                {OPTIONS.map((option, index) => (
-                  <Menu.Item key={index}>
-                    {({ active }) => (
-                      <ButtonCs
-                        onClick={() => handleMenuItemClick(option)}
-                        className={`w-full justify-start rounded-none ${
-                          active ? 'bg-primary ' : 'bg-transparent text-primary'
-                        }`}
-                      >
-                        {option.label}
-                      </ButtonCs>
-                    )}
-                  </Menu.Item>
-                ))}
-              </div>
-            </Menu.Items>
-          </Transition>
-        </Menu>
-        <FormFieldSelect
-          id={'serviceStepStatus'}
-          onChange={uploadStatusStep}
-          validateCaller={validateCaller}
-          optionInfos={SERVICE_STEP_STATUS}
-          value={statusStep as Status}
-        ></FormFieldSelect>
+        <div className="flex gap-4 items-center">
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+                {t('Send Reminder')}
+                <IconAltArrowDown
+                  className="-mr-1 ml-2 h-5 w-5 text-violet-200 hover:text-violet-100"
+                  aria-hidden="true"
+                />
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <div className="px-1 py-1 ">
+                  {OPTIONS.map((option, index) => (
+                    <Menu.Item key={index}>
+                      {({ active }) => (
+                        <ButtonCs
+                          onClick={() => handleMenuItemClick(option)}
+                          className={`w-full justify-start rounded-none ${
+                            active
+                              ? 'bg-primary '
+                              : 'bg-transparent text-primary'
+                          }`}
+                        >
+                          {option.label}
+                        </ButtonCs>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+          <FormFieldSelect
+            id={'serviceStepStatus'}
+            onChange={uploadStatusStep}
+            validateCaller={validateCaller}
+            optionInfos={SERVICE_STEP_STATUS}
+            value={statusStep as Status}
+          ></FormFieldSelect>
+        </div>
       </div>
       <div className={'mb-4'}>
         <div className={'flex gap-4 mb-2 items-center'}>
