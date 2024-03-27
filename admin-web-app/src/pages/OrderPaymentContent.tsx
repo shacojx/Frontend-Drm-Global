@@ -61,187 +61,205 @@ export function OrderPaymentContent(props: Props) {
 
   
   // TODO: add i18n for columns
-  const orderPaymentColumns: GridColDef<NonNullable<(typeof orders)>[number]>[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    {
-      field: 'statusPayment',
-      headerName: 'Status',
-      sortable: false,
-      type: "string",
-      width: 100,
-      cellClassName: (params: GridCellParams) => {
-        const status = params.row.statusPayment
-        if (status === "Confirmed") {
-          return "text-green-500"
-        }
+  const orderPaymentColumns: GridColDef<NonNullable<typeof orders>[number]>[] =
+    [
+      { field: 'id', headerName: 'ID', width: 70 },
+      {
+        field: 'statusPayment',
+        headerName: 'Status',
+        sortable: false,
+        type: 'string',
+        width: 100,
+        cellClassName: (params: GridCellParams) => {
+          const status = params.row.statusPayment;
+          if (status === 'Confirmed') {
+            return 'text-green-500';
+          }
 
-        if (status === "Pending") {
-          return "text-purple-500"
-        }
+          if (status === 'Pending') {
+            return 'text-purple-500';
+          }
 
-        return ""
+          return '';
+        },
+        valueGetter: (params: GridValueGetterParams) => {
+          const status = params.row.statusPayment;
+
+          if (status === 'Confirmed') {
+            return 'Approved';
+          }
+        },
       },
-      valueGetter: (params: GridValueGetterParams) => {
-        const status = params.row.statusPayment;
-
-        if (status === "Confirmed") {
-          return "Approved"
-        }
-      }
-    },
-    {
-      field: "name",
-      headerName: "Customer Name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
-      valueGetter: (params: GridValueGetterParams) => `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-    },
-    {
-      field: "serviceId",
-      headerName: "Service Id",
-      sortable: false,
-      type: "string",
-      width: 160,      
-      renderCell: (params) => {
-        const { serviceId } = params.row
-
-        return (
-          <div className="w-full relative group">
-            <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
-              <table className="table-auto border-collapse border border-slate-500 rounded">
-                <thead>
-                  <tr>
-                    <th className="border border-slate-300 p-2">Service ID</th>
-                    <th className="border border-slate-300 p-2">Service Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {params.row.services.map(({ id, name }) => (
-                    <tr key={id}>
-                      <td className="border border-slate-300 p-2">{id}</td>
-                      <td className="border border-slate-300 p-2">{name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {serviceId}
-          </div>
-        );
-      }
-    },
-    {
-      field: "serviceName",
-      headerName: "Service Name",
-      sortable: false,
-      type: "string",
-      width: 200,
-      renderCell: (params) => {
-        const { serviceName } = params.row
-
-        return (
-          <div className="w-full relative group">
-            <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
-              <table className="table-auto border-collapse border border-slate-500 rounded">
-                <thead>
-                  <tr>
-                    <th className="border border-slate-300 p-2">Service ID</th>
-                    <th className="border border-slate-300 p-2">Service Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {params.row.services.map(({ id, name }) => (
-                    <tr key={id}>
-                      <td className="border border-slate-300 p-2">{id}</td>
-                      <td className="border border-slate-300 p-2">{name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            
-            <div className="bg-red-200 line-clamp-1 overflow-hidden">
-              {serviceName}
-            </div>
-          </div>
-        );
-      }
-    },
-    {
-      field: "paymentMethod",
-      headerName: "Payment Method",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
-    },
-    {
-      field: "amountUSD",
-      headerName: "Amount in USD ($)",
-      sortable: false,
-      type: "string",
-      width: 150,
-    },
-    {
-      field: "amountLocal",
-      headerName: "Amount in other currency",
-      sortable: false,
-      type: "string",
-      width: 180,
-    },
-    {
-      field: "phone",
-      headerName: "Phone number",
-      sortable: false,
-      type: "string",
-      width: 120,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      sortable: false,
-      type: "string",
-      width: 120,
-    },
-    {
-      field: "createdAt",
-      headerName: "Created on",
-      sortable: false,
-      type: "string",
-      width: 120,
-      valueGetter: (params: GridValueGetterParams) => `${generateFormatDate(new Date(params.row.createdAt))}`,
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      sortable: false,
-      type: "string",
-      width: 200,
-      renderCell: (params: GridRenderCellParams) => {
-        const status = params.row.statusPayment
-
-        if (status === "Confirmed")  {
-          return ""
-        }
-
-        return (
-          <div className="flex flex-row gap-3">
-            <button
-              onClick={async () => {
-                await approveOrder(params.row.transitionId)
-                await refetch()
-              }}
-              className={
-                'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
-              }
-            >
-              Approve Payment
-            </button>
-          </div>
-        );
+      {
+        field: 'name',
+        headerName: 'Customer Name',
+        description: 'This column has a value getter and is not sortable.',
+        sortable: false,
+        width: 160,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${params.row.firstName || ''} ${params.row.lastName || ''}`,
       },
-    },
-  ];
+      {
+        field: 'serviceId',
+        headerName: 'Service Id',
+        sortable: false,
+        type: 'string',
+        width: 160,
+        renderCell: (params) => {
+          const { serviceId } = params.row;
+
+          return (
+            <div className="w-full relative group">
+              <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+                <table className="table-auto border-collapse border border-slate-500 rounded">
+                  <thead>
+                    <tr>
+                      <th className="border border-slate-300 p-2">
+                        Service ID
+                      </th>
+                      <th className="border border-slate-300 p-2">
+                        Service Name
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {params.row.services.map(({ id, name }) => (
+                      <tr key={id}>
+                        <td className="border border-slate-300 p-2">{id}</td>
+                        <td className="border border-slate-300 p-2">{name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {serviceId}
+            </div>
+          );
+        },
+      },
+      {
+        field: 'serviceName',
+        headerName: 'Service Name',
+        sortable: false,
+        type: 'string',
+        width: 200,
+        renderCell: (params) => {
+          const { serviceName } = params.row;
+
+          return (
+            <div className="w-full relative group">
+              <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+                <table className="table-auto border-collapse border border-slate-500 rounded">
+                  <thead>
+                    <tr>
+                      <th className="border border-slate-300 p-2">
+                        Service ID
+                      </th>
+                      <th className="border border-slate-300 p-2">
+                        Service Name
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {params.row.services.map(({ id, name }) => (
+                      <tr key={id}>
+                        <td className="border border-slate-300 p-2">{id}</td>
+                        <td className="border border-slate-300 p-2">{name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="line-clamp-1 overflow-hidden">{serviceName}</div>
+            </div>
+          );
+        },
+      },
+      {
+        field: 'paymentMethod',
+        headerName: 'Payment Method',
+        description: 'This column has a value getter and is not sortable.',
+        sortable: false,
+        width: 160,
+      },
+      {
+        field: 'pricePerCycle',
+        headerName: 'Amount in USD ($)',
+        sortable: false,
+        type: 'string',
+        width: 150,
+        renderCell: ({ row }) => {
+          return (
+            <div className="text-right w-full pr-4">
+              {new Intl.NumberFormat('en-IN', {
+                maximumSignificantDigits: 3,
+              }).format(row.pricePerCycle)} $
+            </div>
+          );
+        },
+      },
+      // {
+      //   field: "amountLocal",
+      //   headerName: "Amount in other currency",
+      //   sortable: false,
+      //   type: "string",
+      //   width: 180,
+      // },
+      {
+        field: 'phone',
+        headerName: 'Phone number',
+        sortable: false,
+        type: 'string',
+        width: 120,
+      },
+      {
+        field: 'email',
+        headerName: 'Email',
+        sortable: false,
+        type: 'string',
+        width: 120,
+      },
+      {
+        field: 'createdAt',
+        headerName: 'Created on',
+        sortable: false,
+        type: 'string',
+        width: 120,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${generateFormatDate(new Date(params.row.createdAt))}`,
+      },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        sortable: false,
+        type: 'string',
+        width: 200,
+        renderCell: (params: GridRenderCellParams) => {
+          const status = params.row.statusPayment;
+
+          if (status === 'Confirmed') {
+            return '';
+          }
+
+          return (
+            <div className="flex flex-row gap-3">
+              <button
+                onClick={async () => {
+                  await approveOrder(params.row.transitionId);
+                  await refetch();
+                }}
+                className={
+                  'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
+                }
+              >
+                Approve Payment
+              </button>
+            </div>
+          );
+        },
+      },
+    ];
 
   return (
     <>
