@@ -1,8 +1,8 @@
 {
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "never",
     "source.fixAll.eslint": "always"
   },
-  "prettier.singleQuote": true
+  "prettier.singleQuote": true,
+  "eslint.workingDirectories": ["landing"]
 }

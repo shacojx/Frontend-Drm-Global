@@ -1,0 +1,26 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint", "jsx-a11y"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "next/core-web-vitals",
+    "plugin:tailwindcss/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/array-type": ["error", { "default": "generic" }],
+    "no-restricted-imports": [
+      "error",
+      { "patterns": [{ "group": ["./*", "../*"], "message": "Please use absolute import instead relative import" }] }
+    ]
+  },
+  "ignorePatterns": ["tailwind.config.js", "postcss.config.js", "next.config.mjs", "@types/**/*.d.ts"]
+}
