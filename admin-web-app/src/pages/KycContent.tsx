@@ -35,7 +35,7 @@ export function KycContent(props: Props) {
     size: paginationModel.pageSize
   })
 
-  const tableData = data?.content ?? []
+  const tableData = (data?.content ?? [])
   const kycCount = data?.totalElements
 
 
@@ -130,10 +130,10 @@ export function KycContent(props: Props) {
     { field: 'id', headerName: 'ID', width: 70 },
     {
       field: 'name',
-      headerName: 'Full Name',
+      headerName: 'Customer Name',
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      width: 160,
+      flex: 1, 
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
@@ -142,7 +142,7 @@ export function KycContent(props: Props) {
       headerName: 'Email',
       sortable: false,
       type: 'string',
-      width: 200,
+      flex: 1, 
     },
     {
       field: 'phone',
@@ -164,10 +164,10 @@ export function KycContent(props: Props) {
     },
     {
       field: 'photos',
-      headerName: 'Photos',
+      headerName: 'Identify Photos',
       sortable: false,
       type: 'string',
-      width: 120,
+      width: 150,
       renderCell: (params: GridRenderCellParams) => {
         return (
           <div className={'flex flex-col gap-1'}>
@@ -229,7 +229,7 @@ export function KycContent(props: Props) {
           'flex flex-col grow overflow-x-scroll overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
         }
       >
-        <p className={'text-h4 w-full text-start mb-6'}>{translation.t('KYC Management')}</p>
+        <p className={'text-h4 w-full text-start mb-6'}>{translation.t('KYC Request List')}</p>
         <div className={'w-full grow'} key={tableData.map((value) => value.id).join('_')}>
           <DataGrid
             paginationMode="server"

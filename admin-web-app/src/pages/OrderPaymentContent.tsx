@@ -74,6 +74,13 @@ export function OrderPaymentContent(props: Props) {
         }
 
         return ""
+      },
+      valueGetter: (params: GridValueGetterParams) => {
+        const status = params.row.statusPayment;
+
+        if (status === "Confirmed") {
+          return "Approved"
+        }
       }
     },
     {
@@ -110,14 +117,14 @@ export function OrderPaymentContent(props: Props) {
       headerName: "Amount in USD ($)",
       sortable: false,
       type: "string",
-      width: 120,
+      width: 150,
     },
     {
       field: "amountLocal",
       headerName: "Amount in other currency",
       sortable: false,
       type: "string",
-      width: 120,
+      width: 180,
     },
     {
       field: "phone",
@@ -159,13 +166,13 @@ export function OrderPaymentContent(props: Props) {
             <button
               onClick={async () => {
                 await approveOrder(params.row.transitionId)
-                refetch()
+                await refetch()
               }}
               className={
                 'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
               }
             >
-              Approve
+              Approve Payment
             </button>
           </div>
         );
@@ -181,7 +188,7 @@ export function OrderPaymentContent(props: Props) {
             'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
           }
         >
-          <p className={'text-h4 w-full text-start mb-6'}>{translation.t('Orders Management')}</p>
+          <p className={'text-h4 w-full text-start mb-6'}>{translation.t('Order Payment Management')}</p>
           <div className={'w-full flex flex-row justify-between items-center gap-10 mb-4'}>
             <div className={'w-full flex flex-row justify-start items-end gap-10 mb-4'}>
               <FormFieldEmail id='email' validateCaller={validateCaller} onChange={setEmail} value={email} />
