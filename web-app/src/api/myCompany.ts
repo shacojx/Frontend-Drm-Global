@@ -5,7 +5,6 @@ import { CompanyDetail, EditCompanyBody, RawCompanyDetail } from "./types";
 export const callApiGetCompanyDetail = async () => {
   const path = "/api/user/get-my-company";
   const rawResult = await callApi<RawCompanyDetail>("GET", path, {}, true);
-  console.log(rawResult)
 
   return transformGetCompanyDetail(rawResult);
 };

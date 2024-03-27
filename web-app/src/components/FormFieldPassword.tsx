@@ -5,6 +5,7 @@ import { useValidate } from "../hooks-ui/useValidateCaller";
 import { validateApiPassword } from "../services-business/api/validateApiParam";
 import { FormFieldProps, ValidateFunction } from "../types/common";
 import { IconEyesClosed, IconEyesOpen, IconInfoCircle } from "./icons";
+import { cn } from "src/utils/cn.util";
 
 const validatePassword: ValidateFunction<string> = function (isRequired, pass) {
   if (!isRequired) {
@@ -86,7 +87,7 @@ export function FormFieldPassword(props: Props) {
         onFocus={setShouldShowError.bind(undefined, false)}
         onBlur={setShouldShowError.bind(undefined, !validatePassword(props.isRequired, props.value))}
         onKeyDown={props.onEnter && handleKeyDown}
-        className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
+        className={cn("w-full h-[40px] border py-1 px-2 rounded-lg ", statusClassName, props.className)}
       />
       {isDisplayPass
         ? <IconEyesClosed onClick={handleClickClosedIcon}
