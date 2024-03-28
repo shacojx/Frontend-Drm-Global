@@ -95,7 +95,13 @@ export default function ChangePasswordForm() {
       </button>
     </div>
     {status === "failure" && <p className={"text-danger"}>{errorMessage}</p>}
-    {status === 'success' && <DialogSuccessFullscreen title='Update password successfully!' onClose={() => setStatus('typing')} />}
+    {status === 'success' && 
+      <DialogSuccessFullscreen 
+        title='Update password successfully!' 
+        onClose={() => setStatus('typing')} 
+        actionElement={<button className='bg-primary w-full text-white rounded-lg py-3' onClick={() => setStatus('typing')}>Close</button>} 
+      />
+    }
   </>
 }
 
