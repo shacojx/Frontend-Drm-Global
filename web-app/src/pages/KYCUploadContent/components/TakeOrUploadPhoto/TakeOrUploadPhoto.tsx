@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
-import { IconCheck, IconUpload, IconUploadFile } from 'src/components/icons';
+import Webcam from 'react-webcam';
+import { IconCamera, IconCheck, IconUpload, IconUploadFile } from 'src/components/icons';
 
 type TakeOrUploadPhotoProps = {
     onUpload: (file: File | null) => void;
@@ -10,6 +11,9 @@ export default function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
     const translation = useTranslation()
     const uploadFileRef = useRef<HTMLInputElement | null>(null)
     const [file, setFile] = useState<File>()
+
+    const webcam = useRef<Webcam>(null)
+    const [takingPhoto, setTakingPhoto] = useState(false)
 
     const src = file && URL.createObjectURL(file)
 
@@ -28,19 +32,45 @@ export default function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
     }
 
     return <div className={"w-full flex flex-col items-center border border-primary_light rounded-xl px-2 py-6"}>
-        {!file
-            ? <div className={"rounded-full bg-primary_light p-4"}>
+        {!file && !takingPhoto && (
+            <div className={"rounded-full bg-primary_light p-4"}>
                 <IconUploadFile />
             </div>
-            : <div className={"flex flex-row gap-2 items-center"}>
+        )}
+
+        {file && !takingPhoto && (
+            <div className={"flex flex-row gap-2 items-center"}>
                 <img className='w-1/2 aspect-video mx-auto object-contain rounded-lg overflow-hidden' src={src}  />
             </div>
-        }
+        )}
+
+        {takingPhoto && (
+            <div className={"flex flex-row gap-2 items-center rounded-md overflow-hidden"}>
+                <Webcam className='h-full w-full' ref={webcam} mirrored />
+            </div>
+        )}
+       
         <div className={"flex flex-row gap-4 my-4"}>
-            {/*<div className={"py-4 px-6 flex flex-row gap-3 border rounded-lg cursor-pointer"}>*/}
-            {/*  <IconCamera className={"text-gray-400"}/>*/}
-            {/*  <p className={"font-bold"}>{translation.t('Take a photo')}</p>*/}
-            {/* </div> */}
+            <button 
+                onClick={async () => {
+                    if (!takingPhoto) {
+                        setFile(undefined)
+                        setTakingPhoto(true);
+                        return
+                    }
+
+                    const image = webcam.current?.getScreenshot()
+                    if (!image) return
+                    const file = await fetch(image).then(res => res.blob()).then(blob => new File([blob], 'image.png', { type: 'image/png' }))
+                    setFile(file)
+                    props.onUpload(file)
+                    setTakingPhoto(false)
+                }} 
+                className={"py-4 px-6 flex flex-row gap-3 border rounded-lg cursor-pointer"}
+            >
+                <IconCamera className={"text-gray-400"}/>
+                <p className={"font-bold"}>{translation.t('Take a photo')}</p>
+            </button>
             <div className={"py-4 px-6 flex flex-row gap-3 bg-primary rounded-lg cursor-pointer"} onClick={handleClickUpload}>
                 <IconUpload className={"text-white"} />
                 <input ref={uploadFileRef} className={"hidden"} type="file" accept="image/png, image/jpeg, image/jpg" onChange={handleChange}/>
