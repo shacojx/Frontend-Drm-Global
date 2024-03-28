@@ -47,4 +47,24 @@
     text-fill-color: transparent;
     -webkit-text-fill-color: transparent;
   }
+
+  @keyframes loop {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .infinite-scroll {
+    animation-name: loop;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: 15000ms;
+  }
+
+  .animation-reverse {
+    animation-direction: reverse;
+  }
 }

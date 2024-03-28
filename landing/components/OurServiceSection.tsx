@@ -50,7 +50,7 @@ export const OurServiceSection = () => {
         So here with us, say hello to all hassle-free administrative & reporting responsibilities.
       </p>
 
-      <div className="mx-auto mt-20 flex max-w-6xl flex-wrap justify-center gap-4 px-2">
+      <div className="mx-auto mt-20 flex max-w-6xl flex-wrap justify-evenly gap-4 px-2">
         {OUR_SERVICES.map(({ image, title, description }) => (
           <div key={title} className="flex max-w-full flex-col gap-6 rounded-4xl border border-stroke p-6 sm:max-w-80">
             <NextImage src={image} alt="Service 1" className="aspect-[5/4] w-full rounded-xl" />
