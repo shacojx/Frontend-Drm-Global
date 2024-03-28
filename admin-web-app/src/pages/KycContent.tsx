@@ -13,6 +13,7 @@ import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/k
 import { generateFormatDate } from "../services-ui/date";
 import { getFile } from "../api/upload";
 import { KycDetail } from "../api/types";
+import { sortBy } from "lodash-es";
 
 type Props = {}
 
@@ -233,7 +234,12 @@ export function KycContent(props: Props) {
         <div className={'w-full grow'} key={tableData.map((value) => value.id).join('_')}>
           <DataGrid
             paginationMode="server"
-            rows={tableData}
+            rows={[...tableData].sort((a, b) => {
+              if (a.kycStatus === b.kycStatus) return 0
+              if (a.kycStatus === 'In-progress') return -1
+              if (b.kycStatus === 'In-progress') return 1
+              return 0;
+            })}
             columns={kycColumns}
             pageSizeOptions={[25]}
             rowCount={kycCount || 0}

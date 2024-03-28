@@ -20,6 +20,12 @@ import {
 import { useApiGetUsers } from '../hooks/api/user';
 import { capitalize } from 'lodash-es';
 
+const ROLES: Record<string, string> = {
+  ROLE_USER: "Customer",
+  ROLE_ADMIN: "Admin",
+  ROLE_MODERATOR: "Staff",
+}
+
 type Props = {};
 
 export function UsersContent(props: Props) {
@@ -81,7 +87,7 @@ export function UsersContent(props: Props) {
 
   // TODO: add i18n for columns
   const userColumns: GridColDef<ViewedUser>[] = [
-    { field: 'userId', headerName: 'User ID', width: 70 },
+    { field: 'userId', headerName: 'User ID', width: 70, sortable: false },
     {
       field: 'roles',
       headerName: 'Role',
@@ -91,7 +97,7 @@ export function UsersContent(props: Props) {
       valueGetter: (params: GridValueGetterParams) =>{
         const role = (params.row.roles[params.rowNode.depth].name || '') as string;
         
-        return capitalize(role.split('_')[1])
+        return ROLES[role]
       },
     },
     {
@@ -145,6 +151,13 @@ export function UsersContent(props: Props) {
     {
       field: 'kycStatus',
       headerName: 'KYC Status',
+      sortable: false,
+      type: 'string',
+      width: 120,
+    },
+    {
+      field: 'kycStatus',
+      headerName: 'Created',
       sortable: false,
       type: 'string',
       width: 120,

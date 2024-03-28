@@ -137,9 +137,6 @@ export function MasterServiceContent(props: Props) {
       sortable: false,
       type: "string",
       width: 80,
-      renderCell: (params: GridCellParams) => {
-        return params.row.id;
-      },
     },
     {
       field: "serviceName",

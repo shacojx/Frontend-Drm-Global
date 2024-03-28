@@ -12,6 +12,6 @@ export function validateApiPassword(pass: string) {
 
 export function validateApiLocalPhone(localPhone: string) {
   if (!localPhone) return false
-  const regValidatePassword = /^[a-z0-9]{8,11}$/;
+  const regValidatePassword = /^[a-z0-9]{7,11}$/;
   return regValidatePassword.test(localPhone)
 }

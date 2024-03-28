@@ -59,7 +59,8 @@ export function OrderPaymentContent(props: Props) {
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
   }
 
-  
+
+  console.table(orders)
   // TODO: add i18n for columns
   const orderPaymentColumns: GridColDef<NonNullable<typeof orders>[number]>[] =
     [
@@ -72,7 +73,7 @@ export function OrderPaymentContent(props: Props) {
         width: 100,
         cellClassName: (params: GridCellParams) => {
           const status = params.row.statusPayment;
-          if (status === 'Confirmed') {
+          if (status === 'Approved') {
             return 'text-green-500';
           }
 
@@ -85,9 +86,11 @@ export function OrderPaymentContent(props: Props) {
         valueGetter: (params: GridValueGetterParams) => {
           const status = params.row.statusPayment;
 
-          if (status === 'Confirmed') {
+          if (status === 'Approved') {
             return 'Approved';
           }
+
+          return status
         },
       },
       {
