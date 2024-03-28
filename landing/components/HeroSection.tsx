@@ -1,4 +1,8 @@
-export const WelcomeSection = () => {
+import { NextImage } from '@/components/NextImage';
+
+import bg_hero_image from '@/assets/images/hero.png';
+
+export const HeroSection = () => {
   return (
     <section className="pt-[102px]">
       <h1 className="mx-auto text-center text-[3.5rem] font-bold">
@@ -8,10 +12,16 @@ export const WelcomeSection = () => {
         <span className="mt-6">LLC business</span>
       </h1>
 
-      <p className="mx-auto max-w-md pt-10 text-center text-grey">
+      <p className="mx-auto max-w-lg pt-10 text-center text-grey">
         The key to business success. Let us handle all procedures - Leading in convenience and professionalism in
         business registration services.
       </p>
+
+      <button className="bg-gradient-primary mx-auto mt-8 flex h-14 items-center rounded-xl px-6 font-bold text-white">
+        Get started
+      </button>
+
+      <NextImage className="-mt-5 aspect-[2880/1000] w-full" src={bg_hero_image} alt="DRM" />
     </section>
   );
 };
