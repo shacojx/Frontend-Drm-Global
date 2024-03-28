@@ -12,11 +12,11 @@ const NAV_ITEMS = [
   },
   {
     label: 'Our Services',
-    href: '/',
+    href: '#our-services',
   },
   {
     label: 'About Us',
-    href: '/',
+    href: '/about-us',
   },
   {
     label: 'Contact Us',

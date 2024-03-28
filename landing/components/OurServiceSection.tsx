@@ -28,7 +28,7 @@ const OUR_SERVICES = [
 
 export const OurServiceSection = () => {
   return (
-    <section className="pt-28">
+    <section className="pt-28" id="our-services">
       <h4
         className={cn(
           'flex gap-4 items-center max-w-6xl mx-auto text-grey uppercase font-bold',

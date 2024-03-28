@@ -23,6 +23,7 @@ const config = {
         secondary: '#8771E9',
         grey: '#6D6F7F',
         darkblue: '#070921',
+        title: '#094752',
       },
       borderRadius: {
         '4xl': '2rem',
