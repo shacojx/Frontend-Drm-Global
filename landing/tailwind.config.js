@@ -20,6 +20,9 @@ const config = {
         secondary: '#8771E9',
         grey: '#6D6F7F',
       },
+      borderRadius: {
+        '4xl': '2rem',
+      },
     },
   },
   plugins: [],

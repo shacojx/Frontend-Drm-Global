@@ -4,5 +4,6 @@
     "source.fixAll.eslint": "always"
   },
   "prettier.singleQuote": true,
-  "eslint.workingDirectories": ["landing"]
+  "eslint.workingDirectories": ["landing"],
+  "cSpell.words": ["Dealroom"]
 }
