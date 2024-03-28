@@ -52,9 +52,9 @@ export function OrderPaymentContent(props: Props) {
     }
   })
 
-  const handleClickSearch = () => {  
+  const handleClickSearch = () => {
     refetch()
-  } 
+  }
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
   }
@@ -232,7 +232,7 @@ export function OrderPaymentContent(props: Props) {
         type: 'string',
         width: 120,
         valueGetter: (params: GridValueGetterParams) =>
-          `${generateFormatDate(new Date(params.row.createdAt))}`,
+          params.row.createdAt ? `${generateFormatDate(new Date(params.row.createdAt))}` : '',
       },
       {
         field: 'actions',
