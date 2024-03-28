@@ -4,7 +4,9 @@ import bg_hero_image from '@/assets/images/hero.png';
 
 export const HeroSection = () => {
   return (
-    <section className="pt-[102px]">
+    <section className="relative pt-25">
+      <div className="absolute -left-40 -top-20 size-80 rounded-full bg-red-500/30 blur-3xl" />
+
       <h1 className="mx-auto max-w-3xl text-center text-[3.5rem] font-bold">
         <span className="text-gradient-primary">Revolutionze </span>
         your Digitally LLC business
