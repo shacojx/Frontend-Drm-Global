@@ -32,7 +32,7 @@ export const Header = () => {
       <div className="mx-auto flex h-full max-w-6xl items-center px-6">
         <NextImage src={logo} alt="DRM" className="h-16 w-28" objectFit="contain" />
 
-        <div className={cn('grow flex justify-between items-center', 'before:block')}>
+        <div className={cn('grow xl:flex justify-between items-center hidden', 'before:block')}>
           <nav>
             <ul className="flex gap-2">
               {NAV_ITEMS.map((item) => (
