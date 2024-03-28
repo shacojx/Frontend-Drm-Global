@@ -128,7 +128,7 @@ export function KycContent(props: Props) {
         }
       },
     },
-    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'userId', headerName: 'User ID', width: 70 },
     {
       field: 'name',
       headerName: 'Customer Name',
