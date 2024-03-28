@@ -104,7 +104,7 @@ export function ServicesContent() {
   // TODO: add i18n for columns
   const serviceColumns: GridColDef<Service>[] = [
     {
-      field: 'id',
+      field: 'paidServiceId',
       headerName: t('Paid service Id'),
       width: 130,
       align: 'center',

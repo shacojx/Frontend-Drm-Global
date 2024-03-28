@@ -232,7 +232,7 @@ export default function LLCMyServiceContent() {
               <>
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-3 mt-6">
                   {/* step */}
-                  <div className="flex flex-col gap-md">
+                  <div className="flex flex-col w-full lg:w-[247px] gap-md">
                     {dataService?.serviceStep?.map((item: any) => (
                       <StepService key={item.id} item={item} />
                     ))}
