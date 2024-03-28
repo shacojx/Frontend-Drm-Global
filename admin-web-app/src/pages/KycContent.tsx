@@ -172,18 +172,18 @@ export function KycContent(props: Props) {
       renderCell: (params: GridRenderCellParams) => {
         return (
           <div className={'flex flex-col gap-1'}>
-            <p
+            {params.row?.passport && <p
               className={'underline text-blue-500 cursor-pointer'}
               onClick={() => handleClickPhoto(params.row, 'passport')}
             >
               Passport
-            </p>
-            <p
+            </p>}
+            {params.row?.pictureHoldPassport && <p
               className={'underline text-blue-500 cursor-pointer'}
               onClick={() => handleClickPhoto(params.row, 'holdPassport')}
             >
               Hold Passport
-            </p>
+            </p>}
           </div>
         );
       },
