@@ -30,7 +30,7 @@ export const Header = () => {
   return (
     <header className="h-28 border-b border-dashed border-stroke">
       <div className="mx-auto flex h-full max-w-6xl items-center px-6">
-        <NextImage src={logo} alt="DRM" className="h-16 w-28" />
+        <NextImage src={logo} alt="DRM" className="h-16 w-28" objectFit="contain" />
 
         <div className={cn('grow flex justify-between items-center', 'before:block')}>
           <nav>
