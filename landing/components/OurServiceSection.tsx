@@ -28,7 +28,7 @@ const OUR_SERVICES = [
 
 export const OurServiceSection = () => {
   return (
-    <section className="pt-28" id="our-services">
+    <section className="px-4 pt-28 xl:px-0" id="our-services">
       <h4
         className={cn(
           'flex gap-4 items-center max-w-6xl mx-auto text-grey uppercase font-bold',
@@ -50,7 +50,7 @@ export const OurServiceSection = () => {
         So here with us, say hello to all hassle-free administrative & reporting responsibilities.
       </p>
 
-      <div className="mx-auto mt-20 flex max-w-6xl flex-wrap justify-evenly gap-4 px-2">
+      <div className="mx-auto mt-20 flex max-w-6xl flex-wrap justify-evenly gap-4">
         {OUR_SERVICES.map(({ image, title, description }) => (
           <div key={title} className="flex max-w-full flex-col gap-6 rounded-4xl border border-stroke p-6 sm:max-w-80">
             <NextImage src={image} alt="Service 1" className="aspect-[5/4] w-full rounded-xl" />

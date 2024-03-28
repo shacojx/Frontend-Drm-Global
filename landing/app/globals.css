@@ -61,7 +61,7 @@
     animation-name: loop;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    animation-duration: 15000ms;
+    animation-duration: 50000ms;
   }
 
   .animation-reverse {
