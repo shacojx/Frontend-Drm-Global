@@ -51,6 +51,13 @@ export async function callApiUploadStatusStep(data: {
   return await callApi('POST', path, data, true);
 }
 
+export async function callApiUpdateStatusService(data: {
+  id: number;
+  status: string;
+}) {
+  const path = '/api/admin/update-status-service';
+  return await callApi('POST', path, data, true);
+}
 
 export async function callApiUploadCustomerDocument(body: FormData) {
   const headers = new Headers();

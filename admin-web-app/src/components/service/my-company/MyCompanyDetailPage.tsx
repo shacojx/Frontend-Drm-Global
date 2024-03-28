@@ -37,9 +37,13 @@ const TABS = [
   'Document',
 ] as const;
 
-export function MyCompanyDetailPage() {
+type Props = {
+  id:number
+}
+
+export function MyCompanyDetailPage({id}: Props) {
   const { t } = useTranslation();
-  const { data, status, refetch } = useApiGetMyCompanyDetail();
+  const { data, status, refetch } = useApiGetMyCompanyDetail(id);
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [error, setError] = useState<string | false>(false);
@@ -81,6 +85,7 @@ export function MyCompanyDetailPage() {
       ) {
         setError(false);
         await saveMyCompany({
+          id:id,
           companyDescription: companyInfo.description,
           companyName: companyInfo.companyName,
           entityEnding: companyInfo.entityEnding,

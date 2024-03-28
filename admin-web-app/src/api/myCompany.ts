@@ -2,10 +2,9 @@ import { transformGetCompanyDetail } from '../services-business/api/transform-re
 import { EditCompanyBody, RawCompanyDetail } from './types';
 import { callApi } from '../services-base/api';
 
-export const callApiGetCompanyDetail = async () => {
-  const path = '/api/user/get-my-company';
+export const callApiGetCompanyDetail = async (id: number) => {
+  const path = `api/admin/get-detail-company/${id}`;
   const rawResult = await callApi<RawCompanyDetail>('GET', path, {}, true);
-  console.log(rawResult);
 
   return transformGetCompanyDetail(rawResult);
 };
@@ -13,6 +12,6 @@ export const callApiGetCompanyDetail = async () => {
 export const callApiPostCompanyDetail = async (
   companyDetail: EditCompanyBody,
 ) => {
-  const path = '/api/user/update-company';
+  const path = `/api/admin/update-company/${companyDetail.id}`;
   const rawResult = await callApi('POST', path, companyDetail, true);
 };

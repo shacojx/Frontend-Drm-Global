@@ -3,7 +3,7 @@ import { isNotNullish } from '../../utils/typeCheck';
 export const QueryKeyApi = {
   getLlcServiceList: 'llcService/getList',
   getLlcServiceDetail: 'llcService/getDetail',
-  getMyCompany: 'myCompany/getDetail',
+  getDetailCompany: 'myCompany/getDetail',
   getAvailableServices: 'services/availableServices',
   getServiceDetail: 'service/getServiceDetail',
   getPaidService: 'service/getPaidService',
@@ -30,8 +30,8 @@ const KeyFactory = {
   getLlcServiceDetail(id: KeyType) {
     return generateKey(QueryKeyApi.getLlcServiceDetail, id);
   },
-  getMyCompanyDetail() {
-    return generateKey(QueryKeyApi.getMyCompany);
+  getMyCompanyDetail(id: KeyType) {
+    return generateKey(QueryKeyApi.getDetailCompany, id);
   },
   postCompanyDetail: () => generateKey(MutationKey.postMyCompany),
   uploadKYC: () => generateKey(MutationKey.uploadKYC),

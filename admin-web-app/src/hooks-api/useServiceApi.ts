@@ -1,27 +1,23 @@
 import {
-  UseMutationOptions,
   useMutation,
-  useQuery,
+  useQuery
 } from '@tanstack/react-query';
-import {
-  callApiGetCompanyDetail,
-  callApiPostCompanyDetail,
-} from '../api/myCompany';
-import KeyFactory from '../services-base/reactQuery/keyFactory';
-import {
-  ExtraOptionQuery,
-  mergeQueryOptions,
-} from '../services-base/reactQuery/queryOption';
 import {
   callApiGetListService,
   callApiGetServiceDetail,
   callApiSearchPaidService,
   callApiUpdateAdminRemark,
   callApiUpdatePic,
+  callApiUpdateStatusService,
   callApiUploadCustomerDocument,
   callApiUploadStatusStep,
 } from '../api/serviceManagement';
 import { ApiSearchPaidServiceType, PaginationType } from '../api/types';
+import KeyFactory from '../services-base/reactQuery/keyFactory';
+import {
+  ExtraOptionQuery,
+  mergeQueryOptions,
+} from '../services-base/reactQuery/queryOption';
 
 export function useApiSearchPaidService(
   body: ApiSearchPaidServiceType,
@@ -92,5 +88,12 @@ export function useApiServiceUploadStatusStep() {
 export function useApiServiceUpdatePic() {
   return useMutation({
     mutationFn: callApiUpdatePic,
+  });
+}
+
+
+export function useApiServiceStatusUpdate() {
+  return useMutation({
+    mutationFn: callApiUpdateStatusService,
   });
 }
