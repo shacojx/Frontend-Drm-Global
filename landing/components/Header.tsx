@@ -71,7 +71,7 @@ export const Header = () => {
             </div>
 
             <nav className="w-full grow">
-              <ul className="flex flex-col gap-1 xl:flex-row xl:gap-2">
+              <ul className="flex flex-col gap-1 xl:flex-row xl:justify-center xl:gap-2">
                 {NAV_ITEMS.map((item) => (
                   <li key={item.label} className="border-b xl:border-none">
                     <Link
