@@ -1,27 +1,25 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './src/**/*.{js,jsx,ts,tsx}',
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       height: {
-        13: '52px'
+        13: '52px',
       },
       colors: {
-        'primary': '#094B72',
-        'primary_25': '#094B7240',
-        'primary_light': '#BAE0E2',
-        'violet': '#5D50C6',
-        'orange': '#FF5722',
-        'danger': '#DA1004',
-        'success': '#07A461',
-        'ink': '#22313F',
-        'black': '#0C0C20',
-        'disable': '#3B3F48D9',
-        'surface': '#CCCCCC',
-        'white': '#F6FAF9',
-        'stroke': '#E0E0E0',
+        primary: '#094752',
+        primary_25: '#09475240',
+        primary_light: '#BAE0E2',
+        violet: '#5D50C6',
+        orange: '#FF5722',
+        danger: '#DA1004',
+        success: '#07A461',
+        ink: '#22313F',
+        black: '#0C0C20',
+        disable: '#3B3F48D9',
+        surface: '#CCCCCC',
+        white: '#F6FAF9',
+        stroke: '#E0E0E0',
       },
       spacing: {
         xs: '4px',
@@ -32,42 +30,69 @@ module.exports = {
         rootRootPadding: '16px', // Padding for a page at root
       },
       fontSize: {
-        d1: ['4.5rem', {
-          lineHeight: '5.75rem',
-          fontWeight: '700',
-        }],
-        h1: ['3.5rem', {
-          lineHeight: '4.5rem',
-          fontWeight: '700',
-        }],
-        h2: ['3rem', {
-          lineHeight: '4.5rem',
-          fontWeight: '700',
-        }],
-        h3: ['2rem', {
-          lineHeight: '2.5rem',
-          fontWeight: '700',
-        }],
-        h4: ['1.5rem', {
-          lineHeight: '2rem',
-          fontWeight: '700',
-        }],
-        cXl: ['1.25rem', {
-          lineHeight: '1.185rem',
-          fontWeight: '400',
-        }],
-        cLg: ['1.125rem', {
-          lineHeight: '1.75rem',
-          fontWeight: '400',
-        }],
-        cBase: ['1rem', {
-          lineHeight: '1.5rem',
-          fontWeight: '400',
-        }],
-        cSm: ['0.875rem', {
-          lineHeight: '1.125rem',
-          fontWeight: '400',
-        }],
+        d1: [
+          '4.5rem',
+          {
+            lineHeight: '5.75rem',
+            fontWeight: '700',
+          },
+        ],
+        h1: [
+          '3.5rem',
+          {
+            lineHeight: '4.5rem',
+            fontWeight: '700',
+          },
+        ],
+        h2: [
+          '3rem',
+          {
+            lineHeight: '4.5rem',
+            fontWeight: '700',
+          },
+        ],
+        h3: [
+          '2rem',
+          {
+            lineHeight: '2.5rem',
+            fontWeight: '700',
+          },
+        ],
+        h4: [
+          '1.5rem',
+          {
+            lineHeight: '2rem',
+            fontWeight: '700',
+          },
+        ],
+        cXl: [
+          '1.25rem',
+          {
+            lineHeight: '1.185rem',
+            fontWeight: '400',
+          },
+        ],
+        cLg: [
+          '1.125rem',
+          {
+            lineHeight: '1.75rem',
+            fontWeight: '400',
+          },
+        ],
+        cBase: [
+          '1rem',
+          {
+            lineHeight: '1.5rem',
+            fontWeight: '400',
+          },
+        ],
+        cSm: [
+          '0.875rem',
+          {
+            lineHeight: '1.125rem',
+            fontWeight: '400',
+          },
+        ],
       },
       boxShadow: {
         form: '0px 0px 35px 0px #0000001A',
@@ -75,15 +100,12 @@ module.exports = {
         // mid: '0px 4px 8px 0px #0000001A',
         // min: '0px 2px 4px 0px #0000001A',
       },
-    }
+    },
   },
-  plugins: [
-    require('tailwindcss-debug-screens'),
-  ],
+  plugins: [require('tailwindcss-debug-screens')],
   mode: 'jit',
   darkMode: 'class',
   variants: {
-    lineClamp: ['responsive', 'hover']
-  }
-}
-
+    lineClamp: ['responsive', 'hover'],
+  },
+};
