@@ -51,7 +51,7 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
       if (!email || !user?.firstName || !user?.lastName ) {
         return
       }
-      await callApiSendEditEmailOTP(email, user.firstName, user.lastName);
+      await callApiSendEditEmailOTP({email, firstName: user.firstName, lastName: user.lastName});
       setLoading(false);
     } catch (error) {
       setError(String(error));
