@@ -2,6 +2,27 @@ import { IconStar } from '@/assets/icons/IconStar';
 import { cn } from '@/utils/cn.util';
 import { range } from 'lodash-es';
 
+const FEEDBACKS = [
+  {
+    content:
+      'I love how easy it is to use this website. Even as someone who is not particularly tech-savvy, I was able to navigate it with ease. The analytics provided are comprehensive and insightful,',
+    name: 'Sander Johnson',
+    jobTitle: 'CEO Corps, USA',
+  },
+  {
+    content:
+      'The data presented in a clear and concise manner, along with the insightful knowledge provided, has helped me make better business decisions. Thank you for creating such a useful tool!',
+    name: 'Emily Jock',
+    jobTitle: 'CEO Olivia, SIN',
+  },
+  {
+    content:
+      'I stumbled upon this tool and was blown away by the analytics and insights it provided. The interface is user-friendly, and the data is presented in a visually appealing way. Highly recommend ...',
+    name: 'Mark Smith',
+    jobTitle: 'CEO Unilveir, USA',
+  },
+];
+
 export const TestimonialSection = () => {
   return (
     <section className="mb-20 mt-28">
@@ -21,9 +42,9 @@ export const TestimonialSection = () => {
 
       <div className="mt-20 flex flex-col gap-5 overflow-hidden">
         <div className="infinite-scroll top-0 w-max gap-5">
-          {range(10).map((idx) => (
+          {[...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS].map(({ content, jobTitle, name }) => (
             <div
-              key={idx}
+              key={name}
               className="mr-5 inline-flex aspect-[5/3] w-[30vw] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
             >
               <div className="flex gap-1">
@@ -32,23 +53,20 @@ export const TestimonialSection = () => {
                 ))}
               </div>
 
-              <div>
-                I love how easy it is to use this website. Even as someone who is not particularly tech-savvy, I was
-                able to navigate it with ease. The analytics provided are comprehensive and insightful,
-              </div>
+              <div>{content}</div>
 
               <div>
-                <div>Sander Johnson</div>
-                <div>CEO Corps, USA</div>
+                <div>{name}</div>
+                <div>{jobTitle}</div>
               </div>
             </div>
           ))}
         </div>
 
         <div className="infinite-scroll animation-reverse top-0 w-max gap-5">
-          {range(10).map((idx) => (
+          {[...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS].map(({ content, jobTitle, name }) => (
             <div
-              key={idx}
+              key={name}
               className="mr-5 inline-flex aspect-[5/3] w-[30vw] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
             >
               <div className="flex gap-1">
@@ -57,14 +75,11 @@ export const TestimonialSection = () => {
                 ))}
               </div>
 
-              <div>
-                I love how easy it is to use this website. Even as someone who is not particularly tech-savvy, I was
-                able to navigate it with ease. The analytics provided are comprehensive and insightful,
-              </div>
+              <div>{content}</div>
 
               <div>
-                <div>Sander Johnson</div>
-                <div>CEO Corps, USA</div>
+                <div>{name}</div>
+                <div>{jobTitle}</div>
               </div>
             </div>
           ))}
