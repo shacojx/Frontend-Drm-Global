@@ -526,3 +526,4 @@ export const INDUSTRY_INFOS: OptionInfo<Industry>[] = [
   { value: 'Other travel services', label: 'Other travel services' },
   { value: 'Virtual reality', label: 'Virtual reality' },
 ];
+

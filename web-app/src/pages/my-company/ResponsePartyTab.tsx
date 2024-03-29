@@ -53,7 +53,9 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
             "pointer-events-none": readonly,
           })}
         >
-          <div className="flex gap-4 mt-0.5">
+          <div className={cn("flex gap-4 mt-0.5", {
+            'mb-2': !responseParty?.hasSSNorITIN
+          })}>
             <label htmlFor="yes" className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -88,14 +90,18 @@ export function ResponsePartyTab({ readonly, responseParty, onChange }: Response
             </label>
           </div>
 
-          <FormFieldText
-            isRequired
-            className={cn("w-full", { "hidden xl:invisible": !responseParty?.hasSSNorITIN })}
-            id="SSN/ITIN"
-            value={responseParty?.SSNorITIN}
-            validateCaller={validateCaller}
-            onChange={(value) => handleFormChange("SSNorITIN", value)}
-          />
+         {responseParty?.hasSSNorITIN &&  <div className="flex items-center grow gap-2">
+            <div className="font-bold">SSN/ITIN: </div>
+            <div className="grow w-full">
+              <FormFieldText
+                isRequired
+                id="SSN/ITIN"
+                value={responseParty?.SSNorITIN}
+                validateCaller={validateCaller}
+                onChange={(value) => handleFormChange("SSNorITIN", value)}
+              />
+            </div>
+          </div>}
         </div>
       </div>
     </div>

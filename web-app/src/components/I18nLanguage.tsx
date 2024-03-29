@@ -8,11 +8,13 @@ export function I18nLanguage() {
       .catch(e => alert(errorMessage))
   }
 
-  return <div className="flex gap-4">
-    {SUPPORTED_LANGUAGE.map(lang =>
-      <button key={lang.fileName}>
-        <span onClick={handleClickLanguage.bind(undefined, lang)}>{lang.label}</span>
-      </button>
-    )}
-  </div>
+  return <></>
+
+  // return <div className="flex gap-4">
+  //   {SUPPORTED_LANGUAGE.map(lang =>
+  //     <button key={lang.fileName}>
+  //       <span onClick={handleClickLanguage.bind(undefined, lang)}>{lang.label}</span>
+  //     </button>
+  //   )}
+  // </div>
 }

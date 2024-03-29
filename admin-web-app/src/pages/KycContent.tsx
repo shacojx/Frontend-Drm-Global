@@ -13,6 +13,7 @@ import { useApiApproveKYC, useApiGetKYCs, useApiRejectKYC } from "../hooks/api/k
 import { generateFormatDate } from "../services-ui/date";
 import { getFile } from "../api/upload";
 import { KycDetail } from "../api/types";
+import { sortBy } from "lodash-es";
 
 type Props = {}
 
@@ -127,13 +128,13 @@ export function KycContent(props: Props) {
         }
       },
     },
-    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'userId', headerName: 'User ID', width: 70 },
     {
       field: 'name',
       headerName: 'Customer Name',
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      flex: 1, 
+      flex: 1,
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
@@ -142,7 +143,7 @@ export function KycContent(props: Props) {
       headerName: 'Email',
       sortable: false,
       type: 'string',
-      flex: 1, 
+      flex: 1,
     },
     {
       field: 'phone',
@@ -160,7 +161,7 @@ export function KycContent(props: Props) {
       type: 'string',
       width: 120,
       valueGetter: (params: GridValueGetterParams) =>
-        `${generateFormatDate(new Date(params.row.requestKYCAt))}`,
+        params.row.requestKYCAt ? `${generateFormatDate(new Date(params.row.requestKYCAt))}` : '',
     },
     {
       field: 'photos',
@@ -171,18 +172,18 @@ export function KycContent(props: Props) {
       renderCell: (params: GridRenderCellParams) => {
         return (
           <div className={'flex flex-col gap-1'}>
-            <p
+            {params.row?.passport && <p
               className={'underline text-blue-500 cursor-pointer'}
               onClick={() => handleClickPhoto(params.row, 'passport')}
             >
               Passport
-            </p>
-            <p
+            </p>}
+            {params.row?.pictureHoldPassport && <p
               className={'underline text-blue-500 cursor-pointer'}
               onClick={() => handleClickPhoto(params.row, 'holdPassport')}
             >
               Hold Passport
-            </p>
+            </p>}
           </div>
         );
       },
@@ -195,7 +196,7 @@ export function KycContent(props: Props) {
       width: 200,
       renderCell: (params: GridRenderCellParams) => {
         const status = params.row?.kycStatus
-        
+
         if (status !== 'In-progress') return
 
         return (
@@ -233,7 +234,12 @@ export function KycContent(props: Props) {
         <div className={'w-full grow'} key={tableData.map((value) => value.id).join('_')}>
           <DataGrid
             paginationMode="server"
-            rows={tableData}
+            rows={[...tableData].sort((a, b) => {
+              if (a.kycStatus === b.kycStatus) return 0
+              if (a.kycStatus === 'In-progress') return -1
+              if (b.kycStatus === 'In-progress') return 1
+              return 0;
+            })}
             columns={kycColumns}
             pageSizeOptions={[25]}
             rowCount={kycCount || 0}
