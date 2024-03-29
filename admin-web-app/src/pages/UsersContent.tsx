@@ -8,7 +8,10 @@ import { FormFieldEmail } from '../components/FormFieldEmail';
 import { FormFieldPhoneNumber } from '../components/FormFieldPhoneNumber';
 import { UserDetailAndEdit } from '../components/UserDetailAndEdit';
 import { useValidateCaller } from '../hooks-ui/useValidateCaller';
-import { extractPhone, RNPhoneValue } from '../services-business/api/generate-api-param/account';
+import {
+  extractPhone,
+  RNPhoneValue,
+} from '../services-business/api/generate-api-param/account';
 import {
   DataGrid,
   GridCellParams,
@@ -21,10 +24,10 @@ import { useApiGetUsers } from '../hooks/api/user';
 import { capitalize } from 'lodash-es';
 
 const ROLES: Record<string, string> = {
-  ROLE_USER: "Customer",
-  ROLE_ADMIN: "Admin",
-  ROLE_MODERATOR: "Staff",
-}
+  ROLE_USER: 'Customer',
+  ROLE_ADMIN: 'Admin',
+  ROLE_MODERATOR: 'Staff',
+};
 
 type Props = {};
 
@@ -41,19 +44,23 @@ export function UsersContent(props: Props) {
   const [userClicked, setUserClicked] = useState<ViewedUser>();
   const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
 
-  const { data, isLoading: gettingUsers, refetch } = useApiGetUsers({
+  const {
+    data,
+    isLoading: gettingUsers,
+    refetch,
+  } = useApiGetUsers({
     page: paginationModel.page,
     size: paginationModel.pageSize,
     phone: phone ? extractPhone(phone).localPhone : '',
     codePhone: phone ? extractPhone(phone).nationPhone : '',
-    email
+    email,
   });
   const tableData = data?.content || [];
   const userCount = data?.totalElements;
 
   const handleClickSearch = async () => {
-    await refetch()
-  }
+    await refetch();
+  };
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
     setUserClicked(params.row);
@@ -64,8 +71,10 @@ export function UsersContent(props: Props) {
       page: paginationModel.page,
       size: paginationModel.pageSize,
     };
-    const { data } = await refetch()
-    const updatedUserClicked = data?.content.find((user) => user.id === userClicked?.id);
+    const { data } = await refetch();
+    const updatedUserClicked = data?.content.find(
+      (user) => user.id === userClicked?.id,
+    );
     if (updatedUserClicked) {
       setUserClicked(updatedUserClicked);
     }
@@ -76,14 +85,14 @@ export function UsersContent(props: Props) {
       page: paginationModel.page,
       size: paginationModel.pageSize,
     };
-    await refetch()
+    await refetch();
   }
 
   const handleClear = async () => {
-    setPhone(undefined)
-    setEmail('')
-    setTimeout(refetch)
-  }
+    setPhone(undefined);
+    setEmail('');
+    setTimeout(refetch);
+  };
 
   // TODO: add i18n for columns
   const userColumns: GridColDef<ViewedUser>[] = [
@@ -94,10 +103,11 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 200,
-      valueGetter: (params: GridValueGetterParams) =>{
-        const role = (params.row.roles[params.rowNode.depth].name || '') as string;
-        
-        return ROLES[role]
+      valueGetter: (params: GridValueGetterParams) => {
+        const role = (params.row.roles[params.rowNode.depth].name ||
+          '') as string;
+
+        return ROLES[role];
       },
     },
     {
@@ -106,7 +116,8 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 80,
-      valueGetter: (params: GridValueGetterParams) => (params.row.enable ? 'Active' : 'Inactive'),
+      valueGetter: (params: GridValueGetterParams) =>
+        params.row.enable ? 'Active' : 'Inactive',
       cellClassName: (params: GridCellParams) => {
         if (params.value === 'Active') {
           return 'text-success';
@@ -120,7 +131,7 @@ export function UsersContent(props: Props) {
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
       // width: 160,
-      flex: 1, 
+      flex: 1,
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
@@ -130,7 +141,7 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       // width: 200,
-      flex: 1
+      flex: 1,
     },
     {
       field: 'phone',
@@ -156,7 +167,7 @@ export function UsersContent(props: Props) {
       width: 120,
     },
     {
-      field: 'kycStatus',
+      field: '',
       headerName: 'Created',
       sortable: false,
       type: 'string',
@@ -171,8 +182,14 @@ export function UsersContent(props: Props) {
           'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
         }
       >
-        <p className={'text-h4 w-full text-start mb-6'}>{translation.t('User Management')}</p>
-        <div className={'w-full flex flex-row justify-between items-center gap-10 mb-4'}>
+        <p className={'text-h4 w-full text-start mb-6'}>
+          {translation.t('User Management')}
+        </p>
+        <div
+          className={
+            'w-full flex flex-row justify-between items-center gap-10 mb-4'
+          }
+        >
           <div className={'flex flex-row justify-start items-end gap-4 mb-4'}>
             <FormFieldEmail
               id={'email'}
@@ -207,7 +224,10 @@ export function UsersContent(props: Props) {
             {translation.t('Create new')}
           </button>
         </div>
-        <div className={'w-full grow'} key={tableData.map((value) => value.id).join('_')}>
+        <div
+          className={'w-full grow'}
+          key={tableData.map((value) => value.id).join('_')}
+        >
           <DataGrid
             paginationMode="server"
             rows={tableData}
@@ -224,7 +244,9 @@ export function UsersContent(props: Props) {
       {userClicked && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setUserClicked(undefined)}
+          handleClickOverlay={(shouldOpen: boolean) =>
+            !shouldOpen && setUserClicked(undefined)
+          }
         >
           <div className="w-full max-w-[1000px] justify-center items-center py-8 px-4 flex flex-col">
             <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
