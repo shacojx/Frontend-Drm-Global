@@ -1,6 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { callApiChangeEmail, callApiGetUserProfile, callApiSendEmailOTP } from 'src/api/account';
+import {
+  callApiChangeEmail,
+  callApiGetUserProfile,
+  callApiSendEditEmailOTP,
+} from 'src/api/account';
 import { DialogContainer } from 'src/components/DialogContainer';
 import { DialogFailureFullscreen, DialogSuccessFullscreen } from 'src/components/DialogFormStatusFullscreen';
 import { FormFieldEmail } from 'src/components/FormFieldEmail';
@@ -17,7 +21,7 @@ type DialogEditEmailProps = {
 export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
   const { t } = useTranslation();
 
-  const { saveAuthUser } = useContext(AuthContext)
+  const { user, saveAuthUser } = useContext(AuthContext)
 
   const [email, setEmail] = useState<string>();
   const [step, setStep] = useState(0);
@@ -44,7 +48,10 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
   const handleSendOtp = async () => {
     try {
       setLoading(true);
-      email && (await callApiSendEmailOTP(email));
+      if (!email || !user?.firstName || !user?.lastName ) {
+        return
+      }
+      await callApiSendEditEmailOTP(email, user.firstName, user.lastName);
       setLoading(false);
     } catch (error) {
       setError(String(error));
