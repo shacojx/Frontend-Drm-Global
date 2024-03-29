@@ -10,7 +10,7 @@ export const IconX = (props: SVGProps<SVGSVGElement>) => {
         rx="1.08779"
         transform="rotate(-45 0 1.77393)"
         fill="#3B3F48"
-        fill-opacity="0.85"
+        fillOpacity="0.85"
       />
       <rect
         x="1.53906"
@@ -20,7 +20,7 @@ export const IconX = (props: SVGProps<SVGSVGElement>) => {
         rx="1.08779"
         transform="rotate(-135 1.53906 14.7661)"
         fill="#3B3F48"
-        fill-opacity="0.85"
+        fillOpacity="0.85"
       />
     </svg>
   );
