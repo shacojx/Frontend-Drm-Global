@@ -36,6 +36,12 @@ export type ApiVerifyPhone = {
   "phone": LocalPhone,
 }
 
+export type ApiVerifyEmail = {
+  email: string,
+  firstName: string,
+  lastName: string
+}
+
 export type ApiCheckRecoveryCode = {
   "email": string,
   "otp": string,

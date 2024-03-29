@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { callApiCreateAccount, callApiSendEmailOTP } from "src/api/account";
-import { CompanyTypeValue, EntityEnding, Industry, NationValue } from "src/api/types";
+import { ApiVerifyEmail, CompanyTypeValue, EntityEnding, Industry, NationValue } from "src/api/types";
 import { DialogContainer } from "src/components/DialogContainer";
 import {
   DialogFailureFullscreen,
@@ -179,6 +179,8 @@ export function RegisterPage() {
       <CreateAccountStep
         onClickCreateAccount={handleClickNextStep}
         onClickPreviousStep={handleClickBackStep}
+        firstName={firstName || ''}
+        lastName={lastName || ''}
         email={email || ''}
         password={password}
         setPassword={setPassword}
@@ -188,6 +190,8 @@ export function RegisterPage() {
     }
     {stepIndex === EnterOtpStepIndex &&
       <EmailOtpStep
+        firstName={firstName || ''}
+        lastName={lastName || ''}
         email={email}
         onChangeOtp={setEmailOtp}
         onClickVerifyAccount={handleClickCreateAccount}
@@ -421,6 +425,8 @@ function CompanyInformationStep(props: CompanyInformationStepProps) {
 type CreateAccountStepProps = {
   onClickCreateAccount: () => void,
   onClickPreviousStep: () => void,
+  firstName: string,
+  lastName: string,
   email: string,
   password: string | undefined,
   setPassword: (value: string) => void,
@@ -438,7 +444,12 @@ function CreateAccountStep(props: CreateAccountStepProps) {
       return
     }
     if (validateAll()){
-      callApiSendEmailOTP(props.email).catch(e=>console.error(e))
+      const param: ApiVerifyEmail = {
+        email: props.email,
+        firstName: props.firstName,
+        lastName: props.lastName,
+      }
+      callApiSendEmailOTP(param).catch(e=>console.error(e))
       props.onClickCreateAccount()
     }
   }
@@ -494,6 +505,8 @@ function CreateAccountStep(props: CreateAccountStepProps) {
 }
 
 type Props = {
+  firstName: string,
+  lastName: string,
   email: string | undefined,
   onChangeOtp: (otp: string) => void,
   onClickVerifyAccount: () => void,
@@ -521,7 +534,12 @@ export function EmailOtpStep(props: Props) {
     }
     setIsResending(true)
     try {
-      await callApiSendEmailOTP(props.email)
+      const param: ApiVerifyEmail = {
+        email: props.email,
+        firstName: props.firstName,
+        lastName: props.lastName,
+      }
+      await callApiSendEmailOTP(param).catch(e=>console.error(e))
       setIsResending(false)
     } catch (e) {
       console.error(e)
