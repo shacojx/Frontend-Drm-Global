@@ -123,7 +123,7 @@ export function RegisterPage() {
   }
 
   return <PageLayoutOneForm>
-    <p className="text-h4 text-center">{translation.t('Launch your new in', {companyType: companyType})}</p>
+    <p className="text-h4 text-center">{translation.t('Launch your new in', {companyType: 'Business'})}</p>
     <FormFieldSelect
       id={"nationSelect"}
       isRequired
