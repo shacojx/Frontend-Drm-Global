@@ -28,6 +28,7 @@ import { FormFieldSelect } from './FormFieldSelect';
 import { ServiceStepContent } from './ServiceStepContent';
 import { IconCheck, IconMyService, IconUser } from './icons';
 import { MyCompanyDetailPage } from './service/my-company/MyCompanyDetailPage';
+import { StatusBadge } from './StatusBadge';
 
 type Props = {
   service: Service | null;
@@ -229,13 +230,7 @@ export function ServiceDetailDialog({
               optionInfos={cycleOptions}
               value={cycle}
             ></FormFieldSelect>
-            <FormFieldSelect
-              id={'serviceStatus'}
-              onChange={uploadStatusService}
-              validateCaller={validateCaller}
-              optionInfos={SERVICE_STEP_STATUS}
-              value={service?.statusService as Status}
-            ></FormFieldSelect>
+            <StatusBadge status={service?.statusService as Status}></StatusBadge>
           </div>
           <div>
             <div className={'font-bold'}>{t('Person in charge')} *</div>
