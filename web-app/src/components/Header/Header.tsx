@@ -1,8 +1,9 @@
 import { Popover, Transition } from '@headlessui/react';
-import { Fragment, useContext, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { callApiLogout } from 'src/api/account';
+import { getFile } from 'src/api/upload';
 import { IconAccountCircle, IconLogout, IconSupport, IconThreeLines, IconUser, IconX } from 'src/components/icons';
 import { RoutePaths } from 'src/constants/routerPaths';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
@@ -17,6 +18,8 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
   const navigate = useNavigate();
   const translation = useTranslation();
 
+  const [avatarUrl, setAvatarUrl] = useState<string>();
+
   function handleClickLogout() {
     callApiLogout().catch((e) => console.error(e));
     navigate(RoutePaths.login);
@@ -27,6 +30,16 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
   const toggleMenu = () => {
     setIsOpenOnSmallScreen((pre) => !pre);
   };
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (!user?.avatar) return;
+      const blob = await getFile(user?.avatar, { download: false });
+      blob && setAvatarUrl(URL.createObjectURL(blob));
+    };
+
+    fetchAvatar()
+  }, [user?.avatar]);
 
   return (
     <div className=" w-full h-20 shrink-0  bg-white flex justify-between lg:justify-end items-center px-6">
@@ -46,7 +59,11 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
               <>
                 <Popover.Button className={''}>
                   <div>
-                    <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
+                    {user?.avatar ? (
+                      <img src={avatarUrl} className="size-10 rounded-full" />
+                    ) : (
+                      <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
+                    )}
                   </div>
                 </Popover.Button>
 

@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getFile, uploadFile } from "src/api/upload";
+import { getFile, uploadAvatar } from "src/api/upload";
 import { UploadedDocumentType } from "../../../../api/types";
 import InputFile from "../../../../components/InputFile";
 import TitleContent from "../../../../components/TitleContent";

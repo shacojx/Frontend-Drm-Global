@@ -40,6 +40,7 @@ import { ReactComponent as IconPaypal } from '../assets/svgs/Paypal.svg';
 import { ReactComponent as IconQR } from '../assets/svgs/QR.svg';
 import { ReactComponent as IconArrowCircle } from '../assets/svgs/ArrowCircle.svg';
 import { ReactComponent as IconEdit } from '../assets/svgs/Edit.svg';
+import { ReactComponent as IconPencil } from '../assets/svgs/Pencil.svg';
 
 
 type Props = React.SVGProps<SVGSVGElement>
@@ -88,5 +89,6 @@ export {
   IconPaypal,
   IconQR,
   IconArrowCircle,
-  IconEdit
+  IconEdit,
+  IconPencil
 }

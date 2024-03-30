@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Document } from "../../api/types";
-import { getFile, uploadFile } from "../../api/upload";
+import { getFile, uploadAvatar } from "../../api/upload";
 import { IconSpinner, IconUpload } from "../../components/icons";
 
 type DocumentTabProps = {
@@ -25,7 +25,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
       return
     }
 
-    const { data } = await uploadFile(file);
+    const { data } = await uploadAvatar(file);
     const savedFile = data[0];
 
     const newDocuments = [...documents, { id: savedFile, name: savedFile, url: savedFile }];
