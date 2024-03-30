@@ -17,7 +17,7 @@ import {
 export async function callApiLogin(body: ApiLoginParam): Promise<TransformedResultLogin> {
   const path = 'api/auth/signin'
   const rawResult = await callApi<RawResultLogin>('POST', path, body)
-  if (!rawResult.roles.includes('ROLE_ADMIN')) {
+  if (!rawResult.roles.includes('ROLE_ADMIN') || !rawResult.roles.includes('ROLE_MODERATOR')) {
     throw new Error('This Account has no permission to access admin site!')
   }
   return transformLoginResult(rawResult)
