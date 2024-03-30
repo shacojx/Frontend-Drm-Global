@@ -60,7 +60,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
                 <Popover.Button className={''}>
                   <div>
                     {user?.avatar ? (
-                      <img src={avatarUrl} className="size-10 rounded-full" />
+                      <img src={avatarUrl} className="size-10 rounded-full object-cover" />
                     ) : (
                       <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
                     )}

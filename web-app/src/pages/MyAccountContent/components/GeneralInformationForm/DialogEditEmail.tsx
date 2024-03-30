@@ -182,6 +182,7 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
       {isSuccess && (
         <DialogSuccessFullscreen
           title="Email changed successfully"
+          subTitle="Start your journey with us !"
           actionElement={
             <button
               className="rounded-lg bg-primary text-white font-semibold h-13 w-full mt-10"
