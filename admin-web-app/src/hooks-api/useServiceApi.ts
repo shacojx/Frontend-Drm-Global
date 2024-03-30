@@ -6,6 +6,8 @@ import {
   callApiGetListService,
   callApiGetServiceDetail,
   callApiSearchPaidService,
+  callApiSendPaymentReminder,
+  callApiSendRequiredDocumentReminder,
   callApiUpdateAdminRemark,
   callApiUpdatePic,
   callApiUpdateStatusService,
@@ -95,5 +97,16 @@ export function useApiServiceUpdatePic() {
 export function useApiServiceStatusUpdate() {
   return useMutation({
     mutationFn: callApiUpdateStatusService,
+  });
+}
+export function useApiSendPaymentReminder() {
+  return useMutation({
+    mutationFn: callApiSendPaymentReminder,
+  });
+}
+
+export function useApiSendRequiredDocumentReminder() {
+  return useMutation({
+    mutationFn: callApiSendRequiredDocumentReminder,
   });
 }

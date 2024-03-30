@@ -78,3 +78,14 @@ export async function callApiUploadCustomerDocument(body: FormData) {
 
   return data;
 }
+
+
+export async function callApiSendPaymentReminder(data: any) {
+  const path = '/api/admin/send-reminder-document';
+  return await callApi('POST', path, data, true);
+}
+
+export async function callApiSendRequiredDocumentReminder(data: any) {
+  const path = '/api/admin/send-reminder-payment';
+  return await callApi('POST', path, data, true);
+}
