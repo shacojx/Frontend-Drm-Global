@@ -38,7 +38,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
       blob && setAvatarUrl(URL.createObjectURL(blob));
     };
 
-    fetchAvatar()
+    fetchAvatar();
   }, [user?.avatar]);
 
   return (
@@ -59,7 +59,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
               <>
                 <Popover.Button className={''}>
                   <div>
-                    {user?.avatar ? (
+                    {avatarUrl ? (
                       <img src={avatarUrl} className="size-10 rounded-full object-cover" />
                     ) : (
                       <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
@@ -85,9 +85,15 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
                         <IconX />
                       </div>
                       <p className={'text-gray-700 text-cLg'}>{user?.email}</p>
-                      <IconAccountCircle className={'w-14 h-14 mb-3'} />
+                      <div>
+                        {avatarUrl ? (
+                          <img src={avatarUrl} className="size-10 rounded-full object-cover" />
+                        ) : (
+                          <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
+                        )}
+                      </div>
                       <p className={'font-bold text-cLg'}>
-                        {translation.t('Hello')} {user?.lastName},
+                        {translation.t('Hello')} {user?.firstName},
                       </p>
                       <Link
                         to={RoutePaths.myAccount}
