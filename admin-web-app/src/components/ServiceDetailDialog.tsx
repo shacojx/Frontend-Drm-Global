@@ -1,40 +1,35 @@
-import { IconCheck, IconCheckCircle, IconMyService, IconUser } from './icons';
-import { useTranslation } from 'react-i18next';
-import { FormFieldSelect } from './FormFieldSelect';
-import { useValidateCaller } from '../hooks-ui/useValidateCaller';
-import { OptionInfo } from '../types/common';
-import { StatusBadge } from './StatusBadge';
-import { Service, ServiceStep } from '../types/service';
-import { DialogContainer } from './DialogContainer';
+import { UseQueryResult } from '@tanstack/react-query';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import {
   CompanyDetail,
-  KycDetail,
-  RawCompanyDetail,
   RawResult,
-  ViewedUser,
+  ViewedUser
 } from '../api/types';
-import { callApiUpdatePic } from '../api/serviceManagement';
-import { ServiceStepContent } from './ServiceStepContent';
-import { Status } from '../constants/StatusBadge';
 import { uploadFile } from '../api/upload';
-import { MyCompanyDetailPage } from './service/my-company/MyCompanyDetailPage';
-import { cn } from '../utils/cn.util';
-import { UseQueryResult } from '@tanstack/react-query';
+import { Status } from '../constants/StatusBadge';
 import {
   useApiServiceStatusUpdate,
   useApiServiceUpdatePic,
 } from '../hooks-api/useServiceApi';
-import { toast } from 'react-toastify';
+import { useValidateCaller } from '../hooks-ui/useValidateCaller';
 import {
   validateCompanyInfo,
   validateMailingAddress,
   validateOwnersInfo,
   validateResponseParty,
 } from '../services-business/myCompany';
+import { OptionInfo } from '../types/common';
+import { Service, ServiceStep } from '../types/service';
+import { cn } from '../utils/cn.util';
+import { DialogContainer } from './DialogContainer';
+import { FormFieldSelect } from './FormFieldSelect';
+import { ServiceStepContent } from './ServiceStepContent';
+import { IconCheck, IconMyService, IconUser } from './icons';
+import { MyCompanyDetailPage } from './service/my-company/MyCompanyDetailPage';
 
 type Props = {
-  listUser: ViewedUser[];
   service: Service | null;
   resGetServiceId?: UseQueryResult<Service, Error>;
   listUserPIC: ViewedUser[];
@@ -75,14 +70,12 @@ export const SERVICE_STEP_STATUS = [
 
 export function ServiceDetailDialog({
   service,
-  listUser,
   resGetServiceId,
   listUserPIC,
   companyDetail,
   resSearchService,
   resGetListService,
 }: Props) {
-  console.log('companyDetail: ', companyDetail);
   const { t } = useTranslation();
   const { validateCaller, validateAll } = useValidateCaller();
   const [showCompanyDetailDialog, setShowCompanyDetailDialog] = useState(false);
@@ -107,13 +100,6 @@ export function ServiceDetailDialog({
     setCycle(service?.cycleNumber);
     setServiceStep(serviceStep ?? defaultServiceStep);
   }, [service]);
-
-  const user: KycDetail = useMemo(() => {
-    const userFind: KycDetail = listUser?.find(
-      (item) => item.id === service?.userId,
-    ) as KycDetail;
-    return userFind;
-  }, [listUser, service]);
 
   const mutateUpdatePic = useApiServiceUpdatePic();
 
@@ -146,23 +132,6 @@ export function ServiceDetailDialog({
     }
   }
 
-  const statusCorporationProfile = useMemo(() => {
-    try {
-      if (
-        companyDetail &&
-        validateCompanyInfo(companyDetail.companyInfo) &&
-        validateOwnersInfo(companyDetail.owners) &&
-        validateResponseParty(companyDetail.responseParty) &&
-        validateMailingAddress(companyDetail.mailingAddress)
-      ) {
-        return Status.CONFIRMED;
-      }
-    } catch (error) {
-      console.error('error: ', error);
-    }
-    return Status.PENDING;
-  }, [companyDetail]);
-
   const dataTab: TabType[] = [
     {
       icon: <IconMyService className="w-6 h-6" />,
@@ -179,7 +148,7 @@ export function ServiceDetailDialog({
     {
       icon: <IconMyService className="w-6 h-6" />,
       header: t('KYC'),
-      status: user?.kycStatus as Status,
+      status: service?.kycStatus as Status,
       color: '#FF5722',
       id: 2,
     },
@@ -194,7 +163,7 @@ export function ServiceDetailDialog({
       icon: <IconUser className="w-6 h-6" />,
       header: t('Corporation Profile'),
       detail: t('Click here to edit'),
-      status: statusCorporationProfile as Status,
+      status: service?.corporationProfileStatus as Status,
       color: '#5D50C6',
       id: 4,
       clickable: true,
@@ -236,19 +205,19 @@ export function ServiceDetailDialog({
       <div className={'grid grid-cols-3 gap-4 mb-4' + ''}>
         <div className={'flex flex-col gap-3'}>
           <span className={'font-bold'}>
-            {user?.lastName} {user?.firstName}
+            {service?.lastName} {service?.firstName}
           </span>
-          <span>Email: {user?.email}</span>
+          <span>Email: {service?.email}</span>
           <span>
-            Phone number: {user?.codePhone} {user?.phone}
+            Phone number: {service?.codePhone} {service?.phone}
           </span>
         </div>
         <div className={'flex flex-col gap-3'}>
           <div className={'font-bold'}>
-            {companyDetail?.companyInfo.companyName}&#160;
+            {service?.companyName}&#160;
           </div>
-          <span>Nation: {user?.llcInNation}</span>
-          <span>Industry: {companyDetail?.companyInfo.industry}</span>
+          <span>Nation: {service?.llcInNation}</span>
+          <span>Industry: {service?.industry}</span>
         </div>
         <div className={'flex flex-col gap-3 ml-auto'}>
           <div className={'grid grid-cols-2 gap-2'}>
@@ -401,7 +370,7 @@ export function ServiceDetailDialog({
         <div className={'lg:col-span-10'}>
           <ServiceStepContent
             serviceStep={serviceStep}
-            serviceId={service?.id ?? null}
+            service={service}
             resGetServiceId={resGetServiceId}
           />
         </div>

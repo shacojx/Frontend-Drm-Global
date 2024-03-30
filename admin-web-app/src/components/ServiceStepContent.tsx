@@ -2,11 +2,13 @@ import { QueryClient, UseQueryResult } from '@tanstack/react-query';
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { UploadedDocumentType } from '../api/types';
+import { KycDetail, UploadedDocumentType } from '../api/types';
 import { getFile } from '../api/upload';
 import { Status } from '../constants/StatusBadge';
 import { NONE_REQUIRED } from '../constants/global';
 import {
+  useApiSendPaymentReminder,
+  useApiSendRequiredDocumentReminder,
   useApiServiceUpdateAdminRemark,
   useApiServiceUploadFinalContract,
   useApiServiceUploadStatusStep,
@@ -20,17 +22,18 @@ import { IconAltArrowDown } from './icons';
 import { Menu, Transition } from '@headlessui/react';
 import ButtonCs from './ButtonCs';
 import { SERVICE_STEP_STATUS } from './ServiceDetailDialog';
+import { cn } from '../utils/cn.util';
 
 type Props = {
   serviceStep: ServiceStep | null;
-  serviceId?: number | null;
   resGetServiceId?: UseQueryResult<Service, Error>;
+  service: Service | null;
 };
 
 export function ServiceStepContent({
   serviceStep,
-  serviceId,
   resGetServiceId,
+  service,
 }: Props) {
   const { t } = useTranslation();
 
@@ -156,23 +159,62 @@ export function ServiceStepContent({
     }
   };
 
-
   const handleMenuItemClick = (option: any) => {
     option.click && option.click();
   };
 
+  const mutateSendPaymentReminder = useApiSendPaymentReminder();
+  const mutateSendRequiredDocumentReminder =
+    useApiSendRequiredDocumentReminder();
+
   const handleSendPaymentReminder = () => {
-    console.log('handleSendPaymentReminder');
+    const listDocArr = serviceStep?.customerDocument.map(
+      (doc) => doc.fileDocument,
+    );
+    const listDoc = listDocArr;
+
+    mutateSendPaymentReminder.mutate(
+      {
+        email: service?.email,
+        listDoc: listDoc,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(t('Send Payment Reminder successfully'));
+        },
+        onError: (error) => {
+          toast.error(String(error));
+        },
+      },
+    );
   };
 
   const handleSendRequiredDocumentReminder = () => {
-    console.log('handleSendRequiredDocumentReminder');
+    mutateSendRequiredDocumentReminder.mutate(
+      {
+        email: service?.email,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(t('Send Required Document Reminder successfully'));
+        },
+        onError: (error) => {
+          toast.error(String(error));
+        },
+      },
+    );
   };
 
   type OptionType = {
     label?: string;
     click?: () => void;
+    disabled?: boolean;
+    loading?: boolean;
   };
+
+  const checkDisabledSendPaymentReminder = serviceStep?.customerDocument.every(
+    (doc) => doc.fileDocument,
+  );
 
   const OPTIONS: OptionType[] = [
     {
@@ -180,12 +222,15 @@ export function ServiceStepContent({
       click: () => {
         handleSendPaymentReminder();
       },
+      disabled: !checkDisabledSendPaymentReminder,
+      loading: mutateSendPaymentReminder.status === 'pending',
     },
     {
       label: t('Send Required Document Reminder'),
       click: () => {
         handleSendRequiredDocumentReminder();
       },
+      loading: mutateSendRequiredDocumentReminder.status === 'pending',
     },
   ];
 
@@ -219,18 +264,27 @@ export function ServiceStepContent({
                 <div className="px-1 py-1 ">
                   {OPTIONS.map((option, index) => (
                     <Menu.Item key={index}>
-                      {({ active }) => (
-                        <ButtonCs
-                          onClick={() => handleMenuItemClick(option)}
-                          className={`w-full justify-start rounded-none ${
-                            active
-                              ? 'bg-primary '
-                              : 'bg-transparent text-primary'
-                          }`}
-                        >
-                          {option.label}
-                        </ButtonCs>
-                      )}
+                      {({ active }) =>
+                        option.disabled ? (
+                          <ButtonCs
+                            className={`w-full justify-start rounded-none bg-transparent text-primary opacity-50 cursor-not-allowed`}
+                          >
+                            {option.label}
+                          </ButtonCs>
+                        ) : (
+                          <ButtonCs
+                            onClick={() => !option?.loading && handleMenuItemClick(option)}
+                            isLoading={option?.loading}
+                            className={cn(
+                              `w-full justify-start rounded-none`,
+                              active? 'bg-primary' : 'bg-transparent text-primary',
+                              option?.loading? 'opacity-50 cursor-not-allowed' : '',
+                            )}
+                          >
+                            {option.label}
+                          </ButtonCs>
+                        )
+                      }
                     </Menu.Item>
                   ))}
                 </div>
@@ -268,17 +322,21 @@ export function ServiceStepContent({
           {t('Customer document')}
         </div>
         <div className="border rounded-md border-primary_25 mt-md">
-          <div className="border-b  border-primary_25 grid grid-cols-2 gap-md items-center py-md">
-            <div className="px-md text-center">{t('Required document')}</div>
-            <div className="px-md text-center">{t('Uploaded document')}</div>
+          <div className="border-b  border-primary_25 grid grid-cols-1 lg:grid-cols-2 gap-md items-center py-md">
+            <div className="px-md text-left lg:text-center">
+              {t('Required document')}
+            </div>
+            <div className="px-md text-left lg:text-center">
+              {t('Uploaded document')}
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-md items-center py-md">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-md items-center py-md">
             {serviceStep?.customerDocument.map((item, index) => (
               <Fragment key={`result${item.id}`}>
-                <div className="text-[#3B3F48]/85 px-md text-center">
+                <div className="text-[#3B3F48]/85 px-md text-left lg:text-center">
                   {index + 1}. {item.requiredDocument}
                 </div>
-                <div className="px-md text-center">
+                <div className="px-md text-left lg:text-center">
                   {item.fileDocument && (
                     <a
                       href="#"
@@ -299,17 +357,21 @@ export function ServiceStepContent({
           {t('Service Result')}
         </div>
         <div className="border rounded-md border-primary_25 mt-md">
-          <div className="border-b  border-primary_25 grid grid-cols-2 gap-md items-center py-md">
-            <div className="px-md text-center">{t('Required document')}</div>
-            <div className="px-md text-center">{t('Uploaded document')}</div>
+          <div className="border-b  border-primary_25 grid grid-cols-1 lg:grid-cols-2 gap-md items-center py-md">
+            <div className="px-md text-left lg:text-center">
+              {t('Required document')}
+            </div>
+            <div className="px-md text-left lg:text-center">
+              {t('Uploaded document')}
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-md items-center py-md">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-md items-center py-md">
             {serviceStep?.result.map((item, index) => (
               <Fragment key={`customerDocument${item.id}`}>
-                <div className="px-md text-[#3B3F48]/85 text-center">
+                <div className="px-md text-[#3B3F48]/85 text-left lg:text-center">
                   {index + 1}. {item.requiredDocument}
                 </div>
-                <div className="px-md flex justify-center items-center">
+                <div className="px-md flex justify-start lg:justify-center items-center text-left lg:text-center">
                   <InputFile
                     key={`file${item.id}`}
                     label={t('Upload')}

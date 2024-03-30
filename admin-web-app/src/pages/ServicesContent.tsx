@@ -54,7 +54,7 @@ export function ServicesContent() {
     useState(false);
   const [selectService, setSelectService] = useState<Service | null>(null);
 
-  // todo call danh sách user tìm kiếm
+  // todo call danh sách tìm kiếm
   const resSearchService = useApiSearchPaidService(dataSearch, {
     enabled: Boolean(dataSearch.email) || Boolean(dataSearch.pic),
   });
@@ -76,19 +76,6 @@ export function ServicesContent() {
       setServicesCount(resGetListService.data?.totalPages);
     }
   }, [resGetListService.data, resGetListService.isFetching]);
-
-  // todo danh sách user
-  const [listUser, setListUser] = useState<ViewedUser[]>([]);
-  const resUser = useApiGetUsers({
-    page: paginationModel.page,
-    size: paginationModel.pageSize,
-  });
-  useEffect(() => {
-    // @ts-ignore
-    if (resUser.data) {
-      setListUser(resUser.data?.content);
-    }
-  }, [resUser.data, resUser.isFetching]);
 
   // todo danh sách pic theo role
   const [listUserPIC, setListUserPIC] = useState<ViewedUser[]>([]);
@@ -127,6 +114,24 @@ export function ServicesContent() {
       },
     },
     {
+      field: 'kycStatus',
+      headerName: t('KYC'),
+      sortable: false,
+      width: 140,
+      renderCell: (params: GridRenderCellParams) => {
+        return <StatusBadge status={params.value as Status}></StatusBadge>;
+      },
+    },
+    {
+      field: 'corporationProfileStatus',
+      headerName: t('Corporation profile'),
+      sortable: false,
+      width: 140,
+      renderCell: (params: GridRenderCellParams) => {
+        return <StatusBadge status={params.value as Status}></StatusBadge>;
+      },
+    },
+    {
       field: 'statusPayment',
       headerName: t('Payment'),
       sortable: false,
@@ -150,32 +155,27 @@ export function ServicesContent() {
       width: 200,
       type: 'string',
       renderCell: (params: GridRenderCellParams) => {
-        const user = listUser.find((u) => u.id === params.row.userId);
-        let name = `${user?.firstName} ${user?.lastName}`;
+        let name = `${params.row?.firstName} ${params.row?.lastName}`;
         return <>{name}</>;
       },
     },
     {
-      field: 'customerPhone',
+      field: 'phone',
       headerName: t('Phone number'),
       sortable: false,
       width: 120,
       type: 'string',
       renderCell: (params: GridRenderCellParams) => {
-        const user = listUser.find((u) => u.id === params.row.userId);
-        return <>{user?.phone}</>;
+        return <> {params.row?.codePhone} {params.row?.phone}</>;
       },
+     
     },
     {
-      field: 'customerEmail',
+      field: 'email',
       headerName: t('Email'),
       sortable: false,
       width: 200,
       type: 'string',
-      renderCell: (params: GridRenderCellParams) => {
-        const user = listUser.find((u) => u.id === params.row.userId);
-        return <>{user?.email}</>;
-      },
     },
     {
       field: 'pic',
@@ -239,10 +239,6 @@ export function ServicesContent() {
     resGetListService.refetch();
   };
 
-  const handleClickSubmitUser = () => {
-    resUser.refetch();
-  };
-
   const handleClickSubmitGetServiceId = () => {
     resGetServiceId.refetch();
   };
@@ -257,8 +253,7 @@ export function ServicesContent() {
 
   return (
     <div className={'w-full grow flex flex-col p-3'}>
-      {(resUser.isFetching ||
-        resGetServiceId.isFetching ||
+      {(        resGetServiceId.isFetching ||
         resUserByRole.isFetching ||
         resCompanyId.isFetching) && <DialogRequestingFullscreen />}
 
@@ -290,20 +285,7 @@ export function ServicesContent() {
           }
         />
       )}
-      {resUser.isError && (
-        <DialogFailureFullscreen
-          title="Failure!"
-          subTitle={resUser?.error?.message}
-          actionElement={
-            <button
-              onClick={handleClickSubmitUser}
-              className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-            >
-              <span>{t('Try again')}</span>
-            </button>
-          }
-        />
-      )}
+      
       {resGetServiceId.isError && (
         <DialogFailureFullscreen
           title="Failure!"
@@ -392,7 +374,6 @@ export function ServicesContent() {
           >
             <ServiceDetailDialog
               service={serviceDetail}
-              listUser={listUser}
               resGetServiceId={resGetServiceId}
               listUserPIC={listUserPIC}
               companyDetail={companyDetail}
