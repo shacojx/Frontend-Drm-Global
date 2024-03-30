@@ -1,4 +1,4 @@
-import { callApi, getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
+import {  getAccessTokenInfo, getAuthorizationString } from "../services-base/api";
 
 export type UploadResponse = {
   message: string;
@@ -27,6 +27,8 @@ export const uploadFile = async (file: File) => {
 
   return data;
 };
+
+
 
 export const uploadAvatar = async (file: File) => {
   const headers = new Headers();
