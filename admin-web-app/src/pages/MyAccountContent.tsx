@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { callApiChangeUserPassword, callApiChangeUserProfile } from "../api/account";
+import { callApiChangeUserPassword, callApiChangeUserProfile, callApiGetUserProfile } from "../api/account";
 import { ApiChangeUserPassword, ApiChangeUserProfile } from "../api/types";
 import { FormFieldEmail } from "../components/FormFieldEmail";
 import { FormFieldPassword } from "../components/FormFieldPassword";
@@ -40,7 +40,7 @@ export function MyAccountContent(props: MyAccountContentProps) {
 
 function GeneralInformationForm() {
   const translation = useTranslation()
-  const {user} = useContext(AuthContext)
+  const { user, saveAuthUser} = useContext(AuthContext)
   const {validateCaller, validateAll} = useValidateCaller()
   const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || ''))
   const [firstName, setFirstName] = useState<string>(user?.firstName || '')
@@ -75,6 +75,7 @@ function GeneralInformationForm() {
     }
     try {
       await callApiChangeUserProfile(param)
+      saveAuthUser(await callApiGetUserProfile())
       setStatus('success')
     } catch (e: unknown) {
       setStatus("failure")

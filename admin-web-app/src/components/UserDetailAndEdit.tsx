@@ -209,7 +209,7 @@ export function UserDetailAndEdit(props: Props) {
         />
       </div>
     </div>
-    <div className="flex flex-col gap-y-8">
+    {/* <div className="flex flex-col gap-y-8">
       <div className="flex flex-col w-fit gap-y-2">
         <p className="text-cLg font-bold">{translation.t('Company information')}</p>
         <div className="w-1/2 border-2 border-primary"></div>
@@ -261,7 +261,7 @@ export function UserDetailAndEdit(props: Props) {
         validateCaller={validateCaller}
         isFixedValue={isViewMode}
       />
-    </div>
+    </div> */}
 
     {showSuccessModal && <DialogSuccessFullscreen 
       onClose={() => setShowSuccessModal(false)} 
