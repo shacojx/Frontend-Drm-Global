@@ -81,6 +81,7 @@ export const Header = () => {
                       })}
                       onClick={() => {
                         setActive(item);
+                        setShowMenu(false)
                       }}
                     >
                       {item.label}
