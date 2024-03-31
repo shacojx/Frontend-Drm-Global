@@ -54,6 +54,7 @@ export function filterServiceToDisplay(allServices: RawService[], allMyServices:
     })
   return serviceAfterFilterTypeAndStatus
     .map(service => {
+      console.log(service)
       return {
         id: service.id,
         label: service.serviceName,
@@ -62,6 +63,8 @@ export function filterServiceToDisplay(allServices: RawService[], allMyServices:
         price: appliedCycleMap[service.id].pricePerCycle,
         cycleNumber: appliedCycleMap[service.id].cycleNumber,
         currency: 'USD',
+        serviceType: service.serviceType, 
+        serviceCycle: service.serviceCycle
       }
     }) as Service[]
 }
