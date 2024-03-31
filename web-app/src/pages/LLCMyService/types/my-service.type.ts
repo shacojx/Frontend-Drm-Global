@@ -1,7 +1,7 @@
 
 export enum ServiceStatusType {
   Pending = 'Pending',
-  Ready = 'bg-[#FF5722]/25',
+  Ready = 'Ready',
   InProgress = 'In-Progress',
   Issued = 'Issued',
   Confirmed = 'Confirmed',
