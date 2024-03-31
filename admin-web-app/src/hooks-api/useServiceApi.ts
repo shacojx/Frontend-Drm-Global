@@ -69,7 +69,7 @@ export function useApiGetServiceDetail(
   );
 }
 
-export function useApiServiceUploadFinalContract() {
+export function useApiServiceUploadServiceResult() {
   return useMutation({
     mutationFn: callApiUploadCustomerDocument,
   });

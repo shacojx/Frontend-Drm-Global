@@ -1,8 +1,8 @@
-import { QueryClient, UseQueryResult } from '@tanstack/react-query';
-import { Fragment, useEffect, useState } from 'react';
+import { UseQueryResult } from '@tanstack/react-query';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { KycDetail, UploadedDocumentType } from '../api/types';
+import { UploadedDocumentType } from '../api/types';
 import { getFile } from '../api/upload';
 import { Status } from '../constants/StatusBadge';
 import { NONE_REQUIRED } from '../constants/global';
@@ -10,7 +10,7 @@ import {
   useApiSendPaymentReminder,
   useApiSendRequiredDocumentReminder,
   useApiServiceUpdateAdminRemark,
-  useApiServiceUploadFinalContract,
+  useApiServiceUploadServiceResult,
   useApiServiceUploadStatusStep,
 } from '../hooks-api/useServiceApi';
 import { useValidateCaller } from '../hooks-ui/useValidateCaller';
@@ -20,9 +20,10 @@ import InputFile from './InputFile';
 import { IconAltArrowDown } from './icons';
 
 import { Menu, Transition } from '@headlessui/react';
+import { cn } from '../utils/cn.util';
 import ButtonCs from './ButtonCs';
 import { SERVICE_STEP_STATUS } from './ServiceDetailDialog';
-import { cn } from '../utils/cn.util';
+import { StatusBadge } from './StatusBadge';
 
 type Props = {
   serviceStep: ServiceStep | null;
@@ -124,7 +125,7 @@ export function ServiceStepContent({
     }
   };
 
-  const mutateUploadFile = useApiServiceUploadFinalContract();
+  const mutateUploadFile = useApiServiceUploadServiceResult();
 
   // @ts-ignore
   const handleChangeFile = async (file?: File, id: number) => {
@@ -141,7 +142,7 @@ export function ServiceStepContent({
     // @ts-ignore
     formData.append('files', file);
     // @ts-ignore
-    formData.append('id', id);
+    formData.append('id', service?.id);
     try {
       const res = await mutateUploadFile.mutateAsync(formData);
       if (res) {
@@ -168,15 +169,9 @@ export function ServiceStepContent({
     useApiSendRequiredDocumentReminder();
 
   const handleSendPaymentReminder = () => {
-    const listDocArr = serviceStep?.customerDocument.map(
-      (doc) => doc.fileDocument,
-    );
-    const listDoc = listDocArr;
-
     mutateSendPaymentReminder.mutate(
       {
         email: service?.email,
-        listDoc: listDoc,
       },
       {
         onSuccess: (data) => {
@@ -190,9 +185,14 @@ export function ServiceStepContent({
   };
 
   const handleSendRequiredDocumentReminder = () => {
+    const listDocArr = serviceStep?.customerDocument.map(
+      (doc) => doc.fileDocument,
+    );
+    const listDoc = listDocArr;
     mutateSendRequiredDocumentReminder.mutate(
       {
         email: service?.email,
+        listDoc: listDoc,
       },
       {
         onSuccess: (data) => {
@@ -212,9 +212,13 @@ export function ServiceStepContent({
     loading?: boolean;
   };
 
-  const checkDisabledSendPaymentReminder = serviceStep?.customerDocument.every(
-    (doc) => doc.fileDocument,
-  );
+  const checkDisabledSendRequiredDocumentReminder = useMemo(() => {
+    const checkIssetFile = serviceStep?.customerDocument?.length === 0;
+    const checkFileNull = serviceStep?.customerDocument?.every(
+      (doc) => !doc.fileDocument,
+    );
+    return (checkIssetFile || checkFileNull);
+  }, [serviceStep?.customerDocument]);
 
   const OPTIONS: OptionType[] = [
     {
@@ -222,7 +226,7 @@ export function ServiceStepContent({
       click: () => {
         handleSendPaymentReminder();
       },
-      disabled: !checkDisabledSendPaymentReminder,
+      disabled: service?.statusPayment === Status.APPROVED,
       loading: mutateSendPaymentReminder.status === 'pending',
     },
     {
@@ -230,6 +234,7 @@ export function ServiceStepContent({
       click: () => {
         handleSendRequiredDocumentReminder();
       },
+      disabled: checkDisabledSendRequiredDocumentReminder,
       loading: mutateSendRequiredDocumentReminder.status === 'pending',
     },
   ];
@@ -273,12 +278,18 @@ export function ServiceStepContent({
                           </ButtonCs>
                         ) : (
                           <ButtonCs
-                            onClick={() => !option?.loading && handleMenuItemClick(option)}
+                            onClick={() =>
+                              !option?.loading && handleMenuItemClick(option)
+                            }
                             isLoading={option?.loading}
                             className={cn(
                               `w-full justify-start rounded-none`,
-                              active? 'bg-primary' : 'bg-transparent text-primary',
-                              option?.loading? 'opacity-50 cursor-not-allowed' : '',
+                              active
+                                ? 'bg-primary'
+                                : 'bg-transparent text-primary',
+                              option?.loading
+                                ? 'opacity-50 cursor-not-allowed'
+                                : '',
                             )}
                           >
                             {option.label}
