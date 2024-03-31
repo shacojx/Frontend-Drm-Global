@@ -17,7 +17,7 @@ export default function MyAccountContent() {
   const [loadingAvatar, setLoadingAvatar] = useState(false);
 
   useEffect(() => {
-    const fetchAvatar = async () => {        
+    const fetchAvatar = async () => {
       if (!user?.avatar) return;
       setLoadingAvatar(true)
       const blob = await getFile(user?.avatar, { download: false });
@@ -33,7 +33,7 @@ export default function MyAccountContent() {
     const file = event.currentTarget.files?.item(0);
     if (!file) return;
 
-    await uploadAvatar(file);    
+    await uploadAvatar(file);
     const newUser = await callApiGetUserProfile()
     saveAuthUser(newUser)
     setLoadingAvatar(false);
@@ -54,7 +54,10 @@ export default function MyAccountContent() {
           )}
           {avatarUrl ? (
             <div className="size-20 relative">
-              <img src={avatarUrl} alt="" className="size-full rounded-full object-cover" />
+              {avatarUrl === 'avt-default.jpg'
+                ? <img src={avatarUrl} alt="" className="size-full rounded-full object-cover"/>
+                : <IconAccountCircle className={'w-16 h-16'} />
+              }
               <label
                 htmlFor="avt"
                 className={cn('absolute bottom-0 right-0 rounded-full bg-gray-100 p-1 shadow-sm cursor-pointer', {

@@ -59,7 +59,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
               <>
                 <Popover.Button className={''}>
                   <div>
-                    {avatarUrl ? (
+                    {avatarUrl === 'avt-default.jpg' ? (
                       <img src={avatarUrl} className="size-10 rounded-full object-cover" />
                     ) : (
                       <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
@@ -86,7 +86,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
                       </div>
                       <p className={'text-gray-700 text-cLg'}>{user?.email}</p>
                       <div>
-                        {avatarUrl ? (
+                        {avatarUrl==="avt-default.jpg" ? (
                           <img src={avatarUrl} className="size-10 rounded-full object-cover" />
                         ) : (
                           <IconAccountCircle className={'w-10 h-10 cursor-pointer'} />
