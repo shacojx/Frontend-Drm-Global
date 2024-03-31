@@ -67,7 +67,7 @@ export const TestimonialSection = () => {
           {[...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS].map(({ content, jobTitle, name }) => (
             <div
               key={name}
-              className=" mr-5 inline-flex aspect-[5/3] w-[30vw] h-[] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
+              className=" mr-5 inline-flex aspect-[5/3] w-[30vw] h-[304px] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
             >
               <div className="flex gap-1">
                 {range(5).map((idx) => (
