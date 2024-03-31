@@ -213,13 +213,8 @@ export function ServiceStepContent({
     loading?: boolean;
   };
 
-  const checkDisabledSendRequiredDocumentReminder = useMemo(() => {
-    const checkIssetFile = serviceStep?.customerDocument?.length === 0;
-    const checkFileNull = serviceStep?.customerDocument?.every(
-      (doc) => !doc.fileDocument,
-    );
-    return (checkIssetFile || checkFileNull);
-  }, [serviceStep?.customerDocument]);
+  const disabledDocumentReminder = serviceStep?.customerDocument.every(item => item.fileDocument)
+  
 
   const OPTIONS: OptionType[] = [
     {
@@ -235,7 +230,7 @@ export function ServiceStepContent({
       click: () => {
         handleSendRequiredDocumentReminder();
       },
-      disabled: checkDisabledSendRequiredDocumentReminder,
+      disabled: disabledDocumentReminder,
       loading: mutateSendRequiredDocumentReminder.status === 'pending',
     },
   ];
