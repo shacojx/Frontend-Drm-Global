@@ -234,8 +234,7 @@ export const NATION_INFOS: OptionInfo<NationValue>[] = [
 ];
 
 export const NATION_PHONE_INFOS: OptionInfo<NationPhone>[] = [
-  { value: '+1', label: '+1', iconElement: <div>CA</div> },
-  { value: '+1', label: '+1', iconElement: <div>US</div> },
+  {value: '+1',	label: '+1'	, iconElement: <div>US, CA</div>},
   { value: '+7', label: '+7', iconElement: <div>RO</div> },
   { value: '+20', label: '+20', iconElement: <div>EG</div> },
   { value: '+27', label: '+27', iconElement: <div>ZA</div> },
