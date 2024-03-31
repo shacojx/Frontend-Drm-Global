@@ -1,11 +1,12 @@
 import { NextImage } from '@/components/NextImage';
 
 import img_contact_us_hero from '@/assets/images/contact-us-hero.png';
+import { cn } from '@/utils/cn.util';
 
 export default function ContactUsPage() {
   return (
     <div>
-      <NextImage src={img_contact_us_hero} alt="" className="aspect-[4/1] w-full" />
+      <NextImage src={img_contact_us_hero} alt="" className={cn("aspect-video xl:aspect-[4/1] -mx-4")} />
       <div className="px-4 py-16">
         <h3 className="text-center text-4xl font-bold">CONTACT US</h3>
 

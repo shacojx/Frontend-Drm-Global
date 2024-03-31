@@ -4,11 +4,12 @@ import img_about_us_hero from '@/assets/images/about-us-hero.png';
 import img_team_1 from '@/assets/images/team-1.png';
 import img_team_2 from '@/assets/images/team-2.png';
 import img_wise_corp from '@/assets/images/wise-corp.png';
+import { cn } from '@/utils/cn.util';
 
 export default function AboutUsPage() {
   return (
     <div className="px-4 pb-16 xl:px-0">
-      <NextImage src={img_about_us_hero} alt="About Us" className="aspect-[4/1] w-full" />
+      <NextImage src={img_about_us_hero} alt="About Us" className={cn("aspect-video xl:aspect-[4/1] -mx-4")} />
 
       <div className="mx-auto max-w-6xl px-4 pt-16 xl:px-0">
         <h4 className="text-center text-4xl font-bold text-darkblue">About Us</h4>
