@@ -385,7 +385,7 @@ export function ServiceStepContent({
                     onChange={(file) => handleChangeFile(file, item.id)}
                     file={file?.[item.id]}
                     maxSize={10}
-                    accept=".pdf,.png,.jpeg,.jpg,.xls,.docx,.ppt"
+                    accept="*"
                     disabled={item.requiredDocument === NONE_REQUIRED}
                   />
                 </div>

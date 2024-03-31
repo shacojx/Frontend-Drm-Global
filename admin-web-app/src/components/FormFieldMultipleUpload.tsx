@@ -77,7 +77,7 @@ export function FormFieldMultipleUpload({
                   type="file"
                   className="hidden"
                   onChange={handleUploadFileChange}
-                  accept="image/png, image/jpeg, image/jpg, pdf, xls, xlsx, docx, doc, ppt, pptx"
+                  accept="*"
                 />
               </label>
             )}
