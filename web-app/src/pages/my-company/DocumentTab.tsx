@@ -20,7 +20,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
     if (!file) return;
 
     if (file.size > 10_000_000) {
-      setError("File size must be less than 10MB")
+      setError("File size must be less than 10MB") 
       return
     }
 

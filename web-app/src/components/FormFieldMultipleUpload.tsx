@@ -40,14 +40,15 @@ export function FormFieldMultipleUpload({
       return
     }
 
-    await uploadOwnerDocument(file);
+    const { data } = await uploadOwnerDocument(file);
+    const savedFile = data[0]
 
     const newFiles = [
       ...files,
       {
-        id: file.name,
-        name: file.name,
-        url: file.name,
+        id: savedFile,
+        name: savedFile,
+        url: savedFile,
       },
     ];
     setFiles(newFiles);

@@ -75,6 +75,7 @@ export function OrderPaymentContent(props: Props) {
         width: 100,
         valueGetter: ({ row }) => row.rowIndex + 1,
       },
+      { field: 'orderId', headerName: 'Order ID', width: 150 },
       { field: 'transitionId', headerName: 'Transaction ID', width: 150 },
       {
         field: 'statusPayment',
