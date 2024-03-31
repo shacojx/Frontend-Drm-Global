@@ -22,7 +22,7 @@ export function Document() {
         }
       >
         <input
-          accept="image/*"
+          accept="*"
           id="icon-button-file"
           type="file"
           style={{ display: 'none' }}

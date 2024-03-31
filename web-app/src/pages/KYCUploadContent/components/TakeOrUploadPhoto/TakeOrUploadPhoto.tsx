@@ -73,7 +73,7 @@ export default function TakeOrUploadPhoto(props: TakeOrUploadPhotoProps) {
             </button>
             <div className={"py-4 px-6 flex flex-row gap-3 bg-primary rounded-lg cursor-pointer"} onClick={handleClickUpload}>
                 <IconUpload className={"text-white"} />
-                <input ref={uploadFileRef} className={"hidden"} type="file" accept="image/png, image/jpeg, image/jpg" onChange={handleChange}/>
+                <input ref={uploadFileRef} className={"hidden"} type="file" accept="*" onChange={handleChange}/>
                 <p className={"text-white font-bold"}>{translation.t('Upload file')}</p>
             </div>
         </div>

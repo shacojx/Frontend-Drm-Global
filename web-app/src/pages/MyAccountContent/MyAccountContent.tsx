@@ -66,7 +66,7 @@ export default function MyAccountContent() {
                   className="hidden"
                   id="avt"
                   type="file"
-                  accept="image/png, image/jpeg, image/jpg"
+                  accept="*"
                   onChange={handleChangeAvatar}
                 />
               </label>

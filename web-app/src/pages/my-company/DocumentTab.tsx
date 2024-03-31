@@ -41,7 +41,7 @@ export function DocumentTab({ readonly, documents = [], onChange }: DocumentTabP
         >
           <IconUpload />
           {t("Upload")}
-          <input className="hidden" type="file" id="upload" onChange={handleFormChange} accept="image/png, image/jpeg, image/jpg, .pdf, .xls, xlsx, .docx, .doc, .ppt, .pptx" />
+          <input className="hidden" type="file" id="upload" onChange={handleFormChange} accept="*" />
         </label>
       )}
 
