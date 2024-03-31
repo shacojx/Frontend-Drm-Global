@@ -64,7 +64,7 @@ export function ServiceStepContent({
         });
       }
     });
-  }, [serviceStep]);
+  }, [serviceStep, service]);
 
   const mutateUpdateAdminRemark = useApiServiceUpdateAdminRemark();
   const mutateUploadStatusStep = useApiServiceUploadStatusStep();
@@ -152,6 +152,7 @@ export function ServiceStepContent({
           newArr[id] = { name: res.data?.[0] };
           return newArr;
         });
+        resGetServiceId?.refetch();
         toast.success(t('Update file successfully'));
       }
     } catch (error) {
