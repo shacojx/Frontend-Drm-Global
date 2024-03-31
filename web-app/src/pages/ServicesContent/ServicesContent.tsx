@@ -27,6 +27,12 @@ export type Service = {
     price: number,
     cycleNumber: number,
     currency: Currency,
+    serviceType: string
+    serviceCycle: Array<{
+        id: number;
+        cycleNumber: number;
+        pricePerCycle: number;
+    }>
 }
 
 
@@ -133,14 +139,19 @@ export default function ServicesContent() {
               )}
               <div className={'flex flex-col gap-3'}>
                 {bunchOfAvailableServices.length === 0 && <p>{translation.t('No Available Service')}</p>}
-                {bunchOfAvailableServices.map((service) => (
-                  <ServiceCard
-                    key={service.id}
-                    isSelected={bunchOfServiceIdSelected.includes(service.id)}
-                    service={service}
-                    onSelect={handleSelectService}
-                  />
-                ))}
+                {bunchOfAvailableServices.map((service) => {
+
+                  return (
+                    <ServiceCard
+                      key={service.id}
+                      isSelected={bunchOfServiceIdSelected.includes(service.id)}
+                      service={service}
+                      onSelect={handleSelectService}
+                      serviceType={service.serviceType}
+                      serviceCycle={[service.cycleNumber]}
+                    />
+                  )
+                })}
               </div>
             </div>
           )}

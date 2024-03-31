@@ -20,7 +20,7 @@ export default function GeneralInformationForm() {
     const { user, saveAuthUser } = useContext(AuthContext)
     const { validateCaller, validateAll } = useValidateCaller()
 
-    const initialPhone = generatePhone(user?.codePhone || '+84', user?.phone?.slice(user?.codePhone?.length) || '')
+    const initialPhone = generatePhone(user?.codePhone || '+84', user?.phone || '')
     const [phone, setPhone] = useState<RNPhoneValue | undefined>(initialPhone)
     const [firstName, setFirstName] = useState<string>(user?.firstName || '')
     const [lastName, setLastName] = useState<string>(user?.lastName || '')
