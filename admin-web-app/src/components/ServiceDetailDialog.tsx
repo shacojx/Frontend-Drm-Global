@@ -62,12 +62,8 @@ export const SERVICE_STEP_STATUS = [
   {
     value: Status.ISSUED,
     label: Status.ISSUED,
-  },
-  {
-    value: Status.READY,
-    label: Status.READY,
-  },
-];
+  }
+ ];
 
 export function ServiceDetailDialog({
   service,
@@ -125,11 +121,20 @@ export function ServiceDetailDialog({
 
   async function uploadContractFile(files: FileList | null) {
     if (files && files?.length > 0) {
-      await uploadFile(
-        files[0],
-        { id: service?.id?.toString() ?? '' },
-        '/api/file/upload-final-contract',
-      );
+      try {
+        const res= await uploadFile(
+          files[0],
+          { id: service?.id?.toString() ?? '' },
+          '/api/file/upload-final-contract',
+        );
+        if (res){
+          toast.success(t('Upload contract file successfully'));
+          resGetServiceId?.refetch();
+        }
+      } catch (error) {
+        toast.error(String(error));
+      }
+     
     }
   }
 

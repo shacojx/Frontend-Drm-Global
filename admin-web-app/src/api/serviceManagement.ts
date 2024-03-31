@@ -68,7 +68,7 @@ export async function callApiUploadCustomerDocument(body: FormData) {
     headers: headers,
     body: body,
   };
-  const URL_UPLOAD = 'api/file/upload-final-contract'
+  const URL_UPLOAD = 'api/file/upload-service-result'
 
   const endpoint = `${process.env.REACT_APP_URL}/${URL_UPLOAD}`;
 
@@ -81,11 +81,11 @@ export async function callApiUploadCustomerDocument(body: FormData) {
 
 
 export async function callApiSendPaymentReminder(data: any) {
-  const path = '/api/admin/send-reminder-document';
+  const path = '/api/admin/send-reminder-payment';
   return await callApi('POST', path, data, true);
 }
 
 export async function callApiSendRequiredDocumentReminder(data: any) {
-  const path = '/api/admin/send-reminder-payment';
+  const path = '/api/admin/send-reminder-document';
   return await callApi('POST', path, data, true);
 }
