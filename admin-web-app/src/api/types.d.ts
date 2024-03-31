@@ -149,6 +149,7 @@ export type RawRegisterServicesResult = {
     statusContract: string;
     contractFile: null;
     pic: string;
+    paidServiceId: string,
     serviceStep: Array<{
       id: number;
       stepNo: number;
