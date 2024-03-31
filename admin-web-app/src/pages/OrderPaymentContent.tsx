@@ -114,7 +114,7 @@ export function OrderPaymentContent(props: Props) {
           `${params.row.firstName || ''} ${params.row.lastName || ''}`,
       },
       {
-        field: 'serviceId',
+        field: 'paidServiceId',
         headerName: 'Service Id',
         sortable: false,
         type: 'string',
@@ -241,10 +241,15 @@ export function OrderPaymentContent(props: Props) {
         sortable: false,
         type: 'string',
         width: 120,
-        valueGetter: (params: GridValueGetterParams) =>
-          params.row.createdAt
-            ? `${generateFormatDate(new Date(params.row.createdAt))}`
-            : '',
+        valueGetter: (params: GridValueGetterParams) =>{
+          const createdDate = 
+            params.row.orderId
+              ? `${params?.row?.orderId?.slice(2, 10)}`
+              : ''
+
+          const [d, m, y] = createdDate.split('/')
+          return `${d}/${m}/20${y}`
+        },
       },
       {
         field: 'actions',

@@ -40,7 +40,7 @@ export async function callApiGetOrders({
       0,
     );
     const services = groupItems.map((item) => ({
-      id: item.serviceId,
+      id: item.paidServiceId,
       name: item.serviceName,
     }));
 

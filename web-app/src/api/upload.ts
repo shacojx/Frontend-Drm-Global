@@ -52,6 +52,50 @@ export const uploadAvatar = async (file: File) => {
   return data;
 };
 
+export const uploadDocument = async (file: File) => {
+  const headers = new Headers();
+  headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
+
+  const formData = new FormData();
+  formData.append("files", file);
+
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: formData,
+  };
+
+  const endpoint = `${process.env.REACT_APP_URL}/api/file/upload-company-document`;
+
+  const data = (await fetch(endpoint, options).then((response) =>
+    response.json()
+  )) as UploadResponse;
+
+  return data;
+};
+
+export const uploadOwnerDocument = async (file: File) => {
+  const headers = new Headers();
+  headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
+
+  const formData = new FormData();
+  formData.append("files", file);
+
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: formData,
+  };
+
+  const endpoint = `${process.env.REACT_APP_URL}/api/file/upload-owner-document`;
+
+  const data = (await fetch(endpoint, options).then((response) =>
+    response.json()
+  )) as UploadResponse;
+
+  return data;
+};
+
 export const getFile = async (name: string, opts: { download?: boolean } = {download: true}) => {
   const headers = new Headers();
   headers.append("Authorization", getAuthorizationString((await getAccessTokenInfo())!));
