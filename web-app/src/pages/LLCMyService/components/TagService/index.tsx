@@ -16,6 +16,11 @@ export default function TagService({ status }: Props) {
       icon: <IconInfoCircle />,
       label: t("Pending"),
     },
+    [ServiceStatusType.Ready]: {
+      color: "bg-gray-200",
+      icon: <IconCheck />,
+      label: t("Ready"),
+    },
     [ServiceStatusType.InProgress]: {
       color: "bg-[#FF5722]/25",
       icon: <IconRefreshCircle />,
