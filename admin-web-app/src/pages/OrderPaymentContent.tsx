@@ -114,7 +114,7 @@ export function OrderPaymentContent(props: Props) {
           `${params.row.firstName || ''} ${params.row.lastName || ''}`,
       },
       {
-        field: 'serviceId',
+        field: 'paidServiceId',
         headerName: 'Service Id',
         sortable: false,
         type: 'string',

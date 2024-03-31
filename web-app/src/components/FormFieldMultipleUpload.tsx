@@ -1,6 +1,6 @@
 import { Listbox } from "@headlessui/react";
 import { ChangeEvent, useState } from "react";
-import { uploadAvatar } from "../api/upload";
+import { uploadAvatar, uploadOwnerDocument } from "../api/upload";
 import { useValidate } from "../hooks-ui/useValidateCaller";
 import { FormFieldProps } from "../types/common";
 import { cn } from "../utils/cn.util";
@@ -40,7 +40,7 @@ export function FormFieldMultipleUpload({
       return
     }
 
-    await uploadAvatar(file);
+    await uploadOwnerDocument(file);
 
     const newFiles = [
       ...files,
