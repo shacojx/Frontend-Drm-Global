@@ -235,7 +235,7 @@ export function ServiceDetailDialog({
               optionInfos={cycleOptions}
               value={cycle}
             ></FormFieldSelect>
-            <StatusBadge status={service?.statusService as Status}></StatusBadge>
+            <StatusBadge status={service?.statusService as Status} showIcon></StatusBadge>
           </div>
           <div>
             <div className={'font-bold'}>{t('Person in charge')} *</div>
