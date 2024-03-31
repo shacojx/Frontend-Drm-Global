@@ -22,6 +22,7 @@ import {
 } from '@mui/x-data-grid';
 import { useApiGetUsers } from '../hooks/api/user';
 import { capitalize } from 'lodash-es';
+import { generateDayInMonth } from "../utils/date";
 
 const ROLES: Record<string, string> = {
   ROLE_USER: 'Customer',
@@ -167,7 +168,7 @@ export function UsersContent(props: Props) {
       width: 120,
     },
     {
-      field: '',
+      field: 'createdAt',
       headerName: 'Created',
       sortable: false,
       type: 'string',
