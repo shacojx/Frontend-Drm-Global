@@ -81,7 +81,7 @@ export const Header = () => {
                       })}
                       onClick={() => {
                         setActive(item);
-                        setShowMenu(false)
+                        setShowMenu(false);
                       }}
                     >
                       {item.label}
@@ -91,8 +91,8 @@ export const Header = () => {
               </ul>
             </nav>
 
-            <Link href="https://customer.drmsglobal.ai/" target='_blank'>
-            <button  className="bg-gradient-primary h-14 w-28 rounded-xl font-bold text-white">Sign In</button>
+            <Link href={process.env.NEXT_PUBLIC_WEB_URL ?? ''} target='_self'>
+              <button className="bg-gradient-primary h-14 w-28 rounded-xl font-bold text-white">Sign In</button>
             </Link>
           </div>
 

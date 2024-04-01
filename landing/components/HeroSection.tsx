@@ -19,7 +19,7 @@ export const HeroSection = () => {
         business registration services.
       </p>
 
-      <Link href="https://customer.drmsglobal.ai/" target='_blank'>
+      <Link href={process.env.NEXT_PUBLIC_WEB_URL ?? ''} target='_self'>
         <button
           className={cn(
             'bg-gradient-primary mx-auto mt-8 flex h-14 items-center rounded-xl px-6 font-bold text-white mb-6',
