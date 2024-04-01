@@ -26,7 +26,7 @@ export interface Service {
   contractFile?: string;
   pic?: string;
   kycStatus?: string;
-  llcInNation?:string;
+  nation?:string;
   corporationProfileStatus?: string;
   serviceStep: ServiceStep[];
 }

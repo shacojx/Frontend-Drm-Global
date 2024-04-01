@@ -222,7 +222,7 @@ export function ServiceDetailDialog({
           <div className={'font-bold'}>
             {service?.companyName}&#160;
           </div>
-          <span>Nation: {service?.llcInNation}</span>
+          <span>Nation: {service?.nation}</span>
           <span>Industry: {service?.industry}</span>
         </div>
         <div className={'flex flex-col gap-3 ml-auto'}>
