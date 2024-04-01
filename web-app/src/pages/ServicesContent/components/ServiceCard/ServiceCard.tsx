@@ -34,7 +34,7 @@ export default function ServiceCard(props: ServiceCardProps) {
             <span className={"text-h4 font-bold"}>{props.service.currency} {props.service.price}</span>
             <div className='flex gap-4 text-disable/85'>
                 <div className='rounded border border-solid px-2'>{props.serviceType}</div>
-                <div className='rounded border border-solid px-2'>For Cycle {props.serviceCycle.join(' ')}</div>
+                {props.serviceType !== 'Based' && <div className='rounded border border-solid px-2'>For Cycle {props.serviceCycle.join(' ')}</div>}
             </div>
         </div>
     </div>
