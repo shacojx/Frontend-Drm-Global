@@ -134,7 +134,7 @@ export function ServiceDetailDialog({
       } catch (error) {
         toast.error(String(error));
       }
-     
+
     }
   }
 
@@ -376,7 +376,7 @@ export function ServiceDetailDialog({
         </div>
         {showCompanyDetailDialog && (
           <DialogContainer
-            handleClickOverlay={() => {
+            onClose={() => {
               setShowCompanyDetailDialog(false);
             }}
             isCloseOnClickOverlay

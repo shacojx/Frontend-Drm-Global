@@ -133,7 +133,7 @@ export function ConfirmActiveModal(props: ConfirmActiveModalProps) {
   }, [props.enable]);
 
   return (
-    <DialogContainer isAutoSize handleClickOverlay={props.onCancel}>
+    <DialogContainer isAutoSize onClose={props.onCancel}>
       <div className="p-10">
         <div className="flex justify-center text-4xl px-2 mb-10 font-bold">
           {displayTitle}

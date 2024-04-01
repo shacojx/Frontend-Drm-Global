@@ -11,7 +11,7 @@ type Props = PropsWithChildren<
     loading?: boolean;
     isFullSize: boolean;
     panelClassName: string;
-    handleClickOverlay: (shouldOpen: boolean) => void;
+    onClose: (shouldOpen: boolean) => void;
   }>
 >;
 export function DialogContainer(props: Props) {
@@ -19,9 +19,9 @@ export function DialogContainer(props: Props) {
 
   const cancelButtonRef = useRef(null);
   const handleClickOverlay =
-    props.isCloseOnClickOverlay || !!props.handleClickOverlay
+    props.isCloseOnClickOverlay || !!props.onClose
       ? (shouldOpen: boolean) => {
-          props.handleClickOverlay?.(shouldOpen);
+          props.onClose?.(shouldOpen);
           setOpen(shouldOpen);
         }
       : () => {};

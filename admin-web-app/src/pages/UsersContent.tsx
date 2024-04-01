@@ -245,7 +245,7 @@ export function UsersContent(props: Props) {
       {userClicked && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             !shouldOpen && setUserClicked(undefined)
           }
         >
@@ -263,7 +263,7 @@ export function UsersContent(props: Props) {
       {shouldShowCreateUser && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             !shouldOpen && setShouldShowCreateUser(false)
           }
         >

@@ -168,7 +168,7 @@ export function ServicesContent() {
       renderCell: (params: GridRenderCellParams) => {
         return <> {params.row?.codePhone} {params.row?.phone}</>;
       },
-     
+
     },
     {
       field: 'email',
@@ -285,7 +285,7 @@ export function ServicesContent() {
           }
         />
       )}
-      
+
       {resGetServiceId.isError && (
         <DialogFailureFullscreen
           title="Failure!"
@@ -363,9 +363,10 @@ export function ServicesContent() {
         </div>
         {isShowServiceDetailDialog && (
           <DialogContainer
-            handleClickOverlay={() => {
+            onClose={(shouldOpen) => {
               setIsShowServiceDetailDialog(false);
               setSelectService(null);
+              handleClickSubmitGetMyCompanyDetail()
             }}
             isCloseOnClickOverlay
             isFullSize
