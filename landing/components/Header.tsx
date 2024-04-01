@@ -1,28 +1,28 @@
-'use client';
-import { NextImage } from '@/components/NextImage';
-import logo from '@/assets/images/logo.png';
-import { cn } from '@/utils/cn.util';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { IconMenu } from '@/assets/icons/IconMenu';
-import { IconX } from '@/assets/icons/IconX';
+"use client";
+import { NextImage } from "@/components/NextImage";
+import logo from "@/assets/images/logo.png";
+import { cn } from "@/utils/cn.util";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { IconMenu } from "@/assets/icons/IconMenu";
+import { IconX } from "@/assets/icons/IconX";
 
 const NAV_ITEMS = [
   {
-    label: 'Home',
-    href: '/',
+    label: "Home",
+    href: "/",
   },
   {
-    label: 'Our Services',
-    href: '#our-services',
+    label: "Our Services",
+    href: "/#our-services",
   },
   {
-    label: 'About Us',
-    href: '/about-us',
+    label: "About Us",
+    href: "/about-us",
   },
   {
-    label: 'Contact Us',
-    href: '/contact-us',
+    label: "Contact Us",
+    href: "/contact-us",
   },
 ];
 
@@ -36,10 +36,10 @@ export const Header = () => {
       setShowMenu(false);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -53,10 +53,10 @@ export const Header = () => {
 
           <div
             className={cn(
-              'fixed right-0 top-0 bg-white flex flex-col w-80 max-w-[75vw] h-screen z-[60] shadow p-3 gap-6 grow justify-between transition-all duration-500',
-              'xl:items-center xl:static xl:h-full xl:flex-row xl:shadow-none xl:before:block',
+              "fixed right-0 top-0 bg-white flex flex-col w-80 max-w-[75vw] h-screen z-[60] shadow p-3 gap-6 grow justify-between transition-all duration-500",
+              "xl:items-center xl:static xl:h-full xl:flex-row xl:shadow-none xl:before:block",
               {
-                'translate-x-full xl:translate-x-0': !showMenu,
+                "translate-x-full xl:translate-x-0": !showMenu,
               }
             )}
           >
@@ -76,8 +76,8 @@ export const Header = () => {
                   <li key={item.label} className="border-b xl:border-none">
                     <Link
                       href={item.href}
-                      className={cn('px-4 inline-block py-3 font-bold text-grey transition-all', {
-                        'text-gradient-secondary': active.label === item.label,
+                      className={cn("px-4 inline-block py-3 font-bold text-grey transition-all", {
+                        "text-gradient-secondary": active.label === item.label,
                       })}
                       onClick={() => {
                         setActive(item);
@@ -91,7 +91,7 @@ export const Header = () => {
               </ul>
             </nav>
 
-            <Link href={process.env.NEXT_PUBLIC_WEB_URL ?? ''} target='_self'>
+            <Link href={process.env.NEXT_PUBLIC_WEB_URL ?? ""} target="_self">
               <button className="bg-gradient-primary h-14 w-28 rounded-xl font-bold text-white">Sign In</button>
             </Link>
           </div>
