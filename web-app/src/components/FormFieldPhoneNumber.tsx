@@ -8,6 +8,8 @@ import { extractPhone, generatePhone, RNPhoneValue } from "../services-business/
 import { validateApiLocalPhone } from "../services-business/api/validateApiParam";
 import { FormFieldProps } from "../types/common";
 import { FormFieldSelect } from "./FormFieldSelect";
+import { cn } from "src/utils/cn.util";
+import { IconCheck } from "./icons";
 
 function validateRNPhone(isRequired: boolean | undefined, phone: RNPhoneValue | undefined) {
   if (!isRequired) {
@@ -20,7 +22,12 @@ function validateRNPhone(isRequired: boolean | undefined, phone: RNPhoneValue | 
   return !!nationPhone && !!localPhone && validateApiLocalPhone(localPhone)
 }
 
-export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shouldLiveCheck?: boolean}) {
+type FormFieldPhoneNumberProps = FormFieldProps<RNPhoneValue> & {
+  shouldLiveCheck?: boolean;
+  ignoreValues?: string[]
+}
+
+export function FormFieldPhoneNumber(props: FormFieldPhoneNumberProps) {
   const translation = useTranslation()
   const [wasRegister, setWasRegister] = useState<boolean>(false)
   const [shouldShowError, setShouldShowError] = useValidate<RNPhoneValue>(
@@ -33,6 +40,9 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shou
   )
   const nationPhone = props.value ? extractPhone(props.value).nationPhone : NATION_PHONE_INFOS[0].value
   const localPhone = props.value ? extractPhone(props.value).localPhone: ''
+
+  const [isValidPhone, setIsValidPhone] = useState(false)
+
   function handleChangePhoneInput(event: ChangeEvent<HTMLInputElement>) {
     const localPhone = event.target.value
     const phone = generatePhone(nationPhone, localPhone)
@@ -57,8 +67,14 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shou
   }
 
   function handleBlur() {
+    if (props.ignoreValues?.includes(props.value as RNPhoneValue)) {
+      return
+    }
+
     const isValid = validateRNPhone(props.isRequired, props.value)
     setShouldShowError(!isValid)
+    setIsValidPhone(isValid)
+    
     if (isValid) {
       const extracted = extractPhone(props.value!)
       const body: ApiVerifyPhone = {
@@ -66,41 +82,53 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue> & {shou
         phone: extracted.localPhone
       }
       callApiVerifyPhone(body)
+        .then(() => {
+          setIsValidPhone(true)
+          setWasRegister(false)
+        })
         .catch(() => {
           setWasRegister(true)
           setShouldShowError(true)
+          setIsValidPhone(false)
         })
     }
   }
 
   const statusClassName = shouldShowError ? 'border-danger bg-red-50' : 'bg-white'
-  return <div className="flex flex-col gap-2">
-    <p className="flex text-cBase font-bold gap-1">
-      <span>{translation.t('Phone number')}</span>
-      <span className="text-danger">*</span>
-    </p>
-    <div className="flex gap-4">
-      <FormFieldSelect
-        id={"nationPhoneSelect"}
-        isRequired
-        value={nationPhone}
-        optionInfos={NATION_PHONE_INFOS}
-        minWidth={"115px"}
-        onChange={handleChangeNationPhone}
-        validateCaller={{}}
-      />
-      <div>
-        <input
-          type="tel"
-          value={localPhone}
-          onChange={handleChangePhoneInput}
-          onFocus={setShouldShowError.bind(undefined, false)}
-          onBlur={handleBlur}
-          placeholder={props.placeholder}
-          className={"w-full h-[40px] border py-1 px-2 rounded-lg " + statusClassName}
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="flex text-cBase font-bold gap-1">
+        <span>{translation.t('Phone number')}</span>
+        <span className="text-danger">*</span>
+      </p>
+      <div className="flex gap-4">
+        <FormFieldSelect
+          id={'nationPhoneSelect'}
+          isRequired
+          value={nationPhone}
+          optionInfos={NATION_PHONE_INFOS}
+          minWidth={'130px'}
+          onChange={handleChangeNationPhone}
+          validateCaller={{}}
         />
-        {wasRegister && <p className={"text-xs text-danger mt-2"}>{translation.t('The phone number was registered')}</p>}
+        <div className="grow">
+          <div className={cn('w-full h-[40px] border py-1 px-2 rounded-lg flex items-center', statusClassName)}>
+            <input
+              type="tel"
+              value={localPhone}
+              onChange={handleChangePhoneInput}
+              onFocus={setShouldShowError.bind(undefined, false)}
+              onBlur={handleBlur}
+              placeholder={props.placeholder}
+              className="outline-none bg-transparent w-full min-w-0"
+            />
+            {isValidPhone && <IconCheck className="text-success" />}
+          </div>
+          {wasRegister && (
+            <p className={'text-xs text-danger mt-2'}>{translation.t('The phone number was registered')}</p>
+          )}
+        </div>
       </div>
     </div>
-  </div>
+  );
 }

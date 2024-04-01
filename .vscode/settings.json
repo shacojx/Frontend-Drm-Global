@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "never"
+  },
+  "prettier.singleQuote": true,
+  "eslint.workingDirectories": ["landing"],
+  "cSpell.words": ["Dealroom"]
+}

@@ -6,9 +6,11 @@ import { useValidate } from "../hooks-ui/useValidateCaller";
 import { classNames } from "../services-ui/tailwindcss";
 import { FormFieldProps, OptionInfo } from "../types/common";
 import { IconCheck, IconAltArrowDown } from "./icons";
+import { cn } from "../utils/cn.util";
 
 type Props<T extends React.Key> = FormFieldProps<T> & {
   optionInfos: OptionInfo<T>[],
+  errorComponent?: React.ReactNode | JSX.Element
 } & Partial<{
   minWidth: string
 }>
@@ -75,7 +77,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
                         <div className="flex items-center">
                           {option.iconElement}
                           <span
-                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
+                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block')}
                           >
                             {translation.t(option.label)}
                           </span>
@@ -99,6 +101,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
             </Transition>
           </div>
           {!!props.errorMessage && <p>{translation.t(props.errorMessage)}</p>}
+          {!!props.errorComponent && props.errorComponent}
         </>
       )}
     </Listbox>

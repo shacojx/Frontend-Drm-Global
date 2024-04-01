@@ -25,7 +25,23 @@ import { ReactComponent as IconUploadFile } from '../assets/svgs/UploadFile.svg'
 import { ReactComponent as IconCamera } from '../assets/svgs/Camera.svg';
 import { ReactComponent as IconUpload } from '../assets/svgs/Upload.svg';
 import { ReactComponent as IconInfoCircle } from '../assets/svgs/InfoCircle.svg';
+import { ReactComponent as DocumentIcon } from '../assets/svgs/DocumentIcon.svg';
+import { ReactComponent as IdentityIcon } from '../assets/svgs/IdentityIcon.svg';
+import { ReactComponent as MoneyIcon } from '../assets/svgs/MoneyIcon.svg';
+import { ReactComponent as BuildingIcon } from '../assets/svgs/BuildingIcon.svg';
+import { ReactComponent as DiplomaVerifiedIcon } from '../assets/svgs/DiplomaVerifiedIcon.svg';
+import { ReactComponent as NotificationUnreadLinesIcon } from '../assets/svgs/NotificationUnreadLinesIcon.svg';
+import { ReactComponent as AltArrowRightIcon } from '../assets/svgs/AltArrowRightIcon.svg';
+import { ReactComponent as IconEssential } from "../assets/svgs/OutlineEssentination.svg";
 import { ReactComponent as IconSupport } from '../assets/svgs/SupportIcon.svg';
+import { ReactComponent as IconVisa } from '../assets/svgs/Visa.svg';
+import { ReactComponent as IconMasterCard } from '../assets/svgs/MasterCard.svg';
+import { ReactComponent as IconPaypal } from '../assets/svgs/Paypal.svg';
+import { ReactComponent as IconQR } from '../assets/svgs/QR.svg';
+import { ReactComponent as IconArrowCircle } from '../assets/svgs/ArrowCircle.svg';
+import { ReactComponent as IconEdit } from '../assets/svgs/Edit.svg';
+import { ReactComponent as IconPencil } from '../assets/svgs/Pencil.svg';
+
 
 type Props = React.SVGProps<SVGSVGElement>
 function IconSpinner(props: Props) {
@@ -59,5 +75,20 @@ export {
   IconCamera,
   IconUpload,
   IconInfoCircle,
+  DocumentIcon,
+  IdentityIcon,
+  MoneyIcon,
+  BuildingIcon,
+  DiplomaVerifiedIcon,
+  NotificationUnreadLinesIcon,
+  AltArrowRightIcon,
+  IconEssential,
   IconSupport,
+  IconVisa,
+  IconMasterCard,
+  IconPaypal,
+  IconQR,
+  IconArrowCircle,
+  IconEdit,
+  IconPencil
 }

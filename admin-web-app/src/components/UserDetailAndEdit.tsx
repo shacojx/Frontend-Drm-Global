@@ -15,6 +15,8 @@ import {
   RNPhoneValue
 } from "../services-business/api/generate-api-param/account";
 import { generateEditUserParam } from "../services-business/api/generate-api-param/userManagement";
+import { DialogSuccessFullscreen } from "./DialogFormStatusFullscreen";
+import ButtonCs from "./ButtonCs";
 
 type Props = {
   userInfo: ViewedUser,
@@ -44,6 +46,8 @@ export function UserDetailAndEdit(props: Props) {
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [isRequestingEnableOrDisable, setIsRequestingEnableOrDisable] = useState<boolean>(false)
   const [isViewMode, setIsViewMode] = useState<boolean>(true)
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   function handleChangeNation(nation: NationValue) {
     setNation(nation)
@@ -93,6 +97,7 @@ export function UserDetailAndEdit(props: Props) {
       }
       await callApiDeactiveAccount(body)
       setIsRequestingEnableOrDisable(false)
+      setShowSuccessModal(true)
       props.onEdit()
     } catch (e: unknown) {
       setIsRequestingEnableOrDisable(false)
@@ -101,7 +106,7 @@ export function UserDetailAndEdit(props: Props) {
     }
   }
 
-  return <div className={"flex flex-col gap-y-8 px-8"}>
+  return <div className={"flex flex-col gap-y-8"}>
     <div className={"flex flex-row justify-between items-end"}>
       <div className={"flex flex-row gap-3 items-end"}>
         <p className="text-h4 text-center">{translation.t('User Detail')}</p>
@@ -126,14 +131,14 @@ export function UserDetailAndEdit(props: Props) {
           onClick={changeEnableUser.bind(undefined, false)}
           className="px-4 py-2 flex justify-center items-center gap-2 bg-danger text-white font-semibold rounded-lg"
         >
-          {translation.t('Disable')}
+          {translation.t('Inactive')}
           {isRequestingEnableOrDisable && <IconSpinner/>}
         </button>
         : <button
           onClick={changeEnableUser.bind(undefined, true)}
-          className="px-4 py-2 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+          className="px-4 py-2 flex justify-center items-center gap-2 bg-success text-white font-semibold rounded-lg"
         >
-          {translation.t('Enable')}
+          {translation.t('Active')}
           {isRequestingEnableOrDisable && <IconSpinner/>}
         </button>
       }
@@ -204,7 +209,7 @@ export function UserDetailAndEdit(props: Props) {
         />
       </div>
     </div>
-    <div className="flex flex-col gap-y-8">
+    {/* <div className="flex flex-col gap-y-8">
       <div className="flex flex-col w-fit gap-y-2">
         <p className="text-cLg font-bold">{translation.t('Company information')}</p>
         <div className="w-1/2 border-2 border-primary"></div>
@@ -256,6 +261,12 @@ export function UserDetailAndEdit(props: Props) {
         validateCaller={validateCaller}
         isFixedValue={isViewMode}
       />
-    </div>
+    </div> */}
+
+    {showSuccessModal && <DialogSuccessFullscreen 
+      onClose={() => setShowSuccessModal(false)} 
+      title="Update user status successfully!" 
+      actionElement={<ButtonCs onClick={() => setShowSuccessModal(false)}>Close</ButtonCs>}
+    />}
   </div>
 }

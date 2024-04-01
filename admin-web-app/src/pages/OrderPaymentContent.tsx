@@ -1,12 +1,3 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ApiSearchUserParam, ApiViewUserParam, ViewedUser } from "../api/types";
-import { callApiSearchUser, callApiLViewUser } from "../api/userManagement";
-import { DialogContainer } from "../components/DialogContainer";
-import { FormCreateAdminAccount } from "../components/FormCreateAdminAccount";
-import { FormFieldEmail } from "../components/FormFieldEmail";
-import { useValidateCaller } from "../hooks-ui/useValidateCaller";
-import { extractPhone, RNPhoneValue } from "../services-business/api/generate-api-param/account";
 import {
   DataGrid,
   GridCellParams,
@@ -14,202 +5,349 @@ import {
   GridPaginationModel,
   GridRenderCellParams,
   GridRowEventLookup,
-  GridValueGetterParams
+  GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { generateFormatDate } from "../services-ui/date";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { DialogSuccessFullscreen } from '../components/DialogFormStatusFullscreen';
+import {
+  useApiApproveOrder,
+  useApiGetOrders,
+} from '../hooks/api/order-payment';
+import { generateFormatDate } from '../services-ui/date';
+import { FormFieldEmail } from '../components/FormFieldEmail';
+import { useValidateCaller } from '../hooks-ui/useValidateCaller';
+import { FormFieldText } from '../components/FormFieldText';
+import styled from '@emotion/styled';
 
-type Props = {}
+const Table = styled(DataGrid)`
+  .MuiDataGrid-cell {
+    overflow: visible !important;
+  }
+` as typeof DataGrid;
+
+type Props = {};
 
 export function OrderPaymentContent(props: Props) {
   // TODO: update api
-  const translation = useTranslation()
-  const {validateCaller, validateAll} = useValidateCaller()
-  const [email,setEmail] = useState<string>('')
-  const [phone, setPhone] = useState<RNPhoneValue | undefined>()
-  const [tableData, setTableData] = useState<ViewedUser[]>([]);
+  const translation = useTranslation();
+  const { validateCaller } = useValidateCaller();
+
+  const [email, setEmail] = useState<string>();
+  const [pic, setPic] = useState<string>();
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 25,
     page: 0,
   });
-  const [userCount, setUserCount] = useState<number>()
-  const [userClicked, setUserClicked] = useState<ViewedUser>();
-  const [shouldShowCreateUser, setShouldShowCreateUser] = useState<boolean>();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const param: ApiViewUserParam = {
-        page: paginationModel.page,
-        size: paginationModel.pageSize
-      }
-      const rawResult = await callApiLViewUser(param)
-      setTableData(rawResult.content);
-      setUserCount(rawResult.totalElements)
-    };
+  const { data, refetch } = useApiGetOrders({
+    page: paginationModel.page,
+    pic,
+    email,
+  });
+  const { orders } = data ?? {};
 
-    fetchData().catch(e=> console.log(e))
-  }, [paginationModel]);
+  const { mutateAsync: approveOrder } = useApiApproveOrder({
+    onSuccess: () => {
+      setShowSuccessDialog(true);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
-  async function handleClickSearch() {
-    const {localPhone, nationPhone} = phone
-      ? extractPhone(phone)
-      : {localPhone: '', nationPhone: ''}
-    const param: ApiSearchUserParam = {
-      phone: localPhone,
-      codePhone: nationPhone,
-      email,
-    }
-    const rawResult = await callApiSearchUser(param)
-    if (rawResult) {
-      setTableData([rawResult]);
-      setUserCount(1)
-    }
-  }
+  const handleClickSearch = () => {
+    refetch();
+  };
 
-  function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {
-    setUserClicked(params.row)
-  }
+  function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {}
 
-  async function handleClickApproved() {
-  }
-
-  async function handleCreated() {
-
-  }
-// TODO: add i18n for columns
-  const orderPaymentColumns: GridColDef<ViewedUser>[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    {
-      field: 'status',
-      headerName: 'Status',
-      sortable: false,
-      type: 'string',
-      width: 80,
-      valueGetter: (params: GridValueGetterParams) =>
-        params.row.enable ? 'Enable' : 'Disable',
-      cellClassName: (params: GridCellParams) => {
-        if (params.value === 'Enable') {
-          return 'text-success';
-        }
-        return 'text-danger';
+  console.table(orders);
+  // TODO: add i18n for columns
+  const orderPaymentColumns: GridColDef<NonNullable<typeof orders>[number]>[] =
+    [
+      {
+        field: 'rowIndex',
+        headerName: 'No.',
+        width: 100,
+        valueGetter: ({ row }) => row.rowIndex + 1,
       },
-    },
-    {
-      field: 'name',
-      headerName: 'Customer Name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-    },
-    {
-      field: 'serviceId',
-      headerName: 'Service Id',
-      sortable: false,
-      type: 'string',
-      width: 160,
-    },
-    {
-      field: 'serviceName',
-      headerName: 'Service Name',
-      sortable: false,
-      type: 'string',
-      width: 200,
-    },
-    {
-      field: 'paymentMethod',
-      headerName: 'Payment Method',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-    },
-    {
-      field: 'amountUSD',
-      headerName: 'Amount in USD ($)',
-      sortable: false,
-      type: 'string',
-      width: 120,
-    },
-    {
-      field: 'amountLocal',
-      headerName: 'Amount in other currency',
-      sortable: false,
-      type: 'string',
-      width: 120,
-    },
-    {
-      field: 'phone',
-      headerName: 'Phone number',
-      sortable: false,
-      type: 'string',
-      width: 120,
-    },
-    {
-      field: 'email',
-      headerName: 'Email',
-      sortable: false,
-      type: 'string',
-      width: 120,
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Created on',
-      sortable: false,
-      type: 'string',
-      width: 120,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${generateFormatDate(new Date(params.row.createdAt))}`,
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      sortable: false,
-      type: 'string',
-      width: 100,
-      renderCell: (params: GridRenderCellParams) => {
-        return <div className={"flex flex-row gap-3"}>
-          <button onClick={handleClickApproved.bind(undefined, params.row.id)}
-                  className={"py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success"}
+      { field: 'orderId', headerName: 'Order ID', width: 150 },
+      { field: 'transitionId', headerName: 'Transaction ID', width: 150 },
+      {
+        field: 'statusPayment',
+        headerName: 'Status',
+        sortable: false,
+        type: 'string',
+        width: 100,
+        cellClassName: (params: GridCellParams) => {
+          const status = params.row.statusPayment;
+          if (status === 'Approved') {
+            return 'text-green-500';
+          }
+
+          if (status === 'Pending') {
+            return 'text-purple-500';
+          }
+
+          return '';
+        },
+        valueGetter: (params: GridValueGetterParams) => {
+          const status = params.row.statusPayment;
+
+          if (status === 'Approved') {
+            return 'Approved';
+          }
+
+          return status;
+        },
+      },
+      {
+        field: 'name',
+        headerName: 'Customer Name',
+        description: 'This column has a value getter and is not sortable.',
+        sortable: false,
+        width: 160,
+        valueGetter: (params: GridValueGetterParams) =>
+          `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+      },
+      {
+        field: 'paidServiceId',
+        headerName: 'Service Id',
+        sortable: false,
+        type: 'string',
+        width: 160,
+        renderCell: (params) => {
+          return (
+            <div className="w-full relative group">
+              <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+                <table className="table-auto border-collapse border border-slate-500 rounded">
+                  <thead>
+                    <tr>
+                      <th className="border border-slate-300 p-2">
+                        Service ID
+                      </th>
+                      <th className="border border-slate-300 p-2">
+                        Service Name
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {params.row.services.map(({ id, name }) => (
+                      <tr key={id}>
+                        <td className="border border-slate-300 p-2">{id}</td>
+                        <td className="border border-slate-300 p-2">{name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="line-clamp-1 overflow-hidden">
+                {params.row.services.map((item) => item.id).join(', ')}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        field: 'serviceName',
+        headerName: 'Service Name',
+        sortable: false,
+        type: 'string',
+        width: 200,
+        renderCell: (params) => {
+          return (
+            <div className="w-full relative group">
+              <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+                <table className="table-auto border-collapse border border-slate-500 rounded">
+                  <thead>
+                    <tr>
+                      <th className="border border-slate-300 p-2">
+                        Service ID
+                      </th>
+                      <th className="border border-slate-300 p-2">
+                        Service Name
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {params.row.services.map(({ id, name }) => (
+                      <tr key={id}>
+                        <td className="border border-slate-300 p-2">{id}</td>
+                        <td className="border border-slate-300 p-2">{name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="line-clamp-1 overflow-hidden">
+                {params.row.services.map((item) => item.name).join(', ')}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        field: 'paymentMethod',
+        headerName: 'Payment Method',
+        description: 'This column has a value getter and is not sortable.',
+        sortable: false,
+        width: 160,
+      },
+      {
+        field: 'pricePerCycle',
+        headerName: 'Amount in USD ($)',
+        sortable: false,
+        type: 'string',
+        width: 150,
+        renderCell: ({ row }) => {
+          return (
+            <div className="text-right w-full pr-4">
+              {new Intl.NumberFormat('en-IN', {
+                maximumSignificantDigits: 3,
+              }).format(row.pricePerCycle)}{' '}
+              $
+            </div>
+          );
+        },
+      },
+      // {
+      //   field: "amountLocal",
+      //   headerName: "Amount in other currency",
+      //   sortable: false,
+      //   type: "string",
+      //   width: 180,
+      // },
+      {
+        field: 'phone',
+        headerName: 'Phone number',
+        sortable: false,
+        type: 'string',
+        width: 120,
+      },
+      {
+        field: 'email',
+        headerName: 'Email',
+        sortable: false,
+        type: 'string',
+        width: 120,
+      },
+      {
+        field: 'createdAt',
+        headerName: 'Created on',
+        sortable: false,
+        type: 'string',
+        width: 120,
+        valueGetter: (params: GridValueGetterParams) =>{
+          const createdDate = 
+            params.row.orderId
+              ? `${params?.row?.orderId?.slice(2, 10)}`
+              : ''
+
+          const [d, m, y] = createdDate.split('/')
+          return `${d}/${m}/20${y}`
+        },
+      },
+      {
+        field: 'actions',
+        headerName: 'Options',
+        sortable: false,
+        type: 'string',
+        width: 200,
+        renderCell: (params: GridRenderCellParams) => {
+          const status = params.row.statusPayment;
+
+          if (status === 'Confirmed') {
+            return '';
+          }
+
+          return (
+            <div className="flex flex-row gap-3">
+              <button
+                onClick={async () => {
+                  await approveOrder(params.row.transitionId);
+                  await refetch();
+                }}
+                className={
+                  'py-2 px-3 rounded-lg cursor-pointer bg-green-100 hover:bg-green-200 text-success'
+                }
+              >
+                Approve Payment
+              </button>
+            </div>
+          );
+        },
+      },
+    ];
+
+  return (
+    <>
+      <div className={'w-full grow flex flex-col p-3'}>
+        <div
+          className={
+            'flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8'
+          }
+        >
+          <p className={'text-h4 w-full text-start mb-6'}>
+            {translation.t('Order Payment Management')}
+          </p>
+          <div
+            className={
+              'w-full flex flex-row justify-between items-center gap-10 mb-4'
+            }
           >
-            Approved
-          </button>
+            <div
+              className={
+                'w-full flex flex-row justify-start items-end gap-10 mb-4'
+              }
+            >
+              <FormFieldEmail
+                id="email"
+                validateCaller={validateCaller}
+                onChange={setEmail}
+                value={email}
+              />
+              <FormFieldText
+                label="PIC"
+                id="pic"
+                validateCaller={validateCaller}
+                onChange={setPic}
+                value={pic}
+                placeholder="Enter PIC"
+              />
+              <button
+                onClick={handleClickSearch}
+                className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
+              >
+                {translation.t('Search')}
+              </button>
+            </div>
+          </div>
+          <div className={'w-full grow'}>
+            <Table
+              paginationMode="server"
+              rows={orders ?? []}
+              columns={orderPaymentColumns}
+              pageSizeOptions={[25]}
+              rowCount={100}
+              paginationModel={paginationModel}
+              onPaginationModelChange={(model) => setPaginationModel(model)}
+              onRowClick={handleRowClick}
+            />
+          </div>
         </div>
-      },
-    }
-  ];
+      </div>
 
-  return <div className={"w-full grow flex flex-col p-3"}>
-    <div
-      className={"flex flex-col grow overflow-x-hidden overflow-y-scroll bg-white rounded justify-start items-center py-6 px-4 sm:px-8"}>
-      <p className={"text-h4 w-full text-start mb-6"}>{translation.t('User Management')}</p>
-      <div className={"w-full flex flex-row justify-between items-center gap-10 mb-4"}>
-        <div className={"w-full flex flex-row justify-start items-end gap-10 mb-4"}>
-          <FormFieldEmail id={"email"} validateCaller={validateCaller} onChange={setEmail} value={email}/>
-          <button onClick={handleClickSearch}
-                  className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg">
-            {translation.t('Search')}
-          </button>
-        </div>
-      </div>
-      <div className={"w-full grow"} key={tableData.map(value => value.id).join("_")}>
-        <DataGrid
-          paginationMode="server"
-          rows={tableData}
-          columns={orderPaymentColumns}
-          pageSizeOptions={[25]}
-          rowCount={userCount || 0}
-          paginationModel={paginationModel}
-          onPaginationModelChange={(model) => setPaginationModel(model)}
-          onRowClick={handleRowClick}
+      {showSuccessDialog && (
+        <DialogSuccessFullscreen
+          title="Order Approved"
+          onClose={() => setShowSuccessDialog(false)}
         />
-      </div>
-    </div>
-    {shouldShowCreateUser && <DialogContainer isAutoSize handleClickOverlay={(shouldOpen: boolean) => !shouldOpen && setShouldShowCreateUser(false)}>
-      <div className="w-full max-w-[1600px] justify-center items-center py-8 px-4 flex flex-col">
-        <div className="w-full mx-4 flex justify-center items-center flex-col gap-y-8">
-          <FormCreateAdminAccount onCreated={handleCreated} />
-        </div>
-      </div>
-    </DialogContainer>}
-  </div>
+      )}
+    </>
+  );
 }

@@ -12,6 +12,8 @@ import { MyAccountContent } from "./MyAccountContent";
 import { OrderPaymentContent } from "./OrderPaymentContent";
 import { ServicesContent } from "./ServicesContent";
 import { UsersContent } from "./UsersContent";
+import { MasterServiceContent } from "./MasterServicesContent";
+import { useSearchParams } from "react-router-dom";
 
 export type HomeContent = 'services' | 'orderPayment' | 'KYCRequest' | 'support' | 'user' | 'configuration' | 'myAccount'
 const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
@@ -53,11 +55,14 @@ const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
 }
 
 export function HomePage() {
-  const [homeContent, setHomeContent] = useState<HomeContent>('KYCRequest')
   const openCallerRef = useRef<()=>void>(()=>{})
+  const [searchParams, setSearchParams] = useSearchParams()
+  const homeContent = (searchParams.get('tab') ?? 'KYCRequest') as HomeContent || TabOptionGroup.services.id
 
   function handleChangeTab(tabId: HomeContent) {
-    setHomeContent(tabId)
+    setSearchParams({
+      tab: tabId
+    })
   }
 
   return <div className="w-screen h-screen bg-cover flex flex-col overflow-hidden">
@@ -68,6 +73,7 @@ export function HomePage() {
           {homeContent === TabOptionGroup.orderPayment.id && <OrderPaymentContent key={TabOptionGroup.user.id} />}
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.user.id && <UsersContent key={TabOptionGroup.user.id} />}
+          {homeContent === TabOptionGroup.configuration.id && <MasterServiceContent key={TabOptionGroup.configuration.id} />}
           {homeContent === 'myAccount' && <MyAccountContent key="myAccount" />}
         </div>
       </div>

@@ -1,8 +1,14 @@
 import { callApi } from "../services-base/api";
-import { ApiCreateOrderParam } from "./types";
+import { ApiCreateOrderParam, RawResulCreateOrder } from "./types";
 
-export async function callCreateOrder(body: ApiCreateOrderParam) {
-  const path = '/api/v1/orders'
-  const rawResult = await callApi('POST', path, body)
+export async function callCreateOrderPaypal(body: ApiCreateOrderParam) {
+  const path = '/api/user/register-service/1'
+  const rawResult = await callApi<RawResulCreateOrder>('POST', path, body, true)
+  return rawResult
+}
+
+export async function callCreateOrderBankToBank(body: ApiCreateOrderParam) {
+  const path = '/api/user/register-service/2'
+  const rawResult = await callApi<RawResulCreateOrder>('POST', path, body, true)
   return rawResult
 }

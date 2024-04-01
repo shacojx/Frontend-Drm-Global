@@ -1,18 +1,36 @@
-import React from 'react';
-import { QueryClient, QueryClientProvider } from "react-query";
-import { RouterProvider } from "react-router-dom";
-import './App.css';
-import { AuthContextProvider } from './contexts/AuthContextProvider';
-import { router } from "./pages/router";
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import { AuthContextProvider } from "./contexts/AuthContextProvider";
+import AppRouter from "./routers/AppRouter";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export const queryClient = new QueryClient()
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 0,
+      staleTime: 10 * 1000,
+    },
+  },
+});
 
 function App() {
-  return <QueryClientProvider client={queryClient}>
-    <AuthContextProvider>
-      <RouterProvider router={router} />
-    </AuthContextProvider>
-  </QueryClientProvider>
+  return (
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <AuthContextProvider>
+          <AppRouter />
+          <ToastContainer />
+        </AuthContextProvider>
+        {/* chỉ chạy môi trường dev */}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;
