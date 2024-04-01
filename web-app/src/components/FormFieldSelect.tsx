@@ -54,7 +54,7 @@ export function FormFieldSelect<T extends React.Key>(props: Props<T>) {
               )}
               style={{ minWidth: props.minWidth || "0px" }}
             >
-                <span className="flex items-center">
+                <span className="flex items-center gap-1">
                   {findOptionInfo(props.value)?.iconElement}
                   <span
                     className={

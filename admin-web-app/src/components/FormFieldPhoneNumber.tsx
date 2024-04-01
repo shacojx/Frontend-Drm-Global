@@ -55,7 +55,7 @@ export function FormFieldPhoneNumber(props: FormFieldProps<RNPhoneValue>) {
         isRequired
         value={nationPhone}
         optionInfos={NATION_PHONE_INFOS}
-        minWidth={"115px"}
+        minWidth={"130px"}
         onChange={handleChangeNationPhone}
         validateCaller={{}}
       />
