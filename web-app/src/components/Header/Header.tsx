@@ -47,7 +47,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
         <div>
           <IconThreeLines className={'block lg:hidden w-5 h-5 cursor-pointer'} onClick={toggleMenu} />
         </div>
-        <div className={'flex items-center gap-4'}>
+        <div className={'flex items-start gap-4'}>
           <Link
             to={RoutePaths.support}
             className={'w-10 h-10 rounded-full bg-gray-300 flex justify-center items-center cursor-pointer'}
