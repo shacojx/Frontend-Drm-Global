@@ -54,9 +54,9 @@ export default function MyAccountContent() {
           )}
           {avatarUrl ? (
             <div className="size-20 relative">
-              {avatarUrl === 'avt-default.jpg'
+              {user?.avatar !== 'avt-default.jpg'
                 ? <img src={avatarUrl} alt="" className="size-full rounded-full object-cover"/>
-                : <IconAccountCircle className={'w-16 h-16'} />
+                : <IconAccountCircle className={'w-full h-full'} />
               }
               <label
                 htmlFor="avt"
