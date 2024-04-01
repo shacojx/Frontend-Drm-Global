@@ -69,7 +69,7 @@ export function MyCompanyDetailPage() {
             firstName: item.firstName ?? "",
             lastName: item.lastName ?? "",
             ownerShip: item.ownership.toString(),
-            document: [item.document.join(",")],
+            document: item.document,
             company: item.type === "Company" ? 1 : 0,
             individual: item.type === "Individual" ? 1 : 0,
           })),
@@ -78,7 +78,7 @@ export function MyCompanyDetailPage() {
           responsiblePartyLastName: responseParty.lastName,
           responsiblePartySSNOrITIN: responseParty.SSNorITIN ?? "",
           website: companyInfo.website,
-          document: documents.map((item) => ({ id: item.name, document: item.name })),
+          document: documents.map((item) => ({ document: item.name })),
         });
         setShowSuccessDialog(true);
         setIsEditing(false)
