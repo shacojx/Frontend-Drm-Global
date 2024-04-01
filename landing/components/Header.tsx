@@ -91,7 +91,9 @@ export const Header = () => {
               </ul>
             </nav>
 
-            <button className="bg-gradient-primary h-14 w-28 rounded-xl font-bold text-white">Sign In</button>
+            <Link href="https://customer.drmsglobal.ai/" target='_blank'>
+            <button  className="bg-gradient-primary h-14 w-28 rounded-xl font-bold text-white">Sign In</button>
+            </Link>
           </div>
 
           <IconMenu

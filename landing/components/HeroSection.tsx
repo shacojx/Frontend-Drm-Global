@@ -2,6 +2,7 @@ import { NextImage } from '@/components/NextImage';
 
 import bg_hero_image from '@/assets/images/hero.png';
 import { cn } from '@/utils/cn.util';
+import Link from 'next/link';
 
 export const HeroSection = () => {
   return (
@@ -18,9 +19,16 @@ export const HeroSection = () => {
         business registration services.
       </p>
 
-      <button className={cn("bg-gradient-primary mx-auto mt-8 flex h-14 items-center rounded-xl px-6 font-bold text-white mb-6", "xl:mb-0")}>
-        Get started
-      </button>
+      <Link href="https://customer.drmsglobal.ai/" target='_blank'>
+        <button
+          className={cn(
+            'bg-gradient-primary mx-auto mt-8 flex h-14 items-center rounded-xl px-6 font-bold text-white mb-6',
+            'xl:mb-0'
+          )}
+        >
+          Get started
+        </button>
+      </Link>
 
       <NextImage className="-mt-5 aspect-[2880/1000] w-full" src={bg_hero_image} alt="DRM" />
     </section>
