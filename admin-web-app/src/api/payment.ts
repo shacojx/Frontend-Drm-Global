@@ -1,9 +1,8 @@
-import { groupBy } from 'lodash';
 import { callApi } from '../services-base/api';
 import {
   ApiCreateOrderParam,
   ApiGetOrdersParam,
-  RawRegisterServicesResult,
+  RawApiGetOrdersResult,
 } from './types';
 
 export async function callCreateOrder(body: ApiCreateOrderParam) {
@@ -12,47 +11,10 @@ export async function callCreateOrder(body: ApiCreateOrderParam) {
   return rawResult;
 }
 
-export async function callApiGetOrders({
-  page,
-  pic = '',
-  email = '',
-}: ApiGetOrdersParam) {
-  const getAllPath = `/api/admin/get-paid-service?page=${page}&size=${100}`;
-  const searchPath = `/api/admin/search-paid-service`;
-
-  const isSearch = !!pic || !!email;
-
-  const response = isSearch
-    ? await callApi<RawRegisterServicesResult['content']>(
-        'POST',
-        searchPath,
-        { pic, email },
-        true,
-      )
-    : await callApi<RawRegisterServicesResult>('GET', getAllPath, {}, true);
-
-  const content = 'content' in response ? response.content : response;
-  const groups = groupBy(content, (item) => item.transitionId);
-
-  const orders = Object.values(groups).map((groupItems, idx) => {
-    const totalPricePerCycle = groupItems.reduce(
-      (acc, cur) => acc + cur.pricePerCycle,
-      0,
-    );
-    const services = groupItems.map((item) => ({
-      id: item.paidServiceId,
-      name: item.serviceName,
-    }));
-
-    return {
-      ...groupItems[0],
-      pricePerCycle: totalPricePerCycle,
-      services,
-      rowIndex: idx,
-    };
-  });
-
-  return { orders };
+export async function callApiGetOrders(param: ApiGetOrdersParam) {
+  const path = '/api/admin/get-order-payment';
+  const result = await callApi<RawApiGetOrdersResult>('GET', path, param, true);
+  return result
 }
 
 export async function callApiApproveOrder(id: string | number) {
