@@ -1,5 +1,5 @@
 import { UseQueryResult } from '@tanstack/react-query';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { UploadedDocumentType } from '../api/types';
@@ -14,7 +14,7 @@ import {
   useApiServiceUploadStatusStep,
 } from '../hooks-api/useServiceApi';
 import { useValidateCaller } from '../hooks-ui/useValidateCaller';
-import { Service, ServiceStep } from '../types/service';
+import { ApiFileWrap, Service, ServiceStep } from '../types/service';
 import { FormFieldSelect } from './FormFieldSelect';
 import InputFile from './InputFile';
 import { IconAltArrowDown } from './icons';
@@ -31,6 +31,7 @@ type Props = {
   service: Service | null;
 };
 
+type FileResult = ApiFileWrap & Partial<{ fileData: File }>
 export function ServiceStepContent({
   serviceStep,
   resGetServiceId,
@@ -38,8 +39,7 @@ export function ServiceStepContent({
 }: Props) {
   const { t } = useTranslation();
 
-  const [file, setFile] = useState<File[]>([]);
-
+  const [fileResults, setFileResults] = useState<FileResult[]>([]);
   const [adminRemark, setAdminRemark] = useState('');
   const [statusStep, setStatusStep] = useState('');
 
@@ -48,22 +48,7 @@ export function ServiceStepContent({
   useEffect(() => {
     setAdminRemark(serviceStep?.adminRemark ?? '');
     setStatusStep(serviceStep?.statusStep ?? '');
-    // @ts-ignore
-
-    serviceStep?.result?.forEach((fileRes) => {
-      if (fileRes.fileDocument) {
-        let file = {
-          ...fileRes,
-          name: fileRes.fileDocument,
-        };
-        setFile((pre) => {
-          let newArr: File[] = [...pre];
-          // @ts-ignore
-          newArr[fileRes.id] = file;
-          return newArr;
-        });
-      }
-    });
+    setFileResults(serviceStep?.result || [])
   }, [serviceStep, service]);
 
   const mutateUpdateAdminRemark = useApiServiceUpdateAdminRemark();
@@ -127,39 +112,32 @@ export function ServiceStepContent({
 
   const mutateUploadFile = useApiServiceUploadServiceResult();
 
-  // @ts-ignore
-  const handleChangeFile = async (file?: File, id: number) => {
-    if (!file) {
-      setFile((pre) => {
-        let newArr: File[] = [...pre];
-        // @ts-ignore
-        newArr[id] = file;
-        return newArr;
-      });
-      return;
+  const handleChangeFile = async (fileData: File | undefined, id: number) => {
+    const newFileResults = [...fileResults]
+    const fileChanged = newFileResults.find(fileResult => fileResult.id === id)
+    if (!serviceStep || !fileChanged) {
+      return
     }
-    const formData = new FormData();
-    // @ts-ignore
-    formData.append('files', file);
-    // @ts-ignore
-    formData.append('id', service?.id);
-    try {
-      const res = await mutateUploadFile.mutateAsync(formData);
-      if (res) {
-        setFile((pre) => {
-          let newArr: File[] = [...pre];
-          // @ts-ignore
-          newArr[id] = { name: res.data?.[0] };
-          return newArr;
-        });
-        resGetServiceId?.refetch();
+    if (fileData) {
+      const formData = new FormData();
+      formData.append('files', fileData);
+      formData.append('id', id.toString());
+      try {
+        const res = await mutateUploadFile.mutateAsync(formData);
+        fileChanged.fileDocument = res.data?.[0] || null
         toast.success(t('Update file successfully'));
+        resGetServiceId?.refetch();
+      } catch
+        (error) {
+        toast.error(String(error));
+        console.error('error: ', error);
       }
-    } catch (error) {
-      toast.error(String(error));
-      console.error('error: ', error);
+    } else {
+      fileChanged.fileDocument = null
     }
-  };
+    fileChanged.fileData = fileData
+    setFileResults(newFileResults)
+  }
 
   const handleMenuItemClick = (option: any) => {
     option.click && option.click();
@@ -214,7 +192,6 @@ export function ServiceStepContent({
   };
 
   const disabledDocumentReminder = serviceStep?.customerDocument.every(item => item.fileDocument)
-  
 
   const OPTIONS: OptionType[] = [
     {
@@ -373,20 +350,20 @@ export function ServiceStepContent({
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-md items-center py-md">
-            {serviceStep?.result.map((item, index) => (
-              <Fragment key={`customerDocument${item.id}`}>
+            {fileResults.map((fileResult, index) => (
+              <Fragment key={`customerDocument${fileResult.id}`}>
                 <div className="px-md text-[#3B3F48]/85 text-left lg:text-center">
-                  {index + 1}. {item.requiredDocument}
+                  {index + 1}. {fileResult.requiredDocument}
                 </div>
                 <div className="px-md flex justify-start lg:justify-center items-center text-left lg:text-center">
                   <InputFile
-                    key={`file${item.id}`}
+                    key={`file${fileResult.id}`}
                     label={t('Upload')}
-                    onChange={(file) => handleChangeFile(file, item.id)}
-                    file={file?.[item.id]}
+                    onChange={(file) => handleChangeFile(file, fileResult.id)}
+                    fileName={fileResults?.find(i=>i.id === fileResult.id)?.fileDocument || undefined}
                     maxSize={10}
                     accept="*"
-                    disabled={item.requiredDocument === NONE_REQUIRED}
+                    disabled={fileResult.requiredDocument === NONE_REQUIRED}
                   />
                 </div>
               </Fragment>
