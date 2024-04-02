@@ -245,6 +245,7 @@ export type ViewedUser = {
     id: number;
     name: AccountRole;
   }[];
+  createdAt: string;
 };
 
 export type ApiSearchUserParam = {
