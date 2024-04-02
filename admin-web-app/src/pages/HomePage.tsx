@@ -14,6 +14,7 @@ import { ServicesContent } from "./ServicesContent";
 import { UsersContent } from "./UsersContent";
 import { MasterServiceContent } from "./MasterServicesContent";
 import { useSearchParams } from "react-router-dom";
+import {SupportContent} from "./SupportContent";
 
 export type HomeContent = 'services' | 'orderPayment' | 'KYCRequest' | 'support' | 'user' | 'configuration' | 'myAccount'
 const TabOptionGroup: Record<HomeContent, TabOption<HomeContent>> = {
@@ -74,6 +75,7 @@ export function HomePage() {
           {homeContent === TabOptionGroup.services.id && <ServicesContent key={TabOptionGroup.services.id} />}
           {homeContent === TabOptionGroup.user.id && <UsersContent key={TabOptionGroup.user.id} />}
           {homeContent === TabOptionGroup.configuration.id && <MasterServiceContent key={TabOptionGroup.configuration.id} />}
+          {homeContent === TabOptionGroup.support.id && <SupportContent key={TabOptionGroup.support.id} />}
           {homeContent === 'myAccount' && <MyAccountContent key="myAccount" />}
         </div>
       </div>
