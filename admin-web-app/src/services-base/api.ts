@@ -6,6 +6,14 @@ type ResponseOk<T = unknown> = {
   "message": string,
   "data": T
 }
+const AUTH_ERROR_STATUS = 401 as const
+type ResponseError<T = unknown> = {
+  "status": typeof AUTH_ERROR_STATUS | number,
+  "message": string,
+}
+
+const LOGIN_PATH = '/login'
+
 export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: Record<string, any>, isPrivateApi: boolean = false): Promise<T> {
   const apiUrl = new URL(path, API_DOMAIN)
   if (method === 'GET') {
@@ -19,13 +27,15 @@ export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: 
   let authorization = undefined
   if (isPrivateApi) {
     const accessTokenInfo = await getAccessTokenInfo()
-    if (accessTokenInfo) {
+    const auth = accessTokenInfo && getAuthorizationString(accessTokenInfo)
+    if (auth) {
       authorization = {
         'Authorization': getAuthorizationString(accessTokenInfo)
       }
     } else {
       // Refresh token was expired
       alert('Please login again!')
+      window.open(LOGIN_PATH, '_self')
       throw new Error('User is no longer logged in')
     }
   }
@@ -42,9 +52,15 @@ export async function callApi<T>(method: ApiMethod, path: string, paramsOrBody: 
     }
   )
   if (!response.ok) {
-    throw new Error('Can not request to our server')
+    const res: ResponseError = await response.json()
+    if (res.status === AUTH_ERROR_STATUS) {
+      // token was invalid
+      alert('Please login again!')
+      window.open(LOGIN_PATH, '_self')
+    }
+    throw new Error(res.message)
   }
-  const responseObject = await response.json() as ResponseOk<T>
+  const responseObject: ResponseOk<T> = await response.json()
   if (responseObject.status !== '200') {
     throw new Error(responseObject.message)
   }
