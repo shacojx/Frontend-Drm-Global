@@ -3,9 +3,9 @@ cd ./landing
 
 git pull
 
-yarn install
+npm install
 
-yarn build
+npm run build
 
 cp -rf out/* ../local-build/landing/
 
