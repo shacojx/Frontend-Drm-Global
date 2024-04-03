@@ -165,13 +165,12 @@ export function ServiceStepContent({
 
   const handleSendRequiredDocumentReminder = () => {
     const listDocArr = serviceStep?.customerDocument.map(
-      (doc) => doc.fileDocument,
+      (doc) => doc.requiredDocument,
     );
-    const listDoc = listDocArr;
     mutateSendRequiredDocumentReminder.mutate(
       {
         email: service?.email,
-        listDoc: listDoc,
+        listDoc: listDocArr,
       },
       {
         onSuccess: (data) => {
