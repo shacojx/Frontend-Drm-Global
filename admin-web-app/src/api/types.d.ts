@@ -11,7 +11,10 @@ export type EntityEnding =
 export type Industry = string;
 export type NationPhone = string;
 export type LocalPhone = string;
-
+export type ApiPagingParam = {
+  page: number;
+  size: number;
+};
 type RawPagingApiResult<T> = {
   content: T[];
   pageable: {

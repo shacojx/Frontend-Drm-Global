@@ -1,4 +1,5 @@
 import { API_DOMAIN, EXPIRATION_TIME_FOR_ACCESS_TOKEN, EXPIRATION_TIME_FOR_REFRESH_TOKEN } from "../_loadEnv";
+import { isNotNullish } from "../utils/typeCheck";
 
 type ApiMethod = 'GET' | 'POST' | 'PUT'
 type ResponseOk<T = unknown> = {
@@ -157,8 +158,8 @@ export function getToken(tokenName: TokenName) {
 
 function addParamsToSearchParams(urlSearchParams: URLSearchParams, params: Record<string, any>) {
   Object.keys(params).forEach(key => {
-    if (params[key]) {
-      if (params[key] && typeof params[key] !== "object") {
+    if (isNotNullish(params[key])) {
+      if (typeof params[key] !== "object") {
         urlSearchParams.append(key, params[key])
       } else {
         for (const keyOfParamsKey in params[key]) {

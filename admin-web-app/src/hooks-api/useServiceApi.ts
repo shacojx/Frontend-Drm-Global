@@ -14,7 +14,7 @@ import {
   callApiUploadCustomerDocument,
   callApiUploadStatusStep,
 } from '../api/serviceManagement';
-import { ApiSearchPaidServiceType, PaginationType } from '../api/types';
+import { ApiPagingParam, ApiSearchPaidServiceType, PaginationType } from '../api/types';
 import KeyFactory from '../services-base/reactQuery/keyFactory';
 import {
   ExtraOptionQuery,
@@ -38,7 +38,7 @@ export function useApiSearchPaidService(
 }
 
 export function useApicalGetListService(
-  param: PaginationType,
+  param: ApiPagingParam,
   extraOption?: ExtraOptionQuery,
 ) {
   return useQuery(

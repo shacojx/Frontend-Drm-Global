@@ -42,7 +42,10 @@ export function ServicesContent() {
   const resSearchService = useApiSearchPaidService(dataSearch, {
     enabled: Boolean(dataSearch.email) || Boolean(dataSearch.pic),
   });
-  const resGetListService = useApicalGetListService(paginationModel, {
+  const resGetListService = useApicalGetListService({
+    page: paginationModel.page,
+    size: paginationModel.pageSize
+  }, {
     enabled: !(Boolean(dataSearch.email) || Boolean(dataSearch.pic)),
   });
   const resUserByRole = useApiUserSearchByRole({ role: 'mod' });
