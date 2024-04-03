@@ -207,11 +207,11 @@ export function ServicesContent() {
   };
 
   const handleClickSubmitGetMyCompanyDetail = () => {
-    resUserByRole.refetch();
+    resCompanyId.refetch();
   };
 
   const handleClickSubmitGetUserByRole = () => {
-    resCompanyId.refetch();
+    resUserByRole.refetch();
   };
 
   return (
@@ -285,7 +285,7 @@ export function ServicesContent() {
           subTitle={resCompanyId?.error?.message}
           actionElement={
             <button
-              onClick={handleClickSubmitGetUserByRole}
+              onClick={handleClickSubmitGetMyCompanyDetail}
               className="w-full min-w-[300px] h-[52px] flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
             >
               <span>{t('Try again')}</span>
@@ -329,7 +329,7 @@ export function ServicesContent() {
             onClose={(shouldOpen) => {
               setIsShowServiceDetailDialog(false);
               setSelectService(null);
-              handleClickSubmitGetMyCompanyDetail()
+              resGetListService.refetch();
             }}
             isCloseOnClickOverlay
             isFullSize
