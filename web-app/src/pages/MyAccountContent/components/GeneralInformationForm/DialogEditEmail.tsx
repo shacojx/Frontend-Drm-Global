@@ -12,6 +12,8 @@ import { FormFieldOtp } from 'src/components/FormFieldOtp';
 import { IconArrowLeft, IconSpinner } from 'src/components/icons';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
 import { cn } from 'src/utils/cn.util';
+import { useValidateCaller } from "../../../../hooks-ui/useValidateCaller";
+import { saveAuthInfo } from "../../../../services-business/api/authentication";
 
 type DialogEditEmailProps = {
   onClose?: () => void;
@@ -32,6 +34,7 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
 
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(60);
+  const {validateCaller, validateAll} = useValidateCaller()
 
   useEffect(() => {
     if (countdown === 0) {
@@ -62,13 +65,16 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
   const handleChangeEmail = async () => {
     try {
       setLoading(true);
-      email && (await callApiChangeEmail(email, otp));
+      if (!email) {
+        return
+      }
+      const result = await callApiChangeEmail(email, otp);
+      // saveAuthInfo(result)
+      setIsSuccess(true);
+      setLoading(false);
 
       const newUser = await callApiGetUserProfile()
       saveAuthUser(newUser)
-
-      setIsSuccess(true);
-      setLoading(false);
     } catch (error) {
       setError(String(error));
       setLoading(false);
@@ -90,7 +96,7 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
                   isRequired
                   id="edit-email"
                   onChange={setEmail}
-                  validateCaller={{}}
+                  validateCaller={validateCaller}
                   value={email}
                 />
               </>
@@ -120,17 +126,16 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
                 </div>
               </>
             )}
-
             <button
               className={cn(
                 'flex gap-2 items-center justify-center rounded-lg bg-primary text-white font-semibold h-13 w-full mt-10',
                 {
                   'bg-disable': loading,
-                }
+                },
               )}
               disabled={loading}
               onClick={async () => {
-                if (step === 0) {
+                if (step === 0 && validateAll()) {
                   await handleSendOtp();
                   setStep((prev) => prev + 1);
                   return;
