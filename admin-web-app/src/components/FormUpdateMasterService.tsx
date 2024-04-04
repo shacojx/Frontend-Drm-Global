@@ -32,7 +32,8 @@ type Props = {
   serviceCycle?: ServiceCycle[];
   name: string;
   enable: boolean;
-  serviceId: number;
+  id: number;
+  serviceId: string;
   serviceDescription: string;
   appliedCompanyType: string[];
   appliedNation: string[];
@@ -133,7 +134,7 @@ export function ConfirmActiveModal(props: ConfirmActiveModalProps) {
   }, [props.enable]);
 
   return (
-    <DialogContainer isAutoSize handleClickOverlay={props.onCancel}>
+    <DialogContainer isAutoSize onClose={props.onCancel}>
       <div className="p-10">
         <div className="flex justify-center text-4xl px-2 mb-10 font-bold">
           {displayTitle}
@@ -276,7 +277,7 @@ export function FormUpdateMasterService(props: Props) {
     if (props?.enable) {
       try {
         setStatus("requesting");
-        callApiDeactiveMasterService({ enable: 0 }, props.serviceId)
+        callApiDeactiveMasterService({ enable: 0 }, props.id)
           .then(() => {
             toast.success(translation.t("Deactive service successfully"));
             setLoading(false);
@@ -302,7 +303,7 @@ export function FormUpdateMasterService(props: Props) {
           {
             enable: 1,
           },
-          props.serviceId
+          props.id
         )
           .then(() => {
             toast.success(translation.t("Active service successfully"));
@@ -355,7 +356,7 @@ export function FormUpdateMasterService(props: Props) {
               .map((item) => item.result),
           })),
         };
-        callApiUpdateMasterService(updateMasterServiceBody, props.serviceId)
+        callApiUpdateMasterService(updateMasterServiceBody, props.id)
           .then((response) => {
             window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
             toast.success("Update service successfully");
@@ -461,7 +462,7 @@ export function FormUpdateMasterService(props: Props) {
             <ActionButton
               onDeactive={onShow}
               onActive={onShow}
-              id={props.serviceId}
+              id={props.id}
               enable={props.enable}
             ></ActionButton>
           </Grid>

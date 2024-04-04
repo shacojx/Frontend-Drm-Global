@@ -11,6 +11,38 @@ export type EntityEnding =
 export type Industry = string;
 export type NationPhone = string;
 export type LocalPhone = string;
+export type ApiPagingParam = {
+  page: number;
+  size: number;
+};
+type RawPagingApiResult<T> = {
+  content: T[];
+  pageable: {
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    offset: number;
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  totalPages: number;
+  totalElements: number;
+  last: boolean;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  size: number;
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+}
 
 // ====== Account ======== //
 export type ApiLoginParam = {
@@ -120,8 +152,7 @@ export type ApiCreateOrderParam = {
 
 export type ApiGetOrdersParam = {
   page: number;
-  pic?: string;
-  email?: string;
+  size: number;
 };
 
 export type UploadedDocumentType = {
@@ -130,64 +161,58 @@ export type UploadedDocumentType = {
   fileDocument: string | null;
 };
 
-export type RawRegisterServicesResult = {
-  content: Array<{
-    updatedAt: string;
-    createdAt: string;
+export type PaidService = {
+  updatedAt: string;
+  createdAt: string;
+  id: number;
+  userId: number;
+  serviceId: number;
+  serviceType: string;
+  serviceName: string;
+  serviceDescription: string;
+  statusService: string;
+  cycleNumber: number;
+  pricePerCycle: number;
+  transitionId: number;
+  statusPayment: string;
+  paymentMethod: null;
+  statusContract: string;
+  contractFile: null;
+  pic: string;
+  paidServiceId: string,
+  serviceStep: Array<{
     id: number;
-    userId: number;
-    serviceId: number;
-    serviceType: string;
-    serviceName: string;
-    serviceDescription: string;
-    statusService: string;
-    cycleNumber: number;
-    pricePerCycle: number;
-    transitionId: number;
-    statusPayment: string;
-    paymentMethod: null;
-    statusContract: string;
-    contractFile: null;
-    pic: string;
-    paidServiceId: string,
-    serviceStep: Array<{
-      id: number;
-      stepNo: number;
-      stepName: string;
-      statusStep: string;
-      estimatedCompletionTime: string;
-      description: string;
-      adminRemark: string;
-      customerDocument: Array<UploadedDocumentType>;
-      result: Array<UploadedDocumentType>;
-    }>;
+    stepNo: number;
+    stepName: string;
+    statusStep: string;
+    estimatedCompletionTime: string;
+    description: string;
+    adminRemark: string;
+    customerDocument: Array<UploadedDocumentType>;
+    result: Array<UploadedDocumentType>;
   }>;
-  pageable: {
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
-    offset: number;
-    pageNumber: number;
-    pageSize: number;
-    paged: boolean;
-    unpaged: boolean;
-  };
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  number: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  size: number;
-  numberOfElements: number;
-  first: boolean;
-  empty: boolean;
-};
+}
+
+export type RawRegisterServicesResult = RawPagingApiResult<PaidService>;
+
+export type ApiOrder = {
+  updatedAt: string,
+  createdAt: string,
+  id:	number,
+  orderId:	string,
+  transitionId:	number,
+  statusPayment:	string, // TODO: add type
+  firstName:	string,
+  lastName:	string,
+  paymentMethod: string,
+  amount:	number,
+  email: string,
+  codePhone: string,
+  phone: string,
+  paidService: PaidService[],
+}
+
+export type RawApiGetOrdersResult = RawPagingApiResult<ApiOrder>
 
 // ====== User Management ======== //
 
@@ -223,6 +248,7 @@ export type ViewedUser = {
     id: number;
     name: AccountRole;
   }[];
+  createdAt: string;
 };
 
 export type ApiSearchUserParam = {
@@ -275,6 +301,7 @@ export interface ViewedMasterService {
   updatedAt: Date;
   createdAt: Date;
   id: number;
+  serviceId: string;
   appliedNation: AppliedNation[];
   appliedCompanyType: AppliedCompanyType[];
   serviceType: string;

@@ -26,10 +26,17 @@ export interface Service {
   contractFile?: string;
   pic?: string;
   kycStatus?: string;
-  llcInNation?:string;
+  nation?:string;
   corporationProfileStatus?: string;
   serviceStep: ServiceStep[];
 }
+
+export type ApiFileWrap = {
+  id: number;
+  requiredDocument: string;
+  fileDocument: string | null;
+}
+
 export interface ServiceStep {
   id: number;
   stepNo: number | null;
@@ -38,16 +45,8 @@ export interface ServiceStep {
   estimatedCompletionTime: string;
   description: string;
   adminRemark: string | null;
-  customerDocument: {
-    id: number;
-    requiredDocument: string;
-    fileDocument: string | null;
-  }[];
-  result: {
-    id: number;
-    requiredDocument: string;
-    fileDocument: string | null;
-  }[];
+  customerDocument: ApiFileWrap[];
+  result: ApiFileWrap[];
 }
 
 export const EMPTY_SEARCH: ApiSearchPaidServiceType = {

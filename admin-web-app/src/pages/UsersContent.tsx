@@ -22,6 +22,7 @@ import {
 } from '@mui/x-data-grid';
 import { useApiGetUsers } from '../hooks/api/user';
 import { capitalize } from 'lodash-es';
+import { generateFormatDate } from "../services-ui/date";
 import { generateDayInMonth } from "../utils/date";
 
 const ROLES: Record<string, string> = {
@@ -103,7 +104,7 @@ export function UsersContent(props: Props) {
       headerName: 'Role',
       sortable: false,
       type: 'string',
-      width: 200,
+      width: 100,
       valueGetter: (params: GridValueGetterParams) => {
         const role = (params.row.roles[params.rowNode.depth].name ||
           '') as string;
@@ -173,6 +174,9 @@ export function UsersContent(props: Props) {
       sortable: false,
       type: 'string',
       width: 120,
+      valueGetter: (params) =>{
+        return generateFormatDate(new Date(params.row.createdAt))
+      },
     },
   ];
 
@@ -245,7 +249,7 @@ export function UsersContent(props: Props) {
       {userClicked && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             !shouldOpen && setUserClicked(undefined)
           }
         >
@@ -263,7 +267,7 @@ export function UsersContent(props: Props) {
       {shouldShowCreateUser && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             !shouldOpen && setShouldShowCreateUser(false)
           }
         >

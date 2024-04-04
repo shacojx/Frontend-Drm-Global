@@ -359,7 +359,7 @@ export function MasterServiceContent(props: Props) {
       {shouldShowUpdateMasterService && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             !shouldOpen && setShouldShowUpdateMasterService(false)
           }
         >
@@ -382,7 +382,8 @@ export function MasterServiceContent(props: Props) {
                 serviceType={selectItem.serviceType ?? ''}
                 name={selectItem.serviceName ?? ''}
                 enable={Boolean(selectItem?.enable)}
-                serviceId={Number(selectItem?.id)}
+                id={selectItem?.id}
+                serviceId={selectItem?.serviceId}
                 onSubmitted={handleEdit}
                 onCancelModal={() => setShouldShowUpdateMasterService(false)}
               />
@@ -393,7 +394,7 @@ export function MasterServiceContent(props: Props) {
       {shouldShowCreateMasterService && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             setShouldShowCreateMasterService(false)
           }
         >

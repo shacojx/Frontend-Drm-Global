@@ -1,11 +1,18 @@
 #!/bin/bash
 cd ./web-app
 
-# Pull the latest changes from the git repository
 git pull
 
-# Install dependencies using Yarn
-yarn install
+npm install
 
-# Build the project using Yarn
-yarn build
+npm run build
+
+cp -rf build/* ../local-build/customer/
+
+cd ..
+
+git add local-build/customer
+
+git commit -m "build customer"
+
+git push
