@@ -16,7 +16,7 @@ export const AboutUsSection = () => {
           About Us
         </h4>
 
-        <h2 className="mt-8 w-4/5 max-w-2xl text-4xl font-bold">
+        <h2 className="mt-8 w-4/5 max-w-2xl text-[26px] font-bold xl:text-4xl">
           <span className="text-gradient-primary">Our </span> investors and advisors are the best
         </h2>
 
@@ -33,7 +33,7 @@ export const AboutUsSection = () => {
       <div className="mt-6 w-full max-w-none xl:mt-0 xl:w-4/12 xl:max-w-96">
         <div className="rounded-4xl border border-stroke p-6">
           <NextImage src={img_about_us} alt="About Us" className="aspect-[4/5] rounded-2xl" />
-          <p className="mt-6 text-grey">
+          <p className="mt-6 text-lg text-grey">
             “The good thing about DRMGlobal is that it saves a lot of time so I can do other things - the running of the
             business part.”
           </p>
