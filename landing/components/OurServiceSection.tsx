@@ -39,7 +39,7 @@ export const OurServiceSection = () => {
         Our Services
       </h4>
 
-      <h2 className="mx-auto mt-8 max-w-2xl text-center text-4xl font-bold">
+      <h2 className="mx-auto mt-8 max-w-2xl text-center text-[26px] font-bold xl:text-4xl">
         <span className="text-gradient-primary">Flexible </span>
         services for every stage of your business
       </h2>

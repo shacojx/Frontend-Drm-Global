@@ -53,7 +53,7 @@ export const Header = () => {
 
           <div
             className={cn(
-              "fixed right-0 top-0 bg-white flex flex-col w-80 max-w-[75vw] h-screen z-[60] shadow p-3 gap-6 grow justify-between transition-all duration-500",
+              "fixed right-0 top-0 bg-white flex flex-col w-80 max-w-[75vw] h-[100dvh] z-[60] shadow p-3 gap-6 grow justify-between transition-all duration-500",
               "xl:items-center xl:static xl:h-full xl:flex-row xl:shadow-none xl:before:block",
               {
                 "translate-x-full xl:translate-x-0": !showMenu,
@@ -61,7 +61,7 @@ export const Header = () => {
             )}
           >
             <div className="flex items-center justify-between xl:hidden">
-              <NextImage src={logo} alt="DRM" className="h-16 w-28" objectFit="contain" />
+              <Link href="/" onClick={() => { setShowMenu(false); }}><NextImage src={logo} alt="DRM" className="h-16 w-28" objectFit="contain" /></Link>
               <IconX
                 className="cursor-pointer"
                 onClick={() => {
