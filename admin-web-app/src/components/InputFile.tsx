@@ -5,12 +5,12 @@ interface Props {
   onChange?: (file?: File) => void;
   accept?: string;
   label?: string;
-  file?: File;
+  fileName?: string;
   disabled?: boolean;
   maxSize?: number;
 }
 
-export default function InputFile({onChange, accept = "*", label = "Upload", file, disabled = false, maxSize=40}: Props) {
+export default function InputFile({onChange, accept = "*", label = "Upload", fileName, disabled = false, maxSize=40}: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +45,7 @@ export default function InputFile({onChange, accept = "*", label = "Upload", fil
         onChange={onFileChange}
         disabled={disabled}
       />
-      {!file && (
+      {!fileName && (
         <button
           type="button"
           onClick={handleUpload}
@@ -57,10 +57,10 @@ export default function InputFile({onChange, accept = "*", label = "Upload", fil
         </button>
       )}
 
-      {file && (
+      {fileName && (
         <>
           <div className="flex gap-md justify-between border border-solid border-surface py-4 px-3 rounded-lg items-center">
-            <div className="font-bold">{file?.name}</div>
+            <div className="font-bold">{fileName}</div>
             <button
               className="font-bold hover:bg-danger/20 text-danger py-3 px-4 rounded-lg"
               onClick={onClearFile}

@@ -1,16 +1,22 @@
 import { ServiceSearchFilter } from '../types/serviceSearchFilter';
 import { callApi, getAccessTokenInfo, getAuthorizationString } from '../services-base/api';
-import { ApiSearchPaidServiceType, RawResult, RawResultPOST, ViewedUser } from './types';
+import {
+  ApiPagingParam,
+  ApiSearchPaidServiceType,
+  RawResult,
+  RawResultPOST,
+  ViewedUser
+} from './types';
 import { Service } from '../types/service';
 import { UploadResponse } from './upload';
 export async function callApiGetListService(
-  param?: Partial<ServiceSearchFilter>,
+  param: ApiPagingParam,
 ): Promise<RawResult<Service[]>> {
   const path = '/api/admin/get-paid-service';
   return await callApi<RawResult<Service[]>>(
     'GET',
     path,
-    param as Partial<ServiceSearchFilter>,
+    param,
     true,
   );
 }

@@ -42,7 +42,7 @@ function GeneralInformationForm() {
   const translation = useTranslation()
   const { user, saveAuthUser} = useContext(AuthContext)
   const {validateCaller, validateAll} = useValidateCaller()
-  const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone.slice(user?.codePhone?.length) || ''))
+  const [phone, setPhone] = useState<RNPhoneValue | undefined>(generatePhone(user?.codePhone || '+84', user?.phone || ''))
   const [firstName, setFirstName] = useState<string>(user?.firstName || '')
   const [lastName, setLastName] = useState<string>(user?.lastName || '')
   const [status, setStatus] = useState<FormStatus>('typing')

@@ -3,7 +3,6 @@ import {
   GridCellParams,
   GridColDef,
   GridPaginationModel,
-  GridRenderCellParams,
   GridRowEventLookup,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
@@ -45,10 +44,10 @@ export function OrderPaymentContent(props: Props) {
 
   const { data, refetch } = useApiGetOrders({
     page: paginationModel.page,
-    pic,
-    email,
+    size: paginationModel.pageSize
   });
-  const { orders } = data ?? {};
+  const orders = data?.content || [];
+  const orderCount = data?.totalElements
 
   const { mutateAsync: approveOrder } = useApiApproveOrder({
     onSuccess: () => {
@@ -65,15 +64,14 @@ export function OrderPaymentContent(props: Props) {
 
   function handleRowClick(params: GridRowEventLookup['rowClick']['params']) {}
 
-  console.table(orders);
   // TODO: add i18n for columns
   const orderPaymentColumns: GridColDef<NonNullable<typeof orders>[number]>[] =
     [
       {
         field: 'rowIndex',
         headerName: 'No.',
-        width: 100,
-        valueGetter: ({ row }) => row.rowIndex + 1,
+        width: 50,
+        valueGetter: (params) => params.api.getRowIndexRelativeToVisibleRows(params.id) + 1,
       },
       { field: 'orderId', headerName: 'Order ID', width: 150 },
       { field: 'transitionId', headerName: 'Transaction ID', width: 150 },
@@ -111,7 +109,7 @@ export function OrderPaymentContent(props: Props) {
         description: 'This column has a value getter and is not sortable.',
         sortable: false,
         width: 160,
-        valueGetter: (params: GridValueGetterParams) =>
+        valueGetter: (params) =>
           `${params.row.firstName || ''} ${params.row.lastName || ''}`,
       },
       {
@@ -136,17 +134,17 @@ export function OrderPaymentContent(props: Props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {params.row.services.map(({ id, name }) => (
-                      <tr key={id}>
-                        <td className="border border-slate-300 p-2">{id}</td>
-                        <td className="border border-slate-300 p-2">{name}</td>
+                    {params.row.paidService.map(({ paidServiceId, serviceName }) => (
+                      <tr key={paidServiceId}>
+                        <td className="border border-slate-300 p-2">{paidServiceId}</td>
+                        <td className="border border-slate-300 p-2">{serviceName}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
               <div className="line-clamp-1 overflow-hidden">
-                {params.row.services.map((item) => item.id).join(', ')}
+                {params.row.paidService.map((item) => item.paidServiceId).join(', ')}
               </div>
             </div>
           );
@@ -161,7 +159,7 @@ export function OrderPaymentContent(props: Props) {
         renderCell: (params) => {
           return (
             <div className="w-full relative group">
-              <div className="absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow top-6">
+              <div className={"absolute hidden group-hover:block bg-white rounded p-3 z-50 shadow " + (params.api.getRowIndexRelativeToVisibleRows(params.id) > (orderCount || 0)/2 ? 'bottom-6' : 'top-6')}>
                 <table className="table-auto border-collapse border border-slate-500 rounded">
                   <thead>
                     <tr>
@@ -174,10 +172,10 @@ export function OrderPaymentContent(props: Props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {params.row.services.map(({ id, name }) => (
-                      <tr key={id}>
-                        <td className="border border-slate-300 p-2">{id}</td>
-                        <td className="border border-slate-300 p-2">{name}</td>
+                    {params.row.paidService.map(({ paidServiceId, serviceName }) => (
+                      <tr key={paidServiceId}>
+                        <td className="border border-slate-300 p-2">{paidServiceId}</td>
+                        <td className="border border-slate-300 p-2">{serviceName}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -185,7 +183,7 @@ export function OrderPaymentContent(props: Props) {
               </div>
 
               <div className="line-clamp-1 overflow-hidden">
-                {params.row.services.map((item) => item.name).join(', ')}
+                {params.row.paidService.map((item) => item.serviceName).join(', ')}
               </div>
             </div>
           );
@@ -205,11 +203,15 @@ export function OrderPaymentContent(props: Props) {
         type: 'string',
         width: 150,
         renderCell: ({ row }) => {
+          const totalPricePerCycle = row.paidService.reduce(
+            (acc, cur) => acc + cur.pricePerCycle,
+            0,
+          );
           return (
             <div className="text-right w-full pr-4">
               {new Intl.NumberFormat('en-IN', {
                 maximumSignificantDigits: 3,
-              }).format(row.pricePerCycle)}{' '}
+              }).format(totalPricePerCycle)}{' '}
               $
             </div>
           );
@@ -234,7 +236,7 @@ export function OrderPaymentContent(props: Props) {
         headerName: 'Email',
         sortable: false,
         type: 'string',
-        width: 120,
+        width: 200,
       },
       {
         field: 'createdAt',
@@ -242,14 +244,8 @@ export function OrderPaymentContent(props: Props) {
         sortable: false,
         type: 'string',
         width: 120,
-        valueGetter: (params: GridValueGetterParams) =>{
-          const createdDate = 
-            params.row.orderId
-              ? `${params?.row?.orderId?.slice(2, 10)}`
-              : ''
-
-          const [d, m, y] = createdDate.split('/')
-          return `${d}/${m}/20${y}`
+        valueGetter: (params) =>{
+          return generateFormatDate(new Date(params.row.createdAt))
         },
       },
       {
@@ -258,10 +254,10 @@ export function OrderPaymentContent(props: Props) {
         sortable: false,
         type: 'string',
         width: 200,
-        renderCell: (params: GridRenderCellParams) => {
+        renderCell: (params) => {
           const status = params.row.statusPayment;
 
-          if (status === 'Confirmed') {
+          if (status === 'Approved') {
             return '';
           }
 
@@ -333,7 +329,7 @@ export function OrderPaymentContent(props: Props) {
               rows={orders ?? []}
               columns={orderPaymentColumns}
               pageSizeOptions={[25]}
-              rowCount={100}
+              rowCount={orderCount || 0}
               paginationModel={paginationModel}
               onPaginationModelChange={(model) => setPaginationModel(model)}
               onRowClick={handleRowClick}

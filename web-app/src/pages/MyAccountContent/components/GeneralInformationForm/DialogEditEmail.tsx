@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   callApiChangeEmail,
-  callApiGetUserProfile,
   callApiSendEditEmailOTP,
 } from 'src/api/account';
 import { DialogContainer } from 'src/components/DialogContainer';
@@ -12,6 +11,10 @@ import { FormFieldOtp } from 'src/components/FormFieldOtp';
 import { IconArrowLeft, IconSpinner } from 'src/components/icons';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
 import { cn } from 'src/utils/cn.util';
+import { useValidateCaller } from "../../../../hooks-ui/useValidateCaller";
+import { removeAuthInfo } from "../../../../services-business/api/authentication";
+import { RoutePaths } from "../../../../constants/routerPaths";
+import { useNavigate } from "react-router-dom";
 
 type DialogEditEmailProps = {
   onClose?: () => void;
@@ -20,8 +23,8 @@ type DialogEditEmailProps = {
 
 export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
   const { t } = useTranslation();
-
-  const { user, saveAuthUser } = useContext(AuthContext)
+  const navigate = useNavigate();
+  const { user, removeAuthUser, saveAuthUser } = useContext(AuthContext)
 
   const [email, setEmail] = useState<string>();
   const [step, setStep] = useState(0);
@@ -32,6 +35,7 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
 
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(60);
+  const {validateCaller, validateAll} = useValidateCaller()
 
   useEffect(() => {
     if (countdown === 0) {
@@ -62,11 +66,10 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
   const handleChangeEmail = async () => {
     try {
       setLoading(true);
-      email && (await callApiChangeEmail(email, otp));
-
-      const newUser = await callApiGetUserProfile()
-      saveAuthUser(newUser)
-
+      if (!email) {
+        return
+      }
+      await callApiChangeEmail(email, otp);
       setIsSuccess(true);
       setLoading(false);
     } catch (error) {
@@ -74,6 +77,13 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
       setLoading(false);
     }
   };
+
+  function handleCLoseSuccess() {
+    setIsSuccess(false);
+    navigate(RoutePaths.login);
+    removeAuthInfo();
+    removeAuthUser();
+  }
 
   return (
     <>
@@ -90,7 +100,7 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
                   isRequired
                   id="edit-email"
                   onChange={setEmail}
-                  validateCaller={{}}
+                  validateCaller={validateCaller}
                   value={email}
                 />
               </>
@@ -120,17 +130,16 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
                 </div>
               </>
             )}
-
             <button
               className={cn(
                 'flex gap-2 items-center justify-center rounded-lg bg-primary text-white font-semibold h-13 w-full mt-10',
                 {
                   'bg-disable': loading,
-                }
+                },
               )}
               disabled={loading}
               onClick={async () => {
-                if (step === 0) {
+                if (step === 0 && validateAll()) {
                   await handleSendOtp();
                   setStep((prev) => prev + 1);
                   return;
@@ -183,15 +192,13 @@ export const DialogEditEmail = ({ onClose, open }: DialogEditEmailProps) => {
         <DialogSuccessFullscreen
           title="Email changed successfully"
           subTitle="Start your journey with us !"
+          onClose={handleCLoseSuccess}
           actionElement={
             <button
               className="rounded-lg bg-primary text-white font-semibold h-13 w-full mt-10"
-              onClick={() => {
-                setIsSuccess(false);
-                onClose?.();
-              }}
+              onClick={handleCLoseSuccess}
             >
-              {t('Close')}
+              {t('Back to Login')}
             </button>
           }
         />

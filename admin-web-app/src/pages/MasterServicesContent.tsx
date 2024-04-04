@@ -359,7 +359,7 @@ export function MasterServiceContent(props: Props) {
       {shouldShowUpdateMasterService && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             !shouldOpen && setShouldShowUpdateMasterService(false)
           }
         >
@@ -393,7 +393,7 @@ export function MasterServiceContent(props: Props) {
       {shouldShowCreateMasterService && (
         <DialogContainer
           isAutoSize
-          handleClickOverlay={(shouldOpen: boolean) =>
+          onClose={(shouldOpen: boolean) =>
             setShouldShowCreateMasterService(false)
           }
         >

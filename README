@@ -1,0 +1,64 @@
+# Điều kiện về môi trường
+
+### Ở máy Local
+- Node >= 18.17
+- Loged in git and can pull and push source code
+
+### Ở máy Server
+- Loged in git and can pull source code
+- cd vào /var/www/ rồi tạo thư mục chứa relaese code.
+#### `cd /var/www/`
+#### `mkdir drm`
+#### `cd drm`
+#### `mkdir landing`
+#### `mkdir cms`
+#### `mkdir customer`
+
+# Build Landing Page
+## Ở Local
+Mở terminal and cd tới project FEDrmGlobal và chạy lệnh:
+#### `sh deploy_landing_page.sh`
+
+## Rồi lên server
+cd tới project FEDrmGlobal và chạy lệnh:
+#### `sh release_landing_page.sh`
+Nếu xảy ra lỗi gì thì có thể rollback lại với lệnh:
+#### `sh rollback_landing_page.sh`
+
+
+
+# Build Customer Page
+## Ở Local
+Mở terminal and cd tới project FEDrmGlobal và chạy lệnh:
+#### `sh deploy_customer_page.sh`
+
+## Rồi lên server
+cd tới project FEDrmGlobal và chạy lệnh:
+#### `sh release_customer_page.sh`
+Nếu xảy ra lỗi gì thì có thể rollback lại với lệnh:
+#### `sh rollback_customer_page.sh`
+
+
+
+# Build CMS Page
+## Ở Local
+Mở terminal and cd tới project FEDrmGlobal và chạy lệnh:
+#### `sh deploy_cms_page.sh`
+
+## Rồi lên server
+cd tới project FEDrmGlobal và chạy lệnh:
+#### `sh release_cms_page.sh`
+Nếu xảy ra lỗi gì thì có thể rollback lại với lệnh:
+#### `sh rollback_cms_page.sh`
+
+
+## Phụ lục 1
+Có thể dùng Nginx hoặc bất kì ứng dụng khác để serve các bản build trong thư mục /var/www/drm.
+Trong đó:
+- Landing page có source ở /var/www/drm/landing
+- CMS page có source ở /var/www/drm/cms
+- Customer page có source ở /var/www/drm/customer
+
+## Phụ lục 2
+Việc serve file và folder có liên quan đến phân quyền trên server. Hãy kiểm tra và thêm quyền cho phù hợp.
+

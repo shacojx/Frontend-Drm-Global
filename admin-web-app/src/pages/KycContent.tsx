@@ -262,7 +262,7 @@ export function KycContent(props: Props) {
 
       {pictureSrc && (
         <DialogContainer
-          handleClickOverlay={() => setPictureSrc(undefined)}
+          onClose={() => setPictureSrc(undefined)}
           isAutoSize
           isCloseOnClickOverlay
         >
