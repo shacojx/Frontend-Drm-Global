@@ -301,6 +301,7 @@ export interface ViewedMasterService {
   updatedAt: Date;
   createdAt: Date;
   id: number;
+  serviceId: string;
   appliedNation: AppliedNation[];
   appliedCompanyType: AppliedCompanyType[];
   serviceType: string;

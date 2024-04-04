@@ -382,7 +382,8 @@ export function MasterServiceContent(props: Props) {
                 serviceType={selectItem.serviceType ?? ''}
                 name={selectItem.serviceName ?? ''}
                 enable={Boolean(selectItem?.enable)}
-                serviceId={Number(selectItem?.id)}
+                id={selectItem?.id}
+                serviceId={selectItem?.serviceId}
                 onSubmitted={handleEdit}
                 onCancelModal={() => setShouldShowUpdateMasterService(false)}
               />
