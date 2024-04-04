@@ -36,7 +36,7 @@ export const TestimonialSection = () => {
         Testimonials
       </h4>
 
-      <h2 className="mx-auto mt-8 max-w-2xl text-center text-4xl font-bold">
+      <h2 className="mx-auto mt-8 max-w-2xl text-center text-[26px] font-bold xl:text-4xl">
         <span className="text-gradient-primary">Trust </span>our clients
       </h2>
 
@@ -45,7 +45,7 @@ export const TestimonialSection = () => {
           {[...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS].map(({ content, jobTitle, name }) => (
             <div
               key={name}
-              className="mr-5 inline-flex aspect-[5/3] w-[30vw] h-[304px] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
+              className="mr-5 inline-flex aspect-[5/3] h-[304px] w-[30vw] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
             >
               <div className="flex gap-1">
                 {range(5).map((idx) => (
@@ -67,7 +67,7 @@ export const TestimonialSection = () => {
           {[...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS, ...FEEDBACKS].map(({ content, jobTitle, name }) => (
             <div
               key={name}
-              className=" mr-5 inline-flex aspect-[5/3] w-[30vw] h-[304px] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
+              className=" mr-5 inline-flex aspect-[5/3] h-[304px] w-[30vw] min-w-80 max-w-md flex-col justify-between gap-5 rounded-2xl bg-darkblue px-6 py-7 text-[#EFF3F7]"
             >
               <div className="flex gap-1">
                 {range(5).map((idx) => (
