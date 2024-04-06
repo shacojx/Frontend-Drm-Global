@@ -62,8 +62,7 @@ export function CheckOutPayPal(props: Props) {
   }
 
   async function onApproveOrder(data: OnApproveData, actions: OnApproveActions){
-    props.onCreatedOrder();
-    return actions.order?.capture().then((details) => {
+    actions.order?.capture().then((details) => {
       if (!!details.id && details.status === 'COMPLETED') {
         const payerID = details.payer?.payer_id
           || details.payment_source?.paypal?.account_id
@@ -76,6 +75,7 @@ export function CheckOutPayPal(props: Props) {
       const ms = details.payer?.name ? `Transaction completed by ${details.payer?.name}` : 'Transaction completed'
       alert(ms);
     });
+    props.onCreatedOrder();
   }
 
   return (
