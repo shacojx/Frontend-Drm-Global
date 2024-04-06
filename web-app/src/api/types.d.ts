@@ -120,6 +120,11 @@ export type ApiCreateOrderParam = {
   transId: string
 }>
 
+export type APiCaptureOrderPaypal = {
+  token: string,
+  payerID: string,
+}
+
 export type RawResulCreateOrder = {
   code:	string,
   message: string,
