@@ -49,7 +49,7 @@ export function CheckOutPayPal(props: Props) {
       ],
     });
     const body: ApiCreateOrderParam = {
-      orderId: orderId,
+      transId: orderId,
       cashout: props.items.map((service) => {
         return {
           serviceId: +service.id,

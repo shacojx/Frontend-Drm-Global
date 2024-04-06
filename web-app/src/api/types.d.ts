@@ -117,7 +117,7 @@ export type ApiCreateOrderParam = {
     "cycleNumber": number
   }[]
 } & Partial<{
-  orderId: string
+  transId: string
 }>
 
 export type RawResulCreateOrder = {
