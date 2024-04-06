@@ -5,7 +5,7 @@ import {
   OnApproveActions,
   OnApproveData
 } from "@paypal/paypal-js/types/components/buttons";
-import React from 'react';
+import React, { useRef } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { callCreateOrderPaypal } from "../api/payment";
 import { ApiCreateOrderParam } from "../api/types";
@@ -15,10 +15,11 @@ type Props = {
   items: Pick<Service, 'label' | 'price' | 'id' | 'cycleNumber'>[],
   totalPrice: number,
   onCancel: () => void,
-  onFinishPayment: (details: OrderResponseBody | undefined) => void,
+  onFinishPayment: (orderId: string, details: OrderResponseBody | undefined) => void,
 }
 export function CheckOutPayPal(props: Props) {
   const [{ isPending }] = usePayPalScriptReducer();
+  const orderIdRef = useRef<string>('')
 
   async function onCreateOrder(data: CreateOrderData, actions: CreateOrderActions) {
     const purchaseItems: PurchaseUnitItem[] = props.items.map(item => {
@@ -59,12 +60,13 @@ export function CheckOutPayPal(props: Props) {
       }),
     };
     await callCreateOrderPaypal(body)
+    orderIdRef.current = orderId
     return orderId
   }
 
   async function onApproveOrder(data: OnApproveData, actions: OnApproveActions){
     const details = await actions.order?.capture()
-    props.onFinishPayment(details);
+    props.onFinishPayment(orderIdRef.current, details);
   }
 
   return (

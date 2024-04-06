@@ -81,7 +81,7 @@ export default function ServicesContent() {
       setActiveTab('paypal')
     }
 
-    async function handleFinishPayment(details: OrderResponseBody | undefined) {
+    async function handleFinishPayment(orderId: string, details: OrderResponseBody | undefined) {
       allServiceQuery.refetch().catch(e=>console.error(e))
       setStepIndex(SelectServiceStepIndex)
       setActiveTab('paypal')
@@ -90,8 +90,8 @@ export default function ServicesContent() {
           || details.payment_source?.paypal?.account_id
           || details.payment_source?.card?.type + '_' + details.payment_source?.card?.last_digits
         callCaptureOrderPaypal({
-          token: details.id,
-          payerID: payerID
+          token: orderId,
+          payerID: payerID || 'unknown'
         }).catch(e=> console.error(e))
         const ms = details.payer?.name ? `Transaction completed by ${details.payer?.name}` : 'Transaction completed'
         alert(ms);
