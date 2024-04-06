@@ -7,10 +7,12 @@ import {
 } from "@paypal/paypal-js/types/components/buttons";
 import React from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { callCreateOrderPaypal } from "../api/payment";
+import { ApiCreateOrderParam } from "../api/types";
 import { Service } from "../pages/ServicesContent/ServicesContent";
 
 type Props = {
-  items: Pick<Service, 'label' | 'price'>[],
+  items: Pick<Service, 'label' | 'price' | 'id' | 'cycleNumber'>[],
   totalPrice: number,
   onApproved: () => void,
 }
@@ -28,7 +30,7 @@ export function CheckOutPayPal(props: Props) {
         quantity: '1',
       }
     })
-    return actions.order.create({
+    const orderId = await actions.order.create({
       intent: 'CAPTURE',
       purchase_units: [
         {
@@ -46,6 +48,17 @@ export function CheckOutPayPal(props: Props) {
         },
       ],
     });
+    const body: ApiCreateOrderParam = {
+      orderId: orderId,
+      cashout: props.items.map((service) => {
+        return {
+          serviceId: +service.id,
+          cycleNumber: service.cycleNumber,
+        };
+      }),
+    };
+    await callCreateOrderPaypal(body)
+    return orderId
   }
 
   async function onApproveOrder(data: OnApproveData, actions: OnApproveActions){
@@ -62,6 +75,7 @@ export function CheckOutPayPal(props: Props) {
         <>
           <PayPalButtons
             style={{ layout: "vertical", shape: "rect", }}
+            onClick={() => console.log('onClick PayPalButtons')}
             createOrder={(data, actions) => onCreateOrder(data, actions)}
             onApprove={(data, actions) => onApproveOrder(data, actions)}
           />

@@ -79,7 +79,7 @@ export default function ServicesContent() {
       setActiveTab('paypal')
     }
 
-    async function handleClickFinishPaymentByPayPal() {
+    async function handleClickFinishPayment() {
       if (!user) return
       setErrorMessageConfirm('');
       setIsRequestingCreateOrder(true);
@@ -97,16 +97,9 @@ export default function ServicesContent() {
       };
 
       try {
-        const isUsingPaypal = activeTab !== "bank"
-        const rawResult = isUsingPaypal
-          ? await callCreateOrderPaypal(body)
-          : await callCreateOrderBankToBank(body)
+        await callCreateOrderBankToBank(body)
         allServiceQuery.refetch().then(() => {setStepIndex(SelectServiceStepIndex); setActiveTab('paypal')});
         myServiceQuery.refetch().catch(e => console.error(e))
-        if (isUsingPaypal) {
-          const paypalLink = rawResult.data.links.find((link) => link.rel === 'approve')?.href;
-          window.open(paypalLink, '_blank', 'noopener,noreferrer');
-        }
       } catch (e: unknown) {
         setErrorMessageConfirm(e?.toString());
         console.error(e);
@@ -331,7 +324,7 @@ export default function ServicesContent() {
                 className={
                   'flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary'
                 }
-                onClick={handleClickFinishPaymentByPayPal}
+                onClick={handleClickFinishPayment}
               >
                 <span>{translation.t('Pay now')}</span>
                 {isRequestingCreateOrder && <IconSpinner/>}
