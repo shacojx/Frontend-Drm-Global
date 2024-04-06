@@ -1,6 +1,7 @@
 "use client";
 import { NextImage } from "@/components/NextImage";
 import logo from "@/assets/images/logo.png";
+import { CUSTOMER_WEB_URL } from "@/constants";
 import { cn } from "@/utils/cn.util";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -94,7 +95,7 @@ export const Header = () => {
               </ul>
             </nav>
 
-            <Link href={process.env.NEXT_PUBLIC_WEB_URL ?? ""} target="_self">
+            <Link href={CUSTOMER_WEB_URL} target="_self">
               <button className="bg-gradient-primary h-14 w-28 rounded-xl font-bold text-white">Sign In</button>
             </Link>
           </div>
