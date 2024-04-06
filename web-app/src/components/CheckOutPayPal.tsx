@@ -1,4 +1,4 @@
-import { PurchaseUnitItem } from "@paypal/paypal-js/types/apis/orders";
+import { type OrderResponseBody, PurchaseUnitItem } from "@paypal/paypal-js/types/apis/orders";
 import {
   CreateOrderActions,
   CreateOrderData,
@@ -7,14 +7,15 @@ import {
 } from "@paypal/paypal-js/types/components/buttons";
 import React from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { callCaptureOrderPaypal, callCreateOrderPaypal } from "../api/payment";
+import { callCreateOrderPaypal } from "../api/payment";
 import { ApiCreateOrderParam } from "../api/types";
 import { Service } from "../pages/ServicesContent/ServicesContent";
 
 type Props = {
   items: Pick<Service, 'label' | 'price' | 'id' | 'cycleNumber'>[],
   totalPrice: number,
-  onCreatedOrder: () => void,
+  onCancel: () => void,
+  onFinishPayment: (details: OrderResponseBody | undefined) => void,
 }
 export function CheckOutPayPal(props: Props) {
   const [{ isPending }] = usePayPalScriptReducer();
@@ -62,20 +63,8 @@ export function CheckOutPayPal(props: Props) {
   }
 
   async function onApproveOrder(data: OnApproveData, actions: OnApproveActions){
-    actions.order?.capture().then((details) => {
-      if (!!details.id && details.status === 'COMPLETED') {
-        const payerID = details.payer?.payer_id
-          || details.payment_source?.paypal?.account_id
-          || details.payment_source?.card?.type + '_' + details.payment_source?.card?.last_digits
-        callCaptureOrderPaypal({
-          token: details.id,
-          payerID: payerID
-        })
-      }
-      const ms = details.payer?.name ? `Transaction completed by ${details.payer?.name}` : 'Transaction completed'
-      alert(ms);
-    });
-    props.onCreatedOrder();
+    const details = await actions.order?.capture()
+    props.onFinishPayment(details);
   }
 
   return (
@@ -87,8 +76,8 @@ export function CheckOutPayPal(props: Props) {
             onClick={() => console.log('onClick PayPalButtons')}
             createOrder={(data, actions) => onCreateOrder(data, actions)}
             onApprove={(data, actions) => onApproveOrder(data, actions)}
-            onCancel={props.onCreatedOrder}
-            onError={props.onCreatedOrder}
+            onCancel={props.onCancel}
+            onError={props.onCancel}
           />
         </>
       )}

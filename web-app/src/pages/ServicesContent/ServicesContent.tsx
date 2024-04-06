@@ -1,8 +1,9 @@
 import { Tab } from '@headlessui/react';
+import type { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
-import { callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
+import { callCaptureOrderPaypal, callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
 import { ApiCreateOrderParam, BankAccount, Currency } from 'src/api/types';
 import { NATION_INFOS } from 'src/constants/SelectionOptions';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
@@ -74,10 +75,27 @@ export default function ServicesContent() {
         setStepIndex(PayServiceStepIndex)
     }
 
-    function handleCreatedOrder() {
+    function handleCancel() {
       allServiceQuery.refetch().catch(e=>console.error(e))
       setStepIndex(SelectServiceStepIndex)
       setActiveTab('paypal')
+    }
+
+    async function handleFinishPayment(details: OrderResponseBody | undefined) {
+      allServiceQuery.refetch().catch(e=>console.error(e))
+      setStepIndex(SelectServiceStepIndex)
+      setActiveTab('paypal')
+      if (details && !!details.id && details.status === 'COMPLETED') {
+        const payerID = details.payer?.payer_id
+          || details.payment_source?.paypal?.account_id
+          || details.payment_source?.card?.type + '_' + details.payment_source?.card?.last_digits
+        callCaptureOrderPaypal({
+          token: details.id,
+          payerID: payerID
+        }).catch(e=> console.error(e))
+        const ms = details.payer?.name ? `Transaction completed by ${details.payer?.name}` : 'Transaction completed'
+        alert(ms);
+      }
     }
 
     async function handleClickFinishPayment() {
@@ -231,17 +249,8 @@ export default function ServicesContent() {
                         </Tab.List>
 
                         <Tab.Panels className="flex grow">
-                          {/*<Tab.Panel className="w-full">*/}
-                          {/*  <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
-                          {/*    <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCreatedOrder={handleCreatedOrder}/>*/}
-                          {/*  </div>*/}
-                          {/*</Tab.Panel>*/}
-
                           <Tab.Panel className="w-full">
-                            {/*<div*/}
-                            {/*  className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
-                              <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCreatedOrder={handleCreatedOrder} />
-                            {/*</div>*/}
+                            <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCancel={handleCancel} onFinishPayment={handleFinishPayment} />
                           </Tab.Panel>
 
                           <Tab.Panel className="flex w-full pt-4">
