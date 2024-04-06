@@ -1,7 +1,9 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
+import { PAYPAL_CLIENT_ID } from "./_loadEnv";
 import { AuthContextProvider } from "./contexts/AuthContextProvider";
 import AppRouter from "./routers/AppRouter";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -18,13 +20,22 @@ export const queryClient = new QueryClient({
   },
 });
 
+const initialOptions = {
+  clientId: PAYPAL_CLIENT_ID,
+  currency: "USD",
+  intent: "capture",
+};
+
+
 function App() {
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthContextProvider>
-          <AppRouter />
-          <ToastContainer />
+          <PayPalScriptProvider options={initialOptions}>
+            <AppRouter />
+            <ToastContainer />
+          </PayPalScriptProvider>
         </AuthContextProvider>
         {/* chỉ chạy môi trường dev */}
         <ReactQueryDevtools initialIsOpen={false} />

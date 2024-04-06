@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IconMenu } from "@/assets/icons/IconMenu";
 import { IconX } from "@/assets/icons/IconX";
+import { noop } from "lodash-es";
 
 const NAV_ITEMS = [
   {
@@ -45,11 +46,13 @@ export const Header = () => {
 
   return (
     <>
-      {showMenu && <div className="fixed z-50 h-screen w-screen bg-gray-700/90 transition-all xl:hidden" />}
+      {showMenu && <div tabIndex={0} role="button" onKeyDown={noop} className="fixed z-50 h-screen w-screen bg-gray-700/90 transition-all xl:hidden" onClick={() => { setShowMenu(false); }} />}
 
       <header className="h-28 border-b border-dashed border-stroke">
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
-          <NextImage src={logo} alt="DRM" className="h-16 w-28" objectFit="contain" />
+          <Link href="/">
+            <NextImage src={logo} alt="DRM" className="h-16 w-28" objectFit="contain" />
+          </Link>
 
           <div
             className={cn(
