@@ -7,7 +7,7 @@ import {
 } from "@paypal/paypal-js/types/components/buttons";
 import React, { useRef } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { callCreateOrderPaypal } from "../api/payment";
+import { callCreateOrderCard, callCreateOrderPaypal } from "../api/payment";
 import { ApiCreateOrderParam } from "../api/types";
 import { Service } from "../pages/ServicesContent/ServicesContent";
 
@@ -59,7 +59,14 @@ export function CheckOutPayPal(props: Props) {
         };
       }),
     };
-    await callCreateOrderPaypal(body)
+    switch (data.paymentSource) {
+      case "card":
+        callCreateOrderCard(body).catch(e=>console.error(e))
+        break
+      default:
+        callCreateOrderPaypal(body).catch(e=>console.error(e))
+        break
+    }
     orderIdRef.current = orderId
     return orderId
   }
