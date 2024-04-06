@@ -74,7 +74,8 @@ export default function ServicesContent() {
         setStepIndex(PayServiceStepIndex)
     }
 
-    function handleApprovedPayPalCheckOut() {
+    function handleCreatedOrder() {
+      allServiceQuery.refetch().catch(e=>console.error(e))
       setStepIndex(SelectServiceStepIndex)
       setActiveTab('paypal')
     }
@@ -232,14 +233,14 @@ export default function ServicesContent() {
                         <Tab.Panels className="flex grow">
                           {/*<Tab.Panel className="w-full">*/}
                           {/*  <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
-                          {/*    <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onApproved={handleApprovedPayPalCheckOut}/>*/}
+                          {/*    <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCreatedOrder={handleCreatedOrder}/>*/}
                           {/*  </div>*/}
                           {/*</Tab.Panel>*/}
 
                           <Tab.Panel className="w-full">
                             {/*<div*/}
                             {/*  className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
-                              <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onApproved={handleApprovedPayPalCheckOut} />
+                              <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCreatedOrder={handleCreatedOrder} />
                             {/*</div>*/}
                           </Tab.Panel>
 
