@@ -65,8 +65,8 @@ export function CheckOutPayPal(props: Props) {
   }
 
   async function onApproveOrder(data: OnApproveData, actions: OnApproveActions){
-    const details = await actions.order?.capture()
-    props.onFinishPayment(orderIdRef.current, details);
+    const details = await actions.order?.capture().catch(e=>console.error(e))
+    props.onFinishPayment(orderIdRef.current, details || undefined);
   }
 
   return (

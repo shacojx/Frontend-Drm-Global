@@ -3,6 +3,7 @@ import type { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { callCaptureOrderPaypal, callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
 import { ApiCreateOrderParam, BankAccount, Currency } from 'src/api/types';
 import { NATION_INFOS } from 'src/constants/SelectionOptions';
@@ -85,16 +86,18 @@ export default function ServicesContent() {
       allServiceQuery.refetch().catch(e=>console.error(e))
       setStepIndex(SelectServiceStepIndex)
       setActiveTab('paypal')
+      let payerID = 'unknown'
       if (details && !!details.id && details.status === 'COMPLETED') {
-        const payerID = details.payer?.payer_id
+        payerID = details.payer?.payer_id
           || details.payment_source?.paypal?.account_id
           || details.payment_source?.card?.type + '_' + details.payment_source?.card?.last_digits
+          || payerID
         callCaptureOrderPaypal({
           token: orderId,
-          payerID: payerID || 'unknown'
+          payerID: payerID
         }).catch(e=> console.error(e))
-        const ms = details.payer?.name ? `Transaction completed by ${details.payer?.name}` : 'Transaction completed'
-        alert(ms);
+        const ms = details?.payer?.name?.full_name ? `Transaction completed by ${details.payer.name.full_name}` : 'Transaction completed'
+        toast(ms);
       }
     }
 
