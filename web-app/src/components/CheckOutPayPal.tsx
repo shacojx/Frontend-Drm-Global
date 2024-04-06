@@ -58,11 +58,11 @@ export function CheckOutPayPal(props: Props) {
       }),
     };
     await callCreateOrderPaypal(body)
-    props.onCreatedOrder();
     return orderId
   }
 
   async function onApproveOrder(data: OnApproveData, actions: OnApproveActions){
+    props.onCreatedOrder();
     return actions.order?.capture().then((details) => {
       if (!!details.id && details.status === 'COMPLETED') {
         const payerID = details.payer?.payer_id
@@ -87,6 +87,8 @@ export function CheckOutPayPal(props: Props) {
             onClick={() => console.log('onClick PayPalButtons')}
             createOrder={(data, actions) => onCreateOrder(data, actions)}
             onApprove={(data, actions) => onApproveOrder(data, actions)}
+            onCancel={props.onCreatedOrder}
+            onError={props.onCreatedOrder}
           />
         </>
       )}
