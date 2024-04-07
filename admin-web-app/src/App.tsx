@@ -7,6 +7,7 @@ import { AuthContextProvider } from './contexts/AuthContextProvider';
 import { router } from "./pages/router";
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { StompSessionProvider } from 'react-stomp-hooks';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,9 @@ export const queryClient = new QueryClient({
 function App() {
   return <QueryClientProvider client={queryClient}>
     <AuthContextProvider>
+    <StompSessionProvider url={`${process.env.REACT_APP_URL}/chat/websocket`}>
       <RouterProvider router={router} />
+    </StompSessionProvider>
     </AuthContextProvider>
     <ToastContainer />
     <ReactQueryDevtools initialIsOpen={false} />

@@ -9,6 +9,7 @@ import AppRouter from "./routers/AppRouter";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { StompSessionProvider } from "react-stomp-hooks";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,8 +34,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthContextProvider>
           <PayPalScriptProvider options={initialOptions}>
-            <AppRouter />
-            <ToastContainer />
+            <StompSessionProvider url={`${process.env.REACT_APP_URL}/chat/websocket`}>
+              <AppRouter />
+              <ToastContainer />
+            </StompSessionProvider>
           </PayPalScriptProvider>
         </AuthContextProvider>
         {/* chỉ chạy môi trường dev */}

@@ -171,8 +171,8 @@ export function getToken(tokenName: TokenName) {
 
 function addParamsToSearchParams(urlSearchParams: URLSearchParams, params: Record<string, any>) {
   Object.keys(params).forEach(key => {
-    if (params[key]) {
-      if (params[key] && typeof params[key] !== "object") {
+    if (params[key] !== null && params[key] !== undefined) {
+      if (typeof params[key] !== "object") {
         urlSearchParams.append(key, params[key])
       } else {
         for (const keyOfParamsKey in params[key]) {
