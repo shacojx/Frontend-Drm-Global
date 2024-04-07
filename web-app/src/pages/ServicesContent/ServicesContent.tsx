@@ -7,14 +7,12 @@ import { ApiCreateOrderParam, BankAccount, Currency } from 'src/api/types';
 import { NATION_INFOS } from 'src/constants/SelectionOptions';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
 import { cn } from 'src/utils/cn.util';
-import { IconMasterCard, IconPaypal, IconQR, IconSpinner, IconVisa } from "../../components/icons";
+import { CheckOutPayPal } from "../../components/CheckOutPayPal";
+import { IconPaypal, IconQR, IconSpinner } from "../../components/icons";
 import { useApiLLCService } from "../../hooks-api/useLlcService";
 import { useApiGetAvailableServices } from "../../hooks-api/useServices";
 import ServiceCard from './components/ServiceCard';
-import IMAGE from 'src/assets/images';
-import { FormFieldText } from 'src/components/FormFieldText';
 import { useValidateCaller } from 'src/hooks-ui/useValidateCaller';
-import { FormFieldNumber } from 'src/components/FormFieldNumber';
 import { useApiGetBanks } from 'src/hooks-api/useBanks';
 import { FormFieldSelect } from 'src/components/FormFieldSelect';
 
@@ -34,8 +32,6 @@ export type Service = {
         pricePerCycle: number;
     }>
 }
-
-
 
 export default function ServicesContent() {
     const navigate = useNavigate()
@@ -78,7 +74,13 @@ export default function ServicesContent() {
         setStepIndex(PayServiceStepIndex)
     }
 
-    async function handleClickFinishPaymentByPayPal() {
+    function handleCreatedOrder() {
+      allServiceQuery.refetch().catch(e=>console.error(e))
+      setStepIndex(SelectServiceStepIndex)
+      setActiveTab('paypal')
+    }
+
+    async function handleClickFinishPayment() {
       if (!user) return
       setErrorMessageConfirm('');
       setIsRequestingCreateOrder(true);
@@ -96,16 +98,9 @@ export default function ServicesContent() {
       };
 
       try {
-        const isUsingPaypal = activeTab !== "bank"
-        const rawResult = isUsingPaypal
-          ? await callCreateOrderPaypal(body)
-          : await callCreateOrderBankToBank(body)
+        await callCreateOrderBankToBank(body)
         allServiceQuery.refetch().then(() => {setStepIndex(SelectServiceStepIndex); setActiveTab('paypal')});
         myServiceQuery.refetch().catch(e => console.error(e))
-        if (isUsingPaypal) {
-          const paypalLink = rawResult.data.links.find((link) => link.rel === 'approve')?.href;
-          window.open(paypalLink, '_blank', 'noopener,noreferrer');
-        }
       } catch (e: unknown) {
         setErrorMessageConfirm(e?.toString());
         console.error(e);
@@ -201,18 +196,18 @@ export default function ServicesContent() {
                     {/*</button>*/}
                     <Tab.Group>
                       <div className="flex flex-col w-full mt-8">
-                        <Tab.List className="grid grid-cols-3 gap-2 w-full p-1 border border-solid rounded-md mb-4">
-                          <Tab
-                            className={cn('flex justify-center flex-col items-center py-2 gap-1 rounded-md', {
-                              'bg-primary_25': activeTab === 'visa',
-                            })}
-                            onClick={() => setActiveTab('visa')}
-                          >
-                            <div>Visa - MasterCard</div>
-                            <div className="flex gap-2">
-                              <IconVisa /> <IconMasterCard />
-                            </div>
-                          </Tab>
+                        <Tab.List className="grid grid-cols-2 gap-2 w-full p-1 border border-solid rounded-md mb-4">
+                          {/*<Tab*/}
+                          {/*  className={cn('flex justify-center flex-col items-center py-2 gap-1 rounded-md', {*/}
+                          {/*    'bg-primary_25': activeTab === 'visa',*/}
+                          {/*  })}*/}
+                          {/*  onClick={() => setActiveTab('visa')}*/}
+                          {/*>*/}
+                          {/*  <div>Visa - MasterCard</div>*/}
+                          {/*  <div className="flex gap-2">*/}
+                          {/*    <IconVisa /> <IconMasterCard />*/}
+                          {/*  </div>*/}
+                          {/*</Tab>*/}
 
                           <Tab
                             className={cn('flex justify-center flex-col items-center py-2 gap-1 rounded-md', {
@@ -236,19 +231,17 @@ export default function ServicesContent() {
                         </Tab.List>
 
                         <Tab.Panels className="flex grow">
-                          <Tab.Panel className="w-full">
-                            <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">
-                              <div>Continue payment with Paypal ?</div>
-                              <img src={IMAGE.paypal}/>
-                            </div>
-                          </Tab.Panel>
+                          {/*<Tab.Panel className="w-full">*/}
+                          {/*  <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
+                          {/*    <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCreatedOrder={handleCreatedOrder}/>*/}
+                          {/*  </div>*/}
+                          {/*</Tab.Panel>*/}
 
                           <Tab.Panel className="w-full">
-                            <div
-                              className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">
-                              <div>Continue payment with Paypal ?</div>
-                              <img src={IMAGE.paypal} />
-                            </div>
+                            {/*<div*/}
+                            {/*  className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
+                              <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCreatedOrder={handleCreatedOrder} />
+                            {/*</div>*/}
                           </Tab.Panel>
 
                           <Tab.Panel className="flex w-full pt-4">
@@ -327,16 +320,16 @@ export default function ServicesContent() {
               >
                 <span>{translation.t('Cancel')}</span>
               </button>
-              <button
+              {activeTab === "bank" && <button
                 disabled={!hasSelected}
                 className={
                   'flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary'
                 }
-                onClick={handleClickFinishPaymentByPayPal}
+                onClick={handleClickFinishPayment}
               >
                 <span>{translation.t('Pay now')}</span>
-                {isRequestingCreateOrder && <IconSpinner />}
-              </button>
+                {isRequestingCreateOrder && <IconSpinner/>}
+              </button>}
             </>
           )}
         </div>
