@@ -2,6 +2,7 @@ import { callApi } from 'src/services-base/api';
 
 type Channel = {
   _id: string;
+  name: string
 };
 
 export const callApiGetChannel = async () => {

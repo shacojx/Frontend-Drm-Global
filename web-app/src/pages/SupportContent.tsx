@@ -1,10 +1,10 @@
-import { IconArrowUp, IconSpinner, IconUser } from 'src/components/icons';
-import { useChat } from 'src/hooks-api/useChat';
-import IMAGES from 'src/assets/images';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { AuthContext } from 'src/contexts/AuthContextProvider';
-import { getFile } from 'src/api/upload';
 import dayjs from 'dayjs';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { getFile } from 'src/api/upload';
+import IMAGES from 'src/assets/images';
+import { IconArrowUp, IconSpinner, IconUser } from 'src/components/icons';
+import { AuthContext } from 'src/contexts/AuthContextProvider';
+import { useChat } from 'src/hooks-api/useChat';
 
 export function SupportContent() {
   const { user } = useContext(AuthContext);
@@ -26,20 +26,22 @@ export function SupportContent() {
 
   const [needScrollBottom, setNeedScrollBottom] = useState(true);
 
-  const { messages, sendMessage, fetchMore, loading } = useChat();
+  const { messages, sendMessage, fetchMore, loading } = useChat({
+    onMessage: () => setNeedScrollBottom(true),
+  });
 
   const handleSendMessage = async () => {
     const text = inputRef.current?.value;
     if (!text) return;
 
-    await sendMessage(text);
     inputRef.current.value = '';
+    await sendMessage(text);
 
     setNeedScrollBottom(true);
   };
 
   return (
-    <div className="flex w-full flex-col border-t border-l h-full">
+    <div className="flex w-full flex-col border-t border-l h-full px-2">
       <div
         className="grow h-[calc(100%-118px)] overflow-y-scroll"
         onScroll={(e) => {
@@ -48,7 +50,7 @@ export function SupportContent() {
           }
         }}
         ref={(node) => {
-          node?.scrollBy({ top: 0.01 });
+          node?.scrollBy({ top: 1 });
         }}
       >
         <div className="w-full max-w-4xl mx-auto overscroll-y-auto py-4">

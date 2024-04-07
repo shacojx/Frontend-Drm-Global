@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useSubscription } from 'react-stomp-hooks';
 import { callApiGetChannel, callApiGetMessages, callApiSendMessage } from 'src/api/chat';
+import { AuthContext } from 'src/contexts/AuthContextProvider';
 import { uniqBy } from 'src/utils/base.util';
 
 type Message = {
@@ -9,64 +11,62 @@ type Message = {
   time: string;
 };
 
-export function useChat() {
+type UseChatProps = {
+  onMessage?: () => void;
+};
+
+export function useChat({ onMessage }: UseChatProps = {}) {
+  const [userId, setUserId] = useState<string>()
   const [channelId, setChannelId] = useState<string>();
   const [messages, setMessages] = useState<Message[]>();
   const [loading, setLoading] = useState(false);
 
-  const updateChannelId = async () => {
-    if (channelId) return;
-    const { _id } = await callApiGetChannel();
+  const fetchChannel = async () => {
+    const { _id, name } = await callApiGetChannel();
     setChannelId(_id);
+    setUserId(name)
   };
 
-  const fetch = useCallback(
-    async (offset = 0) => {
-      if (!channelId) {
-        return await updateChannelId()
-      }
-      if (loading) return;
+  const fetch = async (offset = 0) => {
+    if (!channelId) {
+      fetchChannel();
+      return;
+    }
 
-      setLoading(true);
-      const { messages = [] } = await callApiGetMessages(channelId!, { roomId: channelId, offset, count: 10 });
+    setLoading(true);
 
-      const convertedMessages = messages.map((item) => ({
-        id: item._id,
-        text: item.msg,
-        sender: item.alias === 'admin@drm.com' ? 'admin' : 'user',
-        time: item._updatedAt,
-      }));
+    const { messages = [] } = await callApiGetMessages(channelId!, { roomId: channelId, offset, count: 10 });
+    const convertedMessages = messages.map((item) => ({
+      id: item._id,
+      text: item.msg,
+      sender: item.alias === 'admin@drm.com' ? 'admin' : 'user',
+      time: item._updatedAt,
+    }));
 
-      setMessages((prev) => {
-        const uniqMessages = uniqBy([...(prev ?? []), ...convertedMessages], (item) => item.id);
-        uniqMessages.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    setMessages((prev) => {
+      const uniqMessages = uniqBy([...convertedMessages, ...(prev ?? [])], (item) => item.id);
+      uniqMessages.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
-        return uniqMessages;
-      });
+      return [...uniqMessages];
+    });
 
-      setLoading(false);
-    },
-    [messages, channelId]
-  );
+    setLoading(false);
+  };
 
   const sendMessage = async (text: string) => {
     await callApiSendMessage(text);
     await fetch(0);
   };
 
-  const fetchMore = () => fetch(messages?.length);
+  const fetchMore = () => fetch(messages?.length ?? 0);
 
   useEffect(() => {
-    fetch()
-
-    const interval = setInterval(() => {
-      fetch();
-    }, 1500);
-
-    return () => {
-      clearInterval(interval);
-    };
+    fetch(0);
   }, [channelId]);
 
-  return { sendMessage, messages, fetchMore, loading: false };
+  useSubscription(`/chat/topic/public/${userId}`, () => {
+    fetch(0).then(onMessage);
+  });
+
+  return { sendMessage, messages, fetchMore, loading };
 }
