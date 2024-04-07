@@ -489,10 +489,16 @@ export function FormCreateMasterService(props: Props) {
           appliedNation: body.appliedNation,
           serviceName: body.serviceName ?? "",
           serviceType: body.serviceType ?? "",
-          serviceCycle: body.serviceCycle,
+          serviceCycle: body.serviceCycle.map(serviceCycle => ({
+            cycleNumber: serviceCycle.cycleNumber,
+            pricePerCycle: serviceCycle.pricePerCycle,
+          })),
           appliedCompanyType: body.appliedCompanyType,
           serviceStep: body.serviceStep.map((item) => ({
-            ...item,
+            stepNo: item.stepNo,
+            name: item.name,
+            estimatedCompletionTime: item.estimatedCompletionTime,
+            description: item.description,
             documentRequired: item.documentRequired
               .filter((item) => item?.documentRequired)
               .map((item) => item.documentRequired),
