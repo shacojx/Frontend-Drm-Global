@@ -17,7 +17,7 @@ export default function MyAccountContent() {
   const [loadingAvatar, setLoadingAvatar] = useState(false);
 
   useEffect(() => {
-    const fetchAvatar = async () => {
+    const fetchAvatar = async () => { 
       if (!user?.avatar) return;
       setLoadingAvatar(true)
       const blob = await getFile(user?.avatar, { download: false });
