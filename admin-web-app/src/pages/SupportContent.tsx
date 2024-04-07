@@ -14,7 +14,8 @@ export function SupportContent() {
     changeActiveChannel,
     fetchMoreMessages,
     loading,
-    sendMessage
+    sendMessage,
+    fetchMoreChannel
   } = useChat({
     onMessage: () => setNeedScrollBottom(true),
   });
@@ -32,13 +33,13 @@ export function SupportContent() {
   return (
     <>
       <div
-        className="w-1/3 shrink-0 overflow-y-auto border-l"
+        className="w-1/3 shrink-0 overflow-y-auto border-l bg-white"
         onScroll={(e) => {
           const isScrolledToBottom =
             e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
             e.currentTarget.clientHeight;
           if (isScrolledToBottom) {
-            // fetchMoreChannel();
+            fetchMoreChannel();
           }
         }}
       >

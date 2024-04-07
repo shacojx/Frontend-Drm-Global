@@ -53,7 +53,14 @@ export function SupportContent() {
           node?.scrollBy({ top: 1 });
         }}
       >
-        <div className="w-full max-w-4xl mx-auto overscroll-y-auto py-4">
+        {!messages?.length && (
+          <div className="h-full my-auto flex justify-center items-center flex-col gap-4 min-h-full">
+            <img src={IMAGES.support} className="size-[70px]" />
+            <div>How can I help you today?</div>
+          </div>
+        )}
+
+        <div className="w-full max-w-4xl mx-auto overscroll-y-auto py-4 min-h-full">
           {loading && (
             <div className="flex justify-center items-center">
               <IconSpinner /> <span>Loading...</span>
@@ -72,7 +79,7 @@ export function SupportContent() {
               />
             )
           )}
-          {messages && (
+          {messages?.length ? (
             <div
               ref={(node) => {
                 if (node && needScrollBottom) {
@@ -82,7 +89,7 @@ export function SupportContent() {
                 }
               }}
             />
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -153,8 +160,8 @@ function UserMessage({ message, time, fullName, avatarUrl }: UserMessageProps) {
         </div>
       </div>
 
-      <div className="bg-slate-500 rounded-full size-[50px] aspect-square">
-        {avatarUrl ? <img className="object-cover" src={avatarUrl} /> : <IconUser />}
+      <div className="bg-slate-500 rounded-full size-[50px] aspect-square overflow-hidden">
+        {avatarUrl ? <img className="object-cover w-full h-full" src={avatarUrl} /> : <IconUser />}
       </div>
     </div>
   );
