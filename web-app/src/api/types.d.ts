@@ -110,13 +110,19 @@ export type ApiUploadKYC = {
 
 // ====== Payment ======== //
 export type Currency = 'USD'
-export type OrderType = 'PAYPAL' | 'BankToBank'
 
 export type ApiCreateOrderParam = {
   "cashout": {
     "serviceId": number,
     "cycleNumber": number
   }[]
+} & Partial<{
+  transId: string
+}>
+
+export type APiCaptureOrderPaypal = {
+  token: string,
+  payerID: string,
 }
 
 export type RawResulCreateOrder = {

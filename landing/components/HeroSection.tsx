@@ -1,6 +1,7 @@
 import { NextImage } from '@/components/NextImage';
 
 import bg_hero_image from '@/assets/images/hero.png';
+import { CUSTOMER_WEB_URL } from "@/constants";
 import { cn } from '@/utils/cn.util';
 import Link from 'next/link';
 
@@ -19,7 +20,7 @@ export const HeroSection = () => {
         business registration services.
       </p>
 
-      <Link href={process.env.NEXT_PUBLIC_WEB_URL ?? ''} target="_self">
+      <Link href={CUSTOMER_WEB_URL} target="_self">
         <button
           className={cn(
             'bg-gradient-primary mx-auto mt-8 flex h-14 items-center rounded-xl px-6 font-bold text-white mb-6',

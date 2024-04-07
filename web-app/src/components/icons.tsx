@@ -41,6 +41,7 @@ import { ReactComponent as IconQR } from '../assets/svgs/QR.svg';
 import { ReactComponent as IconArrowCircle } from '../assets/svgs/ArrowCircle.svg';
 import { ReactComponent as IconEdit } from '../assets/svgs/Edit.svg';
 import { ReactComponent as IconPencil } from '../assets/svgs/Pencil.svg';
+import { ReactComponent as IconArrowUp } from '../assets/svgs/ArrowUp.svg';
 
 
 type Props = React.SVGProps<SVGSVGElement>
@@ -90,5 +91,6 @@ export {
   IconQR,
   IconArrowCircle,
   IconEdit,
-  IconPencil
+  IconPencil, 
+  IconArrowUp
 }

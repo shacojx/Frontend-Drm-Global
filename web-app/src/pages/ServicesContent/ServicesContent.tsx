@@ -1,8 +1,10 @@
 import { Tab } from '@headlessui/react';
+import type { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
-import { callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
+import { toast } from "react-toastify";
+import { callCaptureOrderPaypal, callCreateOrderBankToBank, callCreateOrderPaypal } from 'src/api/payment';
 import { ApiCreateOrderParam, BankAccount, Currency } from 'src/api/types';
 import { NATION_INFOS } from 'src/constants/SelectionOptions';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
@@ -74,12 +76,32 @@ export default function ServicesContent() {
         setStepIndex(PayServiceStepIndex)
     }
 
-    function handleApprovedPayPalCheckOut() {
+    function handleCancel() {
+      allServiceQuery.refetch().catch(e=>console.error(e))
       setStepIndex(SelectServiceStepIndex)
       setActiveTab('paypal')
     }
 
-    async function handleClickFinishPaymentByPayPal() {
+    async function handleFinishPayment(orderId: string, details: OrderResponseBody | undefined) {
+      allServiceQuery.refetch().catch(e=>console.error(e))
+      setStepIndex(SelectServiceStepIndex)
+      setActiveTab('paypal')
+      let payerID = 'unknown'
+      if (details && !!details.id && details.status === 'COMPLETED') {
+        payerID = details.payer?.payer_id
+          || details.payment_source?.paypal?.account_id
+          || details.payment_source?.card?.type + '_' + details.payment_source?.card?.last_digits
+          || payerID
+        callCaptureOrderPaypal({
+          token: orderId,
+          payerID: payerID
+        }).catch(e=> console.error(e))
+        const ms = details?.payer?.name?.full_name ? `Transaction completed by ${details.payer.name.full_name}` : 'Transaction completed'
+        toast(ms);
+      }
+    }
+
+    async function handleClickFinishPayment() {
       if (!user) return
       setErrorMessageConfirm('');
       setIsRequestingCreateOrder(true);
@@ -97,16 +119,9 @@ export default function ServicesContent() {
       };
 
       try {
-        const isUsingPaypal = activeTab !== "bank"
-        const rawResult = isUsingPaypal
-          ? await callCreateOrderPaypal(body)
-          : await callCreateOrderBankToBank(body)
+        await callCreateOrderBankToBank(body)
         allServiceQuery.refetch().then(() => {setStepIndex(SelectServiceStepIndex); setActiveTab('paypal')});
         myServiceQuery.refetch().catch(e => console.error(e))
-        if (isUsingPaypal) {
-          const paypalLink = rawResult.data.links.find((link) => link.rel === 'approve')?.href;
-          window.open(paypalLink, '_blank', 'noopener,noreferrer');
-        }
       } catch (e: unknown) {
         setErrorMessageConfirm(e?.toString());
         console.error(e);
@@ -237,17 +252,8 @@ export default function ServicesContent() {
                         </Tab.List>
 
                         <Tab.Panels className="flex grow">
-                          {/*<Tab.Panel className="w-full">*/}
-                          {/*  <div className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
-                          {/*    <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onApproved={handleApprovedPayPalCheckOut}/>*/}
-                          {/*  </div>*/}
-                          {/*</Tab.Panel>*/}
-
                           <Tab.Panel className="w-full">
-                            {/*<div*/}
-                            {/*  className="flex justify-center items-center flex-col border border-solid rounded-xl px-3 py-4">*/}
-                              <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onApproved={handleApprovedPayPalCheckOut} />
-                            {/*</div>*/}
+                            <CheckOutPayPal totalPrice={totalPrice} items={selectedService} onCancel={handleCancel} onFinishPayment={handleFinishPayment} />
                           </Tab.Panel>
 
                           <Tab.Panel className="flex w-full pt-4">
@@ -331,7 +337,7 @@ export default function ServicesContent() {
                 className={
                   'flex justify-center items-center gap-2 text-white font-semibold rounded-lg px-6 py-4 bg-primary'
                 }
-                onClick={handleClickFinishPaymentByPayPal}
+                onClick={handleClickFinishPayment}
               >
                 <span>{translation.t('Pay now')}</span>
                 {isRequestingCreateOrder && <IconSpinner/>}
