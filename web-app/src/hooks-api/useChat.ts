@@ -16,15 +16,15 @@ type UseChatProps = {
 };
 
 export function useChat({ onMessage }: UseChatProps = {}) {
-  const [userId, setUserId] = useState<string>()
+  const [userId, setUserId] = useState<string>();
   const [channelId, setChannelId] = useState<string>();
   const [messages, setMessages] = useState<Message[]>();
   const [loading, setLoading] = useState(false);
 
   const fetchChannel = async () => {
-    const { _id, name } = await callApiGetChannel();
+    const { _id, name } = (await callApiGetChannel()) ?? {};
     setChannelId(_id);
-    setUserId(name)
+    setUserId(name);
   };
 
   const fetch = async (offset = 0) => {
