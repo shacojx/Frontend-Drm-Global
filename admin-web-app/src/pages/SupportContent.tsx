@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { IconSpinner, IconUser } from '../components/icons';
+import { IconArrowUp, IconSpinner, IconUser } from '../components/icons';
 import { useChat } from '../hooks/api/chat';
 import dayjs from 'dayjs';
 
@@ -14,7 +14,9 @@ export function SupportContent() {
     changeActiveChannel,
     fetchMoreMessages,
     loading,
-    sendMessage
+    sendMessage,
+    fetchMoreChannel,
+    activeUser
   } = useChat({
     onMessage: () => setNeedScrollBottom(true),
   });
@@ -32,13 +34,13 @@ export function SupportContent() {
   return (
     <>
       <div
-        className="w-1/3 shrink-0 overflow-y-auto border-l"
+        className="w-1/3 shrink-0 overflow-y-auto border-l bg-white"
         onScroll={(e) => {
           const isScrolledToBottom =
             e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
             e.currentTarget.clientHeight;
           if (isScrolledToBottom) {
-            // fetchMoreChannel();
+            fetchMoreChannel();
           }
         }}
       >
@@ -50,7 +52,7 @@ export function SupportContent() {
           >
             <div className="font-semibold mb-2">{channel.u.name}</div>
             <div className="text-sm text-gray-500">
-              {dayjs(channel.ts).format('HH:mm A, DD/MM/YYYY')}
+              {dayjs(channel.lastUpdated).format('HH:mm A, DD/MM/YYYY')}
             </div>
           </div>
         ))}
@@ -87,7 +89,7 @@ export function SupportContent() {
                   key={message.id}
                   message={message.text}
                   time={message.time}
-                  fullName={'trungluc'}
+                  fullName={activeUser.fullName}
                   // avatarUrl={}
                 />
               ),
@@ -122,7 +124,7 @@ export function SupportContent() {
               className="size-9 rounded-lg bg-surface flex justify-center items-center hover:bg-primary"
               onClick={handleSendMessage}
             >
-              {/* <IconArrowUp className="size-6" /> */}
+              <IconArrowUp className="size-6" />
             </button>
           </div>
         </div>
