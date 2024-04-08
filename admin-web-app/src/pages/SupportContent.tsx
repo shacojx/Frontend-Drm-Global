@@ -15,7 +15,8 @@ export function SupportContent() {
     fetchMoreMessages,
     loading,
     sendMessage,
-    fetchMoreChannel
+    fetchMoreChannel,
+    activeUser
   } = useChat({
     onMessage: () => setNeedScrollBottom(true),
   });
@@ -51,7 +52,7 @@ export function SupportContent() {
           >
             <div className="font-semibold mb-2">{channel.u.name}</div>
             <div className="text-sm text-gray-500">
-              {dayjs(channel.ts).format('HH:mm A, DD/MM/YYYY')}
+              {dayjs(channel.lastUpdated).format('HH:mm A, DD/MM/YYYY')}
             </div>
           </div>
         ))}
@@ -88,7 +89,7 @@ export function SupportContent() {
                   key={message.id}
                   message={message.text}
                   time={message.time}
-                  fullName={'trungluc'}
+                  fullName={activeUser.fullName}
                   // avatarUrl={}
                 />
               ),
