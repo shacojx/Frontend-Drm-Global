@@ -37,6 +37,7 @@ import { ReactComponent as IconFilter } from '../assets/svgs/Filter.svg';
 import { ReactComponent as IconEdit } from '../assets/svgs/Document Add.svg';
 import { ReactComponent as IconPen } from '../assets/svgs/Pen.svg';
 import { ReactComponent as IconEssential } from '../assets/svgs/OutlineEssentination.svg';
+import { ReactComponent as IconArrowUp } from '../assets/svgs/ArrowUp.svg';
 
 type Props = React.SVGProps<SVGSVGElement>;
 function IconSpinner(props: Props) {
@@ -84,4 +85,5 @@ export {
   IconEdit,
   IconPen,
   IconEssential,
+  IconArrowUp
 };

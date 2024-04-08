@@ -5,8 +5,9 @@ import {
   callApiGetMessages,
   callApiSendMessage,
 } from '../../api/chat';
-import { sortBy, uniqBy } from 'lodash-es';
+import { last, sortBy, uniqBy } from 'lodash-es';
 import { useSubscription } from 'react-stomp-hooks';
+import dayjs from 'dayjs';
 
 type Message = {
   id: string;
@@ -17,6 +18,8 @@ type Message = {
 
 type Channel = ChannelResponse['channels'][number] & {
   messages: Message[];
+  lastMessage?: string;
+  lastUpdated?: string;
 };
 
 type UseChatProps = {
@@ -33,16 +36,30 @@ export function useChat({ onMessage }: UseChatProps = {}) {
   const fetchChannels = async (offset = 0) => {
     const res = await callApiGetChannels(offset);
 
+    // const msgs = await Promise.all(
+    //   res.channels.map(async (c) => {
+    //     const { messages } = await callApiGetMessages(c._id, offset, 1);
+
+    //     return messages[0];
+    //   }),
+    // );
+
     setChannels((prev) => {
       const convertedChannels = uniqBy(
         [
           ...(prev ?? []),
-          ...res.channels.map((item) => ({ ...item, messages: [] })),
+          ...res.channels.map((item, idx) => ({
+            ...item,
+            messages: [],
+            // lastUpdated: msgs[idx]._updatedAt,
+            // lastMessage: msgs[idx].msg,
+          })),
         ],
         (item) => item._id,
       );
+
       convertedChannels.sort(
-        (a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime(),
+        (a, b) => dayjs(b.ts).valueOf() - dayjs(a.ts).valueOf(),
       );
 
       if (!activeChannelId) {
@@ -59,7 +76,7 @@ export function useChat({ onMessage }: UseChatProps = {}) {
     const currentChannel = channels?.find((c) => c._id === channelId);
     if (!currentChannel) return;
 
-    const convertedMessage = res.messages.map((item) => ({
+    const convertedMessage = res?.messages.map((item) => ({
       id: item._id,
       text: item.msg,
       sender: item.alias === 'admin@drm.com' ? 'admin' : 'user',
@@ -68,22 +85,32 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
     currentChannel.messages = sortBy(
       uniqBy(
-        [...currentChannel.messages, ...convertedMessage],
+        [...currentChannel.messages, ...(convertedMessage ?? [])],
         (item) => item.id,
       ),
       (item) => new Date(item.time).getTime(),
     );
+
+    // channels?.forEach(channel => {
+    //   const msg = last(channel.messages)
+
+    //   console.log('last', channel.name, msg?.text, msg?.time)
+
+    //   channel.lastMessage = msg?.text;
+    //   channel.lastUpdated = msg?.time
+    // })
 
     setChannels([...(channels ?? [])]);
     setLoading(false);
   };
 
   const sendMessage = async (text: string) => {
-    const activeUserId = channels?.find(c => c._id === activeChannelId)?.name
-    activeUserId && await callApiSendMessage(activeUserId, text)
+    const activeUserId = channels?.find((c) => c._id === activeChannelId)?.name;
+    activeUserId && (await callApiSendMessage(activeUserId, text));
 
     fetchMessages(activeChannelId!, 0).then(onMessage);
-  }
+    fetchChannels();
+  };
 
   useEffect(() => {
     fetchChannels(0);
@@ -102,17 +129,22 @@ export function useChat({ onMessage }: UseChatProps = {}) {
     fetchMessages(activeChannelId!, activeChannel?.messages.length ?? 0);
 
   useSubscription('/chat/topic/public/cms', (msg) => {
-    const incomingChannelId = channels?.find(c => c.name === msg.body)?._id
+    const incomingChannelId = channels?.find((c) => c.name === msg.body)?._id;
     incomingChannelId && fetchMessages(incomingChannelId, 0).then(onMessage);
-    fetchChannels(0)
+    fetchChannels(0);
   });
 
   return {
-    channels,
+    channels: sortBy(channels, (c) => -dayjs(c.lastUpdated).valueOf()),
     messages: activeChannel?.messages,
     changeActiveChannel,
     fetchMoreMessages,
     loading,
-    sendMessage
+    sendMessage,
+    fetchMoreChannel: () => fetchChannels(channels?.length ?? 0),
+    activeUser: {
+      fullName: activeChannel?.u.name ?? '-',
+      // email: activeChannel?.u.
+    },
   };
 }
