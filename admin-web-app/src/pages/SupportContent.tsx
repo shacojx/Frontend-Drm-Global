@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { IconSpinner, IconUser } from '../components/icons';
+import { IconArrowUp, IconSpinner, IconUser } from '../components/icons';
 import { useChat } from '../hooks/api/chat';
 import dayjs from 'dayjs';
 
@@ -124,7 +124,7 @@ export function SupportContent() {
               className="size-9 rounded-lg bg-surface flex justify-center items-center hover:bg-primary"
               onClick={handleSendMessage}
             >
-              {/* <IconArrowUp className="size-6" /> */}
+              <IconArrowUp className="size-6" />
             </button>
           </div>
         </div>
