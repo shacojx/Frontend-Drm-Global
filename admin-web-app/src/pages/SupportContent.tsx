@@ -31,6 +31,8 @@ export function SupportContent() {
     setNeedScrollBottom(true);
   };
 
+  console.log(messages)
+
   return (
     <>
       <div
@@ -52,7 +54,7 @@ export function SupportContent() {
           >
             <div className="font-semibold mb-2">{channel.u.name}</div>
             <div className="text-sm text-gray-500">
-              {dayjs(channel.lastUpdated).format('HH:mm A, DD/MM/YYYY')}
+              {dayjs(channel._updatedAt).format('HH:mm A, DD/MM/YYYY')}
             </div>
           </div>
         ))}
@@ -148,7 +150,7 @@ function AdminMessage({ message, time }: AdminMessageProps) {
           </span>
           <span className="font-medium">AI assistant</span>
         </div>
-        <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none w-max">
+        <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none whitespace-pre-wrap">
           {message}
         </div>
       </div>
