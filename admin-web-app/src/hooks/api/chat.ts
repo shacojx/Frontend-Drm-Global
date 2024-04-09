@@ -5,7 +5,7 @@ import {
   callApiGetMessages,
   callApiSendMessage,
 } from '../../api/chat';
-import { last, sortBy, uniqBy } from 'lodash-es';
+import { last, reverse, sortBy, uniqBy } from 'lodash-es';
 import { useSubscription } from 'react-stomp-hooks';
 import dayjs from 'dayjs';
 
@@ -37,19 +37,13 @@ export function useChat({ onMessage }: UseChatProps = {}) {
     setChannels((prev) => {
       const convertedChannels = uniqBy(
         [
-          ...(prev ?? []),
           ...res.channels.map((item, idx) => ({
             ...item,
             messages: [],
-            // lastUpdated: msgs[idx]._updatedAt,
-            // lastMessage: msgs[idx].msg,
           })),
+          ...(prev ?? []),
         ],
         (item) => item._id,
-      );
-
-      convertedChannels.sort(
-        (a, b) => dayjs(b.ts).valueOf() - dayjs(a.ts).valueOf(),
       );
 
       if (!activeChannelId) {
@@ -78,7 +72,7 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
     currentChannel.messages = sortBy(
       uniqBy(
-        [...currentChannel.messages, ...(convertedMessage ?? [])],
+        [...(convertedMessage ?? []), ...currentChannel.messages],
         (item) => item.id,
       ),
       (item) => new Date(item.time).getTime(),
@@ -123,7 +117,7 @@ export function useChat({ onMessage }: UseChatProps = {}) {
   );
 
   return {
-    channels: sortBy(channels, (c) => dayjs(c._updatedAt).valueOf()),
+    channels: sortBy(channels, (c) => -dayjs(c._updatedAt).valueOf()),
     messages: activeChannel?.messages,
     changeActiveChannel,
     fetchMoreMessages,

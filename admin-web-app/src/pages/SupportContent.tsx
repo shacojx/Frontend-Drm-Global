@@ -16,7 +16,7 @@ export function SupportContent() {
     loading,
     sendMessage,
     fetchMoreChannel,
-    activeUser
+    activeUser,
   } = useChat({
     onMessage: () => setNeedScrollBottom(true),
   });
@@ -31,7 +31,7 @@ export function SupportContent() {
     setNeedScrollBottom(true);
   };
 
-  console.log(messages)
+  console.log(messages);
 
   return (
     <>
@@ -52,10 +52,14 @@ export function SupportContent() {
             className="bg-white p-4 border-b border-gray-200 cursor-pointer"
             onClick={() => changeActiveChannel(channel._id)}
           >
-            <div className="font-semibold mb-2">{channel.u.name}</div>
-            <div className="text-sm text-gray-500">
-              {dayjs(channel._updatedAt).format('HH:mm A, DD/MM/YYYY')}
+            <div className='flex justify-between'>
+              <div className="font-semibold mb-2">{channel.u.name}</div>
+              <div className="text-sm text-gray-500">
+                {dayjs(channel._updatedAt).format('HH:mm A, DD/MM/YYYY')}
+              </div>
             </div>
+
+            <div className='text-gray-500 italic'>{channel.lastMessage?.msg}</div>
           </div>
         ))}
       </div>
@@ -154,9 +158,6 @@ function AdminMessage({ message, time }: AdminMessageProps) {
           {message}
         </div>
       </div>
-
-      {/* <img className="size-[50px]" src={IMAGES.supportLogo} /> */}
-      {/* <div className="size-[50px] shrink-0 bg-rose-200" /> */}
     </div>
   );
 }
