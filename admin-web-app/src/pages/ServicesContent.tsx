@@ -305,11 +305,11 @@ export function ServicesContent() {
         <p className={'text-h4 w-full text-start mb-6'}>
           {t('Services Management')}
         </p>
-        <ServiceFilter
-          onSubmit={search}
-          onReset={onResetFilter}
-          loading={resSearchService.isFetching}
-        />
+        {/*<ServiceFilter*/}
+        {/*  onSubmit={search}*/}
+        {/*  onReset={onResetFilter}*/}
+        {/*  loading={resSearchService.isFetching}*/}
+        {/*/>*/}
         <div className={'w-full grow'}>
           <DataGrid
             paginationMode="server"

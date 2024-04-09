@@ -291,38 +291,38 @@ export function OrderPaymentContent(props: Props) {
           <p className={'text-h4 w-full text-start mb-6'}>
             {translation.t('Order Payment Management')}
           </p>
-          <div
-            className={
-              'w-full flex flex-row justify-between items-center gap-10 mb-4'
-            }
-          >
-            <div
-              className={
-                'w-full flex flex-row justify-start items-end gap-10 mb-4'
-              }
-            >
-              <FormFieldEmail
-                id="email"
-                validateCaller={validateCaller}
-                onChange={setEmail}
-                value={email}
-              />
-              <FormFieldText
-                label="PIC"
-                id="pic"
-                validateCaller={validateCaller}
-                onChange={setPic}
-                value={pic}
-                placeholder="Enter PIC"
-              />
-              <button
-                onClick={handleClickSearch}
-                className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-              >
-                {translation.t('Search')}
-              </button>
-            </div>
-          </div>
+          {/*<div*/}
+          {/*  className={*/}
+          {/*    'w-full flex flex-row justify-between items-center gap-10 mb-4'*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <div*/}
+          {/*    className={*/}
+          {/*      'w-full flex flex-row justify-start items-end gap-10 mb-4'*/}
+          {/*    }*/}
+          {/*  >*/}
+          {/*    <FormFieldEmail*/}
+          {/*      id="email"*/}
+          {/*      validateCaller={validateCaller}*/}
+          {/*      onChange={setEmail}*/}
+          {/*      value={email}*/}
+          {/*    />*/}
+          {/*    <FormFieldText*/}
+          {/*      label="PIC"*/}
+          {/*      id="pic"*/}
+          {/*      validateCaller={validateCaller}*/}
+          {/*      onChange={setPic}*/}
+          {/*      value={pic}*/}
+          {/*      placeholder="Enter PIC"*/}
+          {/*    />*/}
+          {/*    <button*/}
+          {/*      onClick={handleClickSearch}*/}
+          {/*      className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"*/}
+          {/*    >*/}
+          {/*      {translation.t('Search')}*/}
+          {/*    </button>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           <div className={'w-full grow'}>
             <Table
               paginationMode="server"
