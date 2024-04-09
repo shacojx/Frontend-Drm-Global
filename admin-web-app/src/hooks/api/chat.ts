@@ -5,7 +5,7 @@ import {
   callApiGetMessages,
   callApiSendMessage,
 } from '../../api/chat';
-import { last, sortBy, uniqBy } from 'lodash-es';
+import { last, reverse, sortBy, uniqBy } from 'lodash-es';
 import { useSubscription } from 'react-stomp-hooks';
 import dayjs from 'dayjs';
 
@@ -18,8 +18,6 @@ type Message = {
 
 type Channel = ChannelResponse['channels'][number] & {
   messages: Message[];
-  lastMessage?: string;
-  lastUpdated?: string;
 };
 
 type UseChatProps = {
@@ -36,30 +34,16 @@ export function useChat({ onMessage }: UseChatProps = {}) {
   const fetchChannels = async (offset = 0) => {
     const res = await callApiGetChannels(offset);
 
-    // const msgs = await Promise.all(
-    //   res.channels.map(async (c) => {
-    //     const { messages } = await callApiGetMessages(c._id, offset, 1);
-
-    //     return messages[0];
-    //   }),
-    // );
-
     setChannels((prev) => {
       const convertedChannels = uniqBy(
         [
-          ...(prev ?? []),
           ...res.channels.map((item, idx) => ({
             ...item,
             messages: [],
-            // lastUpdated: msgs[idx]._updatedAt,
-            // lastMessage: msgs[idx].msg,
           })),
+          ...(prev ?? []),
         ],
         (item) => item._id,
-      );
-
-      convertedChannels.sort(
-        (a, b) => dayjs(b.ts).valueOf() - dayjs(a.ts).valueOf(),
       );
 
       if (!activeChannelId) {
@@ -78,27 +62,21 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
     const convertedMessage = res?.messages.map((item) => ({
       id: item._id,
-      text: item.msg,
-      sender: item.alias === 'admin@drm.com' ? 'admin' : 'user',
+      text: item.msg ?? 'trungluc',
+      sender:
+        item.alias === 'admin@drm.com' || item.alias === 'AI BOT'
+          ? 'admin'
+          : 'user',
       time: item._updatedAt,
     }));
 
     currentChannel.messages = sortBy(
       uniqBy(
-        [...currentChannel.messages, ...(convertedMessage ?? [])],
+        [...(convertedMessage ?? []), ...currentChannel.messages],
         (item) => item.id,
       ),
       (item) => new Date(item.time).getTime(),
     );
-
-    // channels?.forEach(channel => {
-    //   const msg = last(channel.messages)
-
-    //   console.log('last', channel.name, msg?.text, msg?.time)
-
-    //   channel.lastMessage = msg?.text;
-    //   channel.lastUpdated = msg?.time
-    // })
 
     setChannels([...(channels ?? [])]);
     setLoading(false);
@@ -134,8 +112,12 @@ export function useChat({ onMessage }: UseChatProps = {}) {
     fetchChannels(0);
   });
 
+  console.log(
+    channels?.map((c) => ({ name: c.u.name, lastUpdate: c._updatedAt })),
+  );
+
   return {
-    channels: sortBy(channels, (c) => -dayjs(c.lastUpdated).valueOf()),
+    channels: sortBy(channels, (c) => -dayjs(c._updatedAt).valueOf()),
     messages: activeChannel?.messages,
     changeActiveChannel,
     fetchMoreMessages,

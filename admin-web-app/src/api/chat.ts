@@ -9,6 +9,10 @@ export async function callApiGetCMSToken() {
 
 export type ChannelResponse = {
   channels: Array<{
+    lastMessage?: {
+      msg: string
+    },
+    _updatedAt: string, 
     name: string;
     msgs: 2;
     u: {
