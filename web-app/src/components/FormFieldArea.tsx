@@ -31,6 +31,7 @@ export function FormFieldTextArea(props: FormFieldProps<string>) {
     )}
     <textarea
       value={props.value || ''}
+      readOnly={props.isFixedValue}
       onChange={handleChange}
       onBlur={setShouldShowError.bind(undefined, !isTextValid)}
       placeholder={props.placeholder}
