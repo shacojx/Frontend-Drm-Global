@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { IconArrowUp, IconSpinner, IconUser } from '../components/icons';
 import { useChat } from '../hooks/api/chat';
 import dayjs from 'dayjs';
+import { cn } from '../utils/cn.util';
 
 export function SupportContent() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -16,7 +17,7 @@ export function SupportContent() {
     loading,
     sendMessage,
     fetchMoreChannel,
-    activeUser,
+    activeChannelId,
   } = useChat({
     onMessage: () => setNeedScrollBottom(true),
   });
@@ -31,8 +32,6 @@ export function SupportContent() {
     setNeedScrollBottom(true);
   };
 
-  console.log(messages);
-
   return (
     <>
       <div
@@ -46,24 +45,50 @@ export function SupportContent() {
           }
         }}
       >
-        {channels?.map((channel) => (
-          <div
-            key={channel._id}
-            className="bg-white p-4 border-b border-gray-200 cursor-pointer"
-            onClick={() => changeActiveChannel(channel._id)}
-          >
-            <div className="flex justify-between">
-              <div className="font-semibold mb-2">{channel.u.name} {channel.u.email && `(${channel.u.email})`}</div>
-              <div className="text-sm text-gray-500">
-                {dayjs(channel._updatedAt).format('HH:mm A, DD/MM/YYYY')}
+        {channels?.map((channel) => {
+          const lastSender = (() => {
+            if (channel.u.username === channel.lastMessage?.u.username) {
+              return 'You';
+            }
+
+            if (channel.lastMessage?.u.username === 'livechat-agent') {
+              return `Admin<${channel.lastMessage.alias}>`;
+            }
+
+            return channel.lastMessage?.u.name;
+          })();
+
+          return (
+            <div
+              key={channel._id}
+              className={cn(
+                'bg-white p-4 border-b border-gray-200 cursor-pointer',
+                {
+                  'bg-primary/20': channel._id === activeChannelId,
+                },
+              )}
+              onClick={() => {
+                changeActiveChannel(channel._id);
+              }}
+            >
+              <div className="flex justify-between">
+                <div className="font-semibold mb-2">
+                  {channel.u.name} {channel.u.email && `(${channel.u.email})`}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {dayjs(channel._updatedAt).format('HH:mm A, DD/MM/YYYY')}
+                </div>
+              </div>
+
+              <div className="text-gray-500 line-clamp-1">
+                <span className="font-semibold text-primary">{lastSender}</span>
+                {': '}
+
+                <span className="italic">{channel.lastMessage?.msg}</span>
               </div>
             </div>
-
-            <div className="text-gray-500 italic line-clamp-1">
-              {channel.lastMessage?.msg}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="flex w-full flex-col border-t border-l h-full bg-white px-2">
@@ -86,18 +111,29 @@ export function SupportContent() {
               </div>
             )}
             {messages?.map((message) =>
-              message.isMe? (
+              message.isMe ? (
                 <AdminMessage
                   key={message.id}
                   message={message.text}
                   time={message.time}
+                  name={
+                    <div>
+                      {message.sender}{' '}
+                      <span className="text-gray-500">({message.email})</span>
+                    </div>
+                  }
                 />
               ) : (
                 <UserMessage
                   key={message.id}
                   message={message.text}
                   time={message.time}
-                  fullName={message.sender ?? '--'}
+                  fullName={
+                    <div>
+                      {message.sender}{' '}
+                      <span className="text-gray-500">({message.email})</span>
+                    </div>
+                  }
                   // avatarUrl={}
                 />
               ),
@@ -144,9 +180,14 @@ export function SupportContent() {
 type AdminMessageProps = {
   message: string;
   time: string;
+  name?: ReactNode;
 };
 
-function AdminMessage({ message, time }: AdminMessageProps) {
+function AdminMessage({
+  message,
+  time,
+  name = 'AI assistant',
+}: AdminMessageProps) {
   return (
     <div className="flex items-end gap-[14px] shrink-0 mt-4">
       <div className="flex flex-col grow gap-3 items-end">
@@ -154,7 +195,7 @@ function AdminMessage({ message, time }: AdminMessageProps) {
           <span className="text-sm text-surface">
             {dayjs(time).format('HH:mm A')}
           </span>
-          <span className="font-medium">AI assistant</span>
+          <span className="font-medium">{name}</span>
         </div>
         <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none whitespace-pre-wrap">
           {message}
@@ -167,7 +208,7 @@ function AdminMessage({ message, time }: AdminMessageProps) {
 type UserMessageProps = {
   message: string;
   time: string;
-  fullName: string;
+  fullName: ReactNode;
   avatarUrl?: string;
 };
 

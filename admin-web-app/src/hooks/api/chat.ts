@@ -16,6 +16,7 @@ type Message = {
   isMe: boolean
   sender?: string, 
   time: string;
+  email: string
 };
 
 type Channel = ChannelResponse['channels'][number] & {
@@ -69,7 +70,8 @@ export function useChat({ onMessage }: UseChatProps = {}) {
       text: item.msg ,
       isMe: item.alias === user?.email,
       time: item._updatedAt,
-      sender: item.u.name
+      sender: item.u.name === 'livechat-agent' ? 'Admin' : item.u.name,
+      email: item.alias
     }));
 
     currentChannel.messages = sortBy(
@@ -130,5 +132,6 @@ export function useChat({ onMessage }: UseChatProps = {}) {
       fullName: activeChannel?.u.name ?? '-',
       // email: activeChannel?.u.
     },
+    activeChannelId,
   };
 }
