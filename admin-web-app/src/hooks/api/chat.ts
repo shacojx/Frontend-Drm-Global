@@ -9,12 +9,13 @@ import { last, reverse, sortBy, uniqBy } from 'lodash-es';
 import { useSubscription } from 'react-stomp-hooks';
 import dayjs from 'dayjs';
 import { AuthContext } from '../../contexts/AuthContextProvider';
+import { useApiUserSearchByRole } from "./user";
 
 type Message = {
   id: string;
   text: string;
   isMe: boolean
-  sender?: string, 
+  sender?: string,
   time: string;
   email: string
 };
@@ -29,7 +30,7 @@ type UseChatProps = {
 
 export function useChat({ onMessage }: UseChatProps = {}) {
   const { user } = useContext(AuthContext)
-
+  const bunchOfAdminQuery = useApiUserSearchByRole({role: 'admin'})
   const [channels, setChannels] = useState<Channel[]>();
   const [activeChannelId, setActiveChannelId] = useState<string>();
   const activeChannel = channels?.find((item) => item._id === activeChannelId);
@@ -70,7 +71,11 @@ export function useChat({ onMessage }: UseChatProps = {}) {
       text: item.msg ,
       isMe: item.alias === user?.email,
       time: item._updatedAt,
-      sender: item.u.name === 'livechat-agent' ? 'Admin' : item.u.name,
+      sender: item.u.name === 'livechat-agent'
+        ? bunchOfAdminQuery.data?.find(account => account.email === item.alias)
+          ? 'Admin'
+          : 'Staff'
+        : item.u.name,
       email: item.alias
     }));
 

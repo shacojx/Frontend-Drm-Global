@@ -615,5 +615,5 @@ export type PaginationType = {
 };
 
 export type ApiSearchUserByRole = {
-  role: string;
+  role: 'admin' | 'mod';
 };

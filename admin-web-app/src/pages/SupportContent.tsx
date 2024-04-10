@@ -2,12 +2,14 @@ import { ReactNode, useRef, useState } from 'react';
 import { IconArrowUp, IconSpinner, IconUser } from '../components/icons';
 import { useChat } from '../hooks/api/chat';
 import dayjs from 'dayjs';
+import { useApiUserSearchByRole } from "../hooks/api/user";
 import { cn } from '../utils/cn.util';
 
 export function SupportContent() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [needScrollBottom, setNeedScrollBottom] = useState(true);
+  const bunchOfAdminQuery = useApiUserSearchByRole({role: 'admin'})
 
   const {
     channels,
@@ -48,7 +50,10 @@ export function SupportContent() {
         {channels?.map((channel) => {
           const lastSender = (() => {
             if (channel.lastMessage?.u.username === 'livechat-agent') {
-              return `Staff (${channel.lastMessage.alias})`;
+              const role = bunchOfAdminQuery.data?.find(account => account.email === channel.lastMessage?.alias)
+                ? 'Admin'
+                : 'Staff'
+              return `${role} (${channel.lastMessage.alias})`;
             }
 
             return channel.lastMessage?.u.name;
@@ -127,7 +132,7 @@ export function SupportContent() {
                   fullName={
                     <div>
                       {message.sender}{' '}
-                      <span className="text-gray-500">({message.email})</span>
+                      {message.email && <span className="text-gray-500">({message.email})</span>}
                     </div>
                   }
                   // avatarUrl={}
