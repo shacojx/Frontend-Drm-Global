@@ -47,10 +47,6 @@ export function SupportContent() {
       >
         {channels?.map((channel) => {
           const lastSender = (() => {
-            if (channel.u.username === channel.lastMessage?.u.username) {
-              return 'You';
-            }
-
             if (channel.lastMessage?.u.username === 'livechat-agent') {
               return `Staff (${channel.lastMessage.alias})`;
             }
