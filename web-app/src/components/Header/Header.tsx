@@ -77,7 +77,7 @@ export default function Header({ setIsOpenOnSmallScreen }: Props) {
                   leaveTo="opacity-0 translate-y-1"
                 >
                   <Popover.Panel className={'absolute z-10 right-6'}>
-                    <div className="flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3">
+                    <div className="flex flex-col gap-3 items-center bg-[#E9EEF6] rounded-3xl p-3 z-[1000]">
                       <div
                         onClick={close}
                         className={'absolute top-2 right-2 p-2 bg-gray-300 rounded-full cursor-pointer'}

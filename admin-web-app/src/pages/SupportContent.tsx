@@ -52,7 +52,7 @@ export function SupportContent() {
             }
 
             if (channel.lastMessage?.u.username === 'livechat-agent') {
-              return `Admin<${channel.lastMessage.alias}>`;
+              return `Staff (${channel.lastMessage.alias})`;
             }
 
             return channel.lastMessage?.u.name;
