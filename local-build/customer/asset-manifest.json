@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.a479e24f.css",
-    "main.js": "/static/js/main.153c9aac.js",
+    "main.css": "/static/css/main.e13cf0e7.css",
+    "main.js": "/static/js/main.0c89d68a.js",
     "static/js/453.77aef9b5.chunk.js": "/static/js/453.77aef9b5.chunk.js",
     "static/media/background.png": "/static/media/background.f6d8716e457d23367ebc.png",
     "static/media/Paypal.svg": "/static/media/Paypal.0ef3881297be965b95ff3b6084980cb4.svg",
@@ -51,12 +51,12 @@
     "static/media/SelectCardIcon.svg": "/static/media/SelectCardIcon.89aca6c23387a237b2420f89eae4cb32.svg",
     "static/media/Spinner.svg": "/static/media/Spinner.fea4413512187f9885b8dc456b094c84.svg",
     "static/media/CollapseIcon.svg": "/static/media/CollapseIcon.2f279b3c9cb54e0e810f581dd8d1af0a.svg",
-    "main.a479e24f.css.map": "/static/css/main.a479e24f.css.map",
-    "main.153c9aac.js.map": "/static/js/main.153c9aac.js.map",
+    "main.e13cf0e7.css.map": "/static/css/main.e13cf0e7.css.map",
+    "main.0c89d68a.js.map": "/static/js/main.0c89d68a.js.map",
     "453.77aef9b5.chunk.js.map": "/static/js/453.77aef9b5.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a479e24f.css",
-    "static/js/main.153c9aac.js"
+    "static/css/main.e13cf0e7.css",
+    "static/js/main.0c89d68a.js"
   ]
 }
