@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSubscription } from 'react-stomp-hooks';
 import { callApiGetChannel, callApiGetMessages, callApiSendMessage } from 'src/api/chat';
 import { AuthContext } from 'src/contexts/AuthContextProvider';
@@ -7,7 +7,7 @@ import { uniqBy } from 'src/utils/base.util';
 type Message = {
   id: string;
   text: string;
-  isMe: boolean, 
+  isMe: boolean;
   sender?: string | null;
   time: string;
 };
@@ -17,12 +17,14 @@ type UseChatProps = {
 };
 
 export function useChat({ onMessage }: UseChatProps = {}) {
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
   const [userId, setUserId] = useState<string>();
   const [channelId, setChannelId] = useState<string>();
   const [messages, setMessages] = useState<Message[]>();
   const [loading, setLoading] = useState(false);
+
+  const canFetchMsg = useRef(true);
 
   const fetchChannel = async () => {
     const { _id, name } = (await callApiGetChannel()) ?? {};
@@ -31,6 +33,8 @@ export function useChat({ onMessage }: UseChatProps = {}) {
   };
 
   const fetch = async (offset = 0) => {
+    if (!canFetchMsg.current || loading) return;
+
     if (!channelId) {
       fetchChannel();
       return;
@@ -38,11 +42,17 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
     setLoading(true);
 
-    const { messages = [] } = await callApiGetMessages(channelId!, { roomId: channelId, offset, count: 10 });
+    const res = await callApiGetMessages({ roomId: channelId, offset, count: 10 });
+    const { messages = [] } = res;
+
+    if (res.offset + res.count >= res.total) {
+      canFetchMsg.current = false;
+    }
+
     const convertedMessages = messages.map((item) => ({
       id: item._id,
       text: item.msg,
-      isMe: item.alias === user?.email, 
+      isMe: item.alias === user?.email,
       sender: item.alias,
       time: item._updatedAt,
     }));

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import {
   ChannelResponse,
   callApiGetChannels,
@@ -13,10 +13,10 @@ import { AuthContext } from '../../contexts/AuthContextProvider';
 type Message = {
   id: string;
   text: string;
-  isMe: boolean
-  sender?: string, 
+  isMe: boolean;
+  sender?: string;
   time: string;
-  email: string
+  email: string;
 };
 
 type Channel = ChannelResponse['channels'][number] & {
@@ -28,11 +28,13 @@ type UseChatProps = {
 };
 
 export function useChat({ onMessage }: UseChatProps = {}) {
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
   const [channels, setChannels] = useState<Channel[]>();
   const [activeChannelId, setActiveChannelId] = useState<string>();
   const activeChannel = channels?.find((item) => item._id === activeChannelId);
+
+  const canFetchMsg = useRef(true)
 
   const [loading, setLoading] = useState(false);
 
@@ -60,6 +62,8 @@ export function useChat({ onMessage }: UseChatProps = {}) {
   };
 
   const fetchMessages = async (channelId: string, offset = 0) => {
+    if (!canFetchMsg.current) return;
+
     setLoading(true);
     const res = await callApiGetMessages(channelId, offset);
     const currentChannel = channels?.find((c) => c._id === channelId);
@@ -67,11 +71,11 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
     const convertedMessage = res?.messages.map((item) => ({
       id: item._id,
-      text: item.msg ,
+      text: item.msg,
       isMe: item.alias === user?.email,
       time: item._updatedAt,
       sender: item.u.name === 'livechat-agent' ? 'Admin' : item.u.name,
-      email: item.alias
+      email: item.alias,
     }));
 
     currentChannel.messages = sortBy(
@@ -81,6 +85,10 @@ export function useChat({ onMessage }: UseChatProps = {}) {
       ),
       (item) => new Date(item.time).getTime(),
     );
+
+    if (res.offset + res.count >= res.total) {
+      canFetchMsg.current = false
+    }
 
     setChannels([...(channels ?? [])]);
     setLoading(false);
@@ -104,6 +112,7 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
   const changeActiveChannel = (id: string) => {
     setActiveChannelId(id);
+    canFetchMsg.current = true
     fetchMessages(id);
   };
 
@@ -115,10 +124,6 @@ export function useChat({ onMessage }: UseChatProps = {}) {
     incomingChannelId && fetchMessages(incomingChannelId, 0).then(onMessage);
     fetchChannels(0);
   });
-
-  console.log(
-    channels?.map((c) => ({ name: c.u.name, lastUpdate: c._updatedAt })),
-  );
 
   return {
     channels: sortBy(channels, (c) => -dayjs(c._updatedAt).valueOf()),

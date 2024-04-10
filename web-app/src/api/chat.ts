@@ -2,7 +2,7 @@ import { callApi } from 'src/services-base/api';
 
 type Channel = {
   _id: string;
-  name: string
+  name: string;
 };
 
 export const callApiGetChannel = async () => {
@@ -25,16 +25,14 @@ type Message = {
   _updatedAt: string;
 };
 
-export const callApiGetMessages = async (
-  channelId: string,
-  body: {
-    roomId: string;
-    offset: number;
-    count: number;
-  }
-) => {
+export const callApiGetMessages = async (body: { roomId: string; offset: number; count: number }) => {
   const path = `/chat/api/v1/customer/get-messages`;
-  const messages = await callApi<{ messages: Message[], total: number }>('GET', path, body, true);
+  const messages = await callApi<{ messages: Message[]; total: number; offset: number; count: number }>(
+    'GET',
+    path,
+    body,
+    true
+  );
 
   return messages;
 };
