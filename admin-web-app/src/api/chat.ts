@@ -20,6 +20,7 @@ export type ChannelResponse = {
       _updatedAt: null | string;
       name: string;
       _id: string;
+      email?: string | null 
     };
     ts: '2024-04-05T11:20:33.780Z';
     _id: '660fde812bd598f46566ecbc';

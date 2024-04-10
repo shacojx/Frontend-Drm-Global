@@ -52,14 +52,16 @@ export function SupportContent() {
             className="bg-white p-4 border-b border-gray-200 cursor-pointer"
             onClick={() => changeActiveChannel(channel._id)}
           >
-            <div className='flex justify-between'>
-              <div className="font-semibold mb-2">{channel.u.name}</div>
+            <div className="flex justify-between">
+              <div className="font-semibold mb-2">{channel.u.name} {channel.u.email && `(${channel.u.email})`}</div>
               <div className="text-sm text-gray-500">
                 {dayjs(channel._updatedAt).format('HH:mm A, DD/MM/YYYY')}
               </div>
             </div>
 
-            <div className='text-gray-500 italic'>{channel.lastMessage?.msg}</div>
+            <div className="text-gray-500 italic line-clamp-1">
+              {channel.lastMessage?.msg}
+            </div>
           </div>
         ))}
       </div>
@@ -84,7 +86,7 @@ export function SupportContent() {
               </div>
             )}
             {messages?.map((message) =>
-              message.sender === 'admin' ? (
+              message.isMe? (
                 <AdminMessage
                   key={message.id}
                   message={message.text}
@@ -95,7 +97,7 @@ export function SupportContent() {
                   key={message.id}
                   message={message.text}
                   time={message.time}
-                  fullName={activeUser.fullName}
+                  fullName={message.sender ?? '--'}
                   // avatarUrl={}
                 />
               ),

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   ChannelResponse,
   callApiGetChannels,
@@ -8,11 +8,13 @@ import {
 import { last, reverse, sortBy, uniqBy } from 'lodash-es';
 import { useSubscription } from 'react-stomp-hooks';
 import dayjs from 'dayjs';
+import { AuthContext } from '../../contexts/AuthContextProvider';
 
 type Message = {
   id: string;
   text: string;
-  sender: 'user' | 'admin' | string;
+  isMe: boolean
+  sender?: string, 
   time: string;
 };
 
@@ -25,6 +27,8 @@ type UseChatProps = {
 };
 
 export function useChat({ onMessage }: UseChatProps = {}) {
+  const { user } = useContext(AuthContext)
+
   const [channels, setChannels] = useState<Channel[]>();
   const [activeChannelId, setActiveChannelId] = useState<string>();
   const activeChannel = channels?.find((item) => item._id === activeChannelId);
@@ -62,12 +66,10 @@ export function useChat({ onMessage }: UseChatProps = {}) {
 
     const convertedMessage = res?.messages.map((item) => ({
       id: item._id,
-      text: item.msg ?? 'trungluc',
-      sender:
-        item.alias === 'admin@drm.com' || item.alias === 'AI BOT'
-          ? 'admin'
-          : 'user',
+      text: item.msg ,
+      isMe: item.alias === user?.email,
       time: item._updatedAt,
+      sender: item.u.name
     }));
 
     currentChannel.messages = sortBy(
