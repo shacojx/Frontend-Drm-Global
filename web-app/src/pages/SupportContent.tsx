@@ -132,7 +132,7 @@ function AdminMessage({ message, time }: AdminMessageProps) {
           <span className="font-medium">AI assistant</span>
           <span className="text-sm text-surface">{dayjs(time).format('HH:mm A')}</span>
         </div>
-        <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none w-max">
+        <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none whitespace-pre-line">
           {message}
         </div>
       </div>
