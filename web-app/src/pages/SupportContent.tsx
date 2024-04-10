@@ -67,9 +67,7 @@ export function SupportContent() {
             </div>
           )}
           {messages?.map((message) =>
-            message.sender === 'admin' ? (
-              <AdminMessage key={message.id} message={message.text} time={message.time} />
-            ) : (
+            message.isMe ? (
               <UserMessage
                 key={message.id}
                 message={message.text}
@@ -77,6 +75,8 @@ export function SupportContent() {
                 fullName={`${user?.firstName} ${user?.lastName}`}
                 avatarUrl={avatarUrl}
               />
+            ) : (
+              <AdminMessage key={message.id} message={message.text} time={message.time} />
             )
           )}
           {messages?.length ? (
