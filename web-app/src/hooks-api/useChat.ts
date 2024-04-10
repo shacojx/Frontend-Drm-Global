@@ -7,7 +7,8 @@ import { uniqBy } from 'src/utils/base.util';
 type Message = {
   id: string;
   text: string;
-  sender: 'user' | 'admin' | string;
+  isMe: boolean, 
+  sender?: string | null;
   time: string;
 };
 
@@ -16,6 +17,8 @@ type UseChatProps = {
 };
 
 export function useChat({ onMessage }: UseChatProps = {}) {
+  const { user } = useContext(AuthContext)
+
   const [userId, setUserId] = useState<string>();
   const [channelId, setChannelId] = useState<string>();
   const [messages, setMessages] = useState<Message[]>();
@@ -39,7 +42,8 @@ export function useChat({ onMessage }: UseChatProps = {}) {
     const convertedMessages = messages.map((item) => ({
       id: item._id,
       text: item.msg,
-      sender: item.alias === 'admin@drm.com' ? 'admin' : 'user',
+      isMe: item.alias === user?.email, 
+      sender: item.alias,
       time: item._updatedAt,
     }));
 
