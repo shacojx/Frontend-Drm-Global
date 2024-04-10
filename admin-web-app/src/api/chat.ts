@@ -11,6 +11,11 @@ export type ChannelResponse = {
   channels: Array<{
     lastMessage?: {
       msg: string
+      alias: string, 
+      u: {
+        name: string,
+        username: string
+      }
     },
     _updatedAt: string, 
     name: string;

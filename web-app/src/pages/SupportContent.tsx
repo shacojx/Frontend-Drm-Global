@@ -124,15 +124,15 @@ type AdminMessageProps = {
 
 function AdminMessage({ message, time }: AdminMessageProps) {
   return (
-    <div className="flex items-start gap-[14px] shrink-0 mt-4">
+    <div className="flex items-start gap-[14px] shrink-0 mt-4 w-full">
       <img className="size-[50px]" src={IMAGES.supportLogo} />
 
-      <div className="flex flex-col grow gap-3">
+      <div className="flex flex-col grow gap-3 w-full">
         <div className="flex gap-4 items-center">
           <span className="font-medium">AI assistant</span>
           <span className="text-sm text-surface">{dayjs(time).format('HH:mm A')}</span>
         </div>
-        <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none whitespace-pre-line">
+        <div className="border border-stroke max-w-[70%] bg-[#fff] px-6 py-4 rounded-[14px] rounded-tl-none whitespace-pre-line w-max">
           {message}
         </div>
       </div>
