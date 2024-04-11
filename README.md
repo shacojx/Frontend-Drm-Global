@@ -18,6 +18,16 @@ mkdir cms
 mkdir customer
 ```
 
+## ENV
+First of all, please create file .env for each project (Customer, Cms) base on the .env.template
+There are 2 env:
+REACT_APP_URL: the url of api
+REACT_APP_PAYPAL_CLIENT_ID: the client id of Paypal business account
+
+## Payment
+Following Paypal's guideline: https://developer.paypal.com/api/rest/#link-getclientidandclientsecret
+Get the client ID and add it to file .env
+
 ## Build Landing Page
 ### Local
 Open a terminal, navigate to the FEDrmGlobal project, and run the command:

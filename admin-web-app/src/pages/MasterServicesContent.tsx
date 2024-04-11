@@ -259,79 +259,79 @@ export function MasterServiceContent(props: Props) {
         <p className={'text-h4 w-full text-start mb-6'}>
           {translation.t('Service Master Data')}
         </p>
-        <div className={'w-full mb-4'}>
-          <Grid container spacing={2}>
-            <Grid item md={2.4}>
-              <FormFieldText
-                id={'searchId'}
-                validateCaller={validateCaller}
-                label={translation.t('masterService.serviceId')}
-                onChange={(v) => setSearchId(v)}
-                placeholder={translation.t(
-                  'masterService.serviceIdPlaceholder',
-                )}
-                value={searchId}
-              />
-            </Grid>
-            <Grid item md={2.4}>
-              <FormFieldText
-                id={'searchName'}
-                validateCaller={validateCaller}
-                label={translation.t('masterService.searchName')}
-                onChange={setServiceName}
-                value={serviceName}
-                placeholder={translation.t(
-                  'masterService.searchNamePlaceholder',
-                )}
-              />
-            </Grid>
-            <Grid item md={2.4}>
-              <FormFieldSelect
-                id={'status'}
-                validateCaller={validateCaller}
-                label={translation.t('masterService.status')}
-                placeholder={translation.t('masterService.statusPlaceholder')}
-                onChange={setStatus}
-                value={status}
-                optionInfos={[
-                  { label: translation.t('all'), value: '' },
-                  { label: translation.t('active'), value: 'active' },
-                  { label: translation.t('deActive'), value: 'deActive' },
-                ]}
-              />
-            </Grid>
-            <Grid item md={2.4}>
-              <FormFieldSelect
-                id={'appliedNation'}
-                label={translation.t('masterService.appliedNation')}
-                validateCaller={validateCaller}
-                onChange={setAppliedNation}
-                value={appliedNation}
-                placeholder={translation.t(
-                  'masterService.appliedNationPlaceholder',
-                )}
-                optionInfos={NATION_INFOS}
-              />
-            </Grid>
-            <Grid item md={2.4}>
-              <div className="flex pt-10 justify-end items-bottom">
-                <button
-                  onClick={handleResearch}
-                  className="h-[52px] px-6 flex justify-center items-center gap-2 font-semibold rounded-lg text-primary full-primary "
-                >
-                  <IconReload className="fill-primary" />
-                  {translation.t('masterService.reload')}
-                </button>
-                <button
-                  onClick={handleClickSearch}
-                  className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"
-                >
-                  {translation.t('Search')}
-                </button>
-              </div>
-            </Grid>
-          </Grid>
-        </div>
+        {/*<div className={'w-full mb-4'}>*/}
+        {/*  <Grid container spacing={2}>*/}
+        {/*    <Grid item md={2.4}>*/}
+        {/*      <FormFieldText*/}
+        {/*        id={'searchId'}*/}
+        {/*        validateCaller={validateCaller}*/}
+        {/*        label={translation.t('masterService.serviceId')}*/}
+        {/*        onChange={(v) => setSearchId(v)}*/}
+        {/*        placeholder={translation.t(*/}
+        {/*          'masterService.serviceIdPlaceholder',*/}
+        {/*        )}*/}
+        {/*        value={searchId}*/}
+        {/*      />*/}
+        {/*    </Grid>*/}
+        {/*    <Grid item md={2.4}>*/}
+        {/*      <FormFieldText*/}
+        {/*        id={'searchName'}*/}
+        {/*        validateCaller={validateCaller}*/}
+        {/*        label={translation.t('masterService.searchName')}*/}
+        {/*        onChange={setServiceName}*/}
+        {/*        value={serviceName}*/}
+        {/*        placeholder={translation.t(*/}
+        {/*          'masterService.searchNamePlaceholder',*/}
+        {/*        )}*/}
+        {/*      />*/}
+        {/*    </Grid>*/}
+        {/*    <Grid item md={2.4}>*/}
+        {/*      <FormFieldSelect*/}
+        {/*        id={'status'}*/}
+        {/*        validateCaller={validateCaller}*/}
+        {/*        label={translation.t('masterService.status')}*/}
+        {/*        placeholder={translation.t('masterService.statusPlaceholder')}*/}
+        {/*        onChange={setStatus}*/}
+        {/*        value={status}*/}
+        {/*        optionInfos={[*/}
+        {/*          { label: translation.t('all'), value: '' },*/}
+        {/*          { label: translation.t('active'), value: 'active' },*/}
+        {/*          { label: translation.t('deActive'), value: 'deActive' },*/}
+        {/*        ]}*/}
+        {/*      />*/}
+        {/*    </Grid>*/}
+        {/*    <Grid item md={2.4}>*/}
+        {/*      <FormFieldSelect*/}
+        {/*        id={'appliedNation'}*/}
+        {/*        label={translation.t('masterService.appliedNation')}*/}
+        {/*        validateCaller={validateCaller}*/}
+        {/*        onChange={setAppliedNation}*/}
+        {/*        value={appliedNation}*/}
+        {/*        placeholder={translation.t(*/}
+        {/*          'masterService.appliedNationPlaceholder',*/}
+        {/*        )}*/}
+        {/*        optionInfos={NATION_INFOS}*/}
+        {/*      />*/}
+        {/*    </Grid>*/}
+        {/*    <Grid item md={2.4}>*/}
+        {/*      <div className="flex pt-10 justify-end items-bottom">*/}
+        {/*        <button*/}
+        {/*          onClick={handleResearch}*/}
+        {/*          className="h-[52px] px-6 flex justify-center items-center gap-2 font-semibold rounded-lg text-primary full-primary "*/}
+        {/*        >*/}
+        {/*          <IconReload className="fill-primary" />*/}
+        {/*          {translation.t('masterService.reload')}*/}
+        {/*        </button>*/}
+        {/*        <button*/}
+        {/*          onClick={handleClickSearch}*/}
+        {/*          className="h-[52px] px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg"*/}
+        {/*        >*/}
+        {/*          {translation.t('Search')}*/}
+        {/*        </button>*/}
+        {/*      </div>*/}
+        {/*    </Grid>*/}
+        {/*  </Grid>*/}
+        {/*</div>*/}
         <div className="w-full flex justify-end mb-2">
           <button
             onClick={setShouldShowCreateMasterService.bind(undefined, true)}

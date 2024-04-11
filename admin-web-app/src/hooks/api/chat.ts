@@ -9,6 +9,7 @@ import {
   callApiSendMessage,
 } from '../../api/chat';
 import { AuthContext } from '../../contexts/AuthContextProvider';
+import { useApiUserSearchByRole } from "./user";
 import dayjs from 'dayjs';
 
 type Message = {
@@ -35,6 +36,7 @@ type UseChatProps = {
 
 export function useChat({ onMessage, onSentMessage }: UseChatProps = {}) {
   const { user } = useContext(AuthContext);
+  const bunchOfAdminQuery = useApiUserSearchByRole({role: 'admin'})
   const [lastFetchMessage, refetchMessages] = useReducer(
     () => Date.now(),
     Date.now(),
@@ -86,7 +88,11 @@ export function useChat({ onMessage, onSentMessage }: UseChatProps = {}) {
         isMe: m.alias === user?.email,
         text: m.msg,
         time: m._updatedAt,
-        sender: m.u.name,
+        sender: m.u.name === 'livechat-agent'
+          ? bunchOfAdminQuery.data?.find(account => account.email === m.alias)
+            ? 'Admin'
+            : 'Staff'
+          : m.u.name,
       }));
 
       setActiveMessages((prev) =>

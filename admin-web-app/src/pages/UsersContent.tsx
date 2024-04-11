@@ -192,36 +192,36 @@ export function UsersContent(props: Props) {
         </p>
         <div
           className={
-            'w-full flex flex-row justify-between items-center gap-10 mb-4'
+            'w-full flex flex-row justify-end items-center gap-10 mb-4'
           }
         >
-          <div className={'flex flex-row justify-start items-end gap-4 mb-4'}>
-            <FormFieldEmail
-              id={'email'}
-              validateCaller={validateCaller}
-              onChange={setEmail}
-              value={email}
-            />
-            <FormFieldPhoneNumber
-              id={'phone'}
-              validateCaller={validateCaller}
-              onChange={setPhone}
-              value={phone}
-              placeholder={'Input number'}
-            />
-            <button
-              onClick={handleClickSearch}
-              className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg shrink-0"
-            >
-              {translation.t('Search')}
-            </button>
-            <button
-              onClick={handleClear}
-              className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg shrink-0"
-            >
-              {translation.t('Clear')}
-            </button>
-          </div>
+          {/*<div className={'flex flex-row justify-start items-end gap-4 mb-4'}>*/}
+          {/*  <FormFieldEmail*/}
+          {/*    id={'email'}*/}
+          {/*    validateCaller={validateCaller}*/}
+          {/*    onChange={setEmail}*/}
+          {/*    value={email}*/}
+          {/*  />*/}
+          {/*  <FormFieldPhoneNumber*/}
+          {/*    id={'phone'}*/}
+          {/*    validateCaller={validateCaller}*/}
+          {/*    onChange={setPhone}*/}
+          {/*    value={phone}*/}
+          {/*    placeholder={'Input number'}*/}
+          {/*  />*/}
+          {/*  <button*/}
+          {/*    onClick={handleClickSearch}*/}
+          {/*    className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg shrink-0"*/}
+          {/*  >*/}
+          {/*    {translation.t('Search')}*/}
+          {/*  </button>*/}
+          {/*  <button*/}
+          {/*    onClick={handleClear}*/}
+          {/*    className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg shrink-0"*/}
+          {/*  >*/}
+          {/*    {translation.t('Clear')}*/}
+          {/*  </button>*/}
+          {/*</div>*/}
           <button
             onClick={setShouldShowCreateUser.bind(undefined, true)}
             className="h-10 px-6 flex justify-center items-center gap-2 bg-primary text-white font-semibold rounded-lg w-max line-clamp-1"
