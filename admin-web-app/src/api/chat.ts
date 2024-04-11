@@ -10,14 +10,14 @@ export async function callApiGetCMSToken() {
 export type ChannelResponse = {
   channels: Array<{
     lastMessage?: {
-      msg: string
-      alias: string, 
+      msg: string;
+      alias: string;
       u: {
-        name: string,
-        username: string
-      }
-    },
-    _updatedAt: string, 
+        name: string;
+        username: string;
+      };
+    };
+    _updatedAt: string;
     name: string;
     msgs: 2;
     u: {
@@ -25,16 +25,18 @@ export type ChannelResponse = {
       _updatedAt: null | string;
       name: string;
       _id: string;
-      email?: string | null 
+      email?: string | null;
     };
     ts: '2024-04-05T11:20:33.780Z';
     _id: '660fde812bd598f46566ecbc';
   }>;
-  total: 9;
+  total: number;
+  offset: number;
+  count: number;
 };
 
-export async function callApiGetChannels(offset = 0) {
-  const path = `/chat/api/v1/cms/list-channel?offset=${offset}&count=100`;
+export async function callApiGetChannels(offset = 0, limit = 10) {
+  const path = `/chat/api/v1/cms/list-channel?offset=${offset}&count=${limit}`;
   const rawResult = await callApi<ChannelResponse>('GET', path, {}, true);
 
   return rawResult;
@@ -42,20 +44,30 @@ export async function callApiGetChannels(offset = 0) {
 
 export type MessageResponse = {
   messages: Array<{
-    _id: string;
     alias: string;
     msg: string;
+    parseUrls: boolean;
+    groupable: boolean;
     ts: string;
     u: {
-      username: string;
+      username: boolean;
+      createdAt: string | null;
+      email: string | null;
+      status: string | null;
+      type: string | null;
+      active: boolean;
+      _updatedAt: string | null;
       name: string;
       _id: string;
     };
-    _updatedAt: '2024-04-05T13:04:27.099Z';
+    rid: string;
+    _id: string;
+    _updatedAt: string;
   }>;
-  count: 10;
-  offset: 0;
-  total: 24;
+  count: number;
+  offset: number;
+  total: number;
+  success: true;
 };
 
 export async function callApiGetMessages(

@@ -1,142 +1,218 @@
-import { useContext, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { isNil, sortBy, uniqBy } from 'lodash-es';
+import { useContext, useEffect, useReducer, useState } from 'react';
+import { useSubscription } from 'react-stomp-hooks';
 import {
   ChannelResponse,
   callApiGetChannels,
   callApiGetMessages,
   callApiSendMessage,
 } from '../../api/chat';
-import { last, reverse, sortBy, uniqBy } from 'lodash-es';
-import { useSubscription } from 'react-stomp-hooks';
-import dayjs from 'dayjs';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import { useApiUserSearchByRole } from "./user";
+import dayjs from 'dayjs';
 
 type Message = {
   id: string;
   text: string;
-  isMe: boolean
-  sender?: string,
+  isMe: boolean;
+  sender?: string;
   time: string;
-  email: string
+  email: string;
 };
 
-type Channel = ChannelResponse['channels'][number] & {
-  messages: Message[];
+type Pagination = {
+  total: number;
+  count: number;
+  offset: number;
 };
+
+type Channel = ChannelResponse['channels'][number];
 
 type UseChatProps = {
   onMessage?: () => void;
+  onSentMessage?: () => void;
 };
 
-export function useChat({ onMessage }: UseChatProps = {}) {
-  const { user } = useContext(AuthContext)
+export function useChat({ onMessage, onSentMessage }: UseChatProps = {}) {
+  const { user } = useContext(AuthContext);
   const bunchOfAdminQuery = useApiUserSearchByRole({role: 'admin'})
-  const [channels, setChannels] = useState<Channel[]>();
+  const [lastFetchMessage, refetchMessages] = useReducer(
+    () => Date.now(),
+    Date.now(),
+  );
+  const [lastFetchChannel, refetchChannel] = useReducer(
+    () => Date.now(),
+    Date.now(),
+  );
+
   const [activeChannelId, setActiveChannelId] = useState<string>();
-  const activeChannel = channels?.find((item) => item._id === activeChannelId);
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [activeMessages, setActiveMessages] = useState<Message[]>([]);
 
-  const [loading, setLoading] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [hasNewMessage, setHasNewMessage] = useState(false);
 
-  const fetchChannels = async (offset = 0) => {
-    const res = await callApiGetChannels(offset);
+  const [messagePagination, setMessagePagination] = useState<Pagination>({
+    count: 10,
+    offset: 0,
+    total: NaN,
+  });
 
-    setChannels((prev) => {
-      const convertedChannels = uniqBy(
-        [
-          ...res.channels.map((item, idx) => ({
-            ...item,
-            messages: [],
-          })),
-          ...(prev ?? []),
-        ],
-        (item) => item._id,
+  const [channelPagination, setChannelPagination] = useState<Pagination>({
+    count: 15,
+    offset: 0,
+    total: NaN,
+  });
+
+  const { isLoading: fetchingMessage } = useQuery({
+    queryKey: [
+      'getMessages',
+      activeChannelId,
+      messagePagination.offset,
+      messagePagination.count,
+      lastFetchMessage,
+    ],
+    queryFn: async () => {
+      const { count, offset } = messagePagination;
+      const res = await callApiGetMessages(activeChannelId!, offset, count);
+      setMessagePagination({
+        count: res.count,
+        offset: res.offset,
+        total: res.total,
+      });
+
+      const convertedMessages = res.messages.map<Message>((m) => ({
+        email: m.alias,
+        id: m._id,
+        isMe: m.alias === user?.email,
+        text: m.msg,
+        time: m._updatedAt,
+        sender: m.u.name === 'livechat-agent'
+          ? bunchOfAdminQuery.data?.find(account => account.email === m.alias)
+            ? 'Admin'
+            : 'Staff'
+          : m.u.name,
+      }));
+
+      setActiveMessages((prev) =>
+        sortBy(
+          uniqBy([...convertedMessages, ...prev], (m) => m.id),
+          (m) => +dayjs(m.time),
+        ),
       );
 
-      if (!activeChannelId) {
-        setActiveChannelId(convertedChannels[0]._id);
+      if (sendingMessage) {
+        onSentMessage?.();
+        setSendingMessage(false);
       }
 
-      return convertedChannels;
-    });
-  };
+      if (hasNewMessage) {
+        onMessage?.();
+        setHasNewMessage(false)
+      }
 
-  const fetchMessages = async (channelId: string, offset = 0) => {
-    setLoading(true);
-    const res = await callApiGetMessages(channelId, offset);
-    const currentChannel = channels?.find((c) => c._id === channelId);
-    if (!currentChannel) return;
+      return res;
+    },
+    enabled: !!activeChannelId,
+  });
 
-    const convertedMessage = res?.messages.map((item) => ({
-      id: item._id,
-      text: item.msg ,
-      isMe: item.alias === user?.email,
-      time: item._updatedAt,
-      sender: item.u.name === 'livechat-agent'
-        ? bunchOfAdminQuery.data?.find(account => account.email === item.alias)
-          ? 'Admin'
-          : 'Staff'
-        : item.u.name,
-      email: item.alias
-    }));
+  const { isLoading: fetchingChannel } = useQuery({
+    queryKey: [
+      'getChannels',
+      channelPagination.offset,
+      channelPagination.count,
+      lastFetchChannel,
+    ],
+    queryFn: async () => {
+      const { offset, count } = channelPagination;
+      const res = await callApiGetChannels(offset, count);
 
-    currentChannel.messages = sortBy(
-      uniqBy(
-        [...(convertedMessage ?? []), ...currentChannel.messages],
-        (item) => item.id,
-      ),
-      (item) => new Date(item.time).getTime(),
-    );
+      if (isNil(activeChannelId)) {
+        setActiveChannelId(res.channels[0]._id);
+      }
 
-    setChannels([...(channels ?? [])]);
-    setLoading(false);
-  };
+      setChannelPagination({
+        count: res.count,
+        offset: res.offset,
+        total: res.total,
+      });
 
-  const sendMessage = async (text: string) => {
-    const activeUserId = channels?.find((c) => c._id === activeChannelId)?.name;
-    activeUserId && (await callApiSendMessage(activeUserId, text));
+      setChannels((prev) =>
+        uniqBy(
+          [...res.channels.map((c) => ({ ...c, messages: [] })), ...prev],
+          (c) => c._id,
+        ).sort((c) => +dayjs(c._updatedAt)),
+      );
 
-    fetchMessages(activeChannelId!, 0).then(onMessage);
-    fetchChannels();
-  };
-
-  useEffect(() => {
-    fetchChannels(0);
-  }, []);
-
-  useEffect(() => {
-    activeChannelId && fetchMessages(activeChannelId, 0);
-  }, [activeChannelId]);
-
-  const changeActiveChannel = (id: string) => {
-    setActiveChannelId(id);
-    fetchMessages(id);
-  };
-
-  const fetchMoreMessages = () =>
-    fetchMessages(activeChannelId!, activeChannel?.messages.length ?? 0);
+      return res;
+    },
+  });
 
   useSubscription('/chat/topic/public/cms', (msg) => {
     const incomingChannelId = channels?.find((c) => c.name === msg.body)?._id;
-    incomingChannelId && fetchMessages(incomingChannelId, 0).then(onMessage);
-    fetchChannels(0);
+    if (!incomingChannelId) return;
+
+    setChannelPagination((prev) => ({ ...prev, offset: 0 }));
+    setMessagePagination((prev) => ({ ...prev, offset: 0 }));
+    refetchChannel();
+    refetchMessages();
+    setHasNewMessage(true);
   });
 
-  console.log(
-    channels?.map((c) => ({ name: c.u.name, lastUpdate: c._updatedAt })),
-  );
+  const sendMessage = async (msg: string) => {
+    const activeUserId = channels.find((c) => c._id === activeChannelId)?.name;
+    if (!activeUserId) return;
+    setSendingMessage(true);
+    await callApiSendMessage(activeUserId, msg);
+    setMessagePagination((prev) => ({ ...prev, offset: 0 }));
+    refetchChannel();
+    refetchMessages();
+  };
+
+  const fetchMoreMessages = () => {
+    setMessagePagination((prev) => {
+      const { count, offset, total } = prev;
+      const hasMore = offset + count < total;
+      if (!hasMore) return prev;
+
+      return {
+        ...prev,
+        count: Math.min(count, total - (offset + count)),
+        offset: offset + count,
+      };
+    });
+  };
+
+  const fetchMoreChannel = () => {
+    setChannelPagination((prev) => {
+      const { count, offset, total } = prev;
+      const hasMore = offset + count < total;
+      if (!hasMore) return prev;
+
+      return {
+        ...prev,
+        count: Math.min(count, total - (offset + count)),
+        offset: offset + count,
+      };
+    });
+  };
 
   return {
-    channels: sortBy(channels, (c) => -dayjs(c._updatedAt).valueOf()),
-    messages: activeChannel?.messages,
-    changeActiveChannel,
-    fetchMoreMessages,
-    loading,
-    sendMessage,
-    fetchMoreChannel: () => fetchChannels(channels?.length ?? 0),
-    activeUser: {
-      fullName: activeChannel?.u.name ?? '-',
-      // email: activeChannel?.u.
+    channels,
+    messages: activeMessages,
+    changeActiveChannel: async (id: string) => {
+      setActiveChannelId(id);
+      setMessagePagination((prev) => ({ ...prev, offset: 0 }));
+      setActiveMessages([]);
+      refetchMessages();
+      onMessage?.()
     },
+    sendingMessage,
+    fetchMoreMessages,
+    fetchingMessage,
+    sendMessage,
+    fetchMoreChannel,
     activeChannelId,
   };
 }
