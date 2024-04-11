@@ -8,26 +8,29 @@ export function SupportContent() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [needScrollBottom, setNeedScrollBottom] = useState(true);
+  const [needScrollToLastMessage, setNeedScrollToLastMessage] = useState(false);
 
   const {
     channels,
     messages,
     changeActiveChannel,
     fetchMoreMessages,
-    loading,
+    fetchingMessage,
     sendMessage,
     fetchMoreChannel,
     activeChannelId,
+    sendingMessage,
   } = useChat({
     onMessage: () => setNeedScrollBottom(true),
+    onSentMessage: () => setNeedScrollBottom(true)
   });
 
   const handleSendMessage = async () => {
     const text = inputRef.current?.value;
     if (!text) return;
 
-    inputRef.current.value = '';
     await sendMessage(text);
+    inputRef.current.value = '';
 
     setNeedScrollBottom(true);
   };
@@ -40,6 +43,7 @@ export function SupportContent() {
           const isScrolledToBottom =
             e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
             e.currentTarget.clientHeight;
+
           if (isScrolledToBottom) {
             fetchMoreChannel();
           }
@@ -79,7 +83,6 @@ export function SupportContent() {
               <div className="text-gray-500 line-clamp-1">
                 <span className="font-semibold text-primary">{lastSender}</span>
                 {': '}
-
                 <span className="italic">{channel.lastMessage?.msg}</span>
               </div>
             </div>
@@ -91,60 +94,74 @@ export function SupportContent() {
         <div
           className="grow h-[calc(100%-118px)] overflow-y-scroll"
           onScroll={(e) => {
-            if (e.currentTarget.scrollTop === 0) {
+            if (e.currentTarget.scrollTop === 0 && messages.length) {
               fetchMoreMessages();
+              setNeedScrollToLastMessage(true);
             }
           }}
-          ref={(node) => {
-            node?.scrollBy({ top: 1 });
-          }}
         >
-          <div className="w-full max-w-4xl mx-auto overscroll-y-auto py-4">
-            {loading && (
-              <div className="flex items-center justify-center gap-4">
-                <IconSpinner />
-                <span>Loading...</span>
-              </div>
-            )}
-            {messages?.map((message) =>
-              message.isMe ? (
-                <AdminMessage
-                  key={message.id}
-                  message={message.text}
-                  time={message.time}
-                  name={
-                    <div>
-                      {message.sender}{' '}
-                      <span className="text-gray-500">({message.email})</span>
-                    </div>
-                  }
-                />
-              ) : (
-                <UserMessage
-                  key={message.id}
-                  message={message.text}
-                  time={message.time}
-                  fullName={
-                    <div>
-                      {message.sender}{' '}
-                      <span className="text-gray-500">({message.email})</span>
-                    </div>
-                  }
-                  // avatarUrl={}
-                />
-              ),
-            )}
-            {messages && (
+          <div className="w-full max-w-4xl mx-auto overscroll-y-auto py-4 flex flex-col">
+            <div
+              className={cn('flex items-center justify-center gap-4', {
+                hidden: !fetchingMessage,
+              })}
+            >
+              <IconSpinner />
+              <span>Loading...</span>
+            </div>
+
+            {messages?.map((message, idx) => (
               <div
+                key={message.id}
                 ref={(node) => {
-                  if (node && needScrollBottom) {
-                    console.log('scrollBottom');
-                    node.scrollIntoView();
-                    setNeedScrollBottom(false);
+                  if (
+                    idx === 10 &&
+                    node &&
+                    !fetchingMessage &&
+                    needScrollToLastMessage
+                  ) {
+                    console.log('scroll mid');
+                    node.scrollIntoView({
+                      behavior: 'instant' as ScrollBehavior,
+                    });
+                    setNeedScrollToLastMessage(false);
                   }
                 }}
-              />
-            )}
+              >
+                {message.isMe ? (
+                  <AdminMessage
+                    message={message.text}
+                    time={message.time}
+                    name={
+                      <div>
+                        {message.sender}{' '}
+                        <span className="text-gray-500">({message.email})</span>
+                      </div>
+                    }
+                  />
+                ) : (
+                  <UserMessage
+                    message={message.text}
+                    time={message.time}
+                    fullName={
+                      <div>
+                        {message.sender}{' '}
+                        <span className="text-gray-500">({message.email})</span>
+                      </div>
+                    }
+                  />
+                )}
+              </div>
+            ))}
+
+            <div
+              ref={(node) => {
+                if (messages.length && node && needScrollBottom) {
+                  node.scrollIntoView();
+                  setNeedScrollBottom(false);
+                }
+              }}
+            />
           </div>
         </div>
 
@@ -152,6 +169,8 @@ export function SupportContent() {
           <div className="max-w-4xl flex rounded-2xl border border-stroke w-full p-4 bg-white">
             <input
               ref={inputRef}
+              readOnly={sendingMessage}
+              disabled={sendingMessage}
               className="grow outline-none bg-transparent"
               placeholder="Type a message"
               onKeyDown={async (e) => {
@@ -164,7 +183,11 @@ export function SupportContent() {
               className="size-9 rounded-lg bg-surface flex justify-center items-center hover:bg-primary"
               onClick={handleSendMessage}
             >
-              <IconArrowUp className="size-6" />
+              {sendingMessage ? (
+                <IconSpinner className="size-6 fill-surface" />
+              ) : (
+                <IconArrowUp className="size-6" />
+              )}
             </button>
           </div>
         </div>
